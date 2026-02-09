@@ -32,12 +32,8 @@ if (!$current_category) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = $current_category['name'] ?? 'Arc Welding Machines';
-    $category_description = $current_category['description'] ?? 'Explore our comprehensive range of arc welding machines and robotic welding systems from leading manufacturers.';
-    $phone = "+1(234) 567 8900";
-    $phone2 = "+1(234) 567 8900";
-    $phone3 = "+1(639) 977 803 7398";
-    $email = "info@andison-industrial.com";
+    $category_name = $current_category['name'] ?? 'Drilling & Lifting';
+    $category_description = $current_category['description'] ?? 'Discover our comprehensive range of drilling and lifting equipment.';
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -1167,90 +1163,34 @@ if (!$current_category) {
             <button class="sidebar-close" id="closeSidebar"><i class="bi bi-x-lg"></i></button>
         </div>
         <ul class="sidebar-list">
-            <li class="has-sub">
-                <a href="../arc-welding-machine/arc-welding-machine.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span><span class="sidebar-label"><?php echo htmlspecialchars($current_category['name']); ?></span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-welding" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
-                <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
-                    <?php if (!empty($current_category['subcategories'])): ?>
-                        <?php foreach ($current_category['subcategories'] as $subcat): ?>
-                            <li><a href="../arc-welding-machine/<?php echo htmlspecialchars($subcat['id']); ?>.php"><?php echo htmlspecialchars($subcat['name']); ?></a></li>
+            <?php 
+            // Dynamically generate sidebar from all categories
+            foreach ($categories as $cat): 
+                $cat_id = htmlspecialchars($cat['id']);
+                $cat_name = htmlspecialchars($cat['name']);
+                $cat_icon = htmlspecialchars($cat['icon'] ?? 'bi-folder');
+                $has_subcats = !empty($cat['subcategories']) && is_array($cat['subcategories']);
+                $is_current = ($cat_id === $category_id);
+                ?>
+            <li class="<?php echo $has_subcats ? 'has-sub' : ''; ?><?php echo $is_current ? ' active' : ''; ?>">
+                <a href="../<?php echo $cat_id; ?>/<?php echo $cat_id; ?>.php">
+                    <span class="sidebar-icon" aria-hidden="true"><i class="bi <?php echo $cat_icon; ?>"></i></span>
+                    <span class="sidebar-label"><?php echo $cat_name; ?></span>
+                </a>
+                <?php if ($has_subcats): ?>
+                    <button class="sub-toggle" aria-expanded="false" aria-controls="sub-<?php echo $cat_id; ?>" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                    <ul id="sub-<?php echo $cat_id; ?>" class="sidebar-sublist collapsed">
+                        <?php foreach ($cat['subcategories'] as $subcat): ?>
+                            <li>
+                                <a href="../<?php echo $cat_id; ?>/<?php echo htmlspecialchars($subcat['id']); ?>.php">
+                                    <?php echo htmlspecialchars($subcat['name']); ?>
+                                </a>
+                            </li>
                         <?php endforeach; ?>
-                    <?php endif; ?>
-                </ul>
+                    </ul>
+                <?php endif; ?>
             </li>
-            <li>
-                <a href="#arc-handmetal-robots"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label">Arc HandMetal Robots</span><span class="sidebar-arrow"><i class="bi bi-chevron-right"></i></span></a>
-            </li>
-            <li>
-                <a href="#batteries"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-fill"></i></span><span class="sidebar-label">Batteries</span><span class="sidebar-arrow"><i class="bi bi-chevron-right"></i></span></a>
-            </li>
-            <li class="has-sub">
-                <a href="../drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling and Lifting</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-drilling-lifting" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
-                <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
-                    <li><a href="../drilling-and-lifting/lifting.php">Lifting</a></li>
-                    <li><a href="../drilling-and-lifting/magnetic-drill.php">Magnetic Drill</a></li>
-                    <li><a href="../drilling-and-lifting/cutters.php">Cutters</a></li>
-                </ul>
-            </li>
-            <li class="has-sub">
-                <a href="../gas-detectors/portable-gas-detectors.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></span><span class="sidebar-label">Portable Gas Detectors</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-gas-detectors" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
-                <ul id="sub-gas-detectors" class="sidebar-sublist collapsed">
-                    <li><a href="../gas-detectors/single-gas-detector.php">Single Gas Detector</a></li>
-                    <li><a href="../gas-detectors/multi-gas-detector.php">Multi Gas Detector</a></li>
-                    <li><a href="../gas-detectors/docking-data-management.php">Docking and Data Management</a></li>
-                    <li><a href="../gas-detectors/calibration-gas-regulators.php">Calibration Gas and Regulators</a></li>
-                </ul>
-            </li>
-            <li class="has-sub">
-                <a href="../portable-ventilators/portable-ventilators.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-fan"></i></span><span class="sidebar-label">Portable Ventilators</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-ventilators" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
-                <ul id="sub-ventilators" class="sidebar-sublist collapsed">
-                    <li><a href="../portable-ventilators/portable-ventilator-accessories.php">Portable Ventilator Accessories</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="#power-tools"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-tools"></i></span><span class="sidebar-label">Power Tools</span><span class="sidebar-arrow"><i class="bi bi-chevron-right"></i></span></a>
-            </li>
-            <li class="has-sub">
-                <a href="../protection/protection.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-shield-check"></i></span><span class="sidebar-label">Protection and Safety</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-protection-safety" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
-                <ul id="sub-protection-safety" class="sidebar-sublist collapsed">
-                    <li><a href="../protection/eye-protection.php">Eye Protection</a></li>
-                    <li><a href="../protection/foot-protection.php">Foot Protection</a></li>
-                    <li class="has-nested-sub">
-                        <a href="../protection/hand-protection.php">Hand Protection</a>
-                        <button class="nested-toggle" aria-expanded="false" aria-controls="nested-hand-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
-                        <ul id="nested-hand-protection" class="sidebar-nested-sublist collapsed">
-                            <li><a href="../protection/working-gloves.php">Working Gloves</a></li>
-                            <li><a href="../protection/chemical-liquid-protection-gloves.php">Chemical and Liquid Protection Gloves</a></li>
-                            <li><a href="../protection/disposable-gloves.php">Disposable Gloves</a></li>
-                            <li><a href="../protection/welding-gloves.php">Welding Gloves</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="../protection/hearing-respiratory-protection.php">Hearing &amp; Respiratory Protection</a></li>
-                    <li class="has-nested-sub">
-                        <a href="../protection/body-protection.php">Body Protection</a>
-                        <button class="nested-toggle" aria-expanded="false" aria-controls="nested-body-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
-                        <ul id="nested-body-protection" class="sidebar-nested-sublist collapsed">
-                            <li><a href="../protection/chemical-flame-retardant.php">Chemical and Flame Retardant</a></li>
-                            <li><a href="../protection/liquid-spray-splash.php">Liquid Spray and Splash</a></li>
-                            <li><a href="../protection/particulate-low-hazard.php">Particulate and Low Hazard</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-            <li class="has-sub">
-                <a href="../welding-accessories/welding-accessories.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-gear"></i></span><span class="sidebar-label">Welding Accessories</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-accessories" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
-                <ul id="sub-welding-accessories" class="sidebar-sublist collapsed">
-                    <li><a href="../welding-accessories/welding-head-face-protection.php">Welding, Head & Face Protection</a></li>
-                </ul>
-            </li>
-            <li>
-                <a href="#handmetal-consumables"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-box"></i></span><span class="sidebar-label">HandMetal Consumables</span><span class="sidebar-arrow"><i class="bi bi-chevron-right"></i></span></a>
-            </li>
+            <?php endforeach; ?>
         </ul>
     </aside>
 
@@ -1260,7 +1200,7 @@ if (!$current_category) {
         </div>
 
         <div class="category-content">
-            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Arc Welding Machines'); ?></h2>
+            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Drilling & Lifting'); ?></h2>
             <?php if (!empty($current_category['description'])): ?>
                 <p class="category-description"><?php echo htmlspecialchars($current_category['description']); ?></p>
             <?php endif; ?>
@@ -1292,7 +1232,7 @@ if (!$current_category) {
                         }
                         $model = htmlspecialchars($product['model'] ?? '');
                         $name = htmlspecialchars($product['name'] ?? '');
-                        $type = htmlspecialchars($product['type'] ?? 'Premium Arc Welding Equipment');
+                        $type = htmlspecialchars($product['type'] ?? 'Drilling & Lifting Equipment');
                         $brand = htmlspecialchars($product['brand'] ?? 'Industrial');
                         $description = htmlspecialchars($product['description'] ?? '');
                         $badge = htmlspecialchars($product['badge'] ?? '');
@@ -1300,9 +1240,9 @@ if (!$current_category) {
                 <div class="product-card">
                     <div class="product-image">
                         <?php if (!empty($image_src)): ?>
-                            <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=\"bi bi-lightning-fill\" style=\"font-size: 60px; color: #ccc;\"></i>
+                            <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=&quot;bi bi-hammer&quot; style=&quot;font-size: 60px; color: #ccc;&quot;></i>'">
                         <?php else: ?>
-                            <i class="bi bi-lightning-fill" style="font-size: 60px; color: #ccc;\"></i>
+                            <i class="bi bi-hammer" style="font-size: 60px; color: #ccc;"></i>
                         <?php endif; ?>
                         <?php if (!empty($badge)): ?>
                             <div class="product-badge"><?php echo $badge; ?></div>
@@ -1324,11 +1264,11 @@ if (!$current_category) {
                     ?>
                 <div class="product-card">
                     <div class="product-image">
-                        <i class="bi bi-lightning-fill" style="font-size: 60px; color: #ccc;"></i>
+                        <i class="bi bi-hammer" style="font-size: 60px; color: #ccc;"></i>
                     </div>
-                    <h4>Arc Welding Machines</h4>
+                    <h4>Drilling & Lifting Equipment</h4>
                     <p class="product-type">No products available</p>
-                    <button class="add-to-inquiry" type="button" data-model="Arc Welding" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
+                    <button class="add-to-inquiry" type="button" data-model="Drilling & Lifting" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
                 </div>
                     <?php
                 }

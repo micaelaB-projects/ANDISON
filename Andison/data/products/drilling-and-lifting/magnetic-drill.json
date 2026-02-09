@@ -1,1 +1,64 @@
-[]
+[
+    {
+        "id": "alfra-rotabeat-high-speed-annular-cutter",
+        "name": "Alfra Rotabeat High Speed Steel Annular Cutter (One Touch)",
+        "model": "Alfra Rotabeat High Speed",
+        "brand": "Alfra",
+        "type": "Drilling and Lifting, Cutters",
+        "description": "High-speed steel annular cutter with one-touch design for efficient drilling operations",
+        "image": "andison/assets/uploads/products/drilling-and-lifting/magnetic-drill/hss-co-1-2_20260209085035_10db05d7.jpg",
+        "badge": "",
+        "price": "",
+        "specs": ""
+    },
+    {
+        "id": "alfra-rotabeat-rb3358-magnetic-base-core-drill",
+        "name": "Alfra Rotabeat RB3358 Magnetic Base Core Drill",
+        "model": "RB3358",
+        "brand": "Alfra",
+        "type": "Drilling and Lifting, Magnetic Drill",
+        "description": "\u00d812 - 35mm Cutting Depth: 50mm Magnetic base core drill with precision engineering",
+        "image": "andison/assets/uploads/products/drilling-and-lifting/magnetic-drill/alfra-rb3358.jpg",
+        "badge": ""
+    },
+    {
+        "id": "alfra-rotabeat-tungsten-carbide-annular-cutter",
+        "name": "Alfra Rotabeat Tungsten Carbide Annular Cutter (TCT)",
+        "model": "Alfra Rotabeat TCT",
+        "brand": "Alfra",
+        "type": "Drilling and Lifting, Cutters",
+        "description": "Tungsten carbide tip annular cutter for superior cutting performance and durability",
+        "image": "andison/assets/uploads/products/drilling-and-lifting/magnetic-drill/alfra-tct.jpg",
+        "badge": ""
+    },
+    {
+        "id": "alfra-rotabeat-v52-low-profile-magnetic-drill",
+        "name": "Alfra Rotabeat V52 Low Profile Magnetic Base Core Drill",
+        "model": "V52",
+        "brand": "Alfra",
+        "type": "Drilling and Lifting, Magnetic Drill",
+        "description": "\u00d812 - 32mm Cutting Depth: 50mm Low profile design for confined space operations",
+        "image": "andison/assets/uploads/products/drilling-and-lifting/magnetic-drill/alfra-v52.jpg",
+        "badge": ""
+    },
+    {
+        "id": "alfra-rotabeat-rb600l-e-magnetic-base-core-drill",
+        "name": "Alfra Rotabeat RB600L-E Magnetic Base Core Drill",
+        "model": "RB600L-E",
+        "brand": "Alfra",
+        "type": "Drilling and Lifting, Magnetic Drill",
+        "description": "\u00d812 - 80mm Cutting Depth: 50mm Professional-grade magnetic base core drill",
+        "image": "andison/assets/uploads/products/drilling-and-lifting/magnetic-drill/alfra-rb600l-e.jpg",
+        "badge": ""
+    },
+    {
+        "id": "alfra-rotabeat-rb1001-e-magnetic-base-core-drill",
+        "name": "Alfra Rotabeat RB1001-E Magnetic Base Core Drill",
+        "model": "RB1001-E",
+        "brand": "Alfra",
+        "type": "Drilling and Lifting, Magnetic Drill",
+        "description": "\u00d812 - 100mm Cutting Depth: 90mm Heavy-duty magnetic base core drill for industrial applications",
+        "image": "andison/assets/uploads/products/drilling-and-lifting/magnetic-drill/alfra-rb1001-e.jpg",
+        "badge": ""
+    }
+]
