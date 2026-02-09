@@ -6,7 +6,8 @@ require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
 
 $page_title = "Portable Gas Detectors";
-$category_id = "drilling-and-lifting";
+$category_id = "gas-detectors";
+$subcategory_id = "portable-gas-detectors";
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";
@@ -23,7 +24,15 @@ foreach ($categories as $cat) {
 }
 
 if (!$current_category) {
-    die("Category not found");
+    // Fallback: create a default category object
+    $current_category = array(
+        'id' => $category_id,
+        'name' => 'Portable Gas Detectors',
+        'description' => 'Discover our comprehensive range of portable gas detection equipment for industrial safety.',
+        'subcategories' => array(
+            array('id' => 'portable-gas-detectors', 'name' => 'Portable Gas Detectors')
+        )
+    );
 }
 ?>
 <!DOCTYPE html>
@@ -32,7 +41,7 @@ if (!$current_category) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = $current_category['name'] ?? 'Drilling & Lifting';
+    $category_name = $current_category['name'] ?? 'Portable Gas Detectors';
     $category_description = $current_category['description'] ?? 'Discover our comprehensive range of drilling and lifting equipment.';
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
@@ -1361,13 +1370,13 @@ if (!$current_category) {
         </div>
 
         <div class="category-content">
-            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Drilling & Lifting'); ?></h2>
+            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Portable Gas Detectors'); ?></h2>
             <?php if (!empty($current_category['description'])): ?>
                 <p class="category-description"><?php echo htmlspecialchars($current_category['description']); ?></p>
             <?php endif; ?>
             <div class="product-grid">
                 <?php 
-                // Dynamically fetch all products from all arc-welding-machine subcategories
+                // Dynamically fetch all products from all gas-detector subcategories
                 $subcategories = array();
                 if (!empty($current_category['subcategories']) && is_array($current_category['subcategories'])) {
                     foreach ($current_category['subcategories'] as $subcat) {
@@ -1393,7 +1402,7 @@ if (!$current_category) {
                         }
                         $model = htmlspecialchars($product['model'] ?? '');
                         $name = htmlspecialchars($product['name'] ?? '');
-                        $type = htmlspecialchars($product['type'] ?? 'Drilling & Lifting Equipment');
+                        $type = htmlspecialchars($product['type'] ?? 'Gas Detection Equipment');
                         $brand = htmlspecialchars($product['brand'] ?? 'Industrial');
                         $description = htmlspecialchars($product['description'] ?? '');
                         $badge = htmlspecialchars($product['badge'] ?? '');
@@ -1427,9 +1436,9 @@ if (!$current_category) {
                     <div class="product-image">
                         <i class="bi bi-hammer" style="font-size: 60px; color: #ccc;"></i>
                     </div>
-                    <h4>Drilling & Lifting Equipment</h4>
+                    <h4>Portable Gas Detectors</h4>
                     <p class="product-type">No products available</p>
-                    <button class="add-to-inquiry" type="button" data-model="Drilling & Lifting" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
+                    <button class="add-to-inquiry" type="button" data-model="Portable Gas Detectors" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
                 </div>
                     <?php
                 }
