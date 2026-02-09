@@ -1,0 +1,90 @@
+[
+    {
+        "id": "panasonic-tig-welding-machine",
+        "name": "Panasonic TIG Welding Machine",
+        "model": "TIG Welding Machine",
+        "description": "Portable TIG Welder",
+        "type": "Portable TIG Welder",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "soyer-arc-welding-machine",
+        "name": "Soyer Arc Welding Machine",
+        "model": "Arc Welding Machine",
+        "description": "Portable Arc Welder",
+        "type": "Portable Arc Welder",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "mig-welding-machine",
+        "name": "MIG Welding Machine",
+        "model": "MIG Welding Machine",
+        "description": "Portable MIG/MAG Welder",
+        "type": "MIG/MAG Welder",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "inverter-arc-welder",
+        "name": "Inverter Arc Welder",
+        "model": "Inverter Arc Welder",
+        "description": "Digital Inverter Stick Welder",
+        "type": "Inverter Welder",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "stud-welding-machine",
+        "name": "Stud Welding Machine",
+        "model": "Stud Welding Machine",
+        "description": "Powder-Actuated Stud Welder",
+        "type": "Stud Welder",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "multi-process-welding-machine",
+        "name": "Multi-Process Welding Machine",
+        "model": "Multi-Process Welder",
+        "description": "MIG/TIG/Stick Multi-Function",
+        "type": "Multi-Function Welder",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "gasless-flux-core-welder",
+        "name": "Gasless Flux-Core Welder",
+        "model": "Gasless Flux-Core Welder",
+        "description": "No Gas MIG Welding Machine",
+        "type": "Flux-Core Welder",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "welding-power-source",
+        "name": "Welding Power Source",
+        "model": "Welding Power Source",
+        "description": "Industrial Power Generator",
+        "type": "Power Generator",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    }
+]
