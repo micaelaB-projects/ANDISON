@@ -55,7 +55,8 @@ function andison_handle_product_upload(string $fieldName = 'image_file'): string
         return '';
     }
 
-    return 'andison/assets/uploads/products/' . $destName;
+    // Return path relative to Andison folder (one level up from admin)
+    return '../assets/uploads/products/' . $destName;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -295,10 +296,13 @@ andison_admin_header('Products', 'products');
                                         <?php 
                                             $imgPath = (string)($prod['image'] ?? '');
                                             if ($imgPath !== ''):
-                                                // Convert andison/assets/... to ../assets/... for admin display
+                                                // Convert to relative path for admin display
                                                 $displayPath = $imgPath;
                                                 if (strpos($imgPath, 'andison/') === 0) {
                                                     $displayPath = '../' . substr($imgPath, 8);
+                                                } elseif (strpos($imgPath, 'assets/') === 0) {
+                                                    // assets/ paths need ../ prefix from admin subdirectory
+                                                    $displayPath = '../' . $imgPath;
                                                 } elseif (!preg_match('~^(https?://|\.\./)~i', $imgPath)) {
                                                     $displayPath = '../' . $imgPath;
                                                 }
@@ -307,9 +311,11 @@ andison_admin_header('Products', 'products');
                                                  alt="<?php echo htmlspecialchars((string)($prod['model'] ?? '')); ?>" 
                                                  style="width:60px;height:60px;object-fit:contain;border-radius:6px;cursor:pointer;border:1px solid #e5e7eb;transition:all 0.2s ease;background:#f9fafb;" 
                                                  onclick="openImagePreview('<?php echo htmlspecialchars($displayPath, ENT_QUOTES); ?>')"
+                                                 onerror="this.style.display='none';this.nextElementSibling.style.display='inline-block';"
                                                  onmouseover="this.style.transform='scale(1.1)';this.style.borderColor='var(--accent)';this.style.boxShadow='0 4px 12px rgba(43,17,219,0.15)';"
                                                  onmouseout="this.style.transform='scale(1)';this.style.borderColor='#e5e7eb';this.style.boxShadow='none';"
                                                  title="Click to view full image">
+                                            <span style="display:none;color:var(--muted);font-size:12px;">Not found</span>
                                         <?php else: ?>
                                             <span style="color:var(--muted);font-size:12px;">No image</span>
                                         <?php endif; ?>

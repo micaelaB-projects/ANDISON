@@ -2,12 +2,12 @@
     {
         "id": "stud-welding-machine",
         "name": "Stud Welding Machine",
-        "model": "Stud Welding Machine",
+        "model": "YD-350GR3",
         "description": "Powder-Actuated Stud Welder",
         "type": "Stud Welder",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-350GR3.jpeg"
     }
 ]

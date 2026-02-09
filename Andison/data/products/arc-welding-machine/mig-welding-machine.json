@@ -2,23 +2,23 @@
     {
         "id": "mig-welding-machine",
         "name": "MIG Welding Machine",
-        "model": "MIG Welding Machine",
+        "model": "YD-350VR1",
         "description": "Portable MIG/MAG Welder",
         "type": "MIG/MAG Welder",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-350VR1.jpg"
     },
     {
         "id": "gasless-flux-core-welder",
         "name": "Gasless Flux-Core Welder",
-        "model": "Gasless Flux-Core Welder",
+        "model": "YD-400VP1",
         "description": "No Gas MIG Welding Machine",
         "type": "Flux-Core Welder",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-400VP1.png"
     }
 ]

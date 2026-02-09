@@ -2,13 +2,13 @@
     {
         "id": "panasonic-tig-welding-machine",
         "name": "Panasonic TIG Welding Machine",
-        "model": "TIG Welding Machine",
+        "model": "YC-200BL3",
         "description": "Portable TIG Welder",
         "type": "Portable TIG Welder",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/TIG%20Welding%20Machine/YC-200BL3.jpeg"
     },
     {
         "id": "soyer-arc-welding-machine",
@@ -19,72 +19,72 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20G3%20Welding%20Robot.jpg"
     },
     {
         "id": "mig-welding-machine",
         "name": "MIG Welding Machine",
-        "model": "MIG Welding Machine",
+        "model": "YD-500KR2",
         "description": "Portable MIG/MAG Welder",
         "type": "MIG/MAG Welder",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-500KR2.jpg"
     },
     {
         "id": "inverter-arc-welder",
         "name": "Inverter Arc Welder",
-        "model": "Inverter Arc Welder",
+        "model": "YD-350RX1",
         "description": "Digital Inverter Stick Welder",
         "type": "Inverter Welder",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-350RX1.jpg"
     },
     {
         "id": "stud-welding-machine",
         "name": "Stud Welding Machine",
-        "model": "Stud Welding Machine",
+        "model": "YD-350GR3",
         "description": "Powder-Actuated Stud Welder",
         "type": "Stud Welder",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-350GR3.jpeg"
     },
     {
         "id": "multi-process-welding-machine",
         "name": "Multi-Process Welding Machine",
-        "model": "Multi-Process Welder",
+        "model": "YD-350GZ4",
         "description": "MIG/TIG/Stick Multi-Function",
         "type": "Multi-Function Welder",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-350GZ4.jpeg"
     },
     {
         "id": "gasless-flux-core-welder",
         "name": "Gasless Flux-Core Welder",
-        "model": "Gasless Flux-Core Welder",
+        "model": "YD-400VP1",
         "description": "No Gas MIG Welding Machine",
         "type": "Flux-Core Welder",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-400VP1.png"
     },
     {
         "id": "welding-power-source",
         "name": "Welding Power Source",
-        "model": "Welding Power Source",
+        "model": "YD-600KH2",
         "description": "Industrial Power Generator",
         "type": "Power Generator",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-600KH2.jpg"
     }
 ]

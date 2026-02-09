@@ -208,10 +208,16 @@ if (!$current_category) {
                 <?php else: ?>
                     <div class="product-grid">
                         <?php foreach ($subProducts as $product): ?>
+                            <?php 
+                                $product_image = htmlspecialchars($product['image'] ?? '');
+                                if ($product_image && strpos($product_image, '../') !== 0 && strpos($product_image, 'assets/') === 0) {
+                                    $product_image = '../' . $product_image;
+                                }
+                            ?>
                             <div class="product-card">
                                 <div class="product-image">
-                                    <?php if (!empty($product['image'])): ?>
-                                        <img src="<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" loading="lazy">
+                                    <?php if (!empty($product_image)): ?>
+                                        <img src="<?php echo $product_image; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" loading="lazy">
                                     <?php else: ?>
                                         <i class="bi bi-image" style="font-size: 48px; color: #ccc;"></i>
                                     <?php endif; ?>

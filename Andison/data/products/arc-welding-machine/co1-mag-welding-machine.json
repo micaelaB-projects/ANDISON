@@ -2,12 +2,12 @@
     {
         "id": "co2-mag-welding-machine",
         "name": "CO2/MAG Welding Machine",
-        "model": "CO2/MAG Welding Machine",
+        "model": "YD-350KR2",
         "description": "Industrial CO2/MAG Welder",
         "type": "Industrial Welder",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/SOYER/BMS-8N.png"
+        "image": "assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-350KR2.jpg"
     }
 ]

@@ -7,7 +7,7 @@
                 "type": "Welding Robot",
                 "badge": "Not Available",
                 "description": "",
-                "image": "andison/assets/uploads/products/yd-350kr2_20260205_083232.jpg"
+                "image": "../assets/uploads/products/yd-350kr2_20260205_083232.jpg"
             },
             {
                 "model": "YD-500KR2",
@@ -571,34 +571,54 @@
         "description": "High-quality protective clothing and coveralls.",
         "products": [
             {
+                "product_name": "",
                 "model": "Alphatec 1500 Plus Model 111",
                 "type": "Protective Suit",
+                "price": "",
                 "badge": "",
-                "image": "assets/brands%20items/MICROGARD/Alphatec 1500 Plus 1.png"
+                "description": "",
+                "specifications": "",
+                "image": "../assets/uploads/products/alphatec_1500_plus_2_20260209_080910.png"
             },
             {
+                "product_name": "",
                 "model": "Alphatec 2000 Standard Model 111",
                 "type": "Protective Suit",
+                "price": "",
                 "badge": "",
-                "image": "assets/brands%20items/MICROGARD/Alphatec 2000 Standard 1.png"
+                "description": "",
+                "specifications": "",
+                "image": "../assets/uploads/products/alphatec_2000_standard_1_20260209_080621.png"
             },
             {
+                "product_name": "",
                 "model": "Alphatec 2300 Plus Model 132",
                 "type": "Protective Suit",
+                "price": "",
                 "badge": "",
-                "image": "assets/brands%20items/MICROGARD/Alphatec 2300 Plus 1.png"
+                "description": "",
+                "specifications": "",
+                "image": "../assets/uploads/products/alphatec_2300_plus_1_20260209_080513.png"
             },
             {
+                "product_name": "",
                 "model": "Alphatec 3000 Model 111",
                 "type": "Protective Suit",
+                "price": "",
                 "badge": "",
-                "image": "assets/brands%20items/MICROGARD/Alphatec 3000 1.png"
+                "description": "",
+                "specifications": "",
+                "image": "../assets/uploads/products/alphatec_3000_1_20260209_080528.png"
             },
             {
+                "product_name": "",
                 "model": "Alphatec 4000 Model 111",
                 "type": "Protective Suit",
+                "price": "",
                 "badge": "",
-                "image": "assets/brands%20items/MICROGARD/Alphatec 4000 1.png"
+                "description": "",
+                "specifications": "",
+                "image": "../assets/uploads/products/alphatec_4000_1_20260209_080548.png"
             },
             {
                 "model": "Alphatec 1500 FR Plus Model",
