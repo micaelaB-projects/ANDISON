@@ -32,14 +32,14 @@ if (!$current_category) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = 'Arc Welding Machines';
-    $category_description = 'Explore our comprehensive range of arc welding machines and robotic welding systems from leading manufacturers.';
+    $category_name = $current_category['name'] ?? 'Arc Welding Machines';
+    $category_description = $current_category['description'] ?? 'Explore our comprehensive range of arc welding machines and robotic welding systems from leading manufacturers.';
     $phone = "+1(234) 567 8900";
     $phone2 = "+1(234) 567 8900";
     $phone3 = "+1(639) 977 803 7398";
     $email = "info@andison-industrial.com";
     ?>
-    <title><?php echo $category_name; ?> - ANDISON INDUSTRIAL</title>
+    <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
         * {
@@ -552,6 +552,17 @@ if (!$current_category) {
             letter-spacing: 1px;
         }
 
+        .category-description {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-left: 4px solid #2B11DB;
+            border-radius: 4px;
+        }
+
         .product-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -616,6 +627,14 @@ if (!$current_category) {
             padding: 15px;
             padding-bottom: 5px;
             line-height: 1.4;
+        }
+
+        .product-model {
+            color: #999;
+            font-size: 12px;
+            padding: 0 15px;
+            margin: 3px 0;
+            font-weight: 500;
         }
 
         .product-card p {
@@ -1149,13 +1168,14 @@ if (!$current_category) {
         </div>
         <ul class="sidebar-list">
             <li class="has-sub">
-                <a href="../arc-welding-machine/arc-welding-machine.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span><span class="sidebar-label">Arc Welding Machine</span></a>
+                <a href="../arc-welding-machine/arc-welding-machine.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span><span class="sidebar-label"><?php echo htmlspecialchars($current_category['name']); ?></span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-welding" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
-                    <li><a href="../arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
-                    <li><a href="../arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
-                    <li><a href="../arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
-                    <li><a href="../arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
+                    <?php if (!empty($current_category['subcategories'])): ?>
+                        <?php foreach ($current_category['subcategories'] as $subcat): ?>
+                            <li><a href="../arc-welding-machine/<?php echo htmlspecialchars($subcat['id']); ?>.php"><?php echo htmlspecialchars($subcat['name']); ?></a></li>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </ul>
             </li>
             <li>
@@ -1240,17 +1260,19 @@ if (!$current_category) {
         </div>
 
         <div class="category-content">
-            <h2>Arc Welding Machines</h2>
+            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Arc Welding Machines'); ?></h2>
+            <?php if (!empty($current_category['description'])): ?>
+                <p class="category-description"><?php echo htmlspecialchars($current_category['description']); ?></p>
+            <?php endif; ?>
             <div class="product-grid">
                 <?php 
-                // Fetch all products from all arc-welding-machine subcategories
-                $subcategories = array(
-                    'arc-welding-machine',
-                    'tig-welding-machine',
-                    'mig-welding-machine',
-                    'co1-mag-welding-machine',
-                    'stud-welding-machine'
-                );
+                // Dynamically fetch all products from all arc-welding-machine subcategories
+                $subcategories = array();
+                if (!empty($current_category['subcategories']) && is_array($current_category['subcategories'])) {
+                    foreach ($current_category['subcategories'] as $subcat) {
+                        $subcategories[] = $subcat['id'];
+                    }
+                }
                 
                 $all_products = array();
                 foreach ($subcategories as $subcat) {
@@ -1273,6 +1295,7 @@ if (!$current_category) {
                         $type = htmlspecialchars($product['type'] ?? 'Premium Arc Welding Equipment');
                         $brand = htmlspecialchars($product['brand'] ?? 'Industrial');
                         $description = htmlspecialchars($product['description'] ?? '');
+                        $badge = htmlspecialchars($product['badge'] ?? '');
                         ?>
                 <div class="product-card">
                     <div class="product-image">
@@ -1281,16 +1304,16 @@ if (!$current_category) {
                         <?php else: ?>
                             <i class="bi bi-lightning-fill" style="font-size: 60px; color: #ccc;\"></i>
                         <?php endif; ?>
+                        <?php if (!empty($badge)): ?>
+                            <div class="product-badge"><?php echo $badge; ?></div>
+                        <?php endif; ?>
                     </div>
                     <h4><?php echo $name ?: 'Product'; ?></h4>
-                    <?php if (!empty($type)): ?>
-                        <p class="product-type"><?php echo $type; ?></p>
+                    <?php if (!empty($model)): ?>
+                        <p class="product-model"><strong>Model:</strong> <?php echo $model; ?></p>
                     <?php endif; ?>
                     <?php if (!empty($description)): ?>
                         <p class="product-description"><?php echo $description; ?></p>
-                    <?php endif; ?>
-                    <?php if (empty($model) && empty($type) && empty($description)): ?>
-                        <p class="product-type">Premium Arc Welding Equipment</p>
                     <?php endif; ?>
                     <button class="add-to-inquiry" type="button" data-model="<?php echo $model; ?>" data-type="<?php echo $type ?: 'Equipment'; ?>" data-brand="<?php echo $brand; ?>">ADD TO INQUIRY</button>
                 </div>
