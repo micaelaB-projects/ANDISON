@@ -1,8 +1,11 @@
 <?php
 require_once __DIR__ . '/andison/includes/home_featured.php';
+require_once __DIR__ . '/andison/includes/home_slider.php';
 require_once __DIR__ . '/andison/includes/youtube_links.php';
 
 $featured = andison_get_home_featured();
+$slides = andison_get_home_slider();
+$ytLinks = andison_get_youtube_links();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -975,26 +978,32 @@ $featured = andison_get_home_featured();
             position: relative;
             z-index: 2;
             overflow: hidden;
+            flex-shrink: 0;
         }
 
         .featured-image img {
             display: block !important;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            object-position: center !important;
+            border-radius: 12px;
         }
 
         .featured-image video {
             display: block !important;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            border-radius: 12px;
         }
 
         .featured-image iframe {
             display: block !important;
-            width: 100%;
-            height: 100%;
+            width: 100% !important;
+            height: 100% !important;
+            border: none !important;
+            border-radius: 12px;
         }
 
         /* Footer */
@@ -1917,26 +1926,17 @@ $featured = andison_get_home_featured();
 
     <!-- Hero Section -->
     <section class="hero" id="heroSlider">
-        <div class="hero-slide active" style="background-image: url('assets/HOME/photo_2026-02-02_ 14-29-26.jpg');">
-            <div class="hero-content">
-                <div class="hero-thumb" style="background-image: url('assets/HOME/photo_2026-02-02_14-29-26.jpg');"></div>
+        <?php for ($i = 0; $i < 4; $i++): ?>
+            <?php 
+                $slideClass = $i === 0 ? 'hero-slide active' : 'hero-slide';
+                $slideImage = htmlspecialchars((string)($slides[$i] ?? ''), ENT_QUOTES);
+            ?>
+            <div class="<?php echo $slideClass; ?>" style="background-image: url('<?php echo $slideImage; ?>');">
+                <div class="hero-content">
+                    <div class="hero-thumb" style="background-image: url('<?php echo $slideImage; ?>');"></div>
+                </div>
             </div>
-        </div>
-        <div class="hero-slide" style="background-image: url('assets/HOME/photo_2026-02-02_14-29-26 (2).jpg');">
-            <div class="hero-content">
-                <div class="hero-thumb" style="background-image: url('assets/HOME/photo_2026-02-02_14-29-26 (2).jpg');"></div>
-            </div>
-        </div>
-        <div class="hero-slide" style="background-image: url('assets/HOME/photo_2026-02-02_14-29-26 (3).jpg');">
-            <div class="hero-content">
-                <div class="hero-thumb" style="background-image: url('assets/HOME/photo_2026-02-02_14-29-26 (3).jpg');"></div>
-            </div>
-        </div>
-        <div class="hero-slide" style="background-image: url('assets/HOME/photo_2026-02-02_14-29-26 (4).jpg');">
-            <div class="hero-content">
-                <div class="hero-thumb" style="background-image: url('assets/HOME/photo_2026-02-02_14-29-26 (4).jpg');"></div>
-            </div>
-        </div>
+        <?php endfor; ?>
         <div class="hero-indicators">
             <span class="hero-dot active" data-slide="0"></span>
             <span class="hero-dot" data-slide="1"></span>
@@ -1955,25 +1955,26 @@ $featured = andison_get_home_featured();
             </p>
 
             <div class="highlights-grid">
+                <?php 
+                $titles = ['Revolutionizing Manufacturing Processes', 'Innovations in Sustainable Industrial Solutions'];
+                $descriptions = [
+                    'Discover how our innovative technology is transforming industrial manufacturing.',
+                    'Learn about our commitment to eco-friendly and sustainable products.'
+                ];
+                for ($i = 0; $i < 2; $i++): 
+                    $ytUrl = (string)($ytLinks['home_highlights'][$i] ?? '');
+                    if (empty($ytUrl)) continue;
+                ?>
                 <div class="product-card">
                     <div class="product-image">
-                        <iframe src="https://www.youtube.com/embed/WhnNcK0O7Gc" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        <iframe src="<?php echo htmlspecialchars($ytUrl, ENT_QUOTES); ?>" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
                     <div class="product-info">
-                        <h3>Revolutionizing Manufacturing Processes</h3>
-                        <p>Discover how our innovative technology is transforming industrial manufacturing.</p>
+                        <h3><?php echo htmlspecialchars($titles[$i], ENT_QUOTES); ?></h3>
+                        <p><?php echo htmlspecialchars($descriptions[$i], ENT_QUOTES); ?></p>
                     </div>
                 </div>
-
-                <div class="product-card">
-                    <div class="product-image">
-                        <iframe src="https://www.youtube.com/embed/3bQ5YW167pQ" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                    </div>
-                    <div class="product-info">
-                        <h3>Innovations in Sustainable Industrial Solutions</h3>
-                        <p>Learn about our commitment to eco-friendly and sustainable products.</p>
-                    </div>
-                </div> 
+                <?php endfor; ?>
             </div>
         </div>
     </section>

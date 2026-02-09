@@ -345,6 +345,7 @@ if (!$current_category) {
                                 <div class="product-info">
                                     <?php if (!empty($product['badge'])): ?><div class="product-badge"><?php echo htmlspecialchars($product['badge']); ?></div><?php endif; ?>
                                     <h3><?php echo htmlspecialchars($product['name']); ?></h3>
+                                    <?php if (!empty($product['description'])): ?><p><?php echo htmlspecialchars($product['description']); ?></p><?php endif; ?>
                                     <?php if (!empty($product['model'])): ?><p><strong>Model:</strong> <?php echo htmlspecialchars($product['model']); ?></p><?php endif; ?>
                                     <?php if (!empty($product['price'])): ?><div class="product-price"><?php echo htmlspecialchars($product['price']); ?></div><?php endif; ?>
                                     <a href="../../contact.php" class="btn-inquiry"><i class="bi bi-chat"></i> Inquire</a>

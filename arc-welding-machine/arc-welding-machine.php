@@ -569,6 +569,7 @@ if (!$current_category) {
             flex-direction: column;
             cursor: pointer;
             border: 2px solid transparent;
+            min-height: 100%;
         }
 
         .product-card:hover {
@@ -586,6 +587,7 @@ if (!$current_category) {
             justify-content: center;
             overflow: hidden;
             position: relative;
+            flex-shrink: 0;
         }
 
         .product-image img {
@@ -619,7 +621,28 @@ if (!$current_category) {
         .product-card p {
             color: #888;
             font-size: 13px;
-            padding: 0 15px 20px;
+            padding: 0 15px;
+            margin: 0;
+        }
+
+        .product-card .product-type {
+            padding-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .product-card .product-description {
+            color: #666;
+            font-size: 12px;
+            padding: 0 15px 12px 15px;
+            line-height: 1.5;
+            max-height: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            flex-grow: 1;
+            margin-bottom: 12px;
         }
 
         .add-to-inquiry {
@@ -630,11 +653,14 @@ if (!$current_category) {
             border: none;
             border-radius: 5px;
             font-weight: 600;
-            font-size: 12px;
             cursor: pointer;
             transition: background 0.3s ease;
+            font-size: 14px;
+            width: calc(100% - 30px);
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            margin-top: auto;
+            flex-shrink: 0;
         }
 
         .add-to-inquiry:hover {
@@ -1246,18 +1272,27 @@ if (!$current_category) {
                         $name = htmlspecialchars($product['name'] ?? '');
                         $type = htmlspecialchars($product['type'] ?? 'Premium Arc Welding Equipment');
                         $brand = htmlspecialchars($product['brand'] ?? 'Industrial');
+                        $description = htmlspecialchars($product['description'] ?? '');
                         ?>
                 <div class="product-card">
                     <div class="product-image">
                         <?php if (!empty($image_src)): ?>
                             <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=\"bi bi-lightning-fill\" style=\"font-size: 60px; color: #ccc;\"></i>
                         <?php else: ?>
-                            <i class="bi bi-lightning-fill" style="font-size: 60px; color: #ccc;"></i>
+                            <i class="bi bi-lightning-fill" style="font-size: 60px; color: #ccc;\"></i>
                         <?php endif; ?>
                     </div>
-                    <h4><?php echo $name; ?></h4>
-                    <p><?php echo $type; ?></p>
-                    <button class="add-to-inquiry" type="button" data-model="<?php echo $model; ?>" data-type="<?php echo $type; ?>" data-brand="<?php echo $brand; ?>">ADD TO INQUIRY</button>
+                    <h4><?php echo $name ?: 'Product'; ?></h4>
+                    <?php if (!empty($type)): ?>
+                        <p class="product-type"><?php echo $type; ?></p>
+                    <?php endif; ?>
+                    <?php if (!empty($description)): ?>
+                        <p class="product-description"><?php echo $description; ?></p>
+                    <?php endif; ?>
+                    <?php if (empty($model) && empty($type) && empty($description)): ?>
+                        <p class="product-type">Premium Arc Welding Equipment</p>
+                    <?php endif; ?>
+                    <button class="add-to-inquiry" type="button" data-model="<?php echo $model; ?>" data-type="<?php echo $type ?: 'Equipment'; ?>" data-brand="<?php echo $brand; ?>">ADD TO INQUIRY</button>
                 </div>
                         <?php
                     }
@@ -1269,7 +1304,7 @@ if (!$current_category) {
                         <i class="bi bi-lightning-fill" style="font-size: 60px; color: #ccc;"></i>
                     </div>
                     <h4>Arc Welding Machines</h4>
-                    <p>No products available</p>
+                    <p class="product-type">No products available</p>
                     <button class="add-to-inquiry" type="button" data-model="Arc Welding" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
                 </div>
                     <?php

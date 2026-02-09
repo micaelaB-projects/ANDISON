@@ -76,10 +76,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($action === 'add_product') {
+            $name = isset($_POST['product_name']) ? trim((string)$_POST['product_name']) : '';
             $model = isset($_POST['model']) ? trim((string)$_POST['model']) : '';
             $type = isset($_POST['type']) ? trim((string)$_POST['type']) : '';
+            $price = isset($_POST['price']) ? trim((string)$_POST['price']) : '';
             $badge = isset($_POST['badge']) ? trim((string)$_POST['badge']) : '';
             $desc = isset($_POST['product_description']) ? trim((string)$_POST['product_description']) : '';
+            $specs = isset($_POST['specifications']) ? trim((string)$_POST['specifications']) : '';
             $image = andison_handle_product_upload('image_file');
 
             if ($model === '' || $type === '') {
@@ -93,10 +96,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             $brands[$brand]['products'][] = [
+                'product_name' => $name,
                 'model' => $model,
                 'type' => $type,
+                'price' => $price,
                 'badge' => $badge,
                 'description' => $desc,
+                'specifications' => $specs,
                 'image' => $image,
             ];
 
@@ -118,10 +124,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
 
+            $name = isset($_POST['product_name']) ? trim((string)$_POST['product_name']) : '';
             $model = isset($_POST['model']) ? trim((string)$_POST['model']) : '';
             $type = isset($_POST['type']) ? trim((string)$_POST['type']) : '';
+            $price = isset($_POST['price']) ? trim((string)$_POST['price']) : '';
             $badge = isset($_POST['badge']) ? trim((string)$_POST['badge']) : '';
             $desc = isset($_POST['product_description']) ? trim((string)$_POST['product_description']) : '';
+            $specs = isset($_POST['specifications']) ? trim((string)$_POST['specifications']) : '';
             $existingImage = (string)($brands[$brand]['products'][$idx]['image'] ?? '');
             $newImage = andison_handle_product_upload('image_file');
 
@@ -132,10 +141,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             $brands[$brand]['products'][$idx] = [
+                'product_name' => $name,
                 'model' => $model,
                 'type' => $type,
+                'price' => $price,
                 'badge' => $badge,
                 'description' => $desc,
+                'specifications' => $specs,
                 'image' => $newImage !== '' ? $newImage : $existingImage,
             ];
 
@@ -306,10 +318,13 @@ andison_admin_header('Products', 'products');
                                         <div style="display:flex;gap:6px;justify-content:center;">
                                             <button class="btn btn-outline edit-product-btn" type="button" 
                                                     data-index="<?php echo (int)$i; ?>" 
+                                                    data-name="<?php echo htmlspecialchars((string)($prod['product_name'] ?? ''), ENT_QUOTES); ?>"
                                                     data-model="<?php echo htmlspecialchars((string)($prod['model'] ?? ''), ENT_QUOTES); ?>" 
-                                                    data-type="<?php echo htmlspecialchars((string)($prod['type'] ?? ''), ENT_QUOTES); ?>" 
+                                                    data-type="<?php echo htmlspecialchars((string)($prod['type'] ?? ''), ENT_QUOTES); ?>"
+                                                    data-price="<?php echo htmlspecialchars((string)($prod['price'] ?? ''), ENT_QUOTES); ?>"
                                                     data-badge="<?php echo htmlspecialchars((string)($prod['badge'] ?? ''), ENT_QUOTES); ?>" 
-                                                    data-description="<?php echo htmlspecialchars((string)($prod['description'] ?? ''), ENT_QUOTES); ?>" 
+                                                    data-description="<?php echo htmlspecialchars((string)($prod['description'] ?? ''), ENT_QUOTES); ?>"
+                                                    data-specifications="<?php echo htmlspecialchars((string)($prod['specifications'] ?? ''), ENT_QUOTES); ?>"
                                                     data-image="<?php echo htmlspecialchars((string)($prod['image'] ?? ''), ENT_QUOTES); ?>"
                                                     style="padding:6px 12px;font-size:12px;">
                                                 <i class="bi bi-pencil"></i> Edit
@@ -356,6 +371,12 @@ andison_admin_header('Products', 'products');
                 <!-- Basic Info Section -->
                 <div style="margin-bottom:24px;">
                     <h3 style="font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;"><i class="bi bi-info-circle"></i> Product Information</h3>
+                    
+                    <div class="field" style="margin:0;margin-bottom:12px;">
+                        <label for="editProductName"><i class="bi bi-tag"></i> Product Name</label>
+                        <input id="editProductName" name="product_name" type="text" placeholder="e.g., Panasonic TIG Welding Machine" title="Enter product name">
+                    </div>
+                    
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
                         <div class="field" style="margin:0;">
                             <label for="editModel"><i class="bi bi-tag"></i> Model *</label>
@@ -368,27 +389,38 @@ andison_admin_header('Products', 'products');
                         </div>
                     </div>
                     
-                    <div class="field" style="margin:0;">
-                        <label for="editBadge"><i class="bi bi-award"></i> Badge (optional)</label>
-                        <select id="editBadge" name="badge" title="Select product availability status" class="badge-select">
-                            <option value="" style="color:#6b7280;">-- None --</option>
-                            <option value="Available" style="color:#10b981;">✓ Available</option>
-                            <option value="Not Available" style="color:#ef4444;">✗ Not Available</option>
-                            <option value="Featured" style="color:#f59e0b;">★ Featured</option>
-                            <option value="New Arrival" style="color:#8b5cf6;">🆕 New Arrival</option>
-                            <option value="Best Seller" style="color:#ec4899;">🏆 Best Seller</option>
-                            <option value="Limited Stock" style="color:#f97316;">⚠️ Limited Stock</option>
-                        </select>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+                        <div class="field" style="margin:0;">
+                            <label for="editPrice"><i class="bi bi-currency-dollar"></i> Price</label>
+                            <input id="editPrice" name="price" type="text" placeholder="e.g., $999.99 or Upon Request" title="Enter product price">
+                        </div>
+                        
+                        <div class="field" style="margin:0;">
+                            <label for="editBadge"><i class="bi bi-award"></i> Badge (optional)</label>
+                            <select id="editBadge" name="badge" title="Select product availability status" class="badge-select">
+                                <option value="" style="color:#6b7280;">-- None --</option>
+                                <option value="Available" style="color:#10b981;">✓ Available</option>
+                                <option value="Not Available" style="color:#ef4444;">✗ Not Available</option>
+                                <option value="Featured" style="color:#f59e0b;">★ Featured</option>
+                                <option value="New Arrival" style="color:#8b5cf6;">🆕 New Arrival</option>
+                                <option value="Best Seller" style="color:#ec4899;">🏆 Best Seller</option>
+                                <option value="Limited Stock" style="color:#f97316;">⚠️ Limited Stock</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Description Section -->
                 <div style="margin-bottom:24px;">
-                    <h3 style="font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;"><i class="bi bi-file-text"></i> Description</h3>
+                    <h3 style="font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;"><i class="bi bi-file-text"></i> Details</h3>
+                    <div class="field" style="margin:0;margin-bottom:12px;">
+                        <label for="editDescription">Description</label>
+                        <textarea id="editDescription" name="product_description" rows="3" placeholder="Add product benefits and key features..." style="resize:vertical;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;"></textarea>
+                    </div>
+                    
                     <div class="field" style="margin:0;">
-                        <label for="editDescription">Product Description</label>
-                        <textarea id="editDescription" name="product_description" rows="4" placeholder="Add details about features, specifications, and benefits..." style="resize:vertical;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;"></textarea>
-                        <div class="hint">Optional but recommended for better product presentation</div>
+                        <label for="editSpecifications">Specifications</label>
+                        <textarea id="editSpecifications" name="specifications" rows="3" placeholder="Technical specs, dimensions, power requirements, etc..." style="resize:vertical;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;"></textarea>
                     </div>
                 </div>
 
@@ -748,13 +780,16 @@ body.modal-open {
 
 <script>
 // Edit product modal functionality
-function openEditModal(index, model, type, badge, description, image) {
+function openEditModal(index, name, model, type, price, badge, description, specifications, image) {
     var modal = document.getElementById('editProductModal');
     document.getElementById('editIndex').value = index;
+    document.getElementById('editProductName').value = name;
     document.getElementById('editModel').value = model;
     document.getElementById('editType').value = type;
+    document.getElementById('editPrice').value = price;
     document.getElementById('editBadge').value = badge;
     document.getElementById('editDescription').value = description;
+    document.getElementById('editSpecifications').value = specifications;
     
     var currentImageInfo = document.getElementById('currentImageInfo');
     var currentImagePath = document.getElementById('currentImagePath');
@@ -785,12 +820,15 @@ function closeEditModal() {
 document.querySelectorAll('.edit-product-btn').forEach(function(btn){
     btn.addEventListener('click', function(){
         var index = this.getAttribute('data-index');
+        var name = this.getAttribute('data-name');
         var model = this.getAttribute('data-model');
         var type = this.getAttribute('data-type');
+        var price = this.getAttribute('data-price');
         var badge = this.getAttribute('data-badge');
         var description = this.getAttribute('data-description');
+        var specifications = this.getAttribute('data-specifications');
         var image = this.getAttribute('data-image');
-        openEditModal(index, model, type, badge, description, image);
+        openEditModal(index, name, model, type, price, badge, description, specifications, image);
     });
 });
 
@@ -852,10 +890,13 @@ function openAddProductModal() {
     
     // Clear all fields
     document.getElementById('editIndex').value = '';
+    document.getElementById('editProductName').value = '';
     document.getElementById('editModel').value = '';
     document.getElementById('editType').value = '';
+    document.getElementById('editPrice').value = '';
     document.getElementById('editBadge').value = '';
     document.getElementById('editDescription').value = '';
+    document.getElementById('editSpecifications').value = '';
     document.getElementById('editImageFile').value = '';
     document.getElementById('currentImageInfo').style.display = 'none';
     
