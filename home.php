@@ -2425,7 +2425,7 @@ $featured = andison_get_home_featured();
             var navLinks = document.querySelectorAll('.nav-list a');
             navLinks.forEach(function(link){
                 link.addEventListener('mouseenter', function(){
-                    this.style.color = '#00d4aa';
+                    this.style.color = '#ffffff';
                 });
                 link.addEventListener('mouseleave', function(){
                     if(!this.classList.contains('active')){
