@@ -1256,15 +1256,14 @@ if (!$current_category) {
                     <li><a href="../arc-welding-machine/plasma-cutting-machine.php">Plasma Cutting Machine</a></li>
                 </ul>
             </li>
-            <li class="has-sub">
+            <li class="has-sub active">
                 <a href="../arc-welding-robots/arc-welding-robot.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label"><?php echo htmlspecialchars($current_category['name']); ?></span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-robots" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-arc-robots" class="sidebar-sublist collapsed">
-                    <?php if (!empty($current_category['subcategories'])): ?>
-                        <?php foreach ($current_category['subcategories'] as $subcat): ?>
-                            <li><a href="../arc-welding-robots/<?php echo htmlspecialchars($subcat['id']); ?>.php"><?php echo htmlspecialchars($subcat['name']); ?></a></li>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                    <li><a href="../arc-welding-robots/g3-controller-series.php">G3 Controller Series</a></li>
+                    <li><a href="../arc-welding-robots/g4-controller-series.php">G4 Controller Series</a></li>
+                    <li><a href="../arc-welding-robots/featured-products-and-solution.php">Featured Products and Solutions</a></li>
+                    <li><a href="../arc-welding-robots/robot-system-peripherals.php">Robot System Peripherals</a></li>
                 </ul>
             </li>
             <li class="has-sub">
