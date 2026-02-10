@@ -15,10 +15,19 @@ $email = "info@andison-industrial.com";
 
 $categories = andison_get_categories();
 $current_category = null;
+$parent_category = null;
 
 foreach ($categories as $cat) {
     if ($cat['id'] === $category_id) {
-        $current_category = $cat;
+        $parent_category = $cat;
+        if (!empty($cat['subcategories'])) {
+            foreach ($cat['subcategories'] as $subcat) {
+                if ($subcat['id'] === $subcategory_id) {
+                    $current_category = $subcat;
+                    break;
+                }
+            }
+        }
         break;
     }
 }
@@ -26,12 +35,10 @@ foreach ($categories as $cat) {
 if (!$current_category) {
     // Fallback: create a default category object
     $current_category = array(
-        'id' => $category_id,
+        'id' => $subcategory_id,
         'name' => 'Portable Gas Detectors',
-        'description' => 'Discover our comprehensive range of portable gas detection equipment for industrial safety.',
-        'subcategories' => array(
-            array('id' => 'portable-gas-detectors', 'name' => 'Portable Gas Detectors')
-        )
+        'description' => 'Portable gas detection equipment for comprehensive safety monitoring in the field.',
+        'subcategories' => array()
     );
 }
 ?>
@@ -42,7 +49,7 @@ if (!$current_category) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
     $category_name = $current_category['name'] ?? 'Portable Gas Detectors';
-    $category_description = $current_category['description'] ?? 'Discover our comprehensive range of drilling and lifting equipment.';
+    $category_description = $current_category['description'] ?? 'Portable gas detection equipment for comprehensive safety monitoring in the field.';
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -1438,7 +1445,7 @@ if (!$current_category) {
                     </div>
                     <h4>Portable Gas Detectors</h4>
                     <p class="product-type">No products available</p>
-                    <button class="add-to-inquiry" type="button" data-model="Portable Gas Detectors" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
+                    <button class="add-to-inquiry" type="button" data-model="Portable Gas Detectors" data-type="Detection Equipment" data-brand="Industrial">ADD TO INQUIRY</button>
                 </div>
                     <?php
                 }

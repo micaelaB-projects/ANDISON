@@ -5,7 +5,7 @@ require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
 
-$subcategory_id = "co1-mag-welding-machine";
+$subcategory_id = "plasma-cutting-machine";
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";
@@ -32,10 +32,10 @@ foreach ($categories as $cat) {
 }
 
 if (!$current_category) {
-    die("CO1/MAG Welding Machine category not found");
+    die("Plasma Cutting Machine category not found");
 }
 
-$page_title = $current_category['name'] ?? "CO1/MAG Welding Machine";
+$page_title = $current_category['name'] ?? "Plasma Cutting Machine";
 $category_id = "arc-welding-machine";
 ?>
 <!DOCTYPE html>
@@ -44,8 +44,8 @@ $category_id = "arc-welding-machine";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = $current_category['name'] ?? 'CO1/MAG Welding Machine';
-    $category_description = $current_category['description'] ?? 'Professional CO1/MAG welding machines for industrial applications.';
+    $category_name = $current_category['name'] ?? 'Plasma Cutting Machine';
+    $category_description = $current_category['description'] ?? 'Professional plasma cutting machines for industrial applications.';
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -1289,6 +1289,7 @@ $category_id = "arc-welding-machine";
                     <li><a href="../arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
+                    <li><a href="../arc-welding-machine/plasma-cutting-machine.php">Plasma Cutting Machine</a></li>
                 </ul>
             </li>
             <li>
@@ -1297,7 +1298,7 @@ $category_id = "arc-welding-machine";
             <li>
                 <a href="#batteries"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-fill"></i></span><span class="sidebar-label">Batteries</span><span class="sidebar-arrow"><i class="bi bi-chevron-right"></i></span></a>
             </li>
-            <li class="has-sub active">
+            <li class="has-sub">
                 <a href="../drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling &amp; Lifting</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-drilling-lifting" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
@@ -1373,13 +1374,13 @@ $category_id = "arc-welding-machine";
         </div>
 
         <div class="category-content">
-            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'CO1/MAG Welding Machine'); ?></h2>
+            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Plasma Cutting Machine'); ?></h2>
             <?php if (!empty($current_category['description'])): ?>
                 <p class="category-description"><?php echo htmlspecialchars($current_category['description']); ?></p>
             <?php endif; ?>
             <div class="product-grid">
                 <?php 
-                // Dynamically fetch products for CO1/MAG Welding Machine subcategory
+                // Dynamically fetch products for Plasma Cutting Machine subcategory
                 $all_products = array();
                 $products = andison_get_products_for_subcategory($category_id, $subcategory_id);
                 if ($products) {
@@ -1396,7 +1397,7 @@ $category_id = "arc-welding-machine";
                         }
                         $model = htmlspecialchars($product['model'] ?? '');
                         $name = htmlspecialchars($product['name'] ?? '');
-                        $type = htmlspecialchars($product['type'] ?? 'Welding Equipment');
+                        $type = htmlspecialchars($product['type'] ?? 'Cutting Equipment');
                         $brand = htmlspecialchars($product['brand'] ?? 'Industrial');
                         $description = htmlspecialchars($product['description'] ?? '');
                         $badge = htmlspecialchars($product['badge'] ?? '');
@@ -1430,9 +1431,9 @@ $category_id = "arc-welding-machine";
                     <div class="product-image">
                         <i class="bi bi-lightning-charge" style="font-size: 60px; color: #ccc;"></i>
                     </div>
-                    <h4>CO1/MAG Welding Equipment</h4>
+                    <h4>Plasma Cutting Equipment</h4>
                     <p class="product-type">No products available</p>
-                    <button class="add-to-inquiry" type="button" data-model="CO1/MAG Welding Machine" data-type="Welding Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
+                    <button class="add-to-inquiry" type="button" data-model="Plasma Cutting Machine" data-type="Cutting Equipment" data-brand="Industrial">ADD TO INQUIRY</button>
                 </div>
                     <?php
                 }

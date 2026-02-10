@@ -5,7 +5,7 @@ require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
 
-$subcategory_id = "co1-mag-welding-machine";
+$subcategory_id = "cutters";
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";
@@ -17,7 +17,7 @@ $parent_category = null;
 
 // Find the parent category and the subcategory
 foreach ($categories as $cat) {
-    if ($cat['id'] === 'arc-welding-machine') {
+    if ($cat['id'] === 'drilling-and-lifting') {
         $parent_category = $cat;
         if (!empty($cat['subcategories'])) {
             foreach ($cat['subcategories'] as $subcat) {
@@ -32,11 +32,11 @@ foreach ($categories as $cat) {
 }
 
 if (!$current_category) {
-    die("CO1/MAG Welding Machine category not found");
+    die("Cutters category not found");
 }
 
-$page_title = $current_category['name'] ?? "CO1/MAG Welding Machine";
-$category_id = "arc-welding-machine";
+$page_title = $current_category['name'] ?? "Cutters";
+$category_id = "drilling-and-lifting";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -44,8 +44,8 @@ $category_id = "arc-welding-machine";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = $current_category['name'] ?? 'CO1/MAG Welding Machine';
-    $category_description = $current_category['description'] ?? 'Professional CO1/MAG welding machines for industrial applications.';
+    $category_name = $current_category['name'] ?? 'Cutters';
+    $category_description = $current_category['description'] ?? 'Professional cutting equipment for industrial applications.';
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -1373,13 +1373,13 @@ $category_id = "arc-welding-machine";
         </div>
 
         <div class="category-content">
-            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'CO1/MAG Welding Machine'); ?></h2>
+            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Cutters'); ?></h2>
             <?php if (!empty($current_category['description'])): ?>
                 <p class="category-description"><?php echo htmlspecialchars($current_category['description']); ?></p>
             <?php endif; ?>
             <div class="product-grid">
                 <?php 
-                // Dynamically fetch products for CO1/MAG Welding Machine subcategory
+                // Dynamically fetch products for Cutters subcategory
                 $all_products = array();
                 $products = andison_get_products_for_subcategory($category_id, $subcategory_id);
                 if ($products) {
@@ -1396,7 +1396,7 @@ $category_id = "arc-welding-machine";
                         }
                         $model = htmlspecialchars($product['model'] ?? '');
                         $name = htmlspecialchars($product['name'] ?? '');
-                        $type = htmlspecialchars($product['type'] ?? 'Welding Equipment');
+                        $type = htmlspecialchars($product['type'] ?? 'Cutting Equipment');
                         $brand = htmlspecialchars($product['brand'] ?? 'Industrial');
                         $description = htmlspecialchars($product['description'] ?? '');
                         $badge = htmlspecialchars($product['badge'] ?? '');
@@ -1430,9 +1430,9 @@ $category_id = "arc-welding-machine";
                     <div class="product-image">
                         <i class="bi bi-lightning-charge" style="font-size: 60px; color: #ccc;"></i>
                     </div>
-                    <h4>CO1/MAG Welding Equipment</h4>
+                    <h4>Cutting Equipment</h4>
                     <p class="product-type">No products available</p>
-                    <button class="add-to-inquiry" type="button" data-model="CO1/MAG Welding Machine" data-type="Welding Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
+                    <button class="add-to-inquiry" type="button" data-model="Cutters" data-type="Cutting Equipment" data-brand="Industrial">ADD TO INQUIRY</button>
                 </div>
                     <?php
                 }

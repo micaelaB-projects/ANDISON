@@ -6,10 +6,6 @@
         "icon": "bi-lightning-charge",
         "subcategories": [
             {
-                "id": "arc-welding-machine",
-                "name": "Arc Welding Machine"
-            },
-            {
                 "id": "co1-mag-welding-machine",
                 "name": "CO1-MAG Welding Machine"
             },
@@ -24,6 +20,10 @@
             {
                 "id": "tig-welding-machine",
                 "name": "TIG Welding Machine"
+            },
+            {
+                "id": "plasma-cutting-machine",
+                "name": "Plasma Cutting Machine"
             }
         ]
     },
