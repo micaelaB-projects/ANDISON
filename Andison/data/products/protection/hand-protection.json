@@ -1,1 +1,22 @@
-[]
+[
+    {
+        "id": "hand-protection-gloves-1",
+        "name": "Leather Work Gloves",
+        "model": "LWG-300",
+        "brand": "SafeHands",
+        "type": "Hand Protection",
+        "description": "Premium leather work gloves for general industrial use",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "hand-protection-gloves-2",
+        "name": "Nitrile Coated Work Gloves",
+        "model": "NCG-350",
+        "brand": "GripPro",
+        "type": "Hand Protection",
+        "description": "Nitrile coated gloves for enhanced grip and protection",
+        "image": "",
+        "badge": ""
+    }
+]

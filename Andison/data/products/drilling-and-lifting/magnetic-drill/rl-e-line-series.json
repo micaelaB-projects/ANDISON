@@ -1,0 +1,26 @@
+[
+    {
+        "id": "rl-e-line-series-1",
+        "name": "Alfra Rotabest RB60RL-E Magnetic Base Core Drill",
+        "model": "RB60RL-E",
+        "description": "Precision magnetic base core drill from the RL-E-Line series",
+        "type": "Magnetic Drill",
+        "brand": "Alfra",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "rl-e-line-series-2",
+        "name": "Alfra Rotabest RB90RL-E Magnetic Base Core Drill",
+        "model": "RB90RL-E",
+        "description": "Professional magnetic base core drill from the RL-E-Line series",
+        "type": "Magnetic Drill",
+        "brand": "Alfra",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    }
+]

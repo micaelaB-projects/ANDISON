@@ -1,1 +1,22 @@
-[]
+[
+    {
+        "id": "disposable-gloves-1",
+        "name": "Edge Disposable Gloves",
+        "model": "82-133",
+        "brand": "Edge",
+        "type": "Disposable Gloves",
+        "description": "Single-use disposable gloves for general protection",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "disposable-gloves-2",
+        "name": "TouchNTuff Disposable Gloves",
+        "model": "92-670",
+        "brand": "TouchNTuff",
+        "type": "Disposable Gloves",
+        "description": "Nitrile disposable gloves for multiple applications",
+        "image": "",
+        "badge": ""
+    }
+]

@@ -1,1 +1,98 @@
-[]
+[
+    {
+        "id": "multi-gas-detector-1",
+        "name": "BW Clip 4 - Low Maintenance Multi Gas Detector",
+        "model": "BW Clip 4 - Low Maintenance",
+        "description": "Multi gas detector with low maintenance requirements",
+        "type": "Multi Gas Detector",
+        "brand": "BW Technologies",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "multi-gas-detector-2",
+        "name": "BW Microclip XL Multi Gas Detector",
+        "model": "BW Microclip XL",
+        "description": "Compact multi gas detector for industrial applications",
+        "type": "Multi Gas Detector",
+        "brand": "BW Technologies",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "multi-gas-detector-3",
+        "name": "BW MicroClip X3 Multi Gas Detector",
+        "model": "BW MicroClip X3",
+        "description": "Advanced multi gas detector with extended capabilities",
+        "type": "Multi Gas Detector",
+        "brand": "BW Technologies",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "multi-gas-detector-4",
+        "name": "BW Max XT II Multi Gas Detector",
+        "model": "BW Max XT II",
+        "description": "Professional multi gas detector for harsh environments",
+        "type": "Multi Gas Detector",
+        "brand": "BW Technologies",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "multi-gas-detector-5",
+        "name": "BW Icon Multi Gas Detector",
+        "model": "BW Icon",
+        "description": "Feature-rich multi gas detector for advanced monitoring",
+        "type": "Multi Gas Detector",
+        "brand": "BW Technologies",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "multi-gas-detector-6",
+        "name": "BW Flex Multi Gas Detector",
+        "model": "BW Flex",
+        "description": "Flexible multi gas detector for various applications",
+        "type": "Multi Gas Detector",
+        "brand": "BW Technologies",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "multi-gas-detector-7",
+        "name": "BW Ultra Multi Gas Detector",
+        "model": "BW Ultra",
+        "description": "High-performance multi gas detector for demanding conditions",
+        "type": "Multi Gas Detector",
+        "brand": "BW Technologies",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "multi-gas-detector-8",
+        "name": "BW Rigrat Multi Gas Detector",
+        "model": "BW Rigrat",
+        "description": "Rugged multi gas detector for industrial use",
+        "type": "Multi Gas Detector",
+        "brand": "BW Technologies",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    }
+]

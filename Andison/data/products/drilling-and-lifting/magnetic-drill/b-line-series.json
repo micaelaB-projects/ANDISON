@@ -1,0 +1,26 @@
+[
+    {
+        "id": "b-line-series-1",
+        "name": "Alfra Rotabest RB35B Magnetic Base Core Drill",
+        "model": "RB35B",
+        "description": "Professional magnetic base core drill for precision drilling applications",
+        "type": "Magnetic Drill",
+        "brand": "Alfra",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "b-line-series-2",
+        "name": "Alfra Rotabest RB130 Magnetic Base Core Drill",
+        "model": "RB130",
+        "description": "Heavy-duty magnetic base core drill for industrial drilling applications",
+        "type": "Magnetic Drill",
+        "brand": "Alfra",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    }
+]

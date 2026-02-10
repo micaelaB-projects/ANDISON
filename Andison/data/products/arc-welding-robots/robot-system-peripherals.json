@@ -1,0 +1,57 @@
+[
+    {
+        "id": "robot-system-peripherals-1",
+        "name": "Tokin Arc Nozzle Cleaner",
+        "model": "Tokin Arc Nozzle Cleaner",
+        "description": "Automatic nozzle cleaning system for arc welding robots",
+        "type": "Peripheral Equipment",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "robot-system-peripherals-2",
+        "name": "Tokin Arc Portable Butt Welder",
+        "model": "Tokin Arc Portable Butt Welder",
+        "description": "Portable butt welding attachment for robotic systems",
+        "type": "Peripheral Equipment",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "robot-system-peripherals-3",
+        "name": "Wire Wizard Wire Sizer",
+        "model": "Wire Wizard Wire Sizer",
+        "description": "Precision wire sizing equipment for robot welding",
+        "type": "Peripheral Equipment",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "robot-system-peripherals-4",
+        "name": "Aer Evo 2.2",
+        "model": "Aer Evo 2.2",
+        "description": "Advanced air filtration system for welding environments",
+        "type": "Peripheral Equipment",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "robot-system-peripherals-5",
+        "name": "Aer 201",
+        "model": "Aer 201",
+        "description": "Professional-grade ventilation system for robot welding areas",
+        "type": "Peripheral Equipment",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    }
+]

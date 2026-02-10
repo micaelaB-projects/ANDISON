@@ -1,0 +1,24 @@
+[
+    {
+        "id": "special-batteries-1",
+        "name": "Amp-Tech",
+        "model": "Amp-Tech",
+        "description": "Advanced special-purpose battery with high amperage capacity",
+        "type": "Special Battery",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "special-batteries-2",
+        "name": "Solar Master",
+        "model": "Solar Master",
+        "description": "Solar-powered battery system for renewable energy applications",
+        "type": "Special Battery",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    }
+]

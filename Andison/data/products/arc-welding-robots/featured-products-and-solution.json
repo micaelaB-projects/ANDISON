@@ -1,0 +1,46 @@
+[
+    {
+        "id": "featured-products-and-solution-1",
+        "name": "DTPS 3",
+        "model": "DTPS 3",
+        "description": "Featured solution for professional welding applications",
+        "type": "Featured Product",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "featured-products-and-solution-2",
+        "name": "VPRS",
+        "model": "VPRS",
+        "description": "Advanced VPRS solution for robotic systems",
+        "type": "Featured Product",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "featured-products-and-solution-3",
+        "name": "iWNB",
+        "model": "iWNB",
+        "description": "Intelligent welding notification system",
+        "type": "Featured Product",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "featured-products-and-solution-4",
+        "name": "i-Reporter",
+        "model": "i-Reporter",
+        "description": "Smart reporting and monitoring system for welding operations",
+        "type": "Featured Product",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    }
+]

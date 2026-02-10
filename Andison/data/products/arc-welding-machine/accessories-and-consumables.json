@@ -1,0 +1,101 @@
+[
+    {
+        "id": "panasonic-mag-mig-torch",
+        "name": "Panasonic MAG/MIG Torch",
+        "model": "MAG/MIG Torch",
+        "description": "Durable Panasonic MAG/MIG Welding Torch",
+        "type": "Welding Torch",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "panasonic-tig-torch",
+        "name": "Panasonic TIG Torch",
+        "model": "TIG Torch",
+        "description": "Professional Panasonic TIG Welding Torch",
+        "type": "TIG Torch",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "revolt-mag-mig-torch",
+        "name": "Revolt MAG/MIG Torch",
+        "model": "MAG/MIG Torch",
+        "description": "High Quality Revolt MAG/MIG Welder Torch",
+        "type": "Welding Torch",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "weldcraft-tig-torch-accessories",
+        "name": "Weldcraft TIG Torch and Accessories",
+        "model": "TIG Torch with Accessories",
+        "description": "Complete Weldcraft TIG Torch Set with Accessories",
+        "type": "TIG Torch Set",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "truweld-accessories-consumables",
+        "name": "Truweld Accessories & Consumables",
+        "model": "Welding Accessories",
+        "description": "Truweld Welding Accessories and Consumables",
+        "type": "Welding Accessories",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "aircair-gouging-torch",
+        "name": "Aircair Gouging Torch",
+        "model": "Gouging Torch",
+        "description": "Professional Aircair Gouging Torch",
+        "type": "Gouging Torch",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "water-cooling-unit",
+        "name": "Water Cooling Unit",
+        "model": "Cooling Unit",
+        "description": "Water Cooling System for Welding Equipment",
+        "type": "Cooling System",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "torch-consumables",
+        "name": "Torch Consumables",
+        "model": "Consumables",
+        "description": "Replacement Torch Consumables and Parts",
+        "type": "Consumables",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "hard-worker-mag-welding-plier",
+        "name": "Hard Worker MAG Welding Plier",
+        "model": "Welding Plier",
+        "description": "Industrial Grade Hard Worker MAG Welding Plier",
+        "type": "Welding Tool",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    }
+]

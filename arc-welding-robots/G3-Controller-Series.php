@@ -1309,7 +1309,6 @@ if (!$current_category) {
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-ventilators" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-ventilators" class="sidebar-sublist collapsed">
                     <li><a href="../portable-ventilators/portable-ventilators.php">Portable Ventilators</a></li>
-                    <li><a href="../portable-ventilators/portable-ventilator-accessories.php">Portable Ventilator Accessories</a></li>
                 </ul>
             </li>
             <li class="has-sub">
@@ -1328,7 +1327,6 @@ if (!$current_category) {
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-protection-safety" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-protection-safety" class="sidebar-sublist collapsed">
                     <li><a href="../protection/eye-protection.php">Eye Protection</a></li>
-                    <li><a href="../protection/foot-protection.php">Foot Protection</a></li>
                     <li class="has-nested-sub">
                         <a href="../protection/hand-protection.php">Hand Protection</a>
                         <button class="nested-toggle" aria-expanded="false" aria-controls="nested-hand-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>

@@ -1,1 +1,26 @@
-[]
+[
+    {
+        "id": "single-gas-detector-1",
+        "name": "BW Clip Portable Gas Detector",
+        "model": "BW Clip",
+        "description": "Single gas detector for portable gas monitoring",
+        "type": "Single Gas Detector",
+        "brand": "BW Technologies",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "single-gas-detector-2",
+        "name": "BW Solo Single Gas Detector",
+        "model": "BW Solo",
+        "description": "Compact single gas detector for personal protection",
+        "type": "Single Gas Detector",
+        "brand": "BW Technologies",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    }
+]

@@ -1,6 +1,17 @@
 [
     {
-        "id": "mig-welding-machine",
+        "id": "mig-welding-machine-1",
+        "name": "MIG Welding Machine",
+        "model": "YD-350GR3",
+        "description": "Industrial Grade MIG Welder",
+        "type": "Industrial Welder",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "mig-welding-machine-2",
         "name": "MIG Welding Machine",
         "model": "YD-350VR1",
         "description": "Portable MIG/MAG Welder",
@@ -11,14 +22,25 @@
         "image": "assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-350VR1.jpg"
     },
     {
-        "id": "gasless-flux-core-welder",
-        "name": "Gasless Flux-Core Welder",
+        "id": "mig-welding-machine-3",
+        "name": "MIG Welding Machine",
         "model": "YD-400VP1",
-        "description": "No Gas MIG Welding Machine",
-        "type": "Flux-Core Welder",
+        "description": "High Performance MIG Welder",
+        "type": "High Performance Welder",
         "badge": "",
         "price": "",
         "specs": "",
         "image": "assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-400VP1.png"
+    },
+    {
+        "id": "mig-welding-machine-4",
+        "name": "MIG Welding Machine",
+        "model": "YD-350GZ4",
+        "description": "Advanced MIG Welder",
+        "type": "Advanced Welder",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
     }
 ]

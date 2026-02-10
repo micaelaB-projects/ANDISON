@@ -1,1 +1,24 @@
-[]
+[
+    {
+        "id": "core-cutters-1",
+        "name": "Alfra HSS CO Annular",
+        "model": "HSS CO Annular",
+        "description": "High-speed steel annular cutter with cobalt coating",
+        "type": "Core Cutter",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "core-cutters-2",
+        "name": "Alfra TCT Annular",
+        "model": "TCT Annular",
+        "description": "Tungsten carbide tipped annular cutter for precision cutting",
+        "type": "Core Cutter",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    }
+]

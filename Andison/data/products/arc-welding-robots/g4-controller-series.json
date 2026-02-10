@@ -1,0 +1,68 @@
+[
+    {
+        "id": "g4-controller-series-1",
+        "name": "TM/TL G4 Series",
+        "model": "TM/TL G4 Series",
+        "description": "Latest generation G4 controller for advanced welding automation",
+        "type": "Controller Series",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "g4-controller-series-2",
+        "name": "TM/TL TAWERS WG4 Series",
+        "model": "TM/TL TAWERS WG4 Series",
+        "description": "Next-generation TAWERS WG4 series for industrial welding",
+        "type": "Controller Series",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "g4-controller-series-3",
+        "name": "Active TAWERS 4 AWP4-WG4 Series",
+        "model": "Active TAWERS 4 AWP4-WG4 Series",
+        "description": "Premium Active TAWERS 4 AWP4-WG4 series controller",
+        "type": "Controller Series",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "g4-controller-series-4",
+        "name": "Tip Welding Robot",
+        "model": "Tip Welding Robot",
+        "description": "Specialized tip welding robot system",
+        "type": "Welding Robot",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "g4-controller-series-5",
+        "name": "Plasma Cutting Robot",
+        "model": "Plasma Cutting Robot",
+        "description": "Automated plasma cutting robot for precision cutting",
+        "type": "Cutting Robot",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "g4-controller-series-6",
+        "name": "Handling Robot for Welding",
+        "model": "Handling Robot for Welding",
+        "description": "Material handling robot specifically designed for welding operations",
+        "type": "Handling Robot",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    }
+]

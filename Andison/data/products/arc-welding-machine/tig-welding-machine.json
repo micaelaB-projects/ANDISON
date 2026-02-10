@@ -1,13 +1,46 @@
 [
     {
-        "id": "panasonic-tig-welding-machine",
-        "name": "Panasonic TIG Welding Machine",
-        "model": "YC-300BZ3",
+        "id": "tig-welding-machine-1",
+        "name": "TIG Welding Machine",
+        "model": "YD-300WX4",
         "description": "Portable TIG Welder",
         "type": "Portable TIG Welder",
         "badge": "",
         "price": "",
         "specs": "",
+        "image": ""
+    },
+    {
+        "id": "tig-welding-machine-2",
+        "name": "TIG Welding Machine",
+        "model": "YD-200BL3",
+        "description": "Compact TIG Welder",
+        "type": "Compact TIG Welder",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "tig-welding-machine-3",
+        "name": "TIG Welding Machine",
+        "model": "YD-300BZ3",
+        "description": "Industrial Grade TIG Welder",
+        "type": "Industrial TIG Welder",
+        "badge": "",
+        "price": "",
+        "specs": "",
         "image": "assets/brands%20items/PANASONIC/TIG%20Welding%20Machine/YC-300BZ3.jpeg"
+    },
+    {
+        "id": "tig-welding-machine-4",
+        "name": "TIG Welding Machine",
+        "model": "YD-300BP4",
+        "description": "Professional TIG Welder",
+        "type": "Professional TIG Welder",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
     }
 ]

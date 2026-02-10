@@ -14,7 +14,7 @@
                 "name": "G4 Controller Series"
             },
             {
-                "id": "featured-products-solutions",
+                "id": "featured-products-and-solution",
                 "name": "Featured Products and Solutions"
             },
             {
@@ -48,6 +48,10 @@
             {
                 "id": "plasma-cutting-machine",
                 "name": "Plasma Cutting Machine"
+            },
+            {
+                "id": "accessories-and-consumables",
+                "name": "Accessories & Consumables"
             }
         ]
     },
@@ -91,15 +95,37 @@
             },
             {
                 "id": "magnetic-drill",
-                "name": "Magnetic Drill"
+                "name": "Magnetic Drill",
+                "subcategories": [
+                    {
+                        "id": "b-line-series",
+                        "name": "B-Line Series"
+                    },
+                    {
+                        "id": "rl-e-line-series",
+                        "name": "RL - E - Line Series"
+                    },
+                    {
+                        "id": "rbx-line-series",
+                        "name": "RBX - LINE SERIES"
+                    },
+                    {
+                        "id": "sp-line-series",
+                        "name": "SP - LINE SERIES"
+                    },
+                    {
+                        "id": "v-line-series",
+                        "name": "V - LINE SERIES"
+                    }
+                ]
             },
             {
                 "id": "cutters",
-                "name": "Cutters"
+                "name": "Core Cutters"
             },
             {
                 "id": "lifting",
-                "name": "Lifting"
+                "name": "Material Handling & Lifting"
             }
         ]
     },
@@ -112,6 +138,30 @@
             {
                 "id": "portable-ventilators",
                 "name": "Portable Ventilators"
+            },
+            {
+                "id": "air-max-12-blower",
+                "name": "Air Max 12 Blower"
+            },
+            {
+                "id": "reaction-fans",
+                "name": "Reaction Fans"
+            },
+            {
+                "id": "double-duty-heat-killer",
+                "name": "Double Duty Heat Killer"
+            },
+            {
+                "id": "jecta-and-hornet-hp",
+                "name": "Jecta I and Hornet HP"
+            },
+            {
+                "id": "vano-175-cv-and-250-cv",
+                "name": "Vano 175 CV and 250 CV"
+            },
+            {
+                "id": "cadet-vaneaxial-and-centrifugal-ventilators",
+                "name": "Cadet Vaneaxial and Centrifugal Ventilators"
             },
             {
                 "id": "portable-ventilator-accessories",
@@ -127,7 +177,21 @@
         "subcategories": [
             {
                 "id": "body-protection",
-                "name": "Body Protection"
+                "name": "Body Protection",
+                "subcategories": [
+                    {
+                        "id": "particulate-low-hazard",
+                        "name": "Particulate and Low Hazard"
+                    },
+                    {
+                        "id": "liquid-spray-splash",
+                        "name": "Liquid Spray and Splash"
+                    },
+                    {
+                        "id": "chemical-flame-retardant",
+                        "name": "Chemical and Flame Retardant"
+                    }
+                ]
             },
             {
                 "id": "eye-protection",
@@ -135,7 +199,25 @@
             },
             {
                 "id": "hand-protection",
-                "name": "Hand Protection"
+                "name": "Hand Protection",
+                "subcategories": [
+                    {
+                        "id": "welding-gloves",
+                        "name": "Welding Gloves"
+                    },
+                    {
+                        "id": "working-gloves",
+                        "name": "Working Gloves"
+                    },
+                    {
+                        "id": "disposable-gloves",
+                        "name": "Disposable Gloves"
+                    },
+                    {
+                        "id": "chemical-liquid-protection-gloves",
+                        "name": "Chemical Liquid Protection Gloves"
+                    }
+                ]
             },
             {
                 "id": "foot-protection",
@@ -146,32 +228,8 @@
                 "name": "Hearing Respiratory Protection"
             },
             {
-                "id": "welding-gloves",
-                "name": "Welding Gloves"
-            },
-            {
-                "id": "working-gloves",
-                "name": "Working Gloves"
-            },
-            {
-                "id": "disposable-gloves",
-                "name": "Disposable Gloves"
-            },
-            {
-                "id": "chemical-liquid-protection-gloves",
-                "name": "Chemical Liquid Protection Gloves"
-            },
-            {
-                "id": "liquid-spray-splash",
-                "name": "Liquid Spray Splash"
-            },
-            {
-                "id": "particulate-low-hazard",
-                "name": "Particulate Low Hazard"
-            },
-            {
-                "id": "chemical-flame-retardant",
-                "name": "Chemical Flame Retardant"
+                "id": "welding-head-and-face-protection",
+                "name": "Welding Head and Face Protection"
             }
         ]
     },

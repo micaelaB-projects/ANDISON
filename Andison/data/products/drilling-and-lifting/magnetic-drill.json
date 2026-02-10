@@ -60,5 +60,95 @@
         "description": "\u00d812 - 100mm Cutting Depth: 90mm Heavy-duty magnetic base core drill for industrial applications",
         "image": "andison/assets/uploads/products/drilling-and-lifting/magnetic-drill/alfra-rb1001-e.jpg",
         "badge": ""
+    },
+    {
+        "id": "alfra-rotabest-rb35b-magnetic-base-core-drill",
+        "name": "Alfra Rotabest RB35B Magnetic Base Core Drill",
+        "model": "RB35B",
+        "brand": "Alfra",
+        "type": "Drilling and Lifting, Magnetic Drill",
+        "description": "Compact magnetic base core drill for precision drilling operations",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "alfra-rotabest-rb130-magnetic-base-core-drill",
+        "name": "Alfra Rotabest RB130 Magnetic Base Core Drill",
+        "model": "RB130",
+        "brand": "Alfra",
+        "type": "Drilling and Lifting, Magnetic Drill",
+        "description": "High-performance magnetic base core drill for industrial drilling applications",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "alfra-rotabest-rb100rl-e-magnetic-base-core-drill",
+        "name": "Alfra Rotabest RB100RL-E Magnetic Base Core Drill",
+        "model": "RB100RL-E",
+        "brand": "Alfra",
+        "type": "Drilling and Lifting, Magnetic Drill",
+        "description": "Professional-grade magnetic base core drill with precision engineering",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "alfra-rotabest-rb35x-magnetic-base-core-drill",
+        "name": "Alfra Rotabest RB35X Magnetic Base Core Drill",
+        "model": "RB35X",
+        "brand": "Alfra",
+        "type": "Drilling and Lifting, Magnetic Drill",
+        "description": "Advanced magnetic base core drill for demanding applications",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "alfra-rotabest-rb50x-magnetic-base-core-drill",
+        "name": "Alfra Rotabest RB50X Magnetic Base Core Drill",
+        "model": "RB50X",
+        "brand": "Alfra",
+        "type": "Drilling and Lifting, Magnetic Drill",
+        "description": "Heavy-duty magnetic base core drill for precision metalworking",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "alfra-rotabest-rb80x-magnetic-base-core-drill",
+        "name": "Alfra Rotabest RB80X Magnetic Base Core Drill",
+        "model": "RB80X",
+        "brand": "Alfra",
+        "type": "Drilling and Lifting, Magnetic Drill",
+        "description": "Industrial-strength magnetic base core drill for large-scale operations",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "alfra-rotabest-rb35sp-magnetic-base-core-drill",
+        "name": "Alfra Rotabest RB35SP Magnetic Base Core Drill - Direct Weldon Shank",
+        "model": "RB35SP",
+        "brand": "Alfra",
+        "type": "Drilling and Lifting, Magnetic Drill",
+        "description": "Magnetic base core drill with direct Weldon shank for enhanced performance",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "alfra-rotabest-rb50sp-magnetic-base-core-drill",
+        "name": "Alfra Rotabest RB50SP Magnetic Base Core Drill",
+        "model": "RB50SP",
+        "brand": "Alfra",
+        "type": "Drilling and Lifting, Magnetic Drill",
+        "description": "Professional magnetic base core drill with superior drilling capability",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "alfra-rotabest-v32-low-profile-magnetic-base-core-drill",
+        "name": "Alfra Rotabest V32 Low Profile Magnetic Base Core Drill",
+        "model": "V32",
+        "brand": "Alfra",
+        "type": "Drilling and Lifting, Magnetic Drill",
+        "description": "Low profile design for confined space drilling operations with excellent precision",
+        "image": "",
+        "badge": ""
     }
 ]

@@ -1,0 +1,35 @@
+[
+    {
+        "id": "maintenance-free-1",
+        "name": "Motolite Enduro",
+        "model": "Motolite Enduro",
+        "description": "Maintenance-free enduro battery for heavy-duty applications",
+        "type": "Maintenance Free Battery",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "maintenance-free-2",
+        "name": "Motolite Excel",
+        "model": "Motolite Excel",
+        "description": "Premium maintenance-free excel battery for superior performance",
+        "type": "Maintenance Free Battery",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "maintenance-free-3",
+        "name": "Motolite Gold",
+        "model": "Motolite Gold",
+        "description": "Top-tier maintenance-free gold battery with extended lifespan",
+        "type": "Maintenance Free Battery",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    }
+]

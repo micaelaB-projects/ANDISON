@@ -1,0 +1,22 @@
+[
+    {
+        "id": "jecta-ventilator",
+        "name": "Jecta I Ventilator",
+        "model": "Jecta I",
+        "brand": "Jecta",
+        "type": "Portable Ventilators",
+        "description": "Professional-grade Jecta ventilation system",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "hornet-hp-ventilator",
+        "name": "Hornet HP Ventilator",
+        "model": "Hornet HP",
+        "brand": "Hornet",
+        "type": "Portable Ventilators",
+        "description": "High-performance Hornet HP ventilation equipment",
+        "image": "",
+        "badge": ""
+    }
+]

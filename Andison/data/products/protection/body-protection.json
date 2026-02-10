@@ -1,1 +1,22 @@
-[]
+[
+    {
+        "id": "body-protection-vest-1",
+        "name": "Safety Vest High Visibility",
+        "model": "HV-100",
+        "brand": "Safety Pro",
+        "type": "Body Protection",
+        "description": "High visibility safety vest for industrial work",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "body-protection-apron",
+        "name": "Protective Work Apron",
+        "model": "WA-200",
+        "brand": "WorkGuard",
+        "type": "Body Protection",
+        "description": "Durable protective apron for welding and industrial tasks",
+        "image": "",
+        "badge": ""
+    }
+]

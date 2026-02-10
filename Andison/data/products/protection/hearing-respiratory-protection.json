@@ -1,1 +1,72 @@
-[]
+[
+    {
+        "id": "uvex-k1h-helmet-earmuff",
+        "name": "Uvex K1H Helmet Earmuff",
+        "model": "K1H",
+        "brand": "Uvex",
+        "type": "Hearing and Respiratory Protection",
+        "description": "Protective helmet with integrated earmuff for hearing protection",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "uvex-whisper",
+        "name": "Uvex Whisper",
+        "model": "Whisper",
+        "brand": "Uvex",
+        "type": "Hearing Protection",
+        "description": "Low-profile hearing protection earmuff",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "uvex-x-fit",
+        "name": "Uvex X-Fit",
+        "model": "X-Fit",
+        "brand": "Uvex",
+        "type": "Hearing Protection",
+        "description": "Adjustable hearing protection with X-fit design",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "uvex-x-fit-cord",
+        "name": "Uvex X-Fit w/ Cord",
+        "model": "X-Fit w/ Cord",
+        "brand": "Uvex",
+        "type": "Hearing Protection",
+        "description": "Hearing protection with attachment cord for safety",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "aces-a188",
+        "name": "Aces A188",
+        "model": "A188",
+        "brand": "Aces",
+        "type": "Respiratory Protection",
+        "description": "Respiratory protection equipment",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "uvex-silv-air-2200",
+        "name": "Uvex Silv-Air 2200",
+        "model": "Silv-Air 2200",
+        "brand": "Uvex",
+        "type": "Respiratory Protection",
+        "description": "Air-purifying respirator for industrial use",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "uvex-silv-air-2210",
+        "name": "Uvex Silv-Air 2210",
+        "model": "Silv-Air 2210",
+        "brand": "Uvex",
+        "type": "Respiratory Protection",
+        "description": "Advanced air-purifying respirator with valve",
+        "image": "",
+        "badge": ""
+    }
+]

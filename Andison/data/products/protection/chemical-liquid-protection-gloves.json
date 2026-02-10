@@ -1,1 +1,22 @@
-[]
+[
+    {
+        "id": "chemical-liquid-gloves-1",
+        "name": "Alphatec Solvex Gloves",
+        "model": "37-185",
+        "brand": "Alphatec",
+        "type": "Chemical Liquid Protection Gloves",
+        "description": "Chemical-resistant gloves for hazardous liquid handling",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "chemical-liquid-gloves-2",
+        "name": "Alphatec Solvex Premium",
+        "model": "37-176",
+        "brand": "Alphatec",
+        "type": "Chemical Liquid Protection Gloves",
+        "description": "Premium Solvex gloves for chemical protection",
+        "image": "",
+        "badge": ""
+    }
+]

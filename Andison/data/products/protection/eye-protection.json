@@ -1,1 +1,72 @@
-[]
+[
+    {
+        "id": "aces-2118-1af-clear",
+        "name": "Aces 2118-1AF Clear",
+        "model": "2118-1AF",
+        "brand": "Aces",
+        "type": "Eye Protection",
+        "description": "Clear protective eyewear for general eye protection",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "aces-2118-4af-gray",
+        "name": "Aces 2118-4AF Gray",
+        "model": "2118-4AF",
+        "brand": "Aces",
+        "type": "Eye Protection",
+        "description": "Gray tinted protective eyewear for outdoor and bright conditions",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "aces-2508",
+        "name": "Aces 2508",
+        "model": "2508",
+        "brand": "Aces",
+        "type": "Eye Protection",
+        "description": "Standard protective eyewear for industrial use",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "uvex-i-vo",
+        "name": "UVEX I-VO",
+        "model": "I-VO",
+        "brand": "UVEX",
+        "type": "Eye Protection",
+        "description": "Lightweight protective eyewear with high comfort fit",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "uvex-ultra-vision",
+        "name": "UVEX Ultra Vision",
+        "model": "Ultra Vision",
+        "brand": "UVEX",
+        "type": "Eye Protection",
+        "description": "Enhanced vision protective eyewear with superior clarity",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "uvex-ultrasonic",
+        "name": "UVEX Ultrasonic",
+        "model": "Ultrasonic",
+        "brand": "UVEX",
+        "type": "Eye Protection",
+        "description": "Advanced protective eyewear with anti-fog coating",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "uvex-otg",
+        "name": "Uvex OTG",
+        "model": "OTG",
+        "brand": "Uvex",
+        "type": "Eye Protection",
+        "description": "Over-the-glasses protective eyewear",
+        "image": "",
+        "badge": ""
+    }
+]

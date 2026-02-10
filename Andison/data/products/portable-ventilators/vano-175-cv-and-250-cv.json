@@ -1,0 +1,22 @@
+[
+    {
+        "id": "vano-175-cv",
+        "name": "Vano 175 CV",
+        "model": "Vano 175 CV",
+        "brand": "Vano",
+        "type": "Portable Ventilators",
+        "description": "Vano 175 CV portable ventilation system",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "vano-250-cv",
+        "name": "Vano 250 CV",
+        "model": "Vano 250 CV",
+        "brand": "Vano",
+        "type": "Portable Ventilators",
+        "description": "High-capacity Vano 250 CV ventilation equipment",
+        "image": "",
+        "badge": ""
+    }
+]

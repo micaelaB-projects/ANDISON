@@ -1,0 +1,35 @@
+[
+    {
+        "id": "plasma-cutting-machine-1",
+        "name": "Plasma Cutting Machine",
+        "model": "YP-060PF3",
+        "description": "Portable Plasma Cutter",
+        "type": "Portable Plasma Cutter",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "plasma-cutting-machine-2",
+        "name": "Plasma Cutting Machine",
+        "model": "YP-280PF3",
+        "description": "Industrial Plasma Cutter",
+        "type": "Industrial Plasma Cutter",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "plasma-cutting-machine-3",
+        "name": "Plasma Cutting Machine",
+        "model": "YP-130PF1",
+        "description": "Professional Plasma Cutter",
+        "type": "Professional Plasma Cutter",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    }
+]

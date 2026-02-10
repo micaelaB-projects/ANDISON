@@ -1,0 +1,62 @@
+[
+    {
+        "id": "welding-head-face-1",
+        "name": "Aces A388 Polycarbonate Clear Visor",
+        "model": "A388",
+        "brand": "Aces",
+        "type": "Welding Head and Face Protection",
+        "description": "Professional polycarbonate clear visor for welding head protection",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "welding-head-face-2",
+        "name": "Aces A366 Hemispherical Hard Hat Attachment",
+        "model": "A366",
+        "brand": "Aces",
+        "type": "Welding Head and Face Protection",
+        "description": "Hemispherical hard hat attachment for welding protection",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "welding-head-face-3",
+        "name": "Aces A288 Welding Helmet",
+        "model": "A288",
+        "brand": "Aces",
+        "type": "Welding Head and Face Protection",
+        "description": "Professional welding helmet for industrial welding applications",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "welding-head-face-4",
+        "name": "Aces A238 Welding Helmet w/ Mounting Adaptor",
+        "model": "A238",
+        "brand": "Aces",
+        "type": "Welding Head and Face Protection",
+        "description": "Welding helmet with mounting adaptor for versatile use",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "welding-head-face-5",
+        "name": "Aces A300 Headgear Assy",
+        "model": "A300",
+        "brand": "Aces",
+        "type": "Welding Head and Face Protection",
+        "description": "Complete headgear assembly for welding head protection",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "welding-head-face-6",
+        "name": "Uvex Pheos B-WR Helmet w/ Sweatband",
+        "model": "Pheos B-WR",
+        "brand": "Uvex",
+        "type": "Welding Head and Face Protection",
+        "description": "Advanced welding helmet with integrated sweatband",
+        "image": "",
+        "badge": ""
+    }
+]

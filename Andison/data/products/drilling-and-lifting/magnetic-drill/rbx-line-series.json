@@ -1,0 +1,38 @@
+[
+    {
+        "id": "rbx-line-series-1",
+        "name": "Alfra Rotabest RB330X Magnetic Base Core Drill",
+        "model": "RB330X",
+        "description": "Heavy-duty magnetic base core drill from the RBX-Line series",
+        "type": "Magnetic Drill",
+        "brand": "Alfra",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "rbx-line-series-2",
+        "name": "Alfra Rotabest RB850X Magnetic Base Core Drill",
+        "model": "RB850X",
+        "description": "Industrial-grade magnetic base core drill from the RBX-Line series",
+        "type": "Magnetic Drill",
+        "brand": "Alfra",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "rbx-line-series-3",
+        "name": "Alfra Rotabest RB880X Magnetic Base Core Drill",
+        "model": "RB880X",
+        "description": "Professional magnetic base core drill from the RBX-Line series",
+        "type": "Magnetic Drill",
+        "brand": "Alfra",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    }
+]

@@ -1,0 +1,22 @@
+[
+    {
+        "id": "cadet-vaneaxial",
+        "name": "Cadet Vaneaxial Ventilator",
+        "model": "Cadet VA",
+        "brand": "Cadet",
+        "type": "Portable Ventilators, Vaneaxial",
+        "description": "Professional Cadet vaneaxial ventilation system",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "cadet-centrifugal",
+        "name": "Cadet Centrifugal Ventilator",
+        "model": "Cadet CF",
+        "brand": "Cadet",
+        "type": "Portable Ventilators, Centrifugal",
+        "description": "High-performance Cadet centrifugal ventilation equipment",
+        "image": "",
+        "badge": ""
+    }
+]

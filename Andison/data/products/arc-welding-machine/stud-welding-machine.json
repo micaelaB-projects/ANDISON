@@ -1,13 +1,35 @@
 [
     {
-        "id": "stud-welding-machine",
+        "id": "stud-welding-machine-1",
         "name": "Stud Welding Machine",
-        "model": "YD-350GR3",
+        "model": "BMS 8N",
         "description": "Powder-Actuated Stud Welder",
         "type": "Stud Welder",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-350GR3.jpeg"
+        "image": ""
+    },
+    {
+        "id": "stud-welding-machine-2",
+        "name": "Stud Welding Machine",
+        "model": "BMK-8i",
+        "description": "Intelligent Stud Welder",
+        "type": "Stud Welder",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "stud-welding-machine-3",
+        "name": "Stud Welding Machine",
+        "model": "BMK 12W",
+        "description": "Heavy Duty Stud Welder",
+        "type": "Stud Welder",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
     }
 ]

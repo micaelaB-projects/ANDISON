@@ -1,1 +1,12 @@
-[]
+[
+    {
+        "id": "flame-retardant-1",
+        "name": "Alphatec 1500 Plus FR",
+        "model": "111",
+        "brand": "Alphatec",
+        "type": "Chemical Flame Retardant",
+        "description": "Premium flame-retardant chemical protection suit",
+        "image": "",
+        "badge": ""
+    }
+]

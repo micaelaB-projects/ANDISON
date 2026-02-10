@@ -1,0 +1,32 @@
+[
+    {
+        "id": "bosch-gsb-16re",
+        "name": "Bosch Impact Drill GSB 16RE",
+        "model": "GSB 16RE",
+        "brand": "Bosch",
+        "type": "Impact Drill",
+        "description": "Professional impact drill for high-speed drilling and fastening applications",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "bosch-gsr-18v-50",
+        "name": "Bosch Cordless Drill/Driver GSR 18V-50",
+        "model": "GSR 18V-50",
+        "brand": "Bosch",
+        "type": "Cordless Drill",
+        "description": "Cordless drill driver with power and precision for drilling and fastening tasks",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "bosch-gds-250",
+        "name": "Bosch GDS 250 Cordless Impact Wrench",
+        "model": "GDS 250",
+        "brand": "Bosch",
+        "type": "Cordless Impact Wrench",
+        "description": "Compact impact wrench for high-torque fastening and loosening operations",
+        "image": "",
+        "badge": ""
+    }
+]

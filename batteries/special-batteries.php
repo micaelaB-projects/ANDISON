@@ -5,9 +5,9 @@ require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
 
-$page_title = "Portable Ventilator Accessories";
-$category_id = "portable-ventilators";
-$subcategory_id = "portable-ventilator-accessories";
+$page_title = "Special Batteries";
+$category_id = "batteries";
+$subcategory_id = "special-batteries";
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";
@@ -33,11 +33,10 @@ foreach ($categories as $cat) {
 }
 
 if (!$current_category) {
-    // Fallback: create a default category object
     $current_category = array(
         'id' => $subcategory_id,
-        'name' => 'Portable Ventilator Accessories',
-        'description' => 'Essential accessories for portable ventilation equipment.',
+        'name' => 'Special Batteries',
+        'description' => 'Specialized batteries for unique and demanding applications.',
         'subcategories' => array()
     );
 }
@@ -48,8 +47,8 @@ if (!$current_category) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = $current_category['name'] ?? 'Portable Ventilator Accessories';
-    $category_description = $current_category['description'] ?? 'Essential accessories for portable ventilation equipment.';
+    $category_name = $current_category['name'] ?? 'Special Batteries';
+    $category_description = $current_category['description'] ?? 'Specialized batteries for unique and demanding applications.';
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -76,7 +75,6 @@ if (!$current_category) {
             background: #f8f9fa;
         }
 
-        /* Header */
         header {
             background: linear-gradient(135deg, #2B11DB 0%, #2B11DB 100%);
             color: white;
@@ -307,7 +305,6 @@ if (!$current_category) {
             gap: 12px;
         }
 
-        /* Navigation */
         nav {
             position: relative;
             background: rgba(0, 215, 179, 0.85);
@@ -327,7 +324,6 @@ if (!$current_category) {
             padding-left: 160px;
         }
 
-        /* Pin the browse toggle to the left side of the nav area */
         .browse-toggle {
             position: absolute;
             left: 12px;
@@ -368,7 +364,6 @@ if (!$current_category) {
 
         .nav-list a:hover { color: rgba(255,255,255,0.8); }
 
-        /* Glowing underline + dark active background for top-level nav links */
         .nav-list > li > a {
             position: relative;
             padding: 10px 14px;
@@ -748,7 +743,6 @@ if (!$current_category) {
             pointer-events: none;
         }
 
-        /* Footer */
         footer {
             background: #2B11DB;
             color: white;
@@ -903,7 +897,6 @@ if (!$current_category) {
             }
         }
 
-        /* Overlay sidebar (full-height left panel) */
         .overlay-backdrop {
             position: fixed;
             inset: 0;
@@ -1029,7 +1022,6 @@ if (!$current_category) {
             padding-left: 12px;
         }
 
-        /* Nested sublists */
         .sidebar-sublist li.has-nested-sub { position: relative; }
         .sidebar-sublist li.has-nested-sub > a { padding-right: 24px; }
         
@@ -1143,7 +1135,6 @@ if (!$current_category) {
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header>
         <div class="header-top">
             <div class="logo">
@@ -1176,7 +1167,6 @@ if (!$current_category) {
             </div>
         </div>
 
-        <!-- Navigation -->
         <nav>
             <div class="nav-inner">
                 <button id="browseToggle" class="browse-toggle"><span class="hamburger"><i class="bi bi-list"></i></span> BROWSE PRODUCTS</button>
@@ -1275,10 +1265,8 @@ if (!$current_category) {
         </nav>
     </header>
 
-    <!-- Overlay Backdrop -->
     <div class="overlay-backdrop" id="overlayBackdrop"></div>
 
-    <!-- Sidebar Navigation -->
     <aside id="sidebar" class="sidebar-overlay" aria-hidden="true">
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 12px; border-bottom: 1px solid #e5e7eb;">
             <h3 style="margin: 0; font-size: 18px; color: #1f2937;">Categories</h3>
@@ -1305,8 +1293,14 @@ if (!$current_category) {
                     <li><a href="../arc-welding-robots/robot-system-peripherals.php">Robot System Peripherals</a></li>
                 </ul>
             </li>
-            <li>
-                <a href="#batteries"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-fill"></i></span><span class="sidebar-label">Batteries</span><span class="sidebar-arrow"><i class="bi bi-chevron-right"></i></span></a>
+            <li class="has-sub active">
+                <a href="batteries.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-fill"></i></span><span class="sidebar-label">Batteries</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-batteries" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-batteries" class="sidebar-sublist collapsed">
+                    <li><a href="maintenance-free.php">Maintenance Free Batteries</a></li>
+                    <li><a href="low-maintenance.php">Low Maintenance Batteries</a></li>
+                    <li><a href="special-batteries.php">Special Batteries</a></li>
+                </ul>
             </li>
             <li class="has-sub">
                 <a href="../drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling &amp; Lifting</span></a>
@@ -1317,7 +1311,7 @@ if (!$current_category) {
                     <li><a href="../drilling-and-lifting/cutters.php">Cutters</a></li>
                 </ul>
             </li>
-            <li class="has-sub active">
+            <li class="has-sub">
                 <a href="../gas-detectors/portable-gas-detectors.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></span><span class="sidebar-label">Portable Gas Detectors</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-gas-detectors" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-gas-detectors" class="sidebar-sublist collapsed">
@@ -1331,18 +1325,24 @@ if (!$current_category) {
                 <a href="../portable-ventilators/portable-ventilators.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-fan"></i></span><span class="sidebar-label">Portable Ventilators</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-ventilators" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-ventilators" class="sidebar-sublist collapsed">
-                    <li><a href="../portable-ventilators/portable-ventilator-accessories.php">Portable Ventilator Accessories</a></li>
                 </ul>
             </li>
-            <li>
-                <a href="#power-tools"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-tools"></i></span><span class="sidebar-label">Power Tools</span><span class="sidebar-arrow"><i class="bi bi-chevron-right"></i></span></a>
+            <li class="has-sub">
+                <a href="../power-tools/power-tools.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-tools"></i></span><span class="sidebar-label">Power Tools</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-power-tools" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-power-tools" class="sidebar-sublist collapsed">
+                    <li><a href="../power-tools/grinder.php">Grinder</a></li>
+                    <li><a href="../power-tools/saw.php">Saw</a></li>
+                    <li><a href="../power-tools/drill-and-wrench.php">Drill and Wrench</a></li>
+                    <li><a href="../power-tools/rotary-and-demolition-hammer.php">Rotary and Demolition Hammer</a></li>
+                    <li><a href="../power-tools/accessories.php">Power Tools Accessories</a></li>
+                </ul>
             </li>
             <li class="has-sub">
                 <a href="../protection/protection.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-shield-check"></i></span><span class="sidebar-label">Protection and Safety</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-protection-safety" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-protection-safety" class="sidebar-sublist collapsed">
                     <li><a href="../protection/eye-protection.php">Eye Protection</a></li>
-                    <li><a href="../protection/foot-protection.php">Foot Protection</a></li>
                     <li class="has-nested-sub">
                         <a href="../protection/hand-protection.php">Hand Protection</a>
                         <button class="nested-toggle" aria-expanded="false" aria-controls="nested-hand-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
@@ -1373,50 +1373,34 @@ if (!$current_category) {
                 </ul>
             </li>
             <li>
-                <a href="#handmetal-consumables"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-box"></i></span><span class="sidebar-label">HandMetal Consumables</span><span class="sidebar-arrow"><i class="bi bi-chevron-right"></i></span></a>
+                <a href="../welding-consumables/welding-consumables.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-box"></i></span><span class="sidebar-label">Welding Consumables</span></a>
             </li>
         </ul>
     </aside>
 
+    <div class="category-container">
         <div class="category-header">
             <h1><?php echo $category_name; ?></h1>
             <p><?php echo $category_description; ?></p>
         </div>
 
         <div class="category-content">
-            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Portable Ventilator Accessories'); ?></h2>
+            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Special Batteries'); ?></h2>
             <?php if (!empty($current_category['description'])): ?>
                 <p class="category-description"><?php echo htmlspecialchars($current_category['description']); ?></p>
             <?php endif; ?>
             <div class="product-grid">
                 <?php 
-                // Dynamically fetch all products from all gas-detector subcategories
-                $subcategories = array();
-                if (!empty($current_category['subcategories']) && is_array($current_category['subcategories'])) {
-                    foreach ($current_category['subcategories'] as $subcat) {
-                        $subcategories[] = $subcat['id'];
-                    }
-                }
-                
-                $all_products = array();
-                foreach ($subcategories as $subcat) {
-                    $products = andison_get_products_for_subcategory($category_id, $subcat);
-                    if ($products) {
-                        $all_products = array_merge($all_products, $products);
-                    }
-                }
-                
-                // Display products
-                if (!empty($all_products)) {
-                    foreach ($all_products as $product) {
+                $products = andison_get_products_for_subcategory("batteries", "special-batteries");
+                if (!empty($products)) {
+                    foreach ($products as $product) {
                         $image_src = htmlspecialchars($product['image'] ?? '');
-                        // Adjust image path for subdirectory context
                         if ($image_src && strpos($image_src, 'andison/') === 0) {
                             $image_src = '../' . $image_src;
                         }
                         $model = htmlspecialchars($product['model'] ?? '');
                         $name = htmlspecialchars($product['name'] ?? '');
-                        $type = htmlspecialchars($product['type'] ?? 'Gas Detection Equipment');
+                        $type = htmlspecialchars($product['type'] ?? 'Battery');
                         $brand = htmlspecialchars($product['brand'] ?? 'Industrial');
                         $description = htmlspecialchars($product['description'] ?? '');
                         $badge = htmlspecialchars($product['badge'] ?? '');
@@ -1424,9 +1408,9 @@ if (!$current_category) {
                 <div class="product-card">
                     <div class="product-image">
                         <?php if (!empty($image_src)): ?>
-                            <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=&quot;bi bi-hammer&quot; style=&quot;font-size: 60px; color: #ccc;&quot;></i>'">
+                            <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=&quot;bi bi-battery-charging&quot; style=&quot;font-size: 60px; color: #ccc;&quot;></i>'">
                         <?php else: ?>
-                            <i class="bi bi-hammer" style="font-size: 60px; color: #ccc;"></i>
+                            <i class="bi bi-battery-charging" style="font-size: 60px; color: #ccc;"></i>
                         <?php endif; ?>
                         <?php if (!empty($badge)): ?>
                             <div class="product-badge"><?php echo $badge; ?></div>
@@ -1444,15 +1428,14 @@ if (!$current_category) {
                         <?php
                     }
                 } else {
-                    // Fallback to placeholder if no products
                     ?>
                 <div class="product-card">
                     <div class="product-image">
-                        <i class="bi bi-hammer" style="font-size: 60px; color: #ccc;"></i>
+                        <i class="bi bi-battery-charging" style="font-size: 60px; color: #ccc;"></i>
                     </div>
-                    <h4>Portable Ventilator Accessories</h4>
+                    <h4>Special Battery</h4>
                     <p class="product-type">No products available</p>
-                    <button class="add-to-inquiry" type="button" data-model="Portable Ventilator Accessories" data-type="Ventilator Accessories" data-brand="Industrial">ADD TO INQUIRY</button>
+                    <button class="add-to-inquiry" type="button" data-model="Special Battery" data-type="Battery Equipment" data-brand="Industrial">ADD TO INQUIRY</button>
                 </div>
                     <?php
                 }
@@ -1461,7 +1444,6 @@ if (!$current_category) {
         </div>
     </div>
 
-    <!-- Footer -->
     <footer>
         <div class="footer-content">
             <div class="footer-links">
@@ -1476,7 +1458,6 @@ if (!$current_category) {
     </footer>
 
     <script>
-        // Add to Inquiry client-side handling
         (function(){
             function getItems(){
                 try{ return JSON.parse(localStorage.getItem('inquiryItems')||'[]'); }catch(e){ return []; }
@@ -1486,7 +1467,7 @@ if (!$current_category) {
                 var items = getItems();
                 var found = items.find(function(i){ return i.model === item.model && i.brand === item.brand; });
                 if(found){
-                    return false; // already present
+                    return false;
                 }
                 item.qty = 1; items.push(item);
                 setItems(items);
@@ -1511,7 +1492,6 @@ if (!$current_category) {
                 var added = addItem({ model: model, type: type, brand: brand });
                 if(!added){
                     showToast('Product already in inquiry list');
-                    // small visual feedback on button
                     btn.classList.add('already');
                     setTimeout(function(){ btn.classList.remove('already'); }, 700);
                     return;
@@ -1523,7 +1503,6 @@ if (!$current_category) {
     </script>
     
     <script>
-        // Sidebar toggle functionality
         (function(){
             var browseToggle = document.getElementById('browseToggle');
             var sidebarOverlay = document.querySelector('.sidebar-overlay');
@@ -1549,7 +1528,6 @@ if (!$current_category) {
                 }
             }
             
-            // Sidebar sub-toggle functionality
             var subToggles = document.querySelectorAll('.sub-toggle');
             subToggles.forEach(function(toggle) {
                 toggle.addEventListener('click', function(e) {
@@ -1563,7 +1541,6 @@ if (!$current_category) {
                 });
             });
             
-            // Nested toggle functionality
             var nestedToggles = document.querySelectorAll('.nested-toggle');
             nestedToggles.forEach(function(toggle) {
                 toggle.addEventListener('click', function(e) {
