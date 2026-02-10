@@ -1,5 +1,29 @@
 [
     {
+        "id": "arc-welding-robots",
+        "name": "Arc Welding Robots",
+        "description": "Robotic welding systems for automated industrial applications",
+        "icon": "bi-robot",
+        "subcategories": [
+            {
+                "id": "g3-controller-series",
+                "name": "G3 Controller Series"
+            },
+            {
+                "id": "g4-controller-series",
+                "name": "G4 Controller Series"
+            },
+            {
+                "id": "featured-products-solutions",
+                "name": "Featured Products and Solutions"
+            },
+            {
+                "id": "robot-system-peripherals",
+                "name": "Robot System Peripherals"
+            }
+        ]
+    },
+    {
         "id": "arc-welding-machine",
         "name": "Arc Welding Machines",
         "description": "Professional arc welding machines for industrial applications",

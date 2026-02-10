@@ -5,9 +5,8 @@ require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
 
-$page_title = "Chemical and Flame Retardant";
-$category_id = "protection";
-$subcategory_id = "chemical-flame-retardant";
+$page_title = "Arc Welding Robots";
+$category_id = "arc-welding-robots";
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";
@@ -15,31 +14,16 @@ $email = "info@andison-industrial.com";
 
 $categories = andison_get_categories();
 $current_category = null;
-$parent_category = null;
 
 foreach ($categories as $cat) {
     if ($cat['id'] === $category_id) {
-        $parent_category = $cat;
-        if (!empty($cat['subcategories'])) {
-            foreach ($cat['subcategories'] as $subcat) {
-                if ($subcat['id'] === $subcategory_id) {
-                    $current_category = $subcat;
-                    break;
-                }
-            }
-        }
+        $current_category = $cat;
         break;
     }
 }
 
 if (!$current_category) {
-    // Fallback: create a default category object
-    $current_category = array(
-        'id' => $subcategory_id,
-        'name' => 'Chemical and Flame Retardant',
-        'description' => 'Protective clothing and equipment designed to resist chemical exposure and flame hazards.',
-        'subcategories' => array()
-    );
+    die("Category not found");
 }
 ?>
 <!DOCTYPE html>
@@ -48,8 +32,12 @@ if (!$current_category) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = $current_category['name'] ?? 'Portable Ventilator Accessories';
-    $category_description = $current_category['description'] ?? 'Essential accessories for portable ventilation equipment.';
+    $category_name = $current_category['name'] ?? 'Arc Welding Machines';
+    $category_description = $current_category['description'] ?? 'Explore our comprehensive range of arc welding machines and robotic welding systems from leading manufacturers.';
+    $phone = "+1(234) 567 8900";
+    $phone2 = "+1(234) 567 8900";
+    $phone3 = "+1(639) 977 803 7398";
+    $email = "info@andison-industrial.com";
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -528,11 +516,11 @@ if (!$current_category) {
         }
 
         .category-header {
-            background: linear-gradient(135deg, rgba(43, 17, 219, 0.05) 0%, rgba(0, 215, 179, 0.05) 100%);
+            background: linear-gradient(135deg, #f8f9fa 0%, #f0f0f0 100%);
             border-radius: 12px;
-            padding: 50px 40px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            margin-bottom: 40px;
+            padding: 45px 40px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+            margin-bottom: 35px;
             text-align: center;
             display: none;
         }
@@ -602,6 +590,7 @@ if (!$current_category) {
             transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
+            cursor: pointer;
             border: 1px solid #f0f0f0;
             min-height: 100%;
         }
@@ -629,11 +618,6 @@ if (!$current_category) {
             height: 100%;
             object-fit: contain;
             padding: 15px;
-        }
-
-        .product-image i {
-            font-size: 48px;
-            color: #e0e0e0;
         }
 
         .product-badge {
@@ -718,18 +702,14 @@ if (!$current_category) {
             transform: translateY(-2px);
         }
 
-        .add-to-inquiry:active {
-            transform: translateY(0);
-        }
-
-        .add-to-inquiry:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
         .add-to-inquiry.already {
             background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
             box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+        }
+
+        .add-to-inquiry.already:hover {
+            background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.35);
         }
 
         .inquiry-toast {
@@ -786,20 +766,6 @@ if (!$current_category) {
             font-size: 13px;
         }
 
-        @media (max-width: 1400px) {
-            .product-grid {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 20px;
-            }
-        }
-
-        @media (max-width: 1200px) {
-            .product-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 20px;
-            }
-        }
-
         @media (max-width: 768px) {
             body {
                 padding-top: 120px;
@@ -816,17 +782,11 @@ if (!$current_category) {
             }
 
             .category-header {
-                padding: 35px 25px;
-                margin-bottom: 30px;
+                padding: 25px;
             }
 
             .category-header h1 {
-                font-size: 28px;
-                margin-bottom: 12px;
-            }
-
-            .category-header p {
-                font-size: 15px;
+                font-size: 24px;
             }
 
             .category-content {
@@ -1275,6 +1235,7 @@ if (!$current_category) {
         </nav>
     </header>
 
+
     <!-- Overlay Backdrop -->
     <div class="overlay-backdrop" id="overlayBackdrop"></div>
 
@@ -1285,14 +1246,15 @@ if (!$current_category) {
             <button class="sidebar-close" id="closeSidebar"><i class="bi bi-x-lg"></i></button>
         </div>
         <ul class="sidebar-list">
-            <li class="has-sub">
-                <a href="../arc-welding-machine/arc-welding-machine.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span><span class="sidebar-label">Arc Welding Machines</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-welding" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
-                <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
-                    <li><a href="../arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
-                    <li><a href="../arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
-                    <li><a href="../arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
-                    <li><a href="../arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
+            <li class="has-sub active">
+                <a href="../arc-welding-robots/arc-welding-robot.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label"><?php echo htmlspecialchars($current_category['name']); ?></span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-robots" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-arc-robots" class="sidebar-sublist collapsed">
+                    <?php if (!empty($current_category['subcategories'])): ?>
+                        <?php foreach ($current_category['subcategories'] as $subcat): ?>
+                            <li><a href="../arc-welding-robot/<?php echo htmlspecialchars($subcat['id']); ?>.php"><?php echo htmlspecialchars($subcat['name']); ?></a></li>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </ul>
             </li>
             <li>
@@ -1302,7 +1264,7 @@ if (!$current_category) {
                 <a href="#batteries"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-fill"></i></span><span class="sidebar-label">Batteries</span><span class="sidebar-arrow"><i class="bi bi-chevron-right"></i></span></a>
             </li>
             <li class="has-sub">
-                <a href="../drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling &amp; Lifting</span></a>
+                <a href="../drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling and Lifting</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-drilling-lifting" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
                     <li><a href="../drilling-and-lifting/lifting.php">Lifting</a></li>
@@ -1310,7 +1272,7 @@ if (!$current_category) {
                     <li><a href="../drilling-and-lifting/cutters.php">Cutters</a></li>
                 </ul>
             </li>
-            <li class="has-sub active">
+            <li class="has-sub">
                 <a href="../gas-detectors/portable-gas-detectors.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></span><span class="sidebar-label">Portable Gas Detectors</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-gas-detectors" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-gas-detectors" class="sidebar-sublist collapsed">
@@ -1377,13 +1339,13 @@ if (!$current_category) {
         </div>
 
         <div class="category-content">
-            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Chemical and Flame Retardant'); ?></h2>
+            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Arc Welding Robots'); ?></h2>
             <?php if (!empty($current_category['description'])): ?>
                 <p class="category-description"><?php echo htmlspecialchars($current_category['description']); ?></p>
             <?php endif; ?>
             <div class="product-grid">
                 <?php 
-                // Dynamically fetch all products from all gas-detector subcategories
+                // Dynamically fetch all products from all arc-welding-robot subcategories
                 $subcategories = array();
                 if (!empty($current_category['subcategories']) && is_array($current_category['subcategories'])) {
                     foreach ($current_category['subcategories'] as $subcat) {
@@ -1393,7 +1355,7 @@ if (!$current_category) {
                 
                 $all_products = array();
                 foreach ($subcategories as $subcat) {
-                    $products = andison_get_products_for_subcategory($category_id, $subcat);
+                    $products = andison_get_products_for_subcategory('arc-welding-robots', $subcat);
                     if ($products) {
                         $all_products = array_merge($all_products, $products);
                     }
@@ -1404,12 +1366,13 @@ if (!$current_category) {
                     foreach ($all_products as $product) {
                         $image_src = htmlspecialchars($product['image'] ?? '');
                         // Adjust image path for subdirectory context
-                        if ($image_src && strpos($image_src, 'andison/') === 0) {
+                        if ($image_src && strpos($image_src, '../') !== 0 && strpos($image_src, 'assets/') === 0) {
+                            // For product pages in subdirectories, add ../ prefix to assets
                             $image_src = '../' . $image_src;
                         }
                         $model = htmlspecialchars($product['model'] ?? '');
                         $name = htmlspecialchars($product['name'] ?? '');
-                        $type = htmlspecialchars($product['type'] ?? 'Gas Detection Equipment');
+                        $type = htmlspecialchars($product['type'] ?? 'Premium Arc Welding Equipment');
                         $brand = htmlspecialchars($product['brand'] ?? 'Industrial');
                         $description = htmlspecialchars($product['description'] ?? '');
                         $badge = htmlspecialchars($product['badge'] ?? '');
@@ -1417,9 +1380,9 @@ if (!$current_category) {
                 <div class="product-card">
                     <div class="product-image">
                         <?php if (!empty($image_src)): ?>
-                            <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=&quot;bi bi-hammer&quot; style=&quot;font-size: 60px; color: #ccc;&quot;></i>'">
+                            <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=\"bi bi-lightning-fill\" style=\"font-size: 60px; color: #ccc;\"></i>
                         <?php else: ?>
-                            <i class="bi bi-hammer" style="font-size: 60px; color: #ccc;"></i>
+                            <i class="bi bi-lightning-fill" style="font-size: 60px; color: #ccc;\"></i>
                         <?php endif; ?>
                         <?php if (!empty($badge)): ?>
                             <div class="product-badge"><?php echo $badge; ?></div>
@@ -1441,11 +1404,11 @@ if (!$current_category) {
                     ?>
                 <div class="product-card">
                     <div class="product-image">
-                        <i class="bi bi-hammer" style="font-size: 60px; color: #ccc;"></i>
+                        <i class="bi bi-lightning-fill" style="font-size: 60px; color: #ccc;"></i>
                     </div>
-                    <h4>Chemical and Flame Retardant</h4>
+                    <h4>Arc Welding Machines</h4>
                     <p class="product-type">No products available</p>
-                    <button class="add-to-inquiry" type="button" data-model="Chemical and Flame Retardant" data-type="Protection Equipment" data-brand="Industrial">ADD TO INQUIRY</button>
+                    <button class="add-to-inquiry" type="button" data-model="Arc Welding" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
                 </div>
                     <?php
                 }

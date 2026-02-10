@@ -1849,8 +1849,14 @@ $ytLinks = andison_get_youtube_links();
                 </ul>
             </li>
             <li>
-                <a href="#arc-handmetal-robots"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label">Arc HandMetal Robots</span><span class="sidebar-arrow"><i class="bi bi-chevron-right"></i></span></a>
-            </li>
+                <a href="arc-welding-machine/arc-welding-machine.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span><span class="sidebar-label">Arc Welding Robot</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-welding" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
+                    <li><a href="arc-welding-robot/G3-Controller-Series.php">G3 Controller Series</a></li>
+                    <li><a href="arc-welding-robot/G4-Controller-Series.php">G4 Controller Series</a></li>
+                    <li><a href="arc-welding-robot/featured-products-and-solutions.php">Featured Products and Solutions</a></li>
+                    <li><a href="arc-welding-robot/robot-system-peripherals.php">Robot System Peripherals</a></li>
+                </ul>
             <li>
                 <a href="#batteries"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-fill"></i></span><span class="sidebar-label">Batteries</span><span class="sidebar-arrow"><i class="bi bi-chevron-right"></i></span></a>
             </li>
