@@ -1848,17 +1848,23 @@ $ytLinks = andison_get_youtube_links();
                     <li><a href="arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
                 </ul>
             </li>
-            <li>
-                <a href="arc-welding-machine/arc-welding-machine.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span><span class="sidebar-label">Arc Welding Robot</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-welding" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
-                <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
-                    <li><a href="arc-welding-robot/G3-Controller-Series.php">G3 Controller Series</a></li>
-                    <li><a href="arc-welding-robot/G4-Controller-Series.php">G4 Controller Series</a></li>
-                    <li><a href="arc-welding-robot/featured-products-and-solutions.php">Featured Products and Solutions</a></li>
-                    <li><a href="arc-welding-robot/robot-system-peripherals.php">Robot System Peripherals</a></li>
+            <li class="has-sub">
+                <a href="arc-welding-robots/arc-welding-robot.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label">Arc Welding Robots</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-robot" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-arc-robot" class="sidebar-sublist collapsed">
+                    <li><a href="arc-welding-robots/g3-controller-series.php">G3 Controller Series</a></li>
+                    <li><a href="arc-welding-robots/g4-controller-series.php">G4 Controller Series</a></li>
+                    <li><a href="arc-welding-robots/featured-products-and-solution.php">Featured Products & Solutions</a></li>
+                    <li><a href="arc-welding-robots/robot-system-peripherals.php">Robot System Peripherals</a></li>
                 </ul>
-            <li>
-                <a href="#batteries"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-fill"></i></span><span class="sidebar-label">Batteries</span><span class="sidebar-arrow"><i class="bi bi-chevron-right"></i></span></a>
+            <li class="has-sub">
+                <a href="batteries/batteries.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-battery-full"></i></span><span class="sidebar-label">Batteries</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-batteries" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-batteries" class="sidebar-sublist collapsed">
+                    <li><a href="batteries/maintenance-free.php">Maintenance Free</a></li>
+                    <li><a href="batteries/low-maintenance.php">Low Maintenance</a></li>
+                    <li><a href="batteries/special-batteries.php">Special Batteries</a></li>
+                </ul>
             </li>
             <li class="has-sub">
                 <a href="drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling and Lifting</span></a>
@@ -1886,8 +1892,16 @@ $ytLinks = andison_get_youtube_links();
                     <li><a href="portable-ventilators/portable-ventilator-accessories.php">Portable Ventilator Accessories</a></li>
                 </ul>
             </li>
-            <li>
-                <a href="#power-tools"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-tools"></i></span><span class="sidebar-label">Power Tools</span><span class="sidebar-arrow"><i class="bi bi-chevron-right"></i></span></a>
+            <li class="has-sub">
+                <a href="power-tools/power-tools.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-tools"></i></span><span class="sidebar-label">Power Tools</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-power-tools" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-power-tools" class="sidebar-sublist collapsed">
+                    <li><a href="power-tools/grinder.php">Grinder</a></li>
+                    <li><a href="power-tools/saw.php">Saw</a></li>
+                    <li><a href="power-tools/drill-and-wrench.php">Drill and Wrench</a></li>
+                    <li><a href="power-tools/rotary-and-demolition-hammer.php">Rotary and Demolition Hammer</a></li>
+                    <li><a href="power-tools/accessories.php">Accessories</a></li>
+                </ul>
             </li>
             <li class="has-sub">
                 <a href="protection/protection.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-shield-check"></i></span><span class="sidebar-label">Protection and Safety</span></a>
@@ -1925,7 +1939,7 @@ $ytLinks = andison_get_youtube_links();
                 </ul>
             </li>
             <li>
-                <a href="#handmetal-consumables"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-box"></i></span><span class="sidebar-label">HandMetal Consumables</span><span class="sidebar-arrow"><i class="bi bi-chevron-right"></i></span></a>
+                <a href="welding-consumables/welding-consumables.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-box"></i></span><span class="sidebar-label">Welding Consumables</span></a>
             </li>
         </ul>
     </aside>

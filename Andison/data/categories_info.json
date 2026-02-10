@@ -190,6 +190,54 @@
                 "name": "Welding Head Face Protection"
             }
         ]
+    },
+    {
+        "id": "batteries",
+        "name": "Batteries",
+        "description": "Industrial batteries for various applications",
+        "icon": "bi-battery-full",
+        "subcategories": [
+            {
+                "id": "maintenance-free",
+                "name": "Maintenance Free"
+            },
+            {
+                "id": "low-maintenance",
+                "name": "Low Maintenance"
+            },
+            {
+                "id": "special-batteries",
+                "name": "Special Batteries"
+            }
+        ]
+    },
+    {
+        "id": "power-tools",
+        "name": "Power Tools",
+        "description": "Heavy-duty power tools for industrial use",
+        "icon": "bi-tools",
+        "subcategories": [
+            {
+                "id": "grinder",
+                "name": "Grinder"
+            },
+            {
+                "id": "saw",
+                "name": "Saw"
+            },
+            {
+                "id": "drill-and-wrench",
+                "name": "Drill and Wrench"
+            },
+            {
+                "id": "rotary-and-demolition-hammer",
+                "name": "Rotary and Demolition Hammer"
+            },
+            {
+                "id": "accessories",
+                "name": "Accessories"
+            }
+        ]
     }
 ]
 
