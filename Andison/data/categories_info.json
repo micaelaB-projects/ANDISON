@@ -238,6 +238,12 @@
                 "name": "Accessories"
             }
         ]
+    },
+    {
+        "id": "welding-consumables",
+        "name": "Welding Consumables",
+        "description": "High-quality welding consumables and materials for superior weld quality and durability",
+        "icon": "bi-box"
     }
 ]
 
