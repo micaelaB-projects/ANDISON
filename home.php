@@ -1905,7 +1905,7 @@ $ytLinks = andison_get_youtube_links();
                 <ul id="sub-protection-safety" class="sidebar-sublist collapsed">
                     <li><a href="protection/eye-protection.php">Eye Protection</a></li>
                     <li class="has-nested-sub">
-                        <a href="protection/hand-protection.php">Hand Protection</a>
+                        <a href="protection/hand-protection.php"><span class="sidebar-label">Hand Protection</span></a>
                         <button class="nested-toggle" aria-expanded="false" aria-controls="nested-hand-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                         <ul id="nested-hand-protection" class="sidebar-nested-sublist collapsed">
                             <li><a href="protection/working-gloves.php">Working Gloves</a></li>
@@ -1914,9 +1914,14 @@ $ytLinks = andison_get_youtube_links();
                             <li><a href="protection/welding-gloves.php">Welding Gloves</a></li>
                         </ul>
                     </li>
-                    <li><a href="protection/hearing-respiratory-protection.php">Hearing &amp; Respiratory Protection</a></li>
                     <li class="has-nested-sub">
-                        <a href="protection/body-protection.php">Body Protection</a>
+                        <a href="protection/hearing-respiratory-protection.php"><span class="sidebar-label">Hearing &amp; Respiratory Protection</span></a>
+                        <button class="nested-toggle" aria-expanded="false" aria-controls="nested-hearing-respiratory" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                        <ul id="nested-hearing-respiratory" class="sidebar-nested-sublist collapsed">
+                        </ul>
+                    </li>
+                    <li class="has-nested-sub">
+                        <a href="protection/body-protection.php"><span class="sidebar-label">Body Protection</span></a>
                         <button class="nested-toggle" aria-expanded="false" aria-controls="nested-body-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                         <ul id="nested-body-protection" class="sidebar-nested-sublist collapsed">
                             <li><a href="protection/chemical-flame-retardant.php">Chemical and Flame Retardant</a></li>
@@ -1925,17 +1930,6 @@ $ytLinks = andison_get_youtube_links();
                         </ul>
                     </li>
                 </ul>
-            </li>
-            <li><a href="protection/hearing-respiratory-protection.php">Hearing &amp; Respiratory Protection</a></li>
-                    <li class="has-nested-sub">
-                        <a href="protection/body-protection.php">Body Protection</a>
-                        <button class="nested-toggle" aria-expanded="false" aria-controls="nested-body-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
-                        <ul id="nested-body-protection" class="sidebar-nested-sublist collapsed">
-                            <li><a href="protection/chemical-flame-retardant.php">Chemical and Flame Retardant</a></li>
-                            <li><a href="protection/liquid-spray-splash.php">Liquid Spray and Splash</a></li>
-                            <li><a href="protection/particulate-low-hazard.php">Particulate and Low Hazard</a></li>
-                        </ul>
-                    </li>
             <li class="has-sub">
                 <a href="welding-accessories/welding-accessories.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-gear"></i></span><span class="sidebar-label">Welding Accessories</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-accessories" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
@@ -1949,8 +1943,13 @@ $ytLinks = andison_get_youtube_links();
                     <li><a href="welding-accessories/others.php">Others</a></li>
                 </ul>
             </li>
-            <li>
+            <li class="has-sub">
                 <a href="welding-consumables/welding-consumables.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-box"></i></span><span class="sidebar-label">Welding Consumables</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-consumables" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-welding-consumables" class="sidebar-sublist collapsed">
+                    <li><a href="welding-consumables/kobelco.php">Kobelco</a></li>
+                    <li><a href="welding-consumables/metrode.php">Metrode</a></li>
+                </ul>
             </li>
         </ul>
     </aside>

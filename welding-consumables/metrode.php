@@ -1095,21 +1095,24 @@ $category_id = "arc-welding-machine";
         .has-sub > a { padding-right: 40px; }
         .sub-toggle {
             position: absolute;
-            right: 12px;
-            top: 16px;
+            right: 8px;
+            top: 12px;
             transform: none;
             background: transparent;
             border: none;
-            color: #9ca3af;
+            color: #333;
             cursor: pointer;
-            padding: 0;
-            width: 24px;
-            height: 24px;
-            display: inline-flex;
+            padding: 4px;
+            width: 32px;
+            height: 32px;
+            display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 0;
+            border-radius: 4px;
             box-shadow: none;
+            visibility: visible !important;
+            opacity: 1 !important;
+            z-index: 10;
         }
         .sub-toggle:focus { outline: none; }
         .sub-toggle .bi { transition: transform 200ms ease; font-size: 16px; }
@@ -1351,7 +1354,7 @@ $category_id = "arc-welding-machine";
                 <ul id="sub-protection-safety" class="sidebar-sublist collapsed">
                     <li><a href="../protection/eye-protection.php">Eye Protection</a></li>
                     <li class="has-nested-sub">
-                        <a href="../protection/hand-protection.php">Hand Protection</a>
+                        <a href="../protection/hand-protection.php"><span class="sidebar-label">Hand Protection</span></a>
                         <button class="nested-toggle" aria-expanded="false" aria-controls="nested-hand-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                         <ul id="nested-hand-protection" class="sidebar-nested-sublist collapsed">
                             <li><a href="../protection/working-gloves.php">Working Gloves</a></li>
@@ -1360,9 +1363,14 @@ $category_id = "arc-welding-machine";
                             <li><a href="../protection/welding-gloves.php">Welding Gloves</a></li>
                         </ul>
                     </li>
-                    <li><a href="../protection/hearing-respiratory-protection.php">Hearing &amp; Respiratory Protection</a></li>
                     <li class="has-nested-sub">
-                        <a href="../protection/body-protection.php">Body Protection</a>
+                        <a href="../protection/hearing-respiratory-protection.php"><span class="sidebar-label">Hearing &amp; Respiratory Protection</span></a>
+                        <button class="nested-toggle" aria-expanded="false" aria-controls="nested-hearing-respiratory" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                        <ul id="nested-hearing-respiratory" class="sidebar-nested-sublist collapsed">
+                        </ul>
+                    </li>
+                    <li class="has-nested-sub">
+                        <a href="../protection/body-protection.php"><span class="sidebar-label">Body Protection</span></a>
                         <button class="nested-toggle" aria-expanded="false" aria-controls="nested-body-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                         <ul id="nested-body-protection" class="sidebar-nested-sublist collapsed">
                             <li><a href="../protection/chemical-flame-retardant.php">Chemical and Flame Retardant</a></li>

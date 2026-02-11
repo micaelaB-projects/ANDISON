@@ -1304,12 +1304,8 @@ if (!$current_category) {
                     <li><a href="../gas-detectors/calibration-gas-regulators.php">Calibration Gas and Regulators</a></li>
                 </ul>
             </li>
-            <li class="has-sub">
+            <li>
                 <a href="../portable-ventilators/portable-ventilators.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-fan"></i></span><span class="sidebar-label">Portable Ventilators</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-ventilators" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
-                <ul id="sub-ventilators" class="sidebar-sublist collapsed">
-                    <li><a href="../portable-ventilators/portable-ventilators.php">Portable Ventilators</a></li>
-                </ul>
             </li>
             <li class="has-sub">
                 <a href="../power-tools/power-tools.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-tools"></i></span><span class="sidebar-label">Power Tools</span></a>
@@ -1362,8 +1358,13 @@ if (!$current_category) {
                     <li><a href="../welding-accessories/others.php">Others</a></li>
                 </ul>
             </li>
-            <li>
+            <li class="has-sub">
                 <a href="../welding-consumables/welding-consumables.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-box"></i></span><span class="sidebar-label">Welding Consumables</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-consumables" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-welding-consumables" class="sidebar-sublist collapsed">
+                    <li><a href="../welding-consumables/kobelco.php">Kobelco</a></li>
+                    <li><a href="../welding-consumables/metrode.php">Metrode</a></li>
+                </ul>
             </li>
         </ul>
     </aside>

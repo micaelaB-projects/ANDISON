@@ -500,11 +500,8 @@ if (!$current_category) {
                     <li><a href="../gas-detectors/multi-gas-detector.php">Multi Gas Detector</a></li>
                 </ul>
             </li>
-            <li class="has-sub">
+            <li>
                 <a href="../portable-ventilators/portable-ventilators.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-fan"></i></span><span class="sidebar-label">Portable Ventilators</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-ventilators" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
-                <ul id="sub-ventilators" class="sidebar-sublist collapsed">
-                </ul>
             </li>
             <li class="has-sub">
                 <a href="../power-tools/power-tools.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-tools"></i></span><span class="sidebar-label">Power Tools</span></a>
