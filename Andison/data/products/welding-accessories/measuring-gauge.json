@@ -1,0 +1,122 @@
+[
+    {
+        "id": "sk-tpg-700a",
+        "name": "SK TPG-700A",
+        "model": "TPG-700A",
+        "type": "Temperature Measuring Gauge",
+        "brand": "SK",
+        "description": "Precision temperature measuring gauge for welding operations and thermal monitoring.",
+        "image": "andison/assets/uploads/products/welding-accessories/measuring-gauge/sk-tpg-700a.jpg",
+        "badge": ""
+    },
+    {
+        "id": "sk-tpg-700s",
+        "name": "SK TPG-700S",
+        "model": "TPG-700S",
+        "type": "Temperature Measuring Gauge",
+        "brand": "SK",
+        "description": "Precision temperature measuring gauge for accurate temperature monitoring in welding.",
+        "image": "andison/assets/uploads/products/welding-accessories/measuring-gauge/sk-tpg-700s.jpg",
+        "badge": ""
+    },
+    {
+        "id": "sk-tpg-700b",
+        "name": "SK TPG-700B",
+        "model": "TPG-700B",
+        "type": "Temperature Measuring Gauge",
+        "brand": "SK",
+        "description": "Reliable temperature measuring gauge for welding and fabrication work.",
+        "image": "andison/assets/uploads/products/welding-accessories/measuring-gauge/sk-tpg-700b.jpg",
+        "badge": ""
+    },
+    {
+        "id": "sk-wg-1",
+        "name": "SK WG-1",
+        "model": "WG-1",
+        "type": "Welding Gauge",
+        "brand": "SK",
+        "description": "Professional welding gauge for precise measurements during welding operations.",
+        "image": "andison/assets/uploads/products/welding-accessories/measuring-gauge/sk-wg-1.jpg",
+        "badge": ""
+    },
+    {
+        "id": "sk-wgu-7m",
+        "name": "SK WGU-7M",
+        "model": "WGU-7M",
+        "type": "Welding Gauge Unit",
+        "brand": "SK",
+        "description": "Advanced welding gauge unit for accurate and reliable measurement in welding applications.",
+        "image": "andison/assets/uploads/products/welding-accessories/measuring-gauge/sk-wgu-7m.jpg",
+        "badge": ""
+    },
+    {
+        "id": "sk-wgu-2s",
+        "name": "SK WGU-2S",
+        "model": "WGU-2S",
+        "type": "Welding Gauge Unit",
+        "brand": "SK",
+        "description": "Compact welding gauge unit for precise measurements in welding operations.",
+        "image": "andison/assets/uploads/products/welding-accessories/measuring-gauge/sk-wgu-2s.jpg",
+        "badge": ""
+    },
+    {
+        "id": "sk-wgu-8m",
+        "name": "SK WGU-8M",
+        "model": "WGU-8M",
+        "type": "Welding Gauge Unit",
+        "brand": "SK",
+        "description": "High-precision welding gauge unit for demanding welding applications.",
+        "image": "andison/assets/uploads/products/welding-accessories/measuring-gauge/sk-wgu-8m.jpg",
+        "badge": ""
+    },
+    {
+        "id": "gal-gage-cat-1",
+        "name": "Gal Gage Cat No. 1",
+        "model": "Cat No. 1",
+        "type": "Galvanized Gauge",
+        "brand": "Gal Gage",
+        "description": "Durable galvanized measurement gauge for welding and fabrication applications.",
+        "image": "andison/assets/uploads/products/welding-accessories/measuring-gauge/gal-gage-cat-1.jpg",
+        "badge": ""
+    },
+    {
+        "id": "gal-gage-cat-2",
+        "name": "Gal Gage Cat No. 2",
+        "model": "Cat No. 2",
+        "type": "Galvanized Gauge",
+        "brand": "Gal Gage",
+        "description": "Reliable galvanized measurement gauge for precision welding work.",
+        "image": "andison/assets/uploads/products/welding-accessories/measuring-gauge/gal-gage-cat-2.jpg",
+        "badge": ""
+    },
+    {
+        "id": "gal-gage-cat-4",
+        "name": "Gal Gage Cat No. 4",
+        "model": "Cat No. 4",
+        "type": "Galvanized Gauge",
+        "brand": "Gal Gage",
+        "description": "Professional galvanized measurement gauge for welding applications.",
+        "image": "andison/assets/uploads/products/welding-accessories/measuring-gauge/gal-gage-cat-4.jpg",
+        "badge": ""
+    },
+    {
+        "id": "gal-gage-cat-6",
+        "name": "Gal Gage Cat No. 6",
+        "model": "Cat No. 6",
+        "type": "Galvanized Gauge",
+        "brand": "Gal Gage",
+        "description": "Heavy-duty galvanized measurement gauge for industrial welding.",
+        "image": "andison/assets/uploads/products/welding-accessories/measuring-gauge/gal-gage-cat-6.jpg",
+        "badge": ""
+    },
+    {
+        "id": "gal-gage-cat-8",
+        "name": "Gal Gage Cat No. 8",
+        "model": "Cat No. 8",
+        "type": "Galvanized Gauge",
+        "brand": "Gal Gage",
+        "description": "Industrial-grade galvanized measurement gauge for demanding welding operations.",
+        "image": "andison/assets/uploads/products/welding-accessories/measuring-gauge/gal-gage-cat-8.jpg",
+        "badge": ""
+    }
+]

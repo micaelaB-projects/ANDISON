@@ -1,0 +1,22 @@
+[
+    {
+        "id": "kt5nx-straight-line-cutting-machine",
+        "name": "KT5NX Straight Line Cutting Machine",
+        "model": "KT5NX",
+        "type": "Gas Cutting Equipment",
+        "brand": "Industrial",
+        "description": "Professional straight line gas cutting machine for precise and efficient cutting operations. High-performance cutting system for industrial applications.",
+        "image": "andison/assets/uploads/products/welding-accessories/gas-cutting-equipment/kt5nx-straight-line-cutting-machine.jpg",
+        "badge": ""
+    },
+    {
+        "id": "single-stage-gas-regulator",
+        "name": "Single Stage Gas Regulator",
+        "model": "Standard",
+        "type": "Gas Cutting Equipment",
+        "brand": "Industrial",
+        "description": "Reliable single-stage gas regulator for use with gas cutting equipment. Provides consistent pressure control for stable cutting performance.",
+        "image": "andison/assets/uploads/products/welding-accessories/gas-cutting-equipment/single-stage-gas-regulator.jpg",
+        "badge": ""
+    }
+]

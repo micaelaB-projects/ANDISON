@@ -1,0 +1,42 @@
+[
+    {
+        "id": "revolt-rh5",
+        "name": "Revolt RH5",
+        "model": "RH5",
+        "type": "Welding Electrode Oven",
+        "brand": "Revolt",
+        "description": "Portable welding electrode oven for efficient electrode storage and preheating. Maintains optimal temperature for consistent welding performance.",
+        "image": "andison/assets/uploads/products/welding-accessories/welding-electrode-oven/revolt-rh5.jpg",
+        "badge": ""
+    },
+    {
+        "id": "dry-rod-type-2",
+        "name": "Dry Rod Type 2",
+        "model": "Type 2",
+        "type": "Welding Electrode Oven",
+        "brand": "Dry Rod",
+        "description": "Professional welding electrode drying oven for Type 2 electrodes. Ensures proper moisture removal and electrode conditioning.",
+        "image": "andison/assets/uploads/products/welding-accessories/welding-electrode-oven/dry-rod-type-2.jpg",
+        "badge": ""
+    },
+    {
+        "id": "dry-rod-type-5",
+        "name": "Dry Rod Type 5",
+        "model": "Type 5",
+        "type": "Welding Electrode Oven",
+        "brand": "Dry Rod",
+        "description": "Heavy-duty welding electrode oven for Type 5 electrodes. Maintains consistent heating for optimal electrode quality.",
+        "image": "andison/assets/uploads/products/welding-accessories/welding-electrode-oven/dry-rod-type-5.jpg",
+        "badge": ""
+    },
+    {
+        "id": "dry-rod-type-300ht",
+        "name": "Dry Rod Type 300HT",
+        "model": "Type 300HT",
+        "type": "Welding Electrode Oven",
+        "brand": "Dry Rod",
+        "description": "Industrial-grade high-temperature welding electrode oven for Type 300HT electrodes. Advanced temperature control for superior welding results.",
+        "image": "andison/assets/uploads/products/welding-accessories/welding-electrode-oven/dry-rod-type-300ht.jpg",
+        "badge": ""
+    }
+]

@@ -1,0 +1,22 @@
+[
+    {
+        "id": "tempilstik",
+        "name": "Tempilstik",
+        "model": "Standard",
+        "type": "Industrial Markers",
+        "brand": "Tempilstik",
+        "description": "Premium temperature-indicating marker for precise temperature measurement and marking in welding and industrial operations. Essential for quality control.",
+        "image": "andison/assets/uploads/products/welding-accessories/industrial-markers/tempilstik.jpg",
+        "badge": ""
+    },
+    {
+        "id": "dalo",
+        "name": "Dalo",
+        "model": "Standard",
+        "type": "Industrial Markers",
+        "brand": "Dalo",
+        "description": "Professional industrial marker for identification and labeling in welding applications. Reliable marking solution for component tracking and traceability.",
+        "image": "andison/assets/uploads/products/welding-accessories/industrial-markers/dalo.jpg",
+        "badge": ""
+    }
+]

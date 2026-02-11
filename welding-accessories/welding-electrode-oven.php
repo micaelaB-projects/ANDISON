@@ -18,7 +18,7 @@ $current_category = null;
 $parent_category = null;
 
 foreach ($categories as $cat) {
-    if ($cat['id'] === $category_id) {
+    if ($cat['id'] === 'welding-accessories') {
         $parent_category = $cat;
         if (!empty($cat['subcategories'])) {
             foreach ($cat['subcategories'] as $subcat) {
@@ -33,11 +33,10 @@ foreach ($categories as $cat) {
 }
 
 if (!$current_category) {
-    // Fallback: create a default category object
     $current_category = array(
         'id' => $subcategory_id,
         'name' => 'Welding Electrode Oven',
-        'description' => 'Professional welding electrode ovens designed to maintain optimal electrode conditions and ensure superior weld quality. Our electrode storage and heating systems prevent moisture absorption and ensure consistent performance.',
+        'description' => 'Professional welding electrode ovens for proper electrode storage and preheat. Maintain electrode quality and ensure optimal welding performance with our reliable oven equipment.',
         'subcategories' => array()
     );
 }
@@ -49,7 +48,7 @@ if (!$current_category) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
     $category_name = $current_category['name'] ?? 'Welding Electrode Oven';
-    $category_description = $current_category['description'] ?? 'Professional welding electrode ovens designed to maintain optimal electrode conditions and ensure superior weld quality. Our electrode storage and heating systems prevent moisture absorption and ensure consistent performance.';
+    $category_description = $current_category['description'] ?? 'Professional welding electrode ovens and storage equipment.';
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -1293,6 +1292,8 @@ if (!$current_category) {
                     <li><a href="../arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
+                    <li><a href="../arc-welding-machine/plasma-cutting-machine.php">Plasma Cutting Machine</a></li>
+                    <li><a href="../arc-welding-machine/accessories-and-consumables.php">Accessories & Consumables</a></li>
                 </ul>
             </li>
             <li class="has-sub">
@@ -1314,7 +1315,7 @@ if (!$current_category) {
                     <li><a href="../batteries/special-batteries.php">Special Batteries</a></li>
                 </ul>
             </li>
-            <li class="has-sub">
+            <li class="has-sub active">
                 <a href="../drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling &amp; Lifting</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-drilling-lifting" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
@@ -1323,7 +1324,7 @@ if (!$current_category) {
                     <li><a href="../drilling-and-lifting/cutters.php">Cutters</a></li>
                 </ul>
             </li>
-            <li class="has-sub active">
+            <li class="has-sub">
                 <a href="../gas-detectors/portable-gas-detectors.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></span><span class="sidebar-label">Portable Gas Detectors</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-gas-detectors" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-gas-detectors" class="sidebar-sublist collapsed">
@@ -1376,6 +1377,16 @@ if (!$current_category) {
             </li>
             <li class="has-sub">
                 <a href="../welding-accessories/welding-accessories.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-gear"></i></span><span class="sidebar-label">Welding Accessories</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-accessories" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-welding-accessories" class="sidebar-sublist collapsed">
+                    <li><a href="../welding-accessories/welding-electrode-oven.php">Welding Electrode Oven</a></li>
+                    <li><a href="../welding-accessories/non-destructive-crack-detection.php">Non-Destructive Crack Detection</a></li>
+                    <li><a href="../welding-accessories/gas-saving-regulator.php">Gas Saving Regulator</a></li>
+                    <li><a href="../welding-accessories/gas-cutting-equipment.php">Gas Cutting Equipment</a></li>
+                    <li><a href="../welding-accessories/industrial-markers.php">Industrial Markers</a></li>
+                    <li><a href="../welding-accessories/measuring-gauge.php">Measuring Gauge</a></li>
+                    <li><a href="../welding-accessories/others.php">Others</a></li>
+                </ul>
             </li>
             <li>
                 <a href="../welding-consumables/welding-consumables.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-box"></i></span><span class="sidebar-label">Welding Consumables</span></a>
@@ -1395,24 +1406,11 @@ if (!$current_category) {
             <?php endif; ?>
             <div class="product-grid">
                 <?php 
-                // Dynamically fetch products for welding-electrode-oven
+                // Dynamically fetch products for Welding Electrode Oven subcategory
                 $all_products = array();
-                
-                // Check if current category has subcategories (like magnetic-drill has b-line, rl-e, etc)
-                if (!empty($current_category['subcategories']) && is_array($current_category['subcategories'])) {
-                    // If it has subcategories, fetch from each subcategory
-                    foreach ($current_category['subcategories'] as $subcat) {
-                        $products = andison_get_products_for_subcategory($category_id, $subcat['id']);
-                        if ($products) {
-                            $all_products = array_merge($all_products, $products);
-                        }
-                    }
-                } else {
-                    // If it doesn't have subcategories, fetch directly for this category
-                    $products = andison_get_products_for_subcategory($category_id, $subcategory_id);
-                    if ($products) {
-                        $all_products = $products;
-                    }
+                $products = andison_get_products_for_subcategory($category_id, $subcategory_id);
+                if ($products) {
+                    $all_products = array_merge($all_products, $products);
                 }
                 
                 // Display products
@@ -1461,7 +1459,7 @@ if (!$current_category) {
                     </div>
                     <h4>Welding Electrode Oven</h4>
                     <p class="product-type">No products available</p>
-                    <button class="add-to-inquiry" type="button" data-model="Welding Electrode Oven" data-type="Welding Equipment" data-brand="Industrial">ADD TO INQUIRY</button>
+                    <button class="add-to-inquiry" type="button" data-model="Welding Electrode Oven" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
                 </div>
                     <?php
                 }

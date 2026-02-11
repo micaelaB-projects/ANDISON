@@ -1926,8 +1926,28 @@ $ytLinks = andison_get_youtube_links();
                     </li>
                 </ul>
             </li>
+            <li><a href="protection/hearing-respiratory-protection.php">Hearing &amp; Respiratory Protection</a></li>
+                    <li class="has-nested-sub">
+                        <a href="protection/body-protection.php">Body Protection</a>
+                        <button class="nested-toggle" aria-expanded="false" aria-controls="nested-body-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                        <ul id="nested-body-protection" class="sidebar-nested-sublist collapsed">
+                            <li><a href="protection/chemical-flame-retardant.php">Chemical and Flame Retardant</a></li>
+                            <li><a href="protection/liquid-spray-splash.php">Liquid Spray and Splash</a></li>
+                            <li><a href="protection/particulate-low-hazard.php">Particulate and Low Hazard</a></li>
+                        </ul>
+                    </li>
             <li class="has-sub">
                 <a href="welding-accessories/welding-accessories.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-gear"></i></span><span class="sidebar-label">Welding Accessories</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-accessories" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-welding-accessories" class="sidebar-sublist collapsed">
+                    <li><a href="welding-accessories/welding-electrode-oven.php">Welding Electrode Oven</a></li>
+                    <li><a href="welding-accessories/non-destructive-crack-detection.php">Non-Destructive Crack Detection</a></li>
+                    <li><a href="welding-accessories/gas-saving-regulator.php">Gas Saving Regulator</a></li>
+                    <li><a href="welding-accessories/gas-cutting-equipment.php">Gas Cutting Equipment</a></li>
+                    <li><a href="welding-accessories/industrial-markers.php">Industrial Markers</a></li>
+                    <li><a href="welding-accessories/measuring-gauge.php">Measuring Gauge</a></li>
+                    <li><a href="welding-accessories/others.php">Others</a></li>
+                </ul>
             </li>
             <li>
                 <a href="welding-consumables/welding-consumables.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-box"></i></span><span class="sidebar-label">Welding Consumables</span></a>

@@ -240,10 +240,6 @@
         "icon": "bi-gear",
         "subcategories": [
             {
-                "id": "welding-accessories",
-                "name": "Welding Accessories"
-            },
-            {
                 "id": "welding-electrode-oven",
                 "name": "Welding Electrode Oven"
             },
