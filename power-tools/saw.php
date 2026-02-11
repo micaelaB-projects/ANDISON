@@ -5,7 +5,8 @@ require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
 
-$subcategory_id = "saw";
+$page_title = "Arc Welding Robots";
+$category_id = "arc-welding-robots";
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";
@@ -13,30 +14,17 @@ $email = "info@andison-industrial.com";
 
 $categories = andison_get_categories();
 $current_category = null;
-$parent_category = null;
 
-// Find the parent category and the subcategory
 foreach ($categories as $cat) {
-    if ($cat['id'] === 'power-tools') {
-        $parent_category = $cat;
-        if (!empty($cat['subcategories'])) {
-            foreach ($cat['subcategories'] as $subcat) {
-                if ($subcat['id'] === $subcategory_id) {
-                    $current_category = $subcat;
-                    break;
-                }
-            }
-        }
+    if ($cat['id'] === $category_id) {
+        $current_category = $cat;
         break;
     }
 }
 
 if (!$current_category) {
-    die("Saw category not found");
+    die("Category not found");
 }
-
-$page_title = $current_category['name'] ?? "Saw";
-$category_id = "power-tools";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -44,8 +32,12 @@ $category_id = "power-tools";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = $current_category['name'] ?? 'Saw';
-    $category_description = $current_category['description'] ?? 'Professional-grade cutting saws for precision cutting and material preparation.';
+    $category_name = $current_category['name'] ?? 'Arc Welding Robots';
+    $category_description = $current_category['description'] ?? 'Explore our comprehensive range of arc welding robots and automated welding systems from leading manufacturers.';
+    $phone = "+1(234) 567 8900";
+    $phone2 = "+1(234) 567 8900";
+    $phone3 = "+1(639) 977 803 7398";
+    $email = "info@andison-industrial.com";
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -524,11 +516,11 @@ $category_id = "power-tools";
         }
 
         .category-header {
-            background: linear-gradient(135deg, rgba(43, 17, 219, 0.05) 0%, rgba(0, 215, 179, 0.05) 100%);
+            background: linear-gradient(135deg, #f8f9fa 0%, #f0f0f0 100%);
             border-radius: 12px;
-            padding: 50px 40px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            margin-bottom: 40px;
+            padding: 45px 40px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+            margin-bottom: 35px;
             text-align: center;
             display: none;
         }
@@ -598,6 +590,7 @@ $category_id = "power-tools";
             transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
+            cursor: pointer;
             border: 1px solid #f0f0f0;
             min-height: 100%;
         }
@@ -625,11 +618,6 @@ $category_id = "power-tools";
             height: 100%;
             object-fit: contain;
             padding: 15px;
-        }
-
-        .product-image i {
-            font-size: 48px;
-            color: #e0e0e0;
         }
 
         .product-badge {
@@ -714,18 +702,14 @@ $category_id = "power-tools";
             transform: translateY(-2px);
         }
 
-        .add-to-inquiry:active {
-            transform: translateY(0);
-        }
-
-        .add-to-inquiry:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
         .add-to-inquiry.already {
             background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
             box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+        }
+
+        .add-to-inquiry.already:hover {
+            background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.35);
         }
 
         .inquiry-toast {
@@ -782,20 +766,6 @@ $category_id = "power-tools";
             font-size: 13px;
         }
 
-        @media (max-width: 1400px) {
-            .product-grid {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 20px;
-            }
-        }
-
-        @media (max-width: 1200px) {
-            .product-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 20px;
-            }
-        }
-
         @media (max-width: 768px) {
             body {
                 padding-top: 120px;
@@ -812,17 +782,11 @@ $category_id = "power-tools";
             }
 
             .category-header {
-                padding: 35px 25px;
-                margin-bottom: 30px;
+                padding: 25px;
             }
 
             .category-header h1 {
-                font-size: 28px;
-                margin-bottom: 12px;
-            }
-
-            .category-header p {
-                font-size: 15px;
+                font-size: 24px;
             }
 
             .category-content {
@@ -1289,15 +1253,16 @@ $category_id = "power-tools";
                     <li><a href="../arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
+                    <li><a href="../arc-welding-machine/plasma-cutting-machine.php">Plasma Cutting Machine</a></li>
                 </ul>
             </li>
-            <li class="has-sub">
-                <a href="../arc-welding-robots/arc-welding-robot.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label">Arc Welding Robots</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-robot" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
-                <ul id="sub-arc-robot" class="sidebar-sublist collapsed">
+            <li class="has-sub active">
+                <a href="../arc-welding-robots/arc-welding-robot.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label"><?php echo htmlspecialchars($current_category['name']); ?></span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-robots" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-arc-robots" class="sidebar-sublist collapsed">
                     <li><a href="../arc-welding-robots/g3-controller-series.php">G3 Controller Series</a></li>
                     <li><a href="../arc-welding-robots/g4-controller-series.php">G4 Controller Series</a></li>
-                    <li><a href="../arc-welding-robots/featured-products-and-solution.php">Featured Products & Solutions</a></li>
+                    <li><a href="../arc-welding-robots/featured-products-and-solution.php">Featured Products and Solutions</a></li>
                     <li><a href="../arc-welding-robots/robot-system-peripherals.php">Robot System Peripherals</a></li>
                 </ul>
             </li>
@@ -1310,8 +1275,8 @@ $category_id = "power-tools";
                     <li><a href="../batteries/special-batteries.php">Special Batteries</a></li>
                 </ul>
             </li>
-            <li class="has-sub active">
-                <a href="../drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling &amp; Lifting</span></a>
+            <li class="has-sub">
+                <a href="../drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling and Lifting</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-drilling-lifting" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
                     <li><a href="../drilling-and-lifting/lifting.php">Lifting</a></li>
@@ -1320,27 +1285,30 @@ $category_id = "power-tools";
                 </ul>
             </li>
             <li class="has-sub">
-                <a href="../gas-detectors/portable-gas-detectors.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></span><span class="sidebar-label">Portable Gas Detectors</span></a>
+                <a href="../gas-detectors/gas-detectors.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></span><span class="sidebar-label">Gas Detectors</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-gas-detectors" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-gas-detectors" class="sidebar-sublist collapsed">
                     <li><a href="../gas-detectors/single-gas-detector.php">Single Gas Detector</a></li>
                     <li><a href="../gas-detectors/multi-gas-detector.php">Multi Gas Detector</a></li>
+                    <li><a href="../gas-detectors/portable-gas-detectors.php">Portable Gas Detectors</a></li>
                     <li><a href="../gas-detectors/docking-data-management.php">Docking and Data Management</a></li>
                     <li><a href="../gas-detectors/calibration-gas-regulators.php">Calibration Gas and Regulators</a></li>
                 </ul>
             </li>
-            <li>
+            <li class="">
                 <a href="../portable-ventilators/portable-ventilators.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-fan"></i></span><span class="sidebar-label">Portable Ventilators</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-ventilators" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                
             </li>
             <li class="has-sub">
                 <a href="../power-tools/power-tools.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-tools"></i></span><span class="sidebar-label">Power Tools</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-power-tool" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-power-tool" class="sidebar-sublist collapsed">
-                    <li><a href="../power-tools/grinder.php">Grinder</a></li>
-                    <li><a href="../power-tools/saw.php">Saw</a></li>
-                    <li><a href="../power-tools/drill-and-wrench.php">Drill and Wrench</a></li>
-                    <li><a href="../power-tools/rotary-and-demolition-hammer.php">Rotary and Demolition Hammer</a></li>
-                    <li><a href="../power-tools/accessories.php">Accessories</a></li>
+                    <li><a href="grinder.php">Grinder</a></li>
+                    <li><a href="saw.php">Saw</a></li>
+                    <li><a href="drill-and-wrench.php">Drill and Wrench</a></li>
+                    <li><a href="rotary-and-demolition-hammer.php">Rotary and Demolition Hammer</a></li>
+                    <li><a href="accessories.php">Accessories</a></li>
                 </ul>
             </li>
             <li class="has-sub">
@@ -1359,7 +1327,6 @@ $category_id = "power-tools";
                         </ul>
                     </li>
                     <li><a href="../protection/hearing-respiratory-protection.php">Hearing &amp; Respiratory Protection</a></li>
-                    <li><a href="../protection/welding-head-and-face-protection.php">Welding Head and Face Protection</a></li>
                     <li class="has-nested-sub">
                         <a href="../protection/body-protection.php">Body Protection</a>
                         <button class="nested-toggle" aria-expanded="false" aria-controls="nested-body-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
@@ -1372,7 +1339,7 @@ $category_id = "power-tools";
                 </ul>
             </li>
             <li class="has-sub">
-              <a href="../welding-accessories/welding-accessories.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-gear"></i></span><span class="sidebar-label">Welding Accessories</span></a>
+                <a href="../welding-accessories/welding-accessories.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-gear"></i></span><span class="sidebar-label">Welding Accessories</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-accessories" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-welding-accessories" class="sidebar-sublist collapsed">
                     <li><a href="../welding-accessories/welding-electrode-oven.php">Welding Electrode Oven</a></li>
@@ -1395,36 +1362,38 @@ $category_id = "power-tools";
         </ul>
     </aside>
 
+    <div class="category-container">
         <div class="category-header">
             <h1><?php echo $category_name; ?></h1>
             <p><?php echo $category_description; ?></p>
         </div>
 
         <div class="category-content">
-            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Saw'); ?></h2>
+            <h2>Saw</h2>
             <?php if (!empty($current_category['description'])): ?>
                 <p class="category-description"><?php echo htmlspecialchars($current_category['description']); ?></p>
             <?php endif; ?>
             <div class="product-grid">
                 <?php 
-                // Dynamically fetch products for Saw subcategory
-                $all_products = array();
-                $products = andison_get_products_for_subcategory($category_id, $subcategory_id);
-                if ($products) {
-                    $all_products = array_merge($all_products, $products);
-                }
-                
+                // Featured products for this page
+                $featured_products = array(
+                    array('name' => 'Bosch GCO 14-24J Metal Cut Off Saw', 'model' => 'Bosch GCO 14-24J Metal Cut Off Saw', 'type' => 'Power Tools', 'brand' => 'Bosch', 'description' => ''),
+                    array('name' => 'Bosch GKS 235 Turbo Hand Held Circular Saw', 'model' => 'Bosch GKS 235 Turbo Hand Held Circular Saw', 'type' => 'Power Tools', 'brand' => 'Bosch', 'description' => ''),
+                    array('name' => 'Bosch GST 80PBE Jig Saw', 'model' => 'Bosch GST 80PBE Jig Saw', 'type' => 'Power Tools', 'brand' => 'Bosch', 'description' => '')
+                );
+
                 // Display products
-                if (!empty($all_products)) {
-                    foreach ($all_products as $product) {
+                if (!empty($featured_products)) {
+                    foreach ($featured_products as $product) {
                         $image_src = htmlspecialchars($product['image'] ?? '');
                         // Adjust image path for subdirectory context
-                        if ($image_src && strpos($image_src, 'andison/') === 0) {
+                        if ($image_src && strpos($image_src, '../') !== 0 && strpos($image_src, 'assets/') === 0) {
+                            // For product pages in subdirectories, add ../ prefix to assets
                             $image_src = '../' . $image_src;
                         }
                         $model = htmlspecialchars($product['model'] ?? '');
                         $name = htmlspecialchars($product['name'] ?? '');
-                        $type = htmlspecialchars($product['type'] ?? 'Power Tool');
+                        $type = htmlspecialchars($product['type'] ?? 'Premium Arc Welding Robots');
                         $brand = htmlspecialchars($product['brand'] ?? 'Industrial');
                         $description = htmlspecialchars($product['description'] ?? '');
                         $badge = htmlspecialchars($product['badge'] ?? '');
@@ -1432,9 +1401,9 @@ $category_id = "power-tools";
                 <div class="product-card">
                     <div class="product-image">
                         <?php if (!empty($image_src)): ?>
-                            <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=\"bi bi-tools\" style=\"font-size: 60px; color: #ccc;\"></i>'">
+                            <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=\"bi bi-robot\" style=\"font-size: 60px; color: #ccc;\"></i>'">
                         <?php else: ?>
-                            <i class="bi bi-tools" style="font-size: 60px; color: #ccc;"></i>
+                            <i class="bi bi-robot" style="font-size: 60px; color: #ccc;"></i>
                         <?php endif; ?>
                         <?php if (!empty($badge)): ?>
                             <div class="product-badge"><?php echo $badge; ?></div>
@@ -1451,18 +1420,6 @@ $category_id = "power-tools";
                 </div>
                         <?php
                     }
-                } else {
-                    // Fallback to placeholder if no products
-                    ?>
-                <div class="product-card">
-                    <div class="product-image">
-                        <i class="bi bi-tools" style="font-size: 60px; color: #ccc;"></i>
-                    </div>
-                    <h4>Saw Tools</h4>
-                    <p class="product-type">No products available</p>
-                    <button class="add-to-inquiry" type="button" data-model="Saw" data-type="Power Tool" data-brand="Industrial">ADD TO INQUIRY</button>
-                </div>
-                    <?php
                 }
                 ?>
             </div>

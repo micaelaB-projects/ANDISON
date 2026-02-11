@@ -27,3 +27,4 @@ $page_title = "STUD Welding Machine";
   </div>
 </body>
 </html>
+

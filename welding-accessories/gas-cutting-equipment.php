@@ -1340,11 +1340,11 @@ if (!$current_category) {
                 <a href="../power-tools/power-tools.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-tools"></i></span><span class="sidebar-label">Power Tools</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-power-tool" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-power-tool" class="sidebar-sublist collapsed">
-                    <li><a href="../power-tools/grinder/grinder.php">Grinder</a></li>
-                    <li><a href="../power-tools/saw/saw.php">Saw</a></li>
-                    <li><a href="../power-tools/drill-and-wrench/drill-and-wrench.php">Drill and Wrench</a></li>
-                    <li><a href="../power-tools/rotary-and-demolition-hammer/rotary-and-demolition-hammer.php">Rotary and Demolition Hammer</a></li>
-                    <li><a href="../power-tools/accessories/accessories.php">Accessories</a></li>
+                    <li><a href="../power-tools/grinder.php">Grinder</a></li>
+                    <li><a href="../power-tools/saw.php">Saw</a></li>
+                    <li><a href="../power-tools/drill-and-wrench.php">Drill and Wrench</a></li>
+                    <li><a href="../power-tools/rotary-and-demolition-hammer.php">Rotary and Demolition Hammer</a></li>
+                    <li><a href="../power-tools/accessories.php">Accessories</a></li>
                 </ul>
             </li>
             <li class="has-sub">
@@ -1586,3 +1586,4 @@ if (!$current_category) {
     </script>
 </body>
 </html>
+

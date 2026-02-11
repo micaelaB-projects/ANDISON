@@ -452,3 +452,5 @@ document.getElementById('featuredForm').addEventListener('submit', function(e){
 
 <?php
 andison_admin_footer();
+
+

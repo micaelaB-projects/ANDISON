@@ -27,3 +27,4 @@ $page_title = "TIG Welding Machine";
   </div>
 </body>
 </html>
+

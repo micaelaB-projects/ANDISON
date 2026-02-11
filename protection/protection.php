@@ -1368,7 +1368,7 @@ if (!$current_category) {
                     </li>
                 </ul>
             </li>
-            <li>
+            <li class="has-sub">
                <a href="../welding-accessories/welding-accessories.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-gear"></i></span><span class="sidebar-label">Welding Accessories</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-accessories" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-welding-accessories" class="sidebar-sublist collapsed">

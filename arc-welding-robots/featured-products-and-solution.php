@@ -1304,11 +1304,11 @@ if (!$current_category) {
                 <a href="../power-tools/power-tools.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-tools"></i></span><span class="sidebar-label">Power Tools</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-power-tool" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-power-tool" class="sidebar-sublist collapsed">
-                    <li><a href="../power-tools/grinder/grinder.php">Grinder</a></li>
-                    <li><a href="../power-tools/saw/saw.php">Saw</a></li>
-                    <li><a href="../power-tools/drill-and-wrench/drill-and-wrench.php">Drill and Wrench</a></li>
-                    <li><a href="../power-tools/rotary-and-demolition-hammer/rotary-and-demolition-hammer.php">Rotary and Demolition Hammer</a></li>
-                    <li><a href="../power-tools/accessories/accessories.php">Accessories</a></li>
+                    <li><a href="../power-tools/grinder.php">Grinder</a></li>
+                    <li><a href="../power-tools/saw.php">Saw</a></li>
+                    <li><a href="../power-tools/drill-and-wrench.php">Drill and Wrench</a></li>
+                    <li><a href="../power-tools/rotary-and-demolition-hammer.php">Rotary and Demolition Hammer</a></li>
+                    <li><a href="../power-tools/accessories.php">Accessories</a></li>
                 </ul>
             </li>
             <li class="has-sub">
@@ -1369,31 +1369,23 @@ if (!$current_category) {
         </div>
 
         <div class="category-content">
-            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Arc Welding Robots'); ?></h2>
+            <h2>Featured Products and Solutions</h2>
             <?php if (!empty($current_category['description'])): ?>
                 <p class="category-description"><?php echo htmlspecialchars($current_category['description']); ?></p>
             <?php endif; ?>
             <div class="product-grid">
                 <?php 
-                // Dynamically fetch all products from all arc-welding-robots subcategories
-                $subcategories = array();
-                if (!empty($current_category['subcategories']) && is_array($current_category['subcategories'])) {
-                    foreach ($current_category['subcategories'] as $subcat) {
-                        $subcategories[] = $subcat['id'];
-                    }
-                }
-                
-                $all_products = array();
-                foreach ($subcategories as $subcat) {
-                    $products = andison_get_products_for_subcategory('arc-welding-robots', $subcat);
-                    if ($products) {
-                        $all_products = array_merge($all_products, $products);
-                    }
-                }
-                
+                // Featured products for this page
+                $featured_products = array(
+                    array('name' => 'DTPS 3', 'model' => 'DTPS 3', 'type' => 'Arc Welding Robots', 'brand' => 'Industrial', 'description' => ''),
+                    array('name' => 'VPRS', 'model' => 'VPRS', 'type' => 'Arc Welding Robots', 'brand' => 'Industrial', 'description' => ''),
+                    array('name' => 'iWNB', 'model' => 'iWNB', 'type' => 'Arc Welding Robots', 'brand' => 'Industrial', 'description' => ''),
+                    array('name' => 'i-Reporter', 'model' => 'i-Reporter', 'type' => 'Arc Welding Robots', 'brand' => 'Industrial', 'description' => '')
+                );
+
                 // Display products
-                if (!empty($all_products)) {
-                    foreach ($all_products as $product) {
+                if (!empty($featured_products)) {
+                    foreach ($featured_products as $product) {
                         $image_src = htmlspecialchars($product['image'] ?? '');
                         // Adjust image path for subdirectory context
                         if ($image_src && strpos($image_src, '../') !== 0 && strpos($image_src, 'assets/') === 0) {
@@ -1429,18 +1421,6 @@ if (!$current_category) {
                 </div>
                         <?php
                     }
-                } else {
-                    // Fallback to placeholder if no products
-                    ?>
-                <div class="product-card">
-                    <div class="product-image">
-                        <i class="bi bi-robot" style="font-size: 60px; color: #ccc;"></i>
-                    </div>
-                    <h4>Arc Welding Robots</h4>
-                    <p class="product-type">No products available</p>
-                    <button class="add-to-inquiry" type="button" data-model="Arc Welding Robot" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
-                </div>
-                    <?php
                 }
                 ?>
             </div>
@@ -1566,3 +1546,4 @@ if (!$current_category) {
     </script>
 </body>
 </html>
+

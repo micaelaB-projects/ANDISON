@@ -50,70 +50,99 @@ $matches = array_slice($matches, 0, 80);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height:1.6; color:#333; background:#fff; padding-top:110px; }
+        body { font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height:1.6; color:#333; background: linear-gradient(135deg, #f8f9fa 0%, #f0f2f5 100%); padding-top:110px; min-height: 100vh; }
 
-        header { background: linear-gradient(135deg, #2B11DB 0%, #2B11DB 100%); color:white; padding:14px 0; position:fixed; top:0; left:0; right:0; z-index:1000; box-shadow:0 2px 10px rgba(0,0,0,0.1); }
+        header { background: linear-gradient(135deg, #2B11DB 0%, #2B11DB 100%); color:white; padding:14px 0; position:fixed; top:0; left:0; right:0; z-index:1000; box-shadow: 0 4px 16px rgba(43, 17, 219, 0.2); }
         .header-top { display:flex; align-items:center; max-width:1200px; margin:0 auto; padding:0 20px; gap:20px; }
         .logo-box img { height:50px; width:auto; display:block; }
 
         .search-bar { flex: 1 1 auto; display:flex; justify-content:center; max-width: 720px; margin:0 auto; }
         .search-bar .search-field { width:100%; display:flex; align-items:center; gap:8px; position:relative; margin:0; }
-        .search-bar input { width:100%; height:40px; padding:10px 16px 10px 40px; border:2px solid rgba(255,255,255,0.3); border-radius:6px; font-size:15px; background: rgba(255,255,255,0.95); color:#333; }
+        .search-bar input { width:100%; height:40px; padding:10px 16px 10px 40px; border:2px solid rgba(255,255,255,0.3); border-radius:6px; font-size:15px; background: rgba(255,255,255,0.95); color:#333; transition: all 0.3s ease; }
+        .search-bar input:focus { outline: none; background: #fff; border-color: rgba(255,255,255,0.8); box-shadow: 0 0 0 3px rgba(43, 17, 219, 0.1); }
         .search-bar input::placeholder { color:#999; }
         .search-bar .search-field::before { content:'🔍'; position:absolute; left:12px; font-size:16px; pointer-events:none; color:#666; }
 
-        .right-actions { margin-left:auto; display:flex; align-items:center; gap:12px; }
-        .back-btn { background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); color:#1a1a2e; border:none; padding:10px 24px; border-radius:25px; font-weight:700; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:8px; font-size:14px; letter-spacing:0.5px; box-shadow:0 4px 15px rgba(0, 217, 255, 0.3); transition:all 0.3s ease; }
-        .back-btn:hover { background:linear-gradient(135deg, #00E6FF 0%, #00C8F7 100%); box-shadow:0 6px 20px rgba(0, 217, 255, 0.5); transform:translateY(-2px); }
-        .inquiry-btn { background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); color:#1a1a2e; border:none; padding:10px 24px; border-radius:25px; font-weight:700; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:8px; font-size:14px; letter-spacing:0.5px; box-shadow:0 4px 15px rgba(0, 217, 255, 0.3); transition:all 0.3s ease; }
-        .inquiry-btn:hover { background:linear-gradient(135deg, #00E6FF 0%, #00C8F7 100%); box-shadow:0 6px 20px rgba(0, 217, 255, 0.5); transform:translateY(-2px); }
+        .right-actions { margin-left:auto; display:flex; align-items:center; gap:10px; }
+        .back-btn { background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); color:#1a1a2e; border:none; padding:11px 26px; border-radius:10px; font-weight:800; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:8px; font-size:13px; letter-spacing:0.5px; box-shadow:0 4px 14px rgba(0, 215, 179, 0.28); transition:all 0.35s ease; text-transform: uppercase; }
+        .back-btn:hover { background:linear-gradient(135deg, #00E6FF 0%, #00C8F7 100%); box-shadow:0 8px 24px rgba(0, 215, 179, 0.38); transform:translateY(-2px); }
+        .inquiry-btn { background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); color:#1a1a2e; border:none; padding:11px 26px; border-radius:10px; font-weight:800; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:8px; font-size:13px; letter-spacing:0.5px; box-shadow:0 4px 14px rgba(0, 215, 179, 0.28); transition:all 0.35s ease; text-transform: uppercase; }
+        .inquiry-btn:hover { background:linear-gradient(135deg, #00E6FF 0%, #00C8F7 100%); box-shadow:0 8px 24px rgba(0, 215, 179, 0.38); transform:translateY(-2px); }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 24px 20px; }
-        .results-header { display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom: 18px; }
-        .results-header h1 { font-size: 26px; color:#2b00d9; }
-        .results-header .count { color:#666; font-size: 14px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 32px 20px; }
+        .results-header { display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 2px solid #f0f0f0; }
+        .results-header h1 { font-size: 32px; font-weight: 900; color:#2b00d9; letter-spacing: -0.5px; }
+        .results-header .count { background: linear-gradient(135deg, #2B11DB 0%, #1a009e 100%); color: white; font-size: 14px; font-weight: 800; padding: 10px 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(43, 17, 219, 0.25); display: flex; align-items: center; gap: 8px; }
+        .results-header .count strong { font-size: 16px; }
 
-        .results-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
-        .result-card { background:#fff; border:1px solid #e9ecef; border-radius: 12px; overflow:hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.06); display:flex; flex-direction:column; min-height: 260px; }
-        .result-image { height: 150px; background: #f5f6f8; display:flex; align-items:center; justify-content:center; }
-        .result-image img { width:100%; height:100%; object-fit:contain; }
-        .result-body { padding: 14px 14px 16px; display:flex; flex-direction:column; gap: 6px; flex: 1 1 auto; }
-        .result-brand { font-size: 12px; color:#2b00d9; font-weight:800; letter-spacing: 0.3px; text-transform: uppercase; }
-        .result-model { font-size: 15px; font-weight: 800; color:#222; }
-        .result-type { font-size: 13px; color:#666; }
-        .result-actions { margin-top:auto; padding-top: 10px; }
-        .result-actions a { text-decoration:none; }
+        .results-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 28px; }
+        .result-card { background:#fff; border:1px solid #e0e4e8; border-radius: 16px; overflow:hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); display:flex; flex-direction:column; min-height: 340px; transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
+        .result-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background: linear-gradient(90deg, #2b00d9 0%, #00d7b3 100%); opacity:0; transition: opacity 0.35s ease; }
+        .result-card:hover { box-shadow: 0 16px 40px rgba(43, 17, 219, 0.12); transform: translateY(-6px); border-color: #d0d4e0; }
+        .result-card:hover::before { opacity: 1; }
+        .result-image { height: 200px; background: linear-gradient(135deg, #f5f7fb 0%, #eef2f8 100%); display:flex; align-items:center; justify-content:center; position: relative; border-bottom: 1px solid #f0f0f5; }
+        .result-image img { width:100%; height:100%; object-fit:contain; padding: 16px; }
+        .result-body { padding: 24px; display:flex; flex-direction:column; gap: 12px; flex: 1 1 auto; }
+        .result-brand { font-size: 10px; color:#2b00d9; font-weight:900; letter-spacing: 1.2px; text-transform: uppercase; opacity: 0.75; }
+        .result-model { font-size: 18px; font-weight: 900; color:#1a1a2e; line-height: 1.4; }
+        .result-type { font-size: 13px; color:#666; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+        .result-actions { margin-top:auto; padding-top: 16px; display:flex; gap: 8px; }
+        .result-actions a { text-decoration:none; flex: 1; }
         .view-brand-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 0;
             background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%);
-            color: #2E2E2E;
+            color: #1a1a2e;
             border: none;
-            padding: 10px 14px;
-            border-radius: 999px;
-            font-weight: 900;
-            letter-spacing: 0.3px;
-            box-shadow: 0 8px 18px rgba(0, 215, 179, 0.28);
-            transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+            padding: 11px 26px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 14px rgba(0, 215, 179, 0.28);
+            transition: all 0.35s ease;
+            cursor: pointer;
+            text-transform: uppercase;
         }
         .view-brand-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 10px 22px rgba(0, 215, 179, 0.38);
-            filter: brightness(0.98);
+            background: linear-gradient(135deg, #00E6FF 0%, #00C8F7 100%);
+            box-shadow: 0 8px 24px rgba(0, 215, 179, 0.38);
+            transform: translateY(-2px);
         }
         .view-brand-btn:active {
             transform: translateY(0);
         }
 
-        .no-results { padding: 28px 18px; border: 2px dashed #d5d7df; border-radius: 12px; background: #fafbff; color:#2b00d9; font-weight: 900; text-align:center; letter-spacing: 1px; }
-        .hint { padding: 18px; border-radius: 12px; background: #f7f8ff; border:1px solid #e8eaff; color:#333; }
+        .no-results { padding: 60px 32px; border: 2px solid #e0e4e8; border-radius: 16px; background: linear-gradient(135deg, #fafbff 0%, #f5f7ff 100%); color:#2b00d9; font-weight: 900; text-align:center; letter-spacing: 0.5px; font-size: 20px; }
+        .no-results small { font-size: 14px; font-weight: 600; opacity: 0.8; }
+        .hint { padding: 24px 28px; border-radius: 14px; background: linear-gradient(135deg, #f0f4ff 0%, #f7f8ff 100%); border:2px solid #e2e6ff; color:#333; font-weight: 600; line-height: 1.8; }
 
         @media (max-width: 768px) {
             body { padding-top: 140px; }
-            .header-top { flex-direction: column; align-items: stretch; }
-            .right-actions { margin-left: 0; justify-content: space-between; }
+            .header-top { flex-direction: column; align-items: stretch; gap: 12px; }
+            .logo-box { text-align: center; }
+            .right-actions { margin-left: 0; justify-content: center; gap: 8px; }
+            .container { padding: 28px 16px; }
+            .results-header { flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: 32px; }
+            .results-header h1 { font-size: 28px; }
+            .results-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+            .result-card { min-height: 300px; }
+            .result-image { height: 160px; }
+            .result-body { padding: 20px; }
+        }
+
+        @media (max-width: 480px) {
+            .header-top { padding: 0 12px; }
+            .back-btn, .inquiry-btn { padding: 8px 16px; font-size: 12px; }
+            .container { padding: 20px 12px; }
+            .results-header h1 { font-size: 24px; }
+            .results-grid { grid-template-columns: 1fr; gap: 16px; }
+            .result-card { min-height: 280px; }
+            .result-image { height: 140px; }
+            .result-model { font-size: 16px; }
+            .view-brand-btn { padding: 11px 24px; font-size: 13px; }
         }
     </style>
 </head>
@@ -139,38 +168,43 @@ $matches = array_slice($matches, 0, 80);
 
 <main class="container">
     <div class="results-header">
-        <h1>Search Results</h1>
+        <div>
+            <h1>Search Results</h1>
+        </div>
         <?php if ($q !== ''): ?>
-            <div class="count">Query: <strong><?php echo htmlspecialchars($q); ?></strong> • <?php echo count($matches); ?> result(s)</div>
+            <div class="count"><i class="bi bi-search"></i> <strong><?php echo count($matches); ?></strong> result<?php echo count($matches) !== 1 ? 's' : ''; ?> for "<strong><?php echo htmlspecialchars($q); ?></strong>"</div>
         <?php else: ?>
-            <div class="count">Type a product name/model to search</div>
+            <div class="count"><i class="bi bi-info-circle"></i> <strong>Search Products</strong></div>
         <?php endif; ?>
     </div>
 
     <?php if ($q === ''): ?>
         <div class="hint">
-            Try searching for a <strong>brand</strong>, <strong>model</strong>, or <strong>type</strong> (example: <em>Panasonic</em>, <em>YD-350</em>, <em>Gloves</em>).
+            🔍 <strong>Search Tips:</strong> Try searching by <em>brand name</em> (e.g., Panasonic, Bosch), <em>model number</em> (e.g., YD-350, GSB 16), or <em>product type</em> (e.g., Welding Robot, Grinder, Gloves).
         </div>
     <?php elseif (count($matches) === 0): ?>
-        <div class="no-results">NO RESULT FOUND.</div>
+        <div class="no-results">
+            <i class="bi bi-search" style="font-size: 32px; margin-bottom: 12px; display: block;"></i>
+            NO RESULT FOUND<br/><small style="font-size: 13px; font-weight: 500; margin-top: 8px; display: block;">Try a different search term or browse our categories</small>
+        </div>
     <?php else: ?>
         <div class="results-grid">
             <?php foreach ($matches as $item): ?>
                 <div class="result-card">
                     <div class="result-image">
                         <?php if (!empty($item['image'])): ?>
-                            <img src="<?php echo htmlspecialchars($item['image'], ENT_QUOTES); ?>" alt="<?php echo htmlspecialchars($item['model'], ENT_QUOTES); ?>" onerror="this.style.display='none'; this.parentElement.textContent='No Image';" />
+                            <img src="<?php echo htmlspecialchars($item['image'], ENT_QUOTES); ?>" alt="<?php echo htmlspecialchars($item['model'], ENT_QUOTES); ?>" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\"font-weight:800;color:#ccc;\">
                         <?php else: ?>
-                            <span style="font-weight:800;color:#888;">No Image</span>
+                            <span style="font-weight:800;color:#ccc;"><i class="bi bi-image" style="font-size: 32px;"></i></span>
                         <?php endif; ?>
                     </div>
                     <div class="result-body">
                         <div class="result-brand"><?php echo htmlspecialchars($item['brand']); ?></div>
                         <div class="result-model"><?php echo htmlspecialchars($item['model']); ?></div>
-                        <div class="result-type"><?php echo htmlspecialchars($item['type']); ?></div>
+                        <div class="result-type"><i class="bi bi-tag" style="margin-right: 4px;"></i><?php echo htmlspecialchars($item['type']); ?></div>
                         <div class="result-actions">
-                            <a class="view-brand-btn" href="brand.php?name=<?php echo urlencode($item['brand']); ?>&product=<?php echo urlencode($item['model']); ?>">
-                                View product <i class="bi bi-arrow-right"></i>
+                            <a class="view-brand-btn" href="brand.php?name=<?php echo urlencode($item['brand']); ?>&product=<?php echo urlencode($item['model']); ?>" title="View product details">
+                                View Details
                             </a>
                         </div>
                     </div>
@@ -181,3 +215,5 @@ $matches = array_slice($matches, 0, 80);
 </main>
 </body>
 </html>
+
+

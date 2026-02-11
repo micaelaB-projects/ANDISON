@@ -56,3 +56,5 @@ function andison_save_categories(array $categories): bool
     
     return $written !== false && $written > 0;
 }
+
+

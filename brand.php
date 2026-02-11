@@ -1692,7 +1692,7 @@
         }
 
         .product-badge {
-            display: inline-block;
+            display: none;
             background: #00d4aa;
             color: white;
             padding: 4px 12px;
@@ -1760,18 +1760,23 @@
 
         .modal-container {
             background: white;
-            border-radius: 12px;
-            max-width: 900px;
+            border-radius: 24px;
+            max-width: 480px;
             width: 90%;
-            max-height: 85vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            padding: 30px;
+            max-height: 92vh;
+            overflow: hidden;
+            box-shadow: 0 30px 90px rgba(43, 17, 219, 0.15), 0 0 60px rgba(0, 215, 179, 0.08);
+            display: flex;
+            flex-direction: column;
             position: relative;
-            animation: modalSlideIn 0.3s ease;
+            animation: modalSlideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(43, 17, 219, 0.1);
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .modal-container::-webkit-scrollbar {
+            display: none;
         }
 
         @keyframes modalSlideIn {
@@ -1787,43 +1792,52 @@
 
         .modal-close {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            background: transparent;
-            border: none;
-            font-size: 28px;
+            top: 16px;
+            right: 16px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(43, 17, 219, 0.1);
+            font-size: 24px;
             cursor: pointer;
-            color: #999;
-            width: 40px;
-            height: 40px;
+            color: #2b00d9;
+            width: 42px;
+            height: 42px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            transition: all 0.2s ease;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 2001;
+            font-weight: 600;
+            backdrop-filter: blur(8px);
         }
 
         .modal-close:hover {
-            background: #f0f0f0;
-            color: #333;
+            background: #2b00d9;
+            color: #fff;
+            transform: rotate(90deg) scale(1.1);
+            box-shadow: 0 8px 24px rgba(43, 17, 219, 0.3);
+            border-color: transparent;
         }
 
         .modal-media {
             position: relative;
-            border-radius: 8px;
+            border-radius: 0;
             overflow: hidden;
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%);
+            border: none;
+            box-shadow: none;
+            flex-shrink: 0;
         }
 
         .media-slider {
             position: relative;
-            height: 400px;
+            height: 280px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: white;
-            border-radius: 8px;
+            background: linear-gradient(135deg, #fafbff 0%, #f5f7ff 100%);
+            border-radius: 0;
+            padding: 0;
         }
 
         .media-item {
@@ -1831,7 +1845,7 @@
             width: 100%;
             height: 100%;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1846,7 +1860,13 @@
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            border-radius: 8px;
+            border-radius: 0;
+            box-shadow: none;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .media-item.active img {
+            transform: scale(0.98);
         }
 
         .media-item iframe {
@@ -1857,94 +1877,140 @@
         }
 
         .media-controls {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 15px;
-            align-items: center;
+            display: none;
         }
 
         .media-nav-btn {
-            background: linear-gradient(135deg, #2B11DB 0%, #2B11DB 100%);
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            font-size: 20px;
+            display: none;
+        }
+
+        .media-nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .media-nav-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(43,17,219,0.3);
+            transform: scale(1.18) translateY(-3px);
+            box-shadow: 0 10px 28px rgba(0, 215, 179, 0.35), 0 0 24px rgba(0, 230, 255, 0.35);
+            background: linear-gradient(135deg, #00D7B3 0%, #00E6FF 100%);
+            color: #fff;
+        }
+
+        .media-nav-btn:hover::before {
+            left: 100%;
+        }
+
+        .media-nav-btn:active {
+            transform: scale(1.08) translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 215, 179, 0.35);
+        }
+
+        .media-nav-btn:hover::before {
+            left: 100%;
         }
 
         .media-nav-btn:disabled {
-            opacity: 0.5;
+            opacity: 0.4;
             cursor: not-allowed;
-            transform: scale(1);
+            transform: none;
         }
 
         .media-dots {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             justify-content: center;
+            padding: 0 12px;
         }
 
         .dot {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            background: #ddd;
+            background: #cbd5e1;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
         }
 
         .dot.active {
-            background: #2B11DB;
+            background: #00D7B3;
+            transform: scale(1.3);
+            box-shadow: 0 0 14px rgba(0, 215, 179, 0.5);
+            border-color: rgba(0, 215, 179, 0.3);
         }
 
         .dot:hover {
-            background: #2B11DB;
+            background: #00D7B3;
+            transform: scale(1.2);
+            box-shadow: 0 0 10px rgba(0, 215, 179, 0.4);
+        }
+
+        @keyframes dotPulse {
+            0%, 100% {
+                box-shadow: 0 0 18px rgba(0, 215, 179, 0.6);
+            }
+            50% {
+                box-shadow: 0 0 32px rgba(0, 215, 179, 0.8), 0 0 48px rgba(0, 230, 255, 0.4);
+            }
         }
 
         .modal-content {
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
+            padding: 28px 24px;
+            flex: 1;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .modal-content::-webkit-scrollbar {
+            display: none;
         }
 
         .modal-content h2 {
-            color: #2B11DB;
+            color: #1a1a2e;
             font-size: 28px;
-            margin: 0 0 10px 0;
+            font-weight: 900;
+            margin: 0 0 6px 0;
             border: none;
+            letter-spacing: -0.3px;
         }
 
         .modal-content .model-type {
-            color: #888;
-            font-size: 16px;
-            margin-bottom: 20px;
+            color: #999;
+            font-size: 13px;
+            margin-bottom: 16px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .modal-specs {
-            background: #f9f9f9;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
+            background: #f9fafb;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid #e5e7eb;
+            box-shadow: none;
         }
 
         .modal-specs h3 {
             color: #2B11DB;
-            font-size: 18px;
-            margin: 0 0 15px 0;
-            border-bottom: 2px solid #2B11DB;
+            font-size: 15px;
+            font-weight: 900;
+            margin: 0 0 14px 0;
+            border-bottom: 3px solid #2B11DB;
             padding-bottom: 10px;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
         }
 
         .specs-list {
@@ -1954,11 +2020,18 @@
         }
 
         .specs-list li {
-            padding: 8px 0;
-            border-bottom: 1px solid #e5e5e5;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(43, 17, 219, 0.08);
             color: #555;
-            font-size: 14px;
+            font-size: 13px;
             line-height: 1.6;
+            font-weight: 500;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .specs-list li:hover {
+            padding-left: 6px;
+            color: #2B11DB;
         }
 
         .specs-list li:last-child {
@@ -1966,65 +2039,91 @@
         }
 
         .specs-list strong {
-            color: #333;
+            color: #2B11DB;
             display: block;
-            font-weight: 600;
-            margin-bottom: 2px;
+            font-weight: 800;
+            margin-bottom: 5px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
         }
 
         .modal-actions {
             display: flex;
-            gap: 12px;
+            gap: 0;
             margin-top: auto;
+            margin-left: -28px;
+            margin-right: -28px;
+            margin-bottom: -32px;
+            padding: 24px 28px;
+            background: linear-gradient(135deg, #00D7B3 0%, #00E6FF 100%);
+            border-radius: 0;
         }
 
         .modal-close-btn,
         .modal-inquiry-btn {
             flex: 1;
-            padding: 12px 24px;
+            padding: 14px 20px;
             border: none;
-            border-radius: 6px;
-            font-weight: 600;
+            border-radius: 8px;
+            font-weight: 800;
             cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 14px;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
         }
 
         .modal-close-btn {
-            background: #e5e5e5;
-            color: #333;
+            background: rgba(255, 255, 255, 0.9);
+            color: #00D7B3;
+            font-weight: 700;
+            border: none;
         }
 
         .modal-close-btn:hover {
-            background: #d0d0d0;
+            background: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: transparent;
         }
 
         .modal-inquiry-btn {
-            background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%);
-            color: #1a1a2e;
-            box-shadow: 0 4px 15px rgba(0, 217, 255, 0.3);
+            background: rgba(255, 255, 255, 0.95);
+            color: #00D7B3;
+            font-weight: 800;
+            box-shadow: none;
+            border: none;
         }
 
         .modal-inquiry-btn:hover {
-            background: linear-gradient(135deg, #00E6FF 0%, #00C8F7 100%);
-            box-shadow: 0 6px 20px rgba(0, 217, 255, 0.5);
-            transform: translateY(-2px);
+            background: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .modal-inquiry-btn:active {
+            transform: translateY(0);
         }
 
         @media (max-width: 768px) {
             .modal-container {
-                grid-template-columns: 1fr;
-                padding: 20px;
-                gap: 20px;
+                max-width: 90%;
                 max-height: 95vh;
             }
 
             .media-slider {
-                height: 300px;
+                height: 350px;
             }
 
             .modal-content h2 {
                 font-size: 24px;
+            }
+
+            .modal-content {
+                padding: 24px 20px;
             }
         }
 
@@ -2102,6 +2201,63 @@
     $company_name = "ANDISON INDUSTRIAL";
     $brand_name = isset($_GET['name']) ? htmlspecialchars($_GET['name']) : 'Brand';
     
+    // Map all brand names to their canonical keys in brands_info and logo filenames
+    $brand_name_map = function($brand) {
+        $brandMap = [
+            // Input variations => Actual key in brands_info
+            'Panasonic Connect' => 'Panasonic Connect',
+            'BW Technologies' => 'BW Technologies',
+            'Weldcraft' => 'Weldcraft',
+            'Soyer' => 'Soyer',
+            'Alfra' => 'Alfra',
+            'Aces' => 'ACES',
+            'ACES' => 'ACES',
+            'Uvex' => 'UVEX',
+            'UVEX' => 'UVEX',
+            'Ansell' => 'ANSELL',
+            'ANSELL' => 'ANSELL',
+            'Microgard' => 'MICROGARD',
+            'MICROGARD' => 'MICROGARD',
+            'Weldas' => 'WELDAS',
+            'WELDAS' => 'WELDAS',
+            'Tanaka' => 'TANAKA',
+            'TANAKA' => 'TANAKA',
+            'Chiyoda' => 'CHIYODA',
+            'CHIYODA' => 'CHIYODA',
+            'Hardworker' => 'HARDWORKER',
+            'Hard Workers' => 'HARDWORKER',
+            'HARDWORKER' => 'HARDWORKER',
+            'Magnaflux' => 'MAGNAFLUX',
+            'MAGNAFLUX' => 'MAGNAFLUX',
+            'Coppus' => 'COPPUS',
+            'COPPUS' => 'COPPUS',
+            'Bosch' => 'BOSCH',
+            'BOSCH' => 'BOSCH',
+            'Motolite' => 'MOTOLITE',
+            'MOTOLITE' => 'MOTOLITE',
+            'Aquasol' => 'Aquasol',
+            'Arcair' => 'Arcair',
+            'Dalo' => 'Dalo',
+            'Dryrod' => 'Dryrod',
+            'DryRod. II' => 'Dryrod',
+            'Garryson' => 'Garryson',
+            'Kobelco' => 'Kobelco',
+            'Makita' => 'Makita',
+            'Metrode' => 'Metrode',
+            'RAE SYSTEMS' => 'RAE SYSTEMS',
+            'ROBOT SYSTEMS' => 'ROBOT SYSTEMS',
+            'RAC' => 'RAC',
+            'SK And GAL GAGE' => 'SK And GAL GAGE',
+            'Spilfyter' => 'Spilfyter',
+            'Tempilstik' => 'Tempilstik',
+            'Truweld' => 'Truweld',
+            'Weiler' => 'Weiler',
+            'Weller' => 'Weiler',
+            'Yutaka' => 'Yutaka'
+        ];
+        return isset($brandMap[$brand]) ? $brandMap[$brand] : $brand;
+    };
+    
     // Map all brand names to their logo filenames
     $logo_filename = function($brand) {
         $logoMap = [
@@ -2155,8 +2311,11 @@
         $brands_info = [];
     }
     
+    // Normalize the brand name to match the array key
+    $normalized_brand_name = $brand_name_map($brand_name);
+    
     // Get brand info or use defaults
-    $brand_info = isset($brands_info[$brand_name]) ? $brands_info[$brand_name] : [
+    $brand_info = isset($brands_info[$normalized_brand_name]) ? $brands_info[$normalized_brand_name] : [
         'description' => 'High-quality industrial products and solutions.',
         'products' => ['Industrial Equipment', 'Tools', 'Accessories'],
         'features' => [
@@ -2324,8 +2483,15 @@
                     <li><a href="arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
                 </ul>
             </li>
-            <li>
-                <a href="#arc-handmetal-robots"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label">Arc Welding Robots</span><span class="sidebar-arrow"><i class="bi bi-chevron-right"></i></span></a>
+            <li class="has-sub">
+                <a href="arc-welding-robots/arc-welding-robot.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label">Arc Welding Robots</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-robots" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-arc-robots" class="sidebar-sublist collapsed">
+                    <li><a href="arc-welding-robots/featured-products-and-solution.php">Featured Products and Solutions</a></li>
+                    <li><a href="arc-welding-robots/G3-Controller-Series.php">G3 Controller Series</a></li>
+                    <li><a href="arc-welding-robots/G4-Controller-Series.php">G4 Controller Series</a></li>
+                    <li><a href="arc-welding-robots/robot-system-peripherals.php">Robot System Peripherals</a></li>
+                </ul>
             </li>
             <li class="has-sub">
                 <a href="batteries/batteries.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-fill"></i></span><span class="sidebar-label">Batteries</span></a>
@@ -2362,11 +2528,11 @@
                 <a href="power-tools/power-tools.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-tools"></i></span><span class="sidebar-label">Power Tools</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-power-tool" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-power-tool" class="sidebar-sublist collapsed">
-                    <li><a href="power-tools/grinder/grinder.php">Grinder</a></li>
-                    <li><a href="power-tools/saw/saw.php">Saw</a></li>
-                    <li><a href="power-tools/drill-and-wrench/drill-and-wrench.php">Drill and Wrench</a></li>
-                    <li><a href="power-tools/rotary-and-demolition-hammer/rotary-and-demolition-hammer.php">Rotary and Demolition Hammer</a></li>
-                    <li><a href="power-tools/accessories/accessories.php">Accessories</a></li>
+                    <li><a href="power-tools/grinder.php">Grinder</a></li>
+                    <li><a href="power-tools/saw.php">Saw</a></li>
+                    <li><a href="power-tools/drill-and-wrench.php">Drill and Wrench</a></li>
+                    <li><a href="power-tools/rotary-and-demolition-hammer.php">Rotary and Demolition Hammer</a></li>
+                    <li><a href="power-tools/accessories.php">Accessories</a></li>
                 </ul>
             </li>
             <li class="has-sub">
@@ -2423,7 +2589,7 @@
     <div class="brand-container">
         <div class="brand-header">
             <div class="brand-logo-container">
-                <img src="assets/brands/<?php echo htmlspecialchars(urlencode($logo_filename($brand_name))); ?>.jpg" alt="<?php echo $brand_name; ?>" class="brand-logo" onerror="console.log('Logo failed:', this.src); this.style.opacity='0.5';">
+                <img src="assets/brands/<?php echo htmlspecialchars($logo_filename($brand_name)); ?>.jpg" alt="<?php echo $brand_name; ?>" class="brand-logo" onerror="console.log('Logo failed:', this.src); this.style.opacity='0.5';">
                 <h1><?php echo $brand_name; ?></h1>
             </div>
             <p><?php echo $brand_info['description']; ?></p>
@@ -2651,6 +2817,7 @@
                 var productCards = document.querySelectorAll('.brand-page .product-card');
                 var currentMediaIndex = 0;
                 var currentProduct = null;
+                var autoPlayInterval = null;
                 
                 // Product data with specs and videos
                 var productsData = {
@@ -2728,6 +2895,9 @@
                         
                         // Show modal
                         modal.classList.add('active');
+                        
+                        // Start auto-play
+                        startAutoPlay();
                     });
                 });
 
@@ -2745,6 +2915,7 @@
                         var dot = document.createElement('div');
                         dot.className = 'dot' + (i === currentIndex ? ' active' : '');
                         dot.addEventListener('click', function() {
+                            stopAutoPlay();
                             currentMediaIndex = i;
                             var mediaItems = document.querySelectorAll('.media-item');
                             showMediaItem(i, Array.from(mediaItems));
@@ -2760,10 +2931,30 @@
                     document.getElementById('nextMedia').disabled = totalItems <= 1;
                 }
 
+                function startAutoPlay() {
+                    stopAutoPlay();
+                    var mediaItems = document.querySelectorAll('.media-item');
+                    if(mediaItems.length <= 1) return;
+                    
+                    autoPlayInterval = setInterval(function() {
+                        currentMediaIndex = (currentMediaIndex + 1) % mediaItems.length;
+                        showMediaItem(currentMediaIndex, Array.from(mediaItems));
+                        updateMediaDots(currentMediaIndex, mediaItems.length);
+                    }, 4000);
+                }
+
+                function stopAutoPlay() {
+                    if(autoPlayInterval) {
+                        clearInterval(autoPlayInterval);
+                        autoPlayInterval = null;
+                    }
+                }
+
                 // Close modal
                 var closeModal = function() {
                     modal.classList.remove('active');
                     currentMediaIndex = 0;
+                    stopAutoPlay();
                 };
 
                 modalClose.addEventListener('click', closeModal);
@@ -2774,6 +2965,7 @@
 
                 // Navigation buttons
                 document.getElementById('prevMedia').addEventListener('click', function() {
+                    stopAutoPlay();
                     var mediaItems = document.querySelectorAll('.media-item');
                     currentMediaIndex = Math.max(0, currentMediaIndex - 1);
                     showMediaItem(currentMediaIndex, Array.from(mediaItems));
@@ -2782,6 +2974,7 @@
                 });
 
                 document.getElementById('nextMedia').addEventListener('click', function() {
+                    stopAutoPlay();
                     var mediaItems = document.querySelectorAll('.media-item');
                     currentMediaIndex = Math.min(mediaItems.length - 1, currentMediaIndex + 1);
                     showMediaItem(currentMediaIndex, Array.from(mediaItems));
@@ -2811,6 +3004,41 @@
     </script>
     <script>
         // Product highlighting and scrolling
+        // Update brand dropdown links with product parameter ONLY when coming from search results
+        (function(){
+            // Get product parameter from URL
+            var urlParams = new URLSearchParams(window.location.search);
+            var product = urlParams.get('product');
+            var currentBrand = urlParams.get('name');
+            
+            // Only modify links if we came from search/have a product parameter
+            if(product){
+                // Find all brand dropdown links
+                var brandLinks = document.querySelectorAll('.nav-dropdown ul li a[href*="brand.php?name="]');
+                brandLinks.forEach(function(link){
+                    var href = link.getAttribute('href');
+                    if(href){
+                        // Extract brand name from href
+                        var regex = /name=([^&]+)/;
+                        var match = href.match(regex);
+                        var linkBrand = match ? decodeURIComponent(match[1]) : '';
+                        
+                        if(linkBrand === currentBrand){
+                            // Same brand - preserve product parameter
+                            if(!href.includes('&product=')){
+                                href = href.replace(/(\?|\&)product=[^&]*/g, '');
+                                link.setAttribute('href', href + '&product=' + encodeURIComponent(product));
+                            }
+                        } else {
+                            // Different brand - remove product parameter to show all products
+                            href = href.replace(/(\?|\&)product=[^&]*/g, '');
+                            link.setAttribute('href', href);
+                        }
+                    }
+                });
+            }
+        })();
+
         (function(){
             function normalize(str) {
                 return (str || '').trim().toLowerCase();
@@ -2850,3 +3078,5 @@
     </script>
 </body>
 </html>
+
+

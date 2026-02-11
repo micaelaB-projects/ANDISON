@@ -365,3 +365,5 @@ function andison_admin_footer(): void
 </html>
 <?php
 }
+
+

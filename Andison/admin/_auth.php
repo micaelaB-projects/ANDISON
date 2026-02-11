@@ -37,3 +37,5 @@ function andison_get_flash(): ?array
     unset($_SESSION['andison_flash']);
     return $v;
 }
+
+

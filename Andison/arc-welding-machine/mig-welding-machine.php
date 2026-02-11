@@ -27,3 +27,4 @@ $page_title = "MIG Welding Machine";
   </div>
 </body>
 </html>
+

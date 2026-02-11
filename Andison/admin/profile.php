@@ -667,3 +667,5 @@ function getStrengthInfo(strength) {
     });
 })();
 </script>
+
+
