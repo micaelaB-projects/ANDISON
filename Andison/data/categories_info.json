@@ -244,8 +244,32 @@
                 "name": "Welding Accessories"
             },
             {
-                "id": "welding-head-face-protection",
-                "name": "Welding Head Face Protection"
+                "id": "welding-electrode-oven",
+                "name": "Welding Electrode Oven"
+            },
+            {
+                "id": "non-destructive-crack-detection",
+                "name": "Non-Destructive Crack Detection"
+            },
+            {
+                "id": "gas-saving-regulator",
+                "name": "Gas Saving Regulator"
+            },
+            {
+                "id": "gas-cutting-equipment",
+                "name": "Gas Cutting Equipment"
+            },
+            {
+                "id": "industrial-markers",
+                "name": "Industrial Markers"
+            },
+            {
+                "id": "measuring-gauge",
+                "name": "Measuring Gauge"
+            },
+            {
+                "id": "others",
+                "name": "Others"
             }
         ]
     },

@@ -1341,7 +1341,7 @@ if (!$current_category) {
                 </ul>
             </li>
             <li class="has-sub">
-                <a href="../protection/protection.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-shield-check"></i></span><span class="sidebar-label">Protection and Safety</span></a>
+                <a href="../protection/protection.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-shield-check"></i></span><span class="sidebar-label">Personal Protective Equipment</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-protection-safety" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-protection-safety" class="sidebar-sublist collapsed">
                     <li><a href="../protection/eye-protection.php">Eye Protection</a></li>
@@ -1356,7 +1356,6 @@ if (!$current_category) {
                         </ul>
                     </li>
                     <li><a href="../protection/hearing-respiratory-protection.php">Hearing &amp; Respiratory Protection</a></li>
-                    <li><a href="../protection/welding-head-and-face-protection.php">Welding Head and Face Protection</a></li>
                     <li class="has-nested-sub">
                         <a href="../protection/body-protection.php">Body Protection</a>
                         <button class="nested-toggle" aria-expanded="false" aria-controls="nested-body-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
@@ -1368,11 +1367,18 @@ if (!$current_category) {
                     </li>
                 </ul>
             </li>
-            <li class="has-sub active">
+            <li class="has-sub">
                 <a href="../welding-accessories/welding-accessories.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-gear"></i></span><span class="sidebar-label">Welding Accessories</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-accessories" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-welding-accessories" class="sidebar-sublist collapsed">
-                    <li><a href="../welding-accessories/welding-head-face-protection.php">Welding, Head & Face Protection</a></li>
+                    <li><a href="../welding-accessories/welding-accessories.php">Welding Accessories</a></li>
+                    <li><a href="../welding-accessories/welding-electrode-oven.php">Welding Electrode Oven</a></li>
+                    <li><a href="../welding-accessories/non-destructive-crack-detection.php">Non-Destructive Crack Detection</a></li>
+                    <li><a href="../welding-accessories/gas-saving-regulator.php">Gas Saving Regulator</a></li>
+                    <li><a href="../welding-accessories/gas-cutting-equipment.php">Gas Cutting Equipment</a></li>
+                    <li><a href="../welding-accessories/industrial-markers.php">Industrial Markers</a></li>
+                    <li><a href="../welding-accessories/measuring-gauge.php">Measuring Gauge</a></li>
+                    <li><a href="../welding-accessories/others.php">Others</a></li>
                 </ul>
             </li>
             <li>

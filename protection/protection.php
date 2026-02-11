@@ -5,7 +5,7 @@ require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
 
-$page_title = "Protection and Safety";
+$page_title = "Personal Protective Equipment";
 $category_id = "protection";
 $subcategory_id = "protection";
 $phone = "+1(234) 567 8900";
@@ -27,10 +27,10 @@ if (!$current_category) {
     // Fallback: create a default category object
     $current_category = array(
         'id' => $category_id,
-        'name' => 'Protection and Safety',
+        'name' => 'Personal Protective Equipment',
         'description' => 'Discover our comprehensive range of personal protective equipment and safety solutions for industrial work environments.',
         'subcategories' => array(
-            array('id' => 'protection', 'name' => 'Protection and Safety')
+            array('id' => 'protection', 'name' => 'Personal Protective Equipment')
         )
     );
 }
@@ -41,7 +41,7 @@ if (!$current_category) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = $current_category['name'] ?? 'Protection and Safety';
+    $category_name = $current_category['name'] ?? 'Personal Protective Equipment';
     $category_description = $current_category['description'] ?? 'Discover our comprehensive range of personal protective equipment and safety solutions for industrial work environments.';
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
@@ -1341,7 +1341,7 @@ if (!$current_category) {
                 </ul>
             </li>
             <li class="has-sub">
-                <a href="../protection/protection.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-shield-check"></i></span><span class="sidebar-label">Protection and Safety</span></a>
+                <a href="../protection/protection.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-shield-check"></i></span><span class="sidebar-label">Personal Protective Equipment</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-protection-safety" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-protection-safety" class="sidebar-sublist collapsed">
                     <li><a href="../protection/eye-protection.php">Eye Protection</a></li>
@@ -1368,12 +1368,8 @@ if (!$current_category) {
                     </li>
                 </ul>
             </li>
-            <li class="has-sub">
+            <li>
                 <a href="../welding-accessories/welding-accessories.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-gear"></i></span><span class="sidebar-label">Welding Accessories</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-accessories" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
-                <ul id="sub-welding-accessories" class="sidebar-sublist collapsed">
-                    <li><a href="../welding-accessories/welding-head-face-protection.php">Welding, Head & Face Protection</a></li>
-                </ul>
             </li>
             <li>
                 <a href="../welding-consumables/welding-consumables.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-box"></i></span><span class="sidebar-label">Welding Consumables</span></a>
@@ -1387,7 +1383,7 @@ if (!$current_category) {
         </div>
 
         <div class="category-content">
-            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Protection and Safety'); ?></h2>
+            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Personal Protective Equipment'); ?></h2>
             <?php if (!empty($current_category['description'])): ?>
                 <p class="category-description"><?php echo htmlspecialchars($current_category['description']); ?></p>
             <?php endif; ?>
@@ -1453,9 +1449,9 @@ if (!$current_category) {
                     <div class="product-image">
                         <i class="bi bi-hammer" style="font-size: 60px; color: #ccc;"></i>
                     </div>
-                    <h4>Protection and Safety</h4>
+                    <h4>Personal Protective Equipment</h4>
                     <p class="product-type">No products available</p>
-                    <button class="add-to-inquiry" type="button" data-model="Protection and Safety" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
+                    <button class="add-to-inquiry" type="button" data-model="Personal Protective Equipment" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
                 </div>
                     <?php
                 }

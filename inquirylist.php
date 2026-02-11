@@ -1122,7 +1122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </ul>
             </li>
             <li class="has-sub">
-                <a href="protection/protection.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-shield-check"></i></span><span class="sidebar-label">Protection and Safety</span></a>
+                <a href="protection/protection.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-shield-check"></i></span><span class="sidebar-label">Personal Protective Equipment</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-protection-safety" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-protection-safety" class="sidebar-sublist collapsed">
                     <li><a href="protection/eye-protection.php">Eye Protection</a></li>
@@ -1150,10 +1150,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </li>
             <li class="has-sub">
                 <a href="welding-accessories/welding-accessories.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-gear"></i></span><span class="sidebar-label">Welding Accessories</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-accessories" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
-                <ul id="sub-welding-accessories" class="sidebar-sublist collapsed">
-                    <li><a href="welding-accessories/welding-head-face-protection.php">Welding, Head & Face Protection</a></li>
-                </ul>
             </li>
             <li>
                 <a href="welding-consumables/welding-consumables.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-box"></i></span><span class="sidebar-label">Welding Consumables</span></a>

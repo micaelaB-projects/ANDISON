@@ -5,8 +5,9 @@ require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
 
-$page_title = "G4 Controller Series";
-$subcategory_id = "g4-controller-series";
+$page_title = "Non-Destructive Crack Detection";
+$category_id = "welding-accessories";
+$subcategory_id = "non-destructive-crack-detection";
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";
@@ -17,9 +18,9 @@ $current_category = null;
 $parent_category = null;
 
 foreach ($categories as $cat) {
-    if ($cat['id'] === 'arc-welding-robots') {
+    if ($cat['id'] === $category_id) {
         $parent_category = $cat;
-        if (!empty($cat['subcategories']) && is_array($cat['subcategories'])) {
+        if (!empty($cat['subcategories'])) {
             foreach ($cat['subcategories'] as $subcat) {
                 if ($subcat['id'] === $subcategory_id) {
                     $current_category = $subcat;
@@ -32,7 +33,13 @@ foreach ($categories as $cat) {
 }
 
 if (!$current_category) {
-    die("Subcategory not found");
+    // Fallback: create a default category object
+    $current_category = array(
+        'id' => $subcategory_id,
+        'name' => 'Non-Destructive Crack Detection',
+        'description' => 'Advanced non-destructive testing equipment for detecting cracks, defects, and flaws in welded joints and metal structures without causing damage. Our inspection solutions ensure weld integrity and quality assurance.',
+        'subcategories' => array()
+    );
 }
 ?>
 <!DOCTYPE html>
@@ -41,12 +48,8 @@ if (!$current_category) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = $current_category['name'] ?? 'G4 Controller Series';
-    $category_description = $current_category['description'] ?? 'Explore our G4 Controller Series welding robots for advanced robotic welding applications.';
-    $phone = "+1(234) 567 8900";
-    $phone2 = "+1(234) 567 8900";
-    $phone3 = "+1(639) 977 803 7398";
-    $email = "info@andison-industrial.com";
+    $category_name = $current_category['name'] ?? 'Non-Destructive Crack Detection';
+    $category_description = $current_category['description'] ?? 'Advanced non-destructive testing equipment for detecting cracks, defects, and flaws in welded joints and metal structures without causing damage. Our inspection solutions ensure weld integrity and quality assurance.';
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -525,11 +528,11 @@ if (!$current_category) {
         }
 
         .category-header {
-            background: linear-gradient(135deg, #f8f9fa 0%, #f0f0f0 100%);
+            background: linear-gradient(135deg, rgba(43, 17, 219, 0.05) 0%, rgba(0, 215, 179, 0.05) 100%);
             border-radius: 12px;
-            padding: 45px 40px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
-            margin-bottom: 35px;
+            padding: 50px 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
             text-align: center;
             display: none;
         }
@@ -599,7 +602,6 @@ if (!$current_category) {
             transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
-            cursor: pointer;
             border: 1px solid #f0f0f0;
             min-height: 100%;
         }
@@ -627,6 +629,11 @@ if (!$current_category) {
             height: 100%;
             object-fit: contain;
             padding: 15px;
+        }
+
+        .product-image i {
+            font-size: 48px;
+            color: #e0e0e0;
         }
 
         .product-badge {
@@ -711,14 +718,18 @@ if (!$current_category) {
             transform: translateY(-2px);
         }
 
+        .add-to-inquiry:active {
+            transform: translateY(0);
+        }
+
+        .add-to-inquiry:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         .add-to-inquiry.already {
             background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
             box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
-        }
-
-        .add-to-inquiry.already:hover {
-            background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%);
-            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.35);
         }
 
         .inquiry-toast {
@@ -775,6 +786,20 @@ if (!$current_category) {
             font-size: 13px;
         }
 
+        @media (max-width: 1400px) {
+            .product-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .product-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+            }
+        }
+
         @media (max-width: 768px) {
             body {
                 padding-top: 120px;
@@ -791,11 +816,17 @@ if (!$current_category) {
             }
 
             .category-header {
-                padding: 25px;
+                padding: 35px 25px;
+                margin-bottom: 30px;
             }
 
             .category-header h1 {
-                font-size: 24px;
+                font-size: 28px;
+                margin-bottom: 12px;
+            }
+
+            .category-header p {
+                font-size: 15px;
             }
 
             .category-content {
@@ -1262,16 +1293,15 @@ if (!$current_category) {
                     <li><a href="../arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
-                    <li><a href="../arc-welding-machine/plasma-cutting-machine.php">Plasma Cutting Machine</a></li>
                 </ul>
             </li>
             <li class="has-sub">
                 <a href="../arc-welding-robots/arc-welding-robot.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label">Arc Welding Robots</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-robots" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
-                <ul id="sub-arc-robots" class="sidebar-sublist collapsed">
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-robot" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-arc-robot" class="sidebar-sublist collapsed">
                     <li><a href="../arc-welding-robots/g3-controller-series.php">G3 Controller Series</a></li>
                     <li><a href="../arc-welding-robots/g4-controller-series.php">G4 Controller Series</a></li>
-                    <li><a href="../arc-welding-robots/featured-products-and-solution.php">Featured Products and Solutions</a></li>
+                    <li><a href="../arc-welding-robots/featured-products-and-solution.php">Featured Products & Solutions</a></li>
                     <li><a href="../arc-welding-robots/robot-system-peripherals.php">Robot System Peripherals</a></li>
                 </ul>
             </li>
@@ -1285,7 +1315,7 @@ if (!$current_category) {
                 </ul>
             </li>
             <li class="has-sub">
-                <a href="../drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling and Lifting</span></a>
+                <a href="../drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling &amp; Lifting</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-drilling-lifting" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
                     <li><a href="../drilling-and-lifting/lifting.php">Lifting</a></li>
@@ -1293,23 +1323,18 @@ if (!$current_category) {
                     <li><a href="../drilling-and-lifting/cutters.php">Cutters</a></li>
                 </ul>
             </li>
-            <li class="has-sub">
-                <a href="../gas-detectors/gas-detectors.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></span><span class="sidebar-label">Gas Detectors</span></a>
+            <li class="has-sub active">
+                <a href="../gas-detectors/portable-gas-detectors.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></span><span class="sidebar-label">Portable Gas Detectors</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-gas-detectors" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-gas-detectors" class="sidebar-sublist collapsed">
                     <li><a href="../gas-detectors/single-gas-detector.php">Single Gas Detector</a></li>
                     <li><a href="../gas-detectors/multi-gas-detector.php">Multi Gas Detector</a></li>
-                    <li><a href="../gas-detectors/portable-gas-detectors.php">Portable Gas Detectors</a></li>
                     <li><a href="../gas-detectors/docking-data-management.php">Docking and Data Management</a></li>
                     <li><a href="../gas-detectors/calibration-gas-regulators.php">Calibration Gas and Regulators</a></li>
                 </ul>
             </li>
-            <li class="has-sub">
+            <li>
                 <a href="../portable-ventilators/portable-ventilators.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-fan"></i></span><span class="sidebar-label">Portable Ventilators</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-ventilators" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
-                <ul id="sub-ventilators" class="sidebar-sublist collapsed">
-                    <li><a href="../portable-ventilators/portable-ventilators.php">Portable Ventilators</a></li>
-                </ul>
             </li>
             <li class="has-sub">
                 <a href="../power-tools/power-tools.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-tools"></i></span><span class="sidebar-label">Power Tools</span></a>
@@ -1351,10 +1376,6 @@ if (!$current_category) {
             </li>
             <li class="has-sub">
                 <a href="../welding-accessories/welding-accessories.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-gear"></i></span><span class="sidebar-label">Welding Accessories</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-accessories" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
-                <ul id="sub-welding-accessories" class="sidebar-sublist collapsed">
-                    <li><a href="../welding-accessories/welding-accessories.php">Welding Accessories</a></li>
-                </ul>
             </li>
             <li>
                 <a href="../welding-consumables/welding-consumables.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-box"></i></span><span class="sidebar-label">Welding Consumables</span></a>
@@ -1362,34 +1383,49 @@ if (!$current_category) {
         </ul>
     </aside>
 
-    <div class="category-container">
         <div class="category-header">
             <h1><?php echo $category_name; ?></h1>
             <p><?php echo $category_description; ?></p>
         </div>
 
         <div class="category-content">
-            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'G4 Controller Series'); ?></h2>
+            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Non-Destructive Crack Detection'); ?></h2>
             <?php if (!empty($current_category['description'])): ?>
                 <p class="category-description"><?php echo htmlspecialchars($current_category['description']); ?></p>
             <?php endif; ?>
             <div class="product-grid">
                 <?php 
-                // Fetch products for this specific subcategory
-                $products = andison_get_products_for_subcategory('arc-welding-robots', 'g4-controller-series');
+                // Dynamically fetch products for non-destructive-crack-detection
+                $all_products = array();
+                
+                // Check if current category has subcategories (like magnetic-drill has b-line, rl-e, etc)
+                if (!empty($current_category['subcategories']) && is_array($current_category['subcategories'])) {
+                    // If it has subcategories, fetch from each subcategory
+                    foreach ($current_category['subcategories'] as $subcat) {
+                        $products = andison_get_products_for_subcategory($category_id, $subcat['id']);
+                        if ($products) {
+                            $all_products = array_merge($all_products, $products);
+                        }
+                    }
+                } else {
+                    // If it doesn't have subcategories, fetch directly for this category
+                    $products = andison_get_products_for_subcategory($category_id, $subcategory_id);
+                    if ($products) {
+                        $all_products = $products;
+                    }
+                }
                 
                 // Display products
-                if (!empty($products)) {
-                    foreach ($products as $product) {
+                if (!empty($all_products)) {
+                    foreach ($all_products as $product) {
                         $image_src = htmlspecialchars($product['image'] ?? '');
                         // Adjust image path for subdirectory context
-                        if ($image_src && strpos($image_src, '../') !== 0 && strpos($image_src, 'assets/') === 0) {
-                            // For product pages in subdirectories, add ../ prefix to assets
+                        if ($image_src && strpos($image_src, 'andison/') === 0) {
                             $image_src = '../' . $image_src;
                         }
                         $model = htmlspecialchars($product['model'] ?? '');
                         $name = htmlspecialchars($product['name'] ?? '');
-                        $type = htmlspecialchars($product['type'] ?? 'G4 Controller Series');
+                        $type = htmlspecialchars($product['type'] ?? 'Testing Equipment');
                         $brand = htmlspecialchars($product['brand'] ?? 'Industrial');
                         $description = htmlspecialchars($product['description'] ?? '');
                         $badge = htmlspecialchars($product['badge'] ?? '');
@@ -1397,9 +1433,9 @@ if (!$current_category) {
                 <div class="product-card">
                     <div class="product-image">
                         <?php if (!empty($image_src)): ?>
-                            <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=\"bi bi-robot\" style=\"font-size: 60px; color: #ccc;\"></i>'">
+                            <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=&quot;bi bi-hammer&quot; style=&quot;font-size: 60px; color: #ccc;&quot;></i>'">
                         <?php else: ?>
-                            <i class="bi bi-robot" style="font-size: 60px; color: #ccc;"></i>
+                            <i class="bi bi-hammer" style="font-size: 60px; color: #ccc;"></i>
                         <?php endif; ?>
                         <?php if (!empty($badge)): ?>
                             <div class="product-badge"><?php echo $badge; ?></div>
@@ -1421,11 +1457,11 @@ if (!$current_category) {
                     ?>
                 <div class="product-card">
                     <div class="product-image">
-                        <i class="bi bi-robot" style="font-size: 60px; color: #ccc;"></i>
+                        <i class="bi bi-hammer" style="font-size: 60px; color: #ccc;"></i>
                     </div>
-                    <h4><?php echo $category_name; ?></h4>
+                    <h4>Non-Destructive Testing Equipment</h4>
                     <p class="product-type">No products available</p>
-                    <button class="add-to-inquiry" type="button" data-model="<?php echo $category_name; ?>" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
+                    <button class="add-to-inquiry" type="button" data-model="NDT Equipment" data-type="Testing Equipment" data-brand="Industrial">ADD TO INQUIRY</button>
                 </div>
                     <?php
                 }
