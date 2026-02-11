@@ -927,6 +927,16 @@ if (!$current_category) {
             color: #2B11DB;
             padding-left: 16px;
         }
+        .sidebar-list li a.active {
+            background: #f3f4f6;
+            color: #2B11DB;
+            font-weight: 600;
+            border-left: 4px solid #2B11DB;
+            padding-left: 12px;
+        }
+        .sidebar-list li a.active .sidebar-icon {
+            color: #2B11DB;
+        }
         .sidebar-icon { 
             color: #5b21b6; 
             width: 24px; 
@@ -1559,6 +1569,51 @@ if (!$current_category) {
                 });
             });
         })();
+    </script>
+
+
+    <script>
+        // ============================================
+        // ACTIVE SIDEBAR CATEGORY HIGHLIGHTING
+        // ============================================
+        setTimeout(function(){
+            var currentPath = window.location.pathname.toLowerCase();
+            var sidebar = document.getElementById('sidebar');
+            if(sidebar) {
+                var pathParts = currentPath.split('/').filter(function(p) { return p && p !== 'andison-1'; });
+                var currentCategory = null;
+                
+                var categoryList = [
+                    'arc-welding-machine',
+                    'arc-welding-robots',
+                    'batteries',
+                    'drilling-and-lifting',
+                    'gas-detectors',
+                    'portable-ventilators',
+                    'power-tools',
+                    'protection',
+                    'welding-accessories',
+                    'welding-consumables'
+                ];
+                
+                for(var i = 0; i < pathParts.length; i++) {
+                    if(categoryList.indexOf(pathParts[i]) !== -1) {
+                        currentCategory = pathParts[i];
+                        break;
+                    }
+                }
+
+                if(currentCategory){
+                    var links = sidebar.querySelectorAll('.sidebar-list > li > a');
+                    links.forEach(function(link){
+                        var href = link.getAttribute('href').toLowerCase();
+                        if(href.includes(currentCategory)){
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            }
+        }, 500);
     </script>
 </body>
 </html>

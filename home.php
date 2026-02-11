@@ -1199,6 +1199,16 @@ $ytLinks = andison_get_youtube_links();
             color: #2B11DB;
             padding-left: 16px;
         }
+        .sidebar-list li a.active {
+            background: #f3f4f6;
+            color: #2B11DB;
+            font-weight: 600;
+            border-left: 4px solid #2B11DB;
+            padding-left: 12px;
+        }
+        .sidebar-list li a.active .sidebar-icon {
+            color: #2B11DB;
+        }
         .sidebar-icon { 
             color: #5b21b6; 
             width: 24px; 
@@ -2483,6 +2493,114 @@ $ytLinks = andison_get_youtube_links();
                 }
             }, false);
         })();
+    </script>
+
+    <script>
+        // ============================================
+        // ACTIVE SIDEBAR CATEGORY HIGHLIGHTING
+        // ============================================
+        (function(){
+            var currentPath = window.location.pathname.toLowerCase();
+            console.log('Current pathname:', currentPath);
+            
+            var sidebar = document.getElementById('sidebar');
+            if(!sidebar) {
+                console.log('Sidebar not found');
+                return;
+            }
+
+            // Extract category - split path and find category directory
+            var pathParts = currentPath.split('/').filter(function(p) { return p && p !== 'andison-1'; });
+            console.log('Path parts:', pathParts);
+            
+            var currentCategory = null;
+            
+            var categoryList = [
+                'arc-welding-machine',
+                'arc-welding-robots',
+                'batteries',
+                'drilling-and-lifting',
+                'gas-detectors',
+                'portable-ventilators',
+                'power-tools',
+                'protection',
+                'welding-accessories',
+                'welding-consumables'
+            ];
+            
+            // Find matching category in path
+            for(var i = 0; i < pathParts.length; i++) {
+                if(categoryList.indexOf(pathParts[i]) !== -1) {
+                    currentCategory = pathParts[i];
+                    console.log('Found category:', currentCategory);
+                    break;
+                }
+            }
+
+            if(currentCategory){
+                var links = sidebar.querySelectorAll('.sidebar-list > li > a');
+                console.log('Found links:', links.length);
+                
+                links.forEach(function(link, idx){
+                    var href = link.getAttribute('href');
+                    var hrefLower = href ? href.toLowerCase() : '';
+                    console.log('Link', idx, '- href:', href, '- includes category?:', hrefLower.includes(currentCategory));
+                    
+                    if(hrefLower.includes(currentCategory)){
+                        link.classList.add('active');
+                        console.log('Added active class to link', idx);
+                    }
+                });
+            } else {
+                console.log('No category found in path');
+            }
+        })();
+    </script>
+
+    <script>
+        // ACTIVE SIDEBAR CATEGORY HIGHLIGHTING WITH DELAY
+        // ============================================
+        setTimeout(function(){
+            var currentPath = window.location.pathname.toLowerCase();
+            var sidebar = document.getElementById('sidebar');
+            if(!sidebar) return;
+
+            var pathParts = currentPath.split('/').filter(function(p) { return p && p !== 'andison-1'; });
+            var currentCategory = null;
+            
+            var categoryList = [
+                'arc-welding-machine',
+                'arc-welding-robots',
+                'batteries',
+                'drilling-and-lifting',
+                'gas-detectors',
+                'portable-ventilators',
+                'power-tools',
+                'protection',
+                'welding-accessories',
+                'welding-consumables'
+            ];
+            
+            for(var i = 0; i < pathParts.length; i++) {
+                if(categoryList.indexOf(pathParts[i]) !== -1) {
+                    currentCategory = pathParts[i];
+                    break;
+                }
+            }
+
+            if(currentCategory){
+                var links = sidebar.querySelectorAll('.sidebar-list > li > a');
+                links.forEach(function(link){
+                    var href = link.getAttribute('href');
+                    if(href){
+                        var hrefLower = href.toLowerCase();
+                        if(hrefLower.includes(currentCategory)){
+                            link.classList.add('active');
+                        }
+                    }
+                });
+            }
+        }, 500);
     </script>
 </body>
 </html>
