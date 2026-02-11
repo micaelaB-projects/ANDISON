@@ -960,6 +960,17 @@ if (!$current_category) {
             color: #2B11DB;
             padding-left: 16px;
         }
+
+        .sidebar-list a.active {
+            background: #f0e6ff;
+            color: #2B11DB;
+            border-left: 5px solid #2B11DB;
+            padding-left: 11px;
+        }
+
+        .sidebar-list a.active .sidebar-icon {
+            color: #2B11DB;
+        }
         .sidebar-icon { 
             color: #5b21b6; 
             width: 24px; 

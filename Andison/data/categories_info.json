@@ -229,7 +229,21 @@
             },
             {
                 "id": "welding-head-and-face-protection",
-                "name": "Welding Head and Face Protection"
+                "name": "Welding Head and Face Protection",
+                "subcategories": [
+                    {
+                        "id": "welding-head",
+                        "name": "Welding Head"
+                    },
+                    {
+                        "id": "face-shield",
+                        "name": "Face Shield"
+                    },
+                    {
+                        "id": "welding-mask",
+                        "name": "Welding Mask"
+                    }
+                ]
             }
         ]
     },

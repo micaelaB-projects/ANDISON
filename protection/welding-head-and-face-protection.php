@@ -967,6 +967,17 @@ if (!$current_category) {
             color: #2B11DB;
             padding-left: 16px;
         }
+
+        .sidebar-list a.active {
+            background: #f0e6ff;
+            color: #2B11DB;
+            border-left: 5px solid #2B11DB;
+            padding-left: 11px;
+        }
+
+        .sidebar-list a.active .sidebar-icon {
+            color: #2B11DB;
+        }
         .sidebar-icon { 
             color: #5b21b6; 
             width: 24px; 
@@ -1030,24 +1041,32 @@ if (!$current_category) {
         }
 
         /* Nested sublists */
-        .sidebar-sublist li.has-nested-sub { position: relative; }
-        .sidebar-sublist li.has-nested-sub > a { padding-right: 24px; }
+        .sidebar-sublist li.has-nested-sub { 
+            position: relative;
+            padding-right: 0;
+        }
+        .sidebar-sublist li.has-nested-sub > a { 
+            padding-right: 30px;
+        }
         
         .nested-toggle {
             position: absolute;
-            right: 0;
-            top: 6px;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
             background: transparent;
             border: none;
             color: #9ca3af;
             cursor: pointer;
-            padding: 0;
-            width: 20px;
-            height: 20px;
+            padding: 4px;
+            width: auto;
+            height: auto;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 14px;
+            z-index: 100;
+            pointer-events: auto;
         }
         .nested-toggle:focus { outline: none; }
         .nested-toggle .bi { transition: transform 200ms ease; }
@@ -1055,9 +1074,15 @@ if (!$current_category) {
 
         .sidebar-nested-sublist { 
             list-style: none; 
-            margin: 10px 0 10px -12px; 
-            padding: 0; 
-            display: none;
+            margin: 0 !important; 
+            padding: 0 !important; 
+            display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
+            overflow: hidden !important;
+            position: absolute !important;
+            width: 0 !important;
+            max-height: 0 !important;
         }
         .sidebar-nested-sublist li { 
             padding: 0;
@@ -1093,8 +1118,19 @@ if (!$current_category) {
             transform: translateX(4px);
         }
 
-        .sidebar-nested-sublist.collapsed { display: none; }
-        .sidebar-nested-sublist:not(.collapsed) { display: block; }
+        .sidebar-nested-sublist.collapsed { 
+            display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
+            overflow: hidden !important;
+        }
+        .sidebar-nested-sublist:not(.collapsed) { 
+            display: block !important;
+            visibility: visible !important;
+            height: auto !important;
+            overflow: visible !important;
+            position: relative !important;
+        }
         .sidebar-list li.has-sub { position: relative; }
         .has-sub > a { padding-right: 40px; }
         .sub-toggle {
@@ -1363,6 +1399,15 @@ if (!$current_category) {
                         </ul>
                     </li>
                     <li><a href="../protection/hearing-respiratory-protection.php">Hearing &amp; Respiratory Protection</a></li>
+                    <li class="has-nested-sub">
+                        <a href="../protection/welding-head-and-face-protection.php">Welding Head and Face Protection</a>
+                        <button class="nested-toggle" aria-expanded="false" aria-controls="nested-welding-head-face" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                        <ul id="nested-welding-head-face" class="sidebar-nested-sublist collapsed">
+                            <li><a href="../protection/welding-head-and-face-protection.php">Welding Head</a></li>
+                            <li><a href="../protection/welding-head-and-face-protection.php">Face Shield</a></li>
+                            <li><a href="../protection/welding-head-and-face-protection.php">Welding Mask</a></li>
+                        </ul>
+                    </li>
                     <li class="has-nested-sub">
                         <a href="../protection/body-protection.php">Body Protection</a>
                         <button class="nested-toggle" aria-expanded="false" aria-controls="nested-body-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
@@ -1647,6 +1692,60 @@ if (!$current_category) {
                 });
             }
         })();
+    </script>
+
+    <script>
+        // ACTIVE SIDEBAR CATEGORY HIGHLIGHTING WITH DELAY
+        // ============================================
+        setTimeout(function(){
+            var currentPath = window.location.pathname.toLowerCase();
+            console.log('Delayed run - Pathname:', currentPath);
+            
+            var sidebar = document.getElementById('sidebar');
+            if(!sidebar) {
+                console.log('Sidebar NOT found even after delay');
+                return;
+            }
+
+            var pathParts = currentPath.split('/').filter(function(p) { return p && p !== 'andison-1'; });
+            var currentCategory = null;
+            
+            var categoryList = [
+                'arc-welding-machine',
+                'arc-welding-robots',
+                'batteries',
+                'drilling-and-lifting',
+                'gas-detectors',
+                'portable-ventilators',
+                'power-tools',
+                'protection',
+                'welding-accessories',
+                'welding-consumables'
+            ];
+            
+            for(var i = 0; i < pathParts.length; i++) {
+                if(categoryList.indexOf(pathParts[i]) !== -1) {
+                    currentCategory = pathParts[i];
+                    break;
+                }
+            }
+
+            if(currentCategory){
+                var links = sidebar.querySelectorAll('.sidebar-list > li > a');
+                console.log('Highlighting for category:', currentCategory, 'Links found:', links.length);
+                
+                links.forEach(function(link){
+                    var href = link.getAttribute('href');
+                    if(href){
+                        var hrefLower = href.toLowerCase();
+                        if(hrefLower.includes(currentCategory)){
+                            link.classList.add('active');
+                            console.log('Added active to:', href);
+                        }
+                    }
+                });
+            }
+        }, 500);
     </script>
 </body>
 </html>
