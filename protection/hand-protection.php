@@ -1176,6 +1176,107 @@ if (!$current_category) {
         .sidebar-close:hover {
             color: #374151;
         }
+
+        /* Hand Protection Category Cards */
+        .hand-protection-categories-header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .hand-protection-categories-header h3 {
+            color: #2B11DB;
+            font-size: 24px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .hand-protection-categories-header p {
+            color: #666;
+            font-size: 15px;
+        }
+
+        .hand-protection-categories-grid {
+            display: grid !important;
+            grid-template-columns: repeat(4, 1fr) !important;
+            gap: 20px !important;
+            margin-bottom: 50px !important;
+            margin-top: 30px !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 0 !important;
+        }
+
+        .hand-category-card {
+            background: linear-gradient(135deg, #4b1f8f 0%, #2B11DB 100%) !important;
+            border-radius: 14px !important;
+            padding: 28px 20px !important;
+            min-height: 200px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            cursor: pointer !important;
+            text-decoration: none !important;
+            color: white !important;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            box-shadow: 0 4px 16px rgba(43, 17, 219, 0.15) !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        .hand-category-card:hover {
+            transform: translateY(-8px) !important;
+            box-shadow: 0 12px 32px rgba(43, 17, 219, 0.25) !important;
+        }
+
+        .hand-category-card-icon {
+            font-size: 48px;
+            color: #00ffd1;
+            margin-bottom: 16px;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 2px 4px rgba(0, 255, 209, 0.2));
+        }
+
+        .hand-category-card:hover .hand-category-card-icon {
+            transform: scale(1.15) rotate(-5deg);
+        }
+
+        .hand-category-card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .hand-category-card-arrow {
+            color: #00ffd1;
+            font-size: 18px;
+            transition: transform 0.3s ease;
+            margin-top: auto;
+        }
+
+        .hand-category-card:hover .hand-category-card-arrow {
+            transform: translateX(4px);
+        }
+
+        @media (max-width: 1200px) {
+            .hand-protection-categories-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hand-protection-categories-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hand-protection-categories-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1445,6 +1546,36 @@ if (!$current_category) {
             <?php if (!empty($current_category['description'])): ?>
                 <p class="category-description"><?php echo htmlspecialchars($current_category['description']); ?></p>
             <?php endif; ?>
+
+            <!-- Hand Protection Category Cards -->
+            <div class="hand-protection-categories-header">
+                <h3>Browse by Glove Type</h3>
+                <p>Select a hand protection category to explore our comprehensive range</p>
+            </div>
+
+            <div class="hand-protection-categories-grid">
+                <a href="welding-gloves.php" class="hand-category-card">
+                    <i class="bi bi-fire hand-category-card-icon"></i>
+                    <h4 class="hand-category-card-title">Welding Gloves</h4>
+                    <i class="bi bi-chevron-right hand-category-card-arrow"></i>
+                </a>
+                <a href="working-gloves.php" class="hand-category-card">
+                    <i class="bi bi-hand-index hand-category-card-icon"></i>
+                    <h4 class="hand-category-card-title">Working Gloves</h4>
+                    <i class="bi bi-chevron-right hand-category-card-arrow"></i>
+                </a>
+                <a href="chemical-liquid-protection-gloves.php" class="hand-category-card">
+                    <i class="bi bi-droplet hand-category-card-icon"></i>
+                    <h4 class="hand-category-card-title">Chemical & Liquid Protection</h4>
+                    <i class="bi bi-chevron-right hand-category-card-arrow"></i>
+                </a>
+                <a href="disposable-gloves.php" class="hand-category-card">
+                    <i class="bi bi-shield-check hand-category-card-icon"></i>
+                    <h4 class="hand-category-card-title">Disposable Gloves</h4>
+                    <i class="bi bi-chevron-right hand-category-card-arrow"></i>
+                </a>
+            </div>
+
             <div class="product-grid">
                 <?php 
                 // Dynamically fetch products for hand-protection

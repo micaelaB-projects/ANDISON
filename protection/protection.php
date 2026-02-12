@@ -1034,32 +1034,24 @@ if (!$current_category) {
         }
 
         /* Nested sublists */
-        .sidebar-sublist li.has-nested-sub { 
-            position: relative;
-            padding-right: 0;
-        }
-        .sidebar-sublist li.has-nested-sub > a { 
-            padding-right: 30px;
-        }
+        .sidebar-sublist li.has-nested-sub { position: relative; }
+        .sidebar-sublist li.has-nested-sub > a { padding-right: 24px; }
         
         .nested-toggle {
             position: absolute;
-            right: 8px;
-            top: 50%;
-            transform: translateY(-50%);
+            right: 0;
+            top: 6px;
             background: transparent;
             border: none;
             color: #9ca3af;
             cursor: pointer;
-            padding: 4px;
-            width: auto;
-            height: auto;
+            padding: 0;
+            width: 20px;
+            height: 20px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
-            z-index: 100;
-            pointer-events: auto;
+            font-size: 12px;
         }
         .nested-toggle:focus { outline: none; }
         .nested-toggle .bi { transition: transform 200ms ease; }
@@ -1067,15 +1059,9 @@ if (!$current_category) {
 
         .sidebar-nested-sublist { 
             list-style: none; 
-            margin: 0 !important; 
-            padding: 0 !important; 
-            display: none !important;
-            visibility: hidden !important;
-            height: 0 !important;
-            overflow: hidden !important;
-            position: absolute !important;
-            width: 0 !important;
-            max-height: 0 !important;
+            margin: 10px 0 10px -12px; 
+            padding: 0; 
+            display: none;
         }
         .sidebar-nested-sublist li { 
             padding: 0;
@@ -1111,19 +1097,8 @@ if (!$current_category) {
             transform: translateX(4px);
         }
 
-        .sidebar-nested-sublist.collapsed { 
-            display: none !important;
-            visibility: hidden !important;
-            height: 0 !important;
-            overflow: hidden !important;
-        }
-        .sidebar-nested-sublist:not(.collapsed) { 
-            display: block !important;
-            visibility: visible !important;
-            height: auto !important;
-            overflow: visible !important;
-            position: relative !important;
-        }
+        .sidebar-nested-sublist.collapsed { display: none; }
+        .sidebar-nested-sublist:not(.collapsed) { display: block; }
         .sidebar-list li.has-sub { position: relative; }
         .has-sub > a { padding-right: 40px; }
         .sub-toggle {
@@ -1392,15 +1367,7 @@ if (!$current_category) {
                         </ul>
                     </li>
                     <li><a href="../protection/hearing-respiratory-protection.php">Hearing &amp; Respiratory Protection</a></li>
-                    <li class="has-nested-sub">
-                        <a href="../protection/welding-head-and-face-protection.php">Welding Head and Face Protection</a>
-                        <button class="nested-toggle" aria-expanded="false" aria-controls="nested-welding-head-face" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
-                        <ul id="nested-welding-head-face" class="sidebar-nested-sublist collapsed">
-                            <li><a href="../protection/welding-head-and-face-protection.php">Welding Head</a></li>
-                            <li><a href="../protection/welding-head-and-face-protection.php">Face Shield</a></li>
-                            <li><a href="../protection/welding-head-and-face-protection.php">Welding Mask</a></li>
-                        </ul>
-                    </li>
+                    <li><a href="../protection/welding-head-and-face-protection.php">Welding Head and Face Protection</a></li>
                     <li class="has-nested-sub">
                         <a href="../protection/body-protection.php">Body Protection</a>
                         <button class="nested-toggle" aria-expanded="false" aria-controls="nested-body-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
