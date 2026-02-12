@@ -928,6 +928,326 @@
 
         .nav-list li { animation: none !important; opacity: 1 !important; transform: none !important; }
 
+        /* Mini Sidebar (always visible icon bar) */
+        .mini-sidebar {
+            position: fixed;
+            left: 0;
+            top: calc(14px + 50px + 14px + 12px + 52px);
+            bottom: 0;
+            width: 80px;
+            background: #2B11DB;
+            box-shadow: 2px 0 16px rgba(0,0,0,0.1);
+            z-index: 65;
+            padding: 20px 12px;
+            overflow-y: hidden;
+            overflow-x: hidden;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            pointer-events: auto;
+        }
+
+        .mini-sidebar.expanded {
+            width: 280px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 20px 12px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .mini-sidebar.expanded::-webkit-scrollbar {
+            display: none;
+        }
+
+        .mini-sidebar.active {
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .mini-sidebar.active.expanded {
+            align-items: stretch;
+        }
+
+        .mini-sidebar-icon {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            position: relative;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), justify-content 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease;
+            gap: 12px;
+            padding: 0;
+            flex-shrink: 0;
+            min-width: 56px;
+            pointer-events: auto;
+        }
+
+        .mini-sidebar-icon .label {
+            display: none;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            flex: 1;
+            text-align: left;
+            opacity: 0;
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-icon {
+            width: 100%;
+            justify-content: flex-start;
+            padding: 12px;
+            min-width: auto;
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-icon .label {
+            display: block;
+            opacity: 1;
+        }
+
+        #miniSidebarMenuBar {
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            margin-bottom: 8px;
+            margin-top: 0;
+            flex-shrink: 0;
+        }
+
+        .mini-sidebar.expanded #miniSidebarMenuBar {
+            justify-content: flex-start;
+            width: 100%;
+            height: auto;
+            padding: 12px;
+            margin-bottom: 8px;
+        }
+
+        .browse-label {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mini-sidebar.expanded .browse-label {
+            display: inline-block !important;
+        }
+
+        .mini-sidebar-icon:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.05);
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-icon:hover {
+            transform: translateX(4px);
+        }
+
+        .mini-sidebar-icon.active-icon {
+            background: #00D7B3;
+            color: #2B11DB;
+        }
+
+        .mini-sidebar-icon .sub-indicator {
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            background: rgba(255,255,255,0.1);
+            color: #ffffff;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            opacity: 0.95;
+            transition: background 0.15s ease, color 0.15s ease;
+            z-index: 999;
+            cursor: pointer;
+            pointer-events: auto;
+            border: 1px solid #ffffff;
+            box-shadow: none;
+        }
+
+        .mini-sidebar-icon:hover .sub-indicator {
+            opacity: 1;
+            background: #00D7B3;
+            color: #2B11DB;
+        }
+
+        .mini-sidebar-icon .sub-indicator:active {
+            transform: translateY(0);
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-icon .sub-indicator {
+            position: static;
+            background: transparent;
+            color: #2B11DB;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: auto;
+            opacity: 1;
+            border: 0;
+            cursor: pointer;
+            pointer-events: auto;
+            z-index: 100;
+            box-shadow: none;
+        }
+
+        .mini-sidebar-toggle {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 20px;
+            margin-top: auto;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease;
+            flex-shrink: 0;
+            min-width: 56px;
+            position: relative;
+            z-index: 100;
+            pointer-events: auto;
+        }
+
+        .mini-sidebar-toggle:hover {
+            background: rgba(255,255,255,0.25);
+            transform: scale(1.05);
+        }
+
+        .mini-sidebar-toggle:active {
+            transform: scale(0.95);
+        }
+
+        .mini-sidebar-toggle i {
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-block;
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-toggle i {
+            transform: rotate(180deg);
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-toggle {
+            width: 100%;
+            padding: 12px;
+            min-width: auto;
+        }
+
+        .mini-popover {
+            position: fixed;
+            top: -9999px;
+            left: -9999px;
+            width: 320px;
+            max-width: calc(100vw - 32px);
+            background: linear-gradient(180deg, #1976D2FF 0%, #19D2B6FF 100%);
+            color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-6px);
+            transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease;
+            z-index: 200;
+        }
+        .mini-popover.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .mini-popover::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: calc(26px + var(--arrow-offset, 0px));
+            width: 0; height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 10px solid #1976D2;
+            filter: drop-shadow(-2px 2px 2px rgba(0,0,0,0.12));
+        }
+        .mini-popover-header {
+            background: #f5f9ff;
+            color: #0f5132;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            padding: 12px 16px;
+            font-weight: 800;
+            font-size: 15px;
+            letter-spacing: 0.3px;
+        }
+        .mini-popover-title { color: #0f5132; }
+        .mini-popover-body {
+            padding: 12px 16px 16px 16px;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+        }
+        .mini-popover-list {
+            list-style: none;
+            margin: 0;
+            padding: 6px 0 6px 0;
+            position: relative;
+        }
+        .mini-popover-list::before {
+            content: '';
+            position: absolute;
+            left: 24px;
+            top: 6px;
+            bottom: 6px;
+            width: 2px;
+            background: rgba(255,255,255,0.35);
+            border-radius: 2px;
+        }
+        .mini-popover-item {
+            position: relative;
+            padding-left: 42px;
+            margin: 12px 0;
+            display: flex;
+            align-items: stretch;
+            min-height: 32px;
+        }
+        .mini-popover-item .square {
+            position: absolute;
+            left: 16px;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            width: 14px; height: 14px;
+            border-radius: 3px;
+            background: #7aa7ff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.18), inset 0 -1px 0 rgba(0,0,0,0.08);
+            flex-shrink: 0;
+            pointer-events: none;
+        }
+        .mini-popover-item a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            display: block;
+            padding: 8px 10px;
+            border-radius: 8px;
+            transition: background 140ms ease, transform 120ms ease;
+            width: 100%;
+        }
+        .mini-popover-item a:hover {
+            background: rgba(255,255,255,0.12);
+            transform: translateX(2px);
+        }
+
     </style>
 </head>
 <body>
@@ -1192,6 +1512,35 @@
             </li>
         </ul>
     </aside>
+
+    <!-- Mini Sidebar (Icon Bar) -->
+   <div class="mini-sidebar active" id="miniSidebar">
+        <div id="miniSidebarMenuBar" style="background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); border-radius: 0; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i>
+            <span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px; display: none;" class="browse-label">BROWSE CATEGORIES</span>
+        </div>
+        <div class="mini-sidebar-icon has-sub" data-target="./arc-welding-machine/arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="./arc-welding-robots/arc-welding-robot.php" title="Arc Welding Robots"><i class="bi bi-robot"></i><span class="label">Arc Welding Robots</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="./batteries/batteries.php" title="Batteries"><i class="bi bi-lightning-fill"></i><span class="label">Batteries</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="./drilling-and-lifting/drilling-and-lifting.php" title="Drilling and Lifting"><i class="bi bi-hammer"></i><span class="label">Drilling and Lifting</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="./gas-detectors/gas-detectors.php" title="Gas Detectors"><i class="bi bi-bullseye"></i><span class="label">Gas Detectors</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="./portable-ventilators/portable-ventilators.php" title="Portable Ventilators"><i class="bi bi-fan"></i><span class="label">Portable Ventilators</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="./power-tools/power-tools.php" title="Power Tools"><i class="bi bi-tools"></i><span class="label">Power Tools</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="./protection/protection.php" title="Personal Protective Equipment"><i class="bi bi-shield-check"></i><span class="label">PPE</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="./welding-accessories/welding-accessories.php" title="Welding Accessories"><i class="bi bi-gear"></i><span class="label">Welding Accessories</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="./welding-consumables/welding-consumables.php" title="Welding Consumables"><i class="bi bi-box"></i><span class="label">Welding Consumables</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <button class="mini-sidebar-toggle" id="expandSidebar" title="Toggle Sidebar"><i class="bi bi-chevron-right"></i></button>
+    </div>
+
+    <!-- Floating popover for mini sidebar subcategories -->
+    <div id="miniPopover" class="mini-popover" aria-hidden="true">
+        <div class="mini-popover-header">
+            <div class="mini-popover-title">Personal Protective Equipment</div>
+        </div>
+        <div class="mini-popover-body">
+            <ul class="mini-popover-list"></ul>
+        </div>
+    </div>
 
     <!-- Main Content -->
     <div class="main-content">
@@ -1498,6 +1847,4 @@
                 });
             }
         }
-    </script>
-</body>
-</html>
+    </script>\n\n    <script>\n        // ============================================\n        // MINI SIDEBAR AND BROWSE TOGGLE FUNCTIONALITY\n        // ============================================\n        var miniSidebar = document.getElementById('miniSidebar');\n        var mainSidebar = document.getElementById('sidebar');\n        var backdrop = document.getElementById('overlay');\n        var expandBtn = document.getElementById('expandSidebar');\n        var browseToggle = document.getElementById('browseToggle');\n        var miniIcons = document.querySelectorAll('.mini-sidebar-icon');\n        var miniPopover = document.getElementById('miniPopover');\n        var popoverTitle = miniPopover ? miniPopover.querySelector('.mini-popover-title') : null;\n        var popoverList = miniPopover ? miniPopover.querySelector('.mini-popover-list') : null;\n        var currentPopoverKey = null;\n\n        // Responsive function to show/hide browse toggle\n        function updateBrowseToggleVisibility() {\n            if(window.innerWidth <= 1024) {\n                if(browseToggle) browseToggle.classList.add('active');\n            } else {\n                if(browseToggle) browseToggle.classList.remove('active');\n            }\n        }\n\n        // Initialize on load\n        if(browseToggle) updateBrowseToggleVisibility();\n\n        // Update on window resize\n        if(browseToggle) window.addEventListener('resize', updateBrowseToggleVisibility);\n\n        // HIGHLIGHT CURRENT CATEGORY IN MINI SIDEBAR\n        (function() {\n            var currentPath = window.location.pathname.toLowerCase();\n            var pathParts = currentPath.split('/').filter(function(p) { return p && p !== 'andison'; });\n            var currentCategory = null;\n            \n            var categoryList = [\n                'arc-welding-machine',\n                'arc-welding-robots',\n                'batteries',\n                'drilling-and-lifting',\n                'gas-detectors',\n                'portable-ventilators',\n                'power-tools',\n                'protection',\n                'welding-accessories',\n                'welding-consumables'\n            ];\n            \n            // Find matching category in path\n            for(var i = 0; i < pathParts.length; i++) {\n                if(categoryList.indexOf(pathParts[i]) !== -1) {\n                    currentCategory = pathParts[i];\n                    break;\n                }\n            }\n            \n            // If on home page or no category found, don't highlight anything\n            if(currentCategory) {\n                // Remove any existing active-icon\n                document.querySelectorAll('.mini-sidebar-icon.active-icon').forEach(function(el) {\n                    el.classList.remove('active-icon');\n                });\n                \n                // Find and highlight the matching category icon\n                var icons = document.querySelectorAll('.mini-sidebar-icon[data-target]');\n                icons.forEach(function(icon) {\n                    var dataTarget = icon.getAttribute('data-target');\n                    if(dataTarget && dataTarget.indexOf('/' + currentCategory + '/') !== -1) {\n                        icon.classList.add('active-icon');\n                    }\n                });\n            }\n        })();\n\n        // Helpers for popover\n        function getCategoryKeyFromTarget(dataTarget) {\n            if (!dataTarget) return null;\n            var keys = [\n                'arc-welding-machine','arc-welding-robots','batteries','drilling-and-lifting','gas-detectors','portable-ventilators','power-tools','protection','welding-accessories','welding-consumables'\n            ];\n            for (var i=0;i<keys.length;i++) { if (dataTarget.indexOf('/'+keys[i]+'/') !== -1) return keys[i]; }\n            return null;\n        }\n        function getCategoryTitle(key) {\n            var map = {\n                'arc-welding-machine': 'Arc Welding Machines',\n                'arc-welding-robots': 'Arc Welding Robots',\n                'batteries': 'Batteries',\n                'drilling-and-lifting': 'Drilling and Lifting',\n                'gas-detectors': 'Gas Detectors',\n                'portable-ventilators': 'Portable Ventilators',\n                'power-tools': 'Power Tools',\n                'protection': 'Personal Protective Equipment',\n                'welding-accessories': 'Welding Accessories',\n                'welding-consumables': 'Welding Consumables'\n            };\n            return map[key] || 'Categories';\n        }\n        function getPopoverItems(key) {\n            var base = '.';\n            var maps = {\n                'arc-welding-robots': [\n                    { label: 'G3 Controller Series', href: base + '/arc-welding-robots/g3-controller-series.php' },\n                    { label: 'G4 Controller Series', href: base + '/arc-welding-robots/g4-controller-series.php' },\n                    { label: 'Featured Products and Solutions', href: base + '/arc-welding-robots/featured-products-and-solution.php' },\n                    { label: 'Robot System Peripherals', href: base + '/arc-welding-robots/robot-system-peripherals.php' }\n                ],\n                'arc-welding-machine': [\n                    { label: 'CO2/MAG Welding Machine', href: base + '/arc-welding-machine/co2-mag-welding-machine.php' },\n                    { label: 'MIG Welding Machine', href: base + '/arc-welding-machine/mig-welding-machine.php' },\n                    { label: 'TIG Welding Machine', href: base + '/arc-welding-machine/tig-welding-machine.php' },\n                    { label: 'Plasma Cutting Machine', href: base + '/arc-welding-machine/plasma-cutting-machine.php' },\n                    { label: 'Stud Welding', href: base + '/arc-welding-machine/stud-welding-machine.php' },\n                    { label: 'Accessories & Consumables', href: base + '/arc-welding-machine/accessories-and-consumables.php' }\n                ],\n                'batteries': [\n                    { label: 'Maintenance Free', href: base + '/batteries/maintenance-free.php' },\n                    { label: 'Low Maintenance', href: base + '/batteries/low-maintenance.php' },\n                    { label: 'Special Batteries', href: base + '/batteries/special-batteries.php' }\n                ],\n                'drilling-and-lifting': [\n                    { label: 'Material Handling & Lifting', href: base + '/drilling-and-lifting/lifting.php' },\n                    { label: 'Magnetic Drill', href: base + '/drilling-and-lifting/magnetic-drill.php' },\n                    { label: 'Core Cutters', href: base + '/drilling-and-lifting/cutters.php' }\n                ],\n                'gas-detectors': [\n                    { label: 'Single Gas Detector', href: base + '/gas-detectors/single-gas-detector.php' },\n                    { label: 'Multi Gas Detector', href: base + '/gas-detectors/multi-gas-detector.php' },\n                    { label: 'Portable Gas Detectors', href: base + '/gas-detectors/portable-gas-detectors.php' },\n                    { label: 'Docking and Data Management', href: base + '/gas-detectors/docking-data-management.php' },\n                    { label: 'Calibration Gas and Regulators', href: base + '/gas-detectors/calibration-gas-regulators.php' }\n                ],\n                'power-tools': [\n                    { label: 'Grinder', href: base + '/power-tools/grinder.php' },\n                    { label: 'Saw', href: base + '/power-tools/saw.php' },\n                    { label: 'Drill and Wrench', href: base + '/power-tools/drill-and-wrench.php' },\n                    { label: 'Rotary and Demolition Hammer', href: base + '/power-tools/rotary-and-demolition-hammer.php' },\n                    { label: 'Accessories', href: base + '/power-tools/accessories.php' }\n                ],\n                'portable-ventilators': [\n                    { label: 'Electric Driven', href: base + '/portable-ventilators/electric-driven.php' },\n                    { label: 'Pneumatic Driven', href: base + '/portable-ventilators/pneumatic-driven.php' }\n                ],\n                'protection': [\n                    { label: 'Eye Protection', href: base + '/protection/eye-protection.php' },\n                    { label: 'Hand Protection', href: base + '/protection/hand-protection.php' },\n                    { label: 'Hearing & Respiratory Protection', href: base + '/protection/hearing-respiratory-protection.php' },\n                    { label: 'Welding Head and Face Protection', href: base + '/protection/welding-head-and-face-protection.php' },\n                    { label: 'Body Protection', href: base + '/protection/body-protection.php' }\n                ],\n                'welding-accessories': [\n                    { label: 'Welding Electrode Oven', href: base + '/welding-accessories/welding-electrode-oven.php' },\n                    { label: 'Non-Destructive Crack Detection', href: base + '/welding-accessories/non-destructive-crack-detection.php' },\n                    { label: 'Gas Saving Regulator', href: base + '/welding-accessories/gas-saving-regulator.php' },\n                    { label: 'Gas Cutting Equipment', href: base + '/welding-accessories/gas-cutting-equipment.php' },\n                    { label: 'Industrial Markers', href: base + '/welding-accessories/industrial-markers.php' },\n                    { label: 'Measuring Gauge', href: base + '/welding-accessories/measuring-gauge.php' },\n                    { label: 'Others', href: base + '/welding-accessories/others.php' }\n                ],\n                'welding-consumables': [\n                    { label: 'Kobelco', href: base + '/welding-consumables/kobelco.php' },\n                    { label: 'Metrode', href: base + '/welding-consumables/metrode.php' }\n                ]\n            };\n            return maps[key] || [];\n        }\n        function renderPopover(key) {\n            if (!miniPopover || !popoverList) return;\n            popoverList.innerHTML = '';\n            var items = getPopoverItems(key);\n            items.forEach(function(it){\n                var li = document.createElement('li');\n                li.className = 'mini-popover-item';\n                li.innerHTML = '<span class=\"square\"></span><a href=\"'+ it.href +'\">'+ it.label +'</a>';\n                popoverList.appendChild(li);\n            });\n            if (popoverTitle) popoverTitle.textContent = getCategoryTitle(key);\n        }\n        function positionPopoverForIcon(icon) {\n            if (!miniPopover || !icon) return;\n            miniPopover.style.left = '-9999px';\n            miniPopover.style.top = '-9999px';\n            miniPopover.classList.add('show');\n            var rect = icon.getBoundingClientRect();\n            var pw = miniPopover.offsetWidth;\n            var ph = miniPopover.offsetHeight;\n            var iconCenterY = rect.top + rect.height / 2;\n\n            var left = Math.round(rect.right + 14);\n            var top = Math.round(iconCenterY - ph / 2);\n\n            if (left + pw + 12 > window.innerWidth) {\n                left = Math.round(rect.left - pw - 14);\n            }\n\n            var headerHeight = 170;\n            var minTop = headerHeight + 12;\n            var maxTop = window.innerHeight - ph - 12;\n            if (top < minTop) top = minTop;\n            if (top > maxTop) top = maxTop;\n\n            var arrowOffset = iconCenterY - top - 26;\n            miniPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');\n\n            miniPopover.style.left = left + 'px';\n            miniPopover.style.top = top + 'px';\n        }\n        function hidePopover() {\n            if (!miniPopover) return;\n            miniPopover.classList.remove('show');\n            miniPopover.setAttribute('aria-hidden', 'true');\n            currentPopoverKey = null;\n        }\n        function showPopoverForKey(key, icon) {\n            if (!miniPopover) return;\n            if (currentPopoverKey === key && miniPopover.classList.contains('show')) {\n                hidePopover();\n                return;\n            }\n            renderPopover(key);\n            positionPopoverForIcon(icon);\n            miniPopover.classList.add('show');\n            miniPopover.setAttribute('aria-hidden', 'false');\n            currentPopoverKey = key;\n        }\n\n        document.addEventListener('click', function(e){\n            if (!miniPopover) return;\n            if (!miniPopover.classList.contains('show')) return;\n            if (e.target.closest('.mini-popover') || e.target.closest('.sub-indicator')) return;\n            hidePopover();\n        });\n        document.addEventListener('keydown', function(e){ if (e.key === 'Escape') hidePopover(); });\n\n        // Set up click handler for browse/expand button\n        var sidebarToggleBtn = browseToggle || expandBtn;\n        if(sidebarToggleBtn) {\n            sidebarToggleBtn.addEventListener('click', function(e) {\n                e.preventDefault();\n                e.stopPropagation();\n                var isMiniSidebarVisible = window.getComputedStyle(miniSidebar).display !== 'none';\n                if(window.innerWidth > 1024 && isMiniSidebarVisible) {\n                    miniSidebar.classList.toggle('expanded');\n                    if(browseToggle) browseToggle.classList.toggle('expanded');\n                } else {\n                    if(mainSidebar.classList.contains('active')) {\n                        mainSidebar.classList.remove('active');\n                        backdrop.classList.remove('active');\n                    } else {\n                        mainSidebar.classList.add('active');\n                        backdrop.classList.add('active');\n                        mainSidebar.style.display = 'block';\n                        backdrop.style.display = 'block';\n                    }\n                }\n            });\n        }\n\n        if(expandBtn) {\n            expandBtn.addEventListener('click', function(e) {\n                e.preventDefault();\n                e.stopPropagation();\n                miniSidebar.classList.toggle('expanded');\n                if(browseToggle) browseToggle.classList.toggle('expanded');\n            });\n        }\n\n        var menuBar = document.getElementById('miniSidebarMenuBar');\n        if(menuBar) {\n            menuBar.addEventListener('click', function() {\n                miniSidebar.classList.toggle('expanded');\n                if(browseToggle) browseToggle.classList.toggle('expanded');\n            });\n        }\n\n        // Category icon click handler - navigate to category page\n        document.querySelectorAll('.mini-sidebar-icon').forEach(function(icon) {\n            icon.addEventListener('click', function(e) {\n                e.stopPropagation();\n                var subIndicator = e.target.closest('.sub-indicator');\n                if (subIndicator) {\n                    // Arrow was clicked, show popover\n                    arrowHandler(e);\n                } else {\n                    // Icon was clicked, navigate to category\n                    var dataTarget = icon.getAttribute('data-target') || '';\n                    if (dataTarget) {\n                        window.location.href = dataTarget;\n                    }\n                }\n            });\n        });\n\n        // Sub-indicator (arrow) click handler - show popover\n        var arrowHandler = function(e) {\n            e.stopPropagation();\n            e.preventDefault();\n            var arrow = e.target.closest('.sub-indicator');\n            var icon = arrow ? arrow.closest('.mini-sidebar-icon') : null;\n            if (!icon) return;\n            var dataTarget = icon.getAttribute('data-target') || '';\n            var categoryKey = getCategoryKeyFromTarget(dataTarget);\n            if (!categoryKey) return;\n            showPopoverForKey(categoryKey, icon);\n        };\n        \n        document.querySelectorAll('.sub-indicator').forEach(function(arrow) {\n            arrow.addEventListener('click', arrowHandler, true);\n        });\n\n        // ============================================\n        // MAIN SIDEBAR CATEGORY AND SUBCATEGORY LINKS\n        // ============================================\n        // Ensure all sidebar links navigate properly\n        document.querySelectorAll('.sidebar-list li').forEach(function(item) {\n            var link = item.querySelector('a');\n            var toggle = item.querySelector('.sub-toggle');\n            \n            if (link) {\n                // Make sure the link is clickable and navigates\n                link.style.cursor = 'pointer';\n                link.addEventListener('click', function(e) {\n                    // If the toggle button was clicked, don't navigate\n                    if (e.target.closest('.sub-toggle')) {\n                        return;\n                    }\n                    // Otherwise, navigate to the link\n                    var href = link.getAttribute('href');\n                    if (href) {\n                        setTimeout(function() {\n                            window.location.href = href;\n                        }, 50);\n                    }\n                });\n            }\n        });\n        \n        // Handle subcategory links\n        document.querySelectorAll('.sidebar-sublist li').forEach(function(item) {\n            var link = item.querySelector('a');\n            if (link && !item.classList.contains('has-nested-sub')) {\n                link.addEventListener('click', function(e) {\n                    var href = link.getAttribute('href');\n                    if (href) {\n                        setTimeout(function() {\n                            window.location.href = href;\n                        }, 50);\n                    }\n                });\n            }\n        });\n        \n        // Handle nested subcategory links\n        document.querySelectorAll('.sidebar-nested-sublist a').forEach(function(link) {\n            link.addEventListener('click', function(e) {\n                var href = link.getAttribute('href');\n                if (href) {\n                    setTimeout(function() {\n                        window.location.href = href;\n                    }, 50);\n                }\n            });\n        });\n        \n        // Close sidebar when navigating\n        document.querySelectorAll('.sidebar-list a, .sidebar-sublist a, .sidebar-nested-sublist a').forEach(function(link) {\n            link.addEventListener('click', function(e) {\n                // Close sidebar after navigation\n                setTimeout(function() {\n                    if (mainSidebar.classList.contains('active')) {\n                        mainSidebar.classList.remove('active');\n                        backdrop.classList.remove('active');\n                    }\n                }, 50);\n            });\n        });\n    </script>\n</body>\n</html>

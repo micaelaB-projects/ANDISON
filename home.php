@@ -2293,7 +2293,7 @@ $ytLinks = andison_get_youtube_links();
     </aside>
 
     <!-- Mini Sidebar (Icon Bar) -->
-    <div class="mini-sidebar active" id="miniSidebar">
+   <div class="mini-sidebar active" id="miniSidebar">
         <div id="miniSidebarMenuBar" style="background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); border-radius: 0; display: flex; align-items: center; gap: 8px; cursor: pointer;">
             <i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i>
             <span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px; display: none;" class="browse-label">BROWSE CATEGORIES</span>
