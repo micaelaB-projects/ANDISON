@@ -136,32 +136,40 @@
         "icon": "bi-wind",
         "subcategories": [
             {
-                "id": "portable-ventilators",
-                "name": "Portable Ventilators"
+                "id": "electric-driven",
+                "name": "Electric Driven",
+                "subcategories": [
+                    {
+                        "id": "air-max-12-blower",
+                        "name": "Air Max 12 Blower"
+                    },
+                    {
+                        "id": "double-duty-heat-killer",
+                        "name": "Double Duty Heat Killer"
+                    },
+                    {
+                        "id": "vano-175-cv-and-250-cv",
+                        "name": "Vano 175 CV and 250 CV"
+                    },
+                    {
+                        "id": "cadet-vaneaxial-and-centrifugal-ventilators",
+                        "name": "Cadet Vaneaxial and Centrifugal Ventilators"
+                    }
+                ]
             },
             {
-                "id": "air-max-12-blower",
-                "name": "Air Max 12 Blower"
-            },
-            {
-                "id": "reaction-fans",
-                "name": "Reaction Fans"
-            },
-            {
-                "id": "double-duty-heat-killer",
-                "name": "Double Duty Heat Killer"
-            },
-            {
-                "id": "jecta-and-hornet-hp",
-                "name": "Jecta I and Hornet HP"
-            },
-            {
-                "id": "vano-175-cv-and-250-cv",
-                "name": "Vano 175 CV and 250 CV"
-            },
-            {
-                "id": "cadet-vaneaxial-and-centrifugal-ventilators",
-                "name": "Cadet Vaneaxial and Centrifugal Ventilators"
+                "id": "pneumatic-driven",
+                "name": "Pneumatic Driven",
+                "subcategories": [
+                    {
+                        "id": "reaction-fans",
+                        "name": "Reaction Fans"
+                    },
+                    {
+                        "id": "jecta-and-hornet-hp",
+                        "name": "Jecta I and Hornet HP"
+                    }
+                ]
             },
             {
                 "id": "portable-ventilator-accessories",

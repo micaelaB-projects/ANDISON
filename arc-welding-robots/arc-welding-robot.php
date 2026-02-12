@@ -933,7 +933,7 @@ if (!$current_category) {
             letter-spacing: 0.5px;
         }
 
-        .sidebar-list { list-style: none; padding: 0; margin: 0; }
+        .sidebar-list { list-style: none; padding: 28px 20px 0 20px; margin: 0; }
         .sidebar-list li { border-bottom: 1px solid #e5e7eb; }
         .sidebar-list li:last-child { border-bottom: none; }
         .sidebar-list a { 
@@ -1140,7 +1140,7 @@ if (!$current_category) {
         .sub-toggle:focus { outline: none; }
         .sub-toggle .bi { 
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            font-size: 16px;
+            font-size: 14px;
             display: inline-flex;
         }
         .sub-toggle[aria-expanded="true"] .bi { transform: rotate(180deg); }
@@ -1186,6 +1186,7 @@ if (!$current_category) {
         .mini-sidebar.expanded {
             width: 280px;
             overflow-y: auto;
+            padding: 20px 12px;
         }
 
 
@@ -1243,6 +1244,27 @@ if (!$current_category) {
             opacity: 1;
         }
 
+        #miniSidebarMenuBar {
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            margin-bottom: 8px;
+            margin-top: 0;
+            flex-shrink: 0;
+        }
+
+        .mini-sidebar.expanded #miniSidebarMenuBar {
+            justify-content: flex-start;
+            width: 100%;
+            height: auto;
+            padding: 12px;
+            margin-bottom: 8px;
+        }
+
+        .mini-sidebar.expanded .browse-label {
+            display: inline-block !important;
+        }
+
         .mini-sidebar-icon:hover {
             background: rgba(255,255,255,0.2);
             transform: scale(1.05);
@@ -1259,51 +1281,50 @@ if (!$current_category) {
 
         .mini-sidebar-icon .sub-indicator {
             position: absolute;
-            bottom: -6px;
-            right: -6px;
-            background: #2B11DB;
-            color: white;
-            width: 28px;
-            height: 28px;
+            bottom: -1px;
+            right: -1px;
+            background: rgba(255,255,255,0.1);
+            color: #ffffff;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
-            opacity: 0.9;
-            transition: all 0.3s ease;
+            font-size: 9px;
+            opacity: 0.95;
+            transition: background 0.15s ease, color 0.15s ease;
             z-index: 999;
             cursor: pointer;
             pointer-events: auto;
-            border: 3px solid white;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            border: 1px solid #ffffff;
+            box-shadow: none;
         }
 
         .mini-sidebar-icon:hover .sub-indicator {
             opacity: 1;
-            transform: scale(1.2);
             background: #00D7B3;
             color: #2B11DB;
-            box-shadow: 0 2px 8px rgba(0, 215, 179, 0.4);
         }
 
         .mini-sidebar-icon .sub-indicator:active {
-            transform: scale(0.95);
+            transform: translateY(0);
         }
 
         .mini-sidebar.expanded .mini-sidebar-icon .sub-indicator {
             position: static;
             background: transparent;
             color: #2B11DB;
-            width: auto;
-            height: auto;
-            border-radius: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
             margin-left: auto;
             opacity: 1;
-            border: none;
+            border: 0;
             cursor: pointer;
             pointer-events: auto;
             z-index: 100;
+            box-shadow: none;
         }
 
         .mini-sidebar-toggle {
@@ -1387,12 +1408,12 @@ if (!$current_category) {
 
         /* Mini popover styles for subcategories */
         .mini-popover {
-            position: absolute;
+            position: fixed;
             top: -9999px; /* hidden offscreen initially */
             left: -9999px;
             width: 320px;
             max-width: calc(100vw - 32px);
-            background: #2B11DB;
+            background: linear-gradient(180deg, #1976D2FF 0%, #19D2B6FF 100%);
             color: #fff;
             border-radius: 16px;
             box-shadow: 0 12px 30px rgba(0,0,0,0.25);
@@ -1411,11 +1432,11 @@ if (!$current_category) {
             content: '';
             position: absolute;
             left: -10px;
-            top: 26px;
+            top: calc(26px + var(--arrow-offset, 0px));
             width: 0; height: 0;
             border-top: 10px solid transparent;
             border-bottom: 10px solid transparent;
-            border-right: 10px solid #2B11DB;
+            border-right: 10px solid #1976D2;
             filter: drop-shadow(-2px 2px 2px rgba(0,0,0,0.12));
         }
         .mini-popover-header {
@@ -1431,6 +1452,8 @@ if (!$current_category) {
         .mini-popover-title { color: #0f5132; }
         .mini-popover-body {
             padding: 12px 16px 16px 16px;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
         }
         .mini-popover-list {
             list-style: none;
@@ -1452,25 +1475,32 @@ if (!$current_category) {
             position: relative;
             padding-left: 42px;
             margin: 12px 0;
+            display: flex;
+            align-items: stretch;
+            min-height: 32px;
         }
         .mini-popover-item .square {
             position: absolute;
             left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
+            top: 0;
+            bottom: 0;
+            margin: auto;
             width: 14px; height: 14px;
             border-radius: 3px;
             background: #7aa7ff;
             box-shadow: 0 2px 6px rgba(0,0,0,0.18), inset 0 -1px 0 rgba(0,0,0,0.08);
+            flex-shrink: 0;
+            pointer-events: none;
         }
         .mini-popover-item a {
             color: #ffffff;
             text-decoration: none;
             font-weight: 600;
-            display: inline-block;
+            display: block;
             padding: 8px 10px;
             border-radius: 8px;
             transition: background 140ms ease, transform 120ms ease;
+            width: 100%;
         }
         .mini-popover-item a:hover {
             background: rgba(255,255,255,0.12);
@@ -1616,8 +1646,12 @@ if (!$current_category) {
 
     <!-- Sidebar Navigation -->
     <aside id="sidebar" class="sidebar-overlay" aria-hidden="true">
-        <div style="padding: 16px 12px; border-bottom: 1px solid #e5e7eb;">
-            <h3 style="margin: 0; font-size: 18px; color: #1f2937;">Categories</h3>
+        <div style="padding: 14px 20px; background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 8px; color: white; flex: 1;">
+                <i class="bi bi-list" style="font-size: 20px; font-weight: 700;"></i>
+                <span style="font-size: 14px; font-weight: 700; letter-spacing: 0.5px;">BROWSE</span>
+            </div>
+            <button id="closeSidebar" style="background: transparent; border: none; color: white; cursor: pointer; font-size: 24px; padding: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; line-height: 1;">×</button>
         </div>
         <ul class="sidebar-list">
             <li class="has-sub">
@@ -1736,12 +1770,16 @@ if (!$current_category) {
 
     <!-- Mini Sidebar (Icon Bar) -->
     <div class="mini-sidebar active" id="miniSidebar">
+        <div id="miniSidebarMenuBar" style="background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); border-radius: 0; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i>
+            <span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px; display: none;" class="browse-label">BROWSE CATEGORIES</span>
+        </div>
         <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-machine/arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon active-icon has-sub" data-target="../arc-welding-robots/arc-welding-robot.php" title="Arc Welding Robots"><i class="bi bi-robot"></i><span class="label">Arc Welding Robots</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../batteries/batteries.php" title="Batteries"><i class="bi bi-lightning-fill"></i><span class="label">Batteries</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../drilling-and-lifting/drilling-and-lifting.php" title="Drilling and Lifting"><i class="bi bi-hammer"></i><span class="label">Drilling and Lifting</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../gas-detectors/gas-detectors.php" title="Gas Detectors"><i class="bi bi-bullseye"></i><span class="label">Gas Detectors</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon" data-target="../portable-ventilators/portable-ventilators.php" title="Portable Ventilators"><i class="bi bi-fan"></i><span class="label">Portable Ventilators</span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="../portable-ventilators/portable-ventilators.php" title="Portable Ventilators"><i class="bi bi-fan"></i><span class="label">Portable Ventilators</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../power-tools/power-tools.php" title="Power Tools"><i class="bi bi-tools"></i><span class="label">Power Tools</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../protection/protection.php" title="Personal Protective Equipment"><i class="bi bi-shield-check"></i><span class="label">PPE</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../welding-accessories/welding-accessories.php" title="Welding Accessories"><i class="bi bi-gear"></i><span class="label">Welding Accessories</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
@@ -1855,7 +1893,8 @@ if (!$current_category) {
             <div class="footer-copyright">
                 &copy; 2026 ANDISON INDUSTRIAL. All rights reserved.
             </div>
-        </div>
+        </div>DUSTRIAL. All rights reserved.
+            </div>
     </footer>
 
     <script>
@@ -2027,7 +2066,7 @@ if (!$current_category) {
         function getCategoryKeyFromTarget(dataTarget) {
             if (!dataTarget) return null;
             var keys = [
-                'arc-welding-machine','arc-welding-robots','batteries','drilling-and-lifting','gas-detectors','power-tools','protection','welding-accessories','welding-consumables'
+                'arc-welding-machine','arc-welding-robots','batteries','drilling-and-lifting','gas-detectors','portable-ventilators','power-tools','protection','welding-accessories','welding-consumables'
             ];
             for (var i=0;i<keys.length;i++) { if (dataTarget.indexOf('/'+keys[i]+'/') !== -1) return keys[i]; }
             return null;
@@ -2039,6 +2078,7 @@ if (!$current_category) {
                 'batteries': 'Batteries',
                 'drilling-and-lifting': 'Drilling and Lifting',
                 'gas-detectors': 'Gas Detectors',
+                'portable-ventilators': 'Portable Ventilators',
                 'power-tools': 'Power Tools',
                 'protection': 'Personal Protective Equipment',
                 'welding-accessories': 'Welding Accessories',
@@ -2086,6 +2126,10 @@ if (!$current_category) {
                     { label: 'Rotary and Demolition Hammer', href: base + '/power-tools/rotary-and-demolition-hammer.php' },
                     { label: 'Accessories', href: base + '/power-tools/accessories.php' }
                 ],
+                'portable-ventilators': [
+                    { label: 'Electric Driven', href: base + '/portable-ventilators/electric-driven.php' },
+                    { label: 'Pneumatic Driven', href: base + '/portable-ventilators/pneumatic-driven.php' }
+                ],
                 'protection': [
                     { label: 'Eye Protection', href: base + '/protection/eye-protection.php' },
                     { label: 'Hand Protection', href: base + '/protection/hand-protection.php' },
@@ -2130,18 +2174,28 @@ if (!$current_category) {
             var rect = icon.getBoundingClientRect();
             var pw = miniPopover.offsetWidth;
             var ph = miniPopover.offsetHeight;
-            var left = Math.round(rect.right + 14 + window.scrollX);
-            var top = Math.round(rect.top + window.scrollY - 8);
-            // Keep within viewport to the right; if not, place to the left of icon
-            if (left + pw + 12 > window.scrollX + window.innerWidth) {
-                left = Math.round(rect.left + window.scrollX - pw - 14);
-                // Flip notch
-                miniPopover.style.setProperty('--arrow-dir', 'left');
+            var iconCenterY = rect.top + rect.height / 2;
+
+            // Position relative to viewport (fixed positioning)
+            var left = Math.round(rect.right + 14);
+            var top = Math.round(iconCenterY - ph / 2);
+
+            // Keep within viewport horizontally; if not, place to the left of icon
+            if (left + pw + 12 > window.innerWidth) {
+                left = Math.round(rect.left - pw - 14);
             }
-            // Clamp vertically
-            var maxTop = window.scrollY + window.innerHeight - ph - 12;
+
+            // Clamp vertically within viewport with proper padding (account for header at ~170px)
+            var headerHeight = 170;
+            var minTop = headerHeight + 12;
+            var maxTop = window.innerHeight - ph - 12;
+            if (top < minTop) top = minTop;
             if (top > maxTop) top = maxTop;
-            if (top < window.scrollY + 8) top = window.scrollY + 8;
+
+            // Adjust arrow position to align with icon center
+            var arrowOffset = iconCenterY - top - 26;
+            miniPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+
             miniPopover.style.left = left + 'px';
             miniPopover.style.top = top + 'px';
         }
@@ -2206,6 +2260,15 @@ if (!$current_category) {
             browseToggle.classList.toggle('expanded');
         });
 
+        // Menu bar click handler - toggle sidebar expansion
+        var menuBar = document.getElementById('miniSidebarMenuBar');
+        if(menuBar) {
+            menuBar.addEventListener('click', function() {
+                miniSidebar.classList.toggle('expanded');
+                browseToggle.classList.toggle('expanded');
+            });
+        }
+
         // ARROW CLICK HANDLER - Simple and direct
         var arrowHandler = function(e) {
             // Stop all propagation
@@ -2261,6 +2324,17 @@ if (!$current_category) {
                 backdrop.classList.remove('active');
             }
         });
+
+        // Close sidebar button click
+        var closeSidebarBtn = document.getElementById('closeSidebar');
+        if(closeSidebarBtn) {
+            closeSidebarBtn.addEventListener('click', function() {
+                if(mainSidebar.classList.contains('active')) {
+                    mainSidebar.classList.remove('active');
+                    backdrop.classList.remove('active');
+                }
+            });
+        }
 
         // Sync active state between sidebars
         var currentPath = window.location.pathname.toLowerCase();
