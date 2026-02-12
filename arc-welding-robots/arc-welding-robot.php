@@ -1187,6 +1187,12 @@ if (!$current_category) {
             width: 280px;
             overflow-y: auto;
             padding: 20px 12px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .mini-sidebar.expanded::-webkit-scrollbar {
+            display: none;
         }
 
 
