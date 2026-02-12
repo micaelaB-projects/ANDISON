@@ -1296,12 +1296,12 @@ $category_id = "arc-welding-machine";
                 <a href="../arc-welding-machine/arc-welding-machine.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span><span class="sidebar-label">Arc Welding Machines</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-welding" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
+                    <li><a href="../arc-welding-machine/co2-mag-welding-machine.php">CO2/MAG Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
-                    <li><a href="../arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
-                    <li><a href="../arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/plasma-cutting-machine.php">Plasma Cutting Machine</a></li>
-                    <li><a href="../arc-welding-machine/accessories-and-consumables.php">Accessories & Consumables</a></li>
+                    <li><a href="../arc-welding-machine/stud-welding-machine.php">Stud Welding</a></li>
+                    <li><a href="../arc-welding-machine/accessories-and-consumables.php">Accessories &amp; Consumables</a></li>
                 </ul>
             </li>
             <li class="has-sub">
@@ -1697,3 +1697,15 @@ $category_id = "arc-welding-machine";
             }
         }, 500);
     </script>
+
+    <script>
+        // Make entire product cards clickable (except the Add to Inquiry button).
+        document.addEventListener('click', function(e){
+            var card = e.target.closest('.product-card');
+            if(!card) return;
+            if(e.target.closest('.add-to-inquiry')) return;
+            window.location.href = '../arc-welding-machine/arc-welding-machine.php';
+        });
+    </script>
+</body>
+</html>

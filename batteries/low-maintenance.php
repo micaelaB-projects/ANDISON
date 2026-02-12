@@ -1318,10 +1318,9 @@ if (!$current_category) {
                 <a href="batteries.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-fill"></i></span><span class="sidebar-label">Batteries</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-batteries" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-batteries" class="sidebar-sublist collapsed">
-                    <li><a href="batteries.php">Batteries</a></li>
+                    <li><a href="maintenance-free.php">Maintenance Free</a></li>
                     <li><a href="low-maintenance.php">Low Maintenance</a></li>
                     <li><a href="special-batteries.php">Special Batteries</a></li>
-                    <li><a href="maintenance-free.php">Maintenance Free</a></li>
                 </ul>
             </li>
             <li class="has-sub">

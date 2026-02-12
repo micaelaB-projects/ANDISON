@@ -1664,11 +1664,12 @@ if (!$current_category) {
                 <a href="../arc-welding-machine/arc-welding-machine.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span><span class="sidebar-label">Arc Welding Machines</span></a>
                 <button class="sub-toggle" aria-controls="sub-arc-welding" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
+                    <li><a href="../arc-welding-machine/co2-mag-welding-machine.php">CO2/MAG Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
-                    <li><a href="../arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
-                    <li><a href="../arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/plasma-cutting-machine.php">Plasma Cutting Machine</a></li>
+                    <li><a href="../arc-welding-machine/stud-welding-machine.php">Stud Welding</a></li>
+                    <li><a href="../arc-welding-machine/accessories-and-consumables.php">Accessories &amp; Consumables</a></li>
                 </ul>
             </li>
             <li class="has-sub active">
@@ -2102,11 +2103,12 @@ if (!$current_category) {
                     { label: 'Robot System Peripherals', href: base + '/arc-welding-robots/robot-system-peripherals.php' }
                 ],
                 'arc-welding-machine': [
+                    { label: 'CO2/MAG Welding Machine', href: base + '/arc-welding-machine/co2-mag-welding-machine.php' },
                     { label: 'MIG Welding Machine', href: base + '/arc-welding-machine/mig-welding-machine.php' },
-                    { label: 'CO1/MAG Welding Machine', href: base + '/arc-welding-machine/co1-mag-welding-machine.php' },
-                    { label: 'STUD Welding Machine', href: base + '/arc-welding-machine/stud-welding-machine.php' },
                     { label: 'TIG Welding Machine', href: base + '/arc-welding-machine/tig-welding-machine.php' },
-                    { label: 'Plasma Cutting Machine', href: base + '/arc-welding-machine/plasma-cutting-machine.php' }
+                    { label: 'Plasma Cutting Machine', href: base + '/arc-welding-machine/plasma-cutting-machine.php' },
+                    { label: 'Stud Welding', href: base + '/arc-welding-machine/stud-welding-machine.php' },
+                    { label: 'Accessories & Consumables', href: base + '/arc-welding-machine/accessories-and-consumables.php' }
                 ],
                 'batteries': [
                     { label: 'Maintenance Free', href: base + '/batteries/maintenance-free.php' },
@@ -2114,9 +2116,9 @@ if (!$current_category) {
                     { label: 'Special Batteries', href: base + '/batteries/special-batteries.php' }
                 ],
                 'drilling-and-lifting': [
-                    { label: 'Lifting', href: base + '/drilling-and-lifting/lifting.php' },
+                    { label: 'Material Handling & Lifting', href: base + '/drilling-and-lifting/lifting.php' },
                     { label: 'Magnetic Drill', href: base + '/drilling-and-lifting/magnetic-drill.php' },
-                    { label: 'Cutters', href: base + '/drilling-and-lifting/cutters.php' }
+                    { label: 'Core Cutters', href: base + '/drilling-and-lifting/cutters.php' }
                 ],
                 'gas-detectors': [
                     { label: 'Single Gas Detector', href: base + '/gas-detectors/single-gas-detector.php' },
@@ -2355,8 +2357,18 @@ if (!$current_category) {
                 }
             });
         }
-    </script>
-</body>
-</html>
+        </script>
+
+        <script>
+            // Make entire product cards clickable (except the Add to Inquiry button).
+            document.addEventListener('click', function(e){
+                var card = e.target.closest('.product-card');
+                if(!card) return;
+                if(e.target.closest('.add-to-inquiry')) return;
+                window.location.href = '../arc-welding-robots/arc-welding-robot.php';
+            });
+        </script>
+    </body>
+    </html>
 
 

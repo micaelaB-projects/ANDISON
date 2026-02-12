@@ -2179,20 +2179,21 @@ $ytLinks = andison_get_youtube_links();
                 <a href="arc-welding-machine/arc-welding-machine.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span><span class="sidebar-label">Arc Welding Machine</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-welding" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
-                    <li><a href="arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
-                    <li><a href="arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
-                    <li><a href="arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
-                    <li><a href="arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
+                    <li><a href="./arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
+                    <li><a href="./arc-welding-machine/co2-mag-welding-machine.php">CO2/MAG Welding Machine</a></li>
+                    <li><a href="./arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
+                    <li><a href="./arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
+                    <li><a href="./arc-welding-machine/plasma-cutting-machine.php"> Plasma Cutting Machine</a></li>
                 </ul>
             </li>
             <li class="has-sub">
-                <a href="arc-welding-robots/arc-welding-robot.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label">Arc Welding Robots</span></a>
+                <a href="./arc-welding-robots/arc-welding-robot.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label">Arc Welding Robots</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-robot" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-arc-robot" class="sidebar-sublist collapsed">
-                    <li><a href="arc-welding-robots/g3-controller-series.php">G3 Controller Series</a></li>
-                    <li><a href="arc-welding-robots/g4-controller-series.php">G4 Controller Series</a></li>
-                    <li><a href="arc-welding-robots/featured-products-and-solution.php">Featured Products & Solutions</a></li>
-                    <li><a href="arc-welding-robots/robot-system-peripherals.php">Robot System Peripherals</a></li>
+                    <li><a href="./arc-welding-robots/g3-controller-series.php">G3 Controller Series</a></li>
+                    <li><a href="./arc-welding-robots/g4-controller-series.php">G4 Controller Series</a></li>
+                    <li><a href="./arc-welding-robots/featured-products-and-solution.php">Featured Products & Solutions</a></li>
+                    <li><a href="./arc-welding-robots/robot-system-peripherals.php">Robot System Peripherals</a></li>
                 </ul>
             <li class="has-sub">
                 <a href="batteries/batteries.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-battery-full"></i></span><span class="sidebar-label">Batteries</span></a>
@@ -2297,16 +2298,16 @@ $ytLinks = andison_get_youtube_links();
             <i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i>
             <span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px; display: none;" class="browse-label">BROWSE CATEGORIES</span>
         </div>
-        <div class="mini-sidebar-icon has-sub" data-target="arc-welding-machine/arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="arc-welding-robots/arc-welding-robot.php" title="Arc Welding Robots"><i class="bi bi-robot"></i><span class="label">Arc Welding Robots</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="batteries/batteries.php" title="Batteries"><i class="bi bi-lightning-fill"></i><span class="label">Batteries</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="drilling-and-lifting/drilling-and-lifting.php" title="Drilling and Lifting"><i class="bi bi-hammer"></i><span class="label">Drilling and Lifting</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="gas-detectors/gas-detectors.php" title="Gas Detectors"><i class="bi bi-bullseye"></i><span class="label">Gas Detectors</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="portable-ventilators/portable-ventilators.php" title="Portable Ventilators"><i class="bi bi-fan"></i><span class="label">Portable Ventilators</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="power-tools/power-tools.php" title="Power Tools"><i class="bi bi-tools"></i><span class="label">Power Tools</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="protection/protection.php" title="Personal Protective Equipment"><i class="bi bi-shield-check"></i><span class="label">PPE</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="welding-accessories/welding-accessories.php" title="Welding Accessories"><i class="bi bi-gear"></i><span class="label">Welding Accessories</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="welding-consumables/welding-consumables.php" title="Welding Consumables"><i class="bi bi-box"></i><span class="label">Welding Consumables</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="./arc-welding-machine/arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="./arc-welding-robots/arc-welding-robot.php" title="Arc Welding Robots"><i class="bi bi-robot"></i><span class="label">Arc Welding Robots</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="./batteries/batteries.php" title="Batteries"><i class="bi bi-lightning-fill"></i><span class="label">Batteries</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="./drilling-and-lifting/drilling-and-lifting.php" title="Drilling and Lifting"><i class="bi bi-hammer"></i><span class="label">Drilling and Lifting</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="./gas-detectors/gas-detectors.php" title="Gas Detectors"><i class="bi bi-bullseye"></i><span class="label">Gas Detectors</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="./portable-ventilators/portable-ventilators.php" title="Portable Ventilators"><i class="bi bi-fan"></i><span class="label">Portable Ventilators</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="./power-tools/power-tools.php" title="Power Tools"><i class="bi bi-tools"></i><span class="label">Power Tools</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="./protection/protection.php" title="Personal Protective Equipment"><i class="bi bi-shield-check"></i><span class="label">PPE</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="./welding-accessories/welding-accessories.php" title="Welding Accessories"><i class="bi bi-gear"></i><span class="label">Welding Accessories</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="./welding-consumables/welding-consumables.php" title="Welding Consumables"><i class="bi bi-box"></i><span class="label">Welding Consumables</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <button class="mini-sidebar-toggle" id="expandSidebar" title="Toggle Sidebar"><i class="bi bi-chevron-right"></i></button>
     </div>
 
@@ -2849,7 +2850,6 @@ $ytLinks = andison_get_youtube_links();
                 }
             }, false);
         })();
-    </script>
 
     <script>
         // ============================================
@@ -3059,7 +3059,7 @@ $ytLinks = andison_get_youtube_links();
             return map[key] || 'Categories';
         }
         function getPopoverItems(key) {
-            var base = '..';
+            var base = '.';
             var maps = {
                 'arc-welding-robots': [
                     { label: 'G3 Controller Series', href: base + '/arc-welding-robots/g3-controller-series.php' },
@@ -3068,11 +3068,12 @@ $ytLinks = andison_get_youtube_links();
                     { label: 'Robot System Peripherals', href: base + '/arc-welding-robots/robot-system-peripherals.php' }
                 ],
                 'arc-welding-machine': [
+                    { label: 'CO2/MAG Welding Machine', href: base + '/arc-welding-machine/co2-mag-welding-machine.php' },
                     { label: 'MIG Welding Machine', href: base + '/arc-welding-machine/mig-welding-machine.php' },
-                    { label: 'CO1/MAG Welding Machine', href: base + '/arc-welding-machine/co1-mag-welding-machine.php' },
-                    { label: 'STUD Welding Machine', href: base + '/arc-welding-machine/stud-welding-machine.php' },
                     { label: 'TIG Welding Machine', href: base + '/arc-welding-machine/tig-welding-machine.php' },
-                    { label: 'Plasma Cutting Machine', href: base + '/arc-welding-machine/plasma-cutting-machine.php' }
+                    { label: 'Plasma Cutting Machine', href: base + '/arc-welding-machine/plasma-cutting-machine.php' },
+                    { label: 'Stud Welding', href: base + '/arc-welding-machine/stud-welding-machine.php' },
+                    { label: 'Accessories & Consumables', href: base + '/arc-welding-machine/accessories-and-consumables.php' }
                 ],
                 'batteries': [
                     { label: 'Maintenance Free', href: base + '/batteries/maintenance-free.php' },
@@ -3080,9 +3081,9 @@ $ytLinks = andison_get_youtube_links();
                     { label: 'Special Batteries', href: base + '/batteries/special-batteries.php' }
                 ],
                 'drilling-and-lifting': [
-                    { label: 'Lifting', href: base + '/drilling-and-lifting/lifting.php' },
+                    { label: 'Material Handling & Lifting', href: base + '/drilling-and-lifting/lifting.php' },
                     { label: 'Magnetic Drill', href: base + '/drilling-and-lifting/magnetic-drill.php' },
-                    { label: 'Cutters', href: base + '/drilling-and-lifting/cutters.php' }
+                    { label: 'Core Cutters', href: base + '/drilling-and-lifting/cutters.php' }
                 ],
                 'gas-detectors': [
                     { label: 'Single Gas Detector', href: base + '/gas-detectors/single-gas-detector.php' },
@@ -3335,6 +3336,18 @@ $ytLinks = andison_get_youtube_links();
                 }, 50);
             });
         });
+
+        // Make product cards clickable to navigate to Arc Welding Machines category
+        (function(){
+            var cards = document.querySelectorAll('.product-card');
+            if(!cards || cards.length === 0) return;
+            cards.forEach(function(card){
+                card.addEventListener('click', function(e){
+                    if(e.target.closest('.add-to-inquiry')) return;
+                    window.location.href = 'arc-welding-machine/arc-welding-machine.php';
+                });
+            });
+        })();
     </script>
 </body>
 </html>
