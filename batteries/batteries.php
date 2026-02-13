@@ -2220,6 +2220,26 @@ if (!$current_category) {
             }
         }, true);
 
+        // SIMPLE AND BULLETPROOF: Click handler for mini sidebar icon navigation
+        document.addEventListener('click', function(e) {
+            // Check if the clicked element is or is inside a mini-sidebar-icon
+            var icon = e.target.closest('.mini-sidebar-icon');
+            if (!icon) return;
+            
+            // Don't navigate if clicking the arrow (sub-indicator)
+            if (e.target.closest('.sub-indicator')) {
+                return;
+            }
+            
+            // Get the target URL
+            var target = icon.getAttribute('data-target');
+            if (target) {
+                // Navigate immediately
+                window.location.href = target;
+                return;
+            }
+        }, false);
+
         // Mini icon navigation (when clicking the icon itself, not the arrow)
         miniIcons.forEach(function(icon) {
             icon.addEventListener('click', function(e) {
