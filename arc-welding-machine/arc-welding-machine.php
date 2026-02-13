@@ -5,9 +5,8 @@ require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
 
-$page_title = "Special Batteries";
-$category_id = "batteries";
-$subcategory_id = "special-batteries";
+$page_title = "Arc Welding Machines";
+$category_id = "arc-welding-machine";
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";
@@ -15,30 +14,16 @@ $email = "info@andison-industrial.com";
 
 $categories = andison_get_categories();
 $current_category = null;
-$parent_category = null;
 
 foreach ($categories as $cat) {
     if ($cat['id'] === $category_id) {
-        $parent_category = $cat;
-        if (!empty($cat['subcategories'])) {
-            foreach ($cat['subcategories'] as $subcat) {
-                if ($subcat['id'] === $subcategory_id) {
-                    $current_category = $subcat;
-                    break;
-                }
-            }
-        }
+        $current_category = $cat;
         break;
     }
 }
 
 if (!$current_category) {
-    $current_category = array(
-        'id' => $subcategory_id,
-        'name' => 'Special Batteries',
-        'description' => 'Specialized batteries for unique and demanding applications.',
-        'subcategories' => array()
-    );
+    die("Category not found");
 }
 ?>
 <!DOCTYPE html>
@@ -47,8 +32,12 @@ if (!$current_category) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = $current_category['name'] ?? 'Special Batteries';
-    $category_description = $current_category['description'] ?? 'Specialized batteries for unique and demanding applications.';
+    $category_name = $current_category['name'] ?? 'Arc Welding Machines';
+    $category_description = $current_category['description'] ?? 'Explore our comprehensive range of arc welding machines and robotic welding systems from leading manufacturers.';
+    $phone = "+1(234) 567 8900";
+    $phone2 = "+1(234) 567 8900";
+    $phone3 = "+1(639) 977 803 7398";
+    $email = "info@andison-industrial.com";
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -75,6 +64,7 @@ if (!$current_category) {
             background: #f8f9fa;
         }
 
+        /* Header */
         header {
             background: linear-gradient(135deg, #2B11DB 0%, #2B11DB 100%);
             color: white;
@@ -305,6 +295,7 @@ if (!$current_category) {
             gap: 12px;
         }
 
+        /* Navigation */
         nav {
             position: relative;
             background: rgba(0, 215, 179, 0.85);
@@ -324,6 +315,7 @@ if (!$current_category) {
             padding-left: 160px;
         }
 
+        /* Pin the browse toggle to the left side of the nav area */
         .browse-toggle {
             position: absolute;
             left: 12px;
@@ -364,6 +356,7 @@ if (!$current_category) {
 
         .nav-list a:hover { color: rgba(255,255,255,0.8); }
 
+        /* Glowing underline + dark active background for top-level nav links */
         .nav-list > li > a {
             position: relative;
             padding: 10px 14px;
@@ -523,11 +516,11 @@ if (!$current_category) {
         }
 
         .category-header {
-            background: linear-gradient(135deg, rgba(43, 17, 219, 0.05) 0%, rgba(0, 215, 179, 0.05) 100%);
+            background: linear-gradient(135deg, #f8f9fa 0%, #f0f0f0 100%);
             border-radius: 12px;
-            padding: 50px 40px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            margin-bottom: 40px;
+            padding: 45px 40px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+            margin-bottom: 35px;
             text-align: center;
             display: none;
         }
@@ -597,6 +590,7 @@ if (!$current_category) {
             transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
+            cursor: pointer;
             border: 1px solid #f0f0f0;
             min-height: 100%;
         }
@@ -624,11 +618,6 @@ if (!$current_category) {
             height: 100%;
             object-fit: contain;
             padding: 15px;
-        }
-
-        .product-image i {
-            font-size: 48px;
-            color: #e0e0e0;
         }
 
         .product-badge {
@@ -713,18 +702,14 @@ if (!$current_category) {
             transform: translateY(-2px);
         }
 
-        .add-to-inquiry:active {
-            transform: translateY(0);
-        }
-
-        .add-to-inquiry:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
         .add-to-inquiry.already {
             background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
             box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+        }
+
+        .add-to-inquiry.already:hover {
+            background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.35);
         }
 
         .inquiry-toast {
@@ -743,6 +728,7 @@ if (!$current_category) {
             pointer-events: none;
         }
 
+        /* Footer */
         footer {
             background: #2B11DB;
             color: white;
@@ -780,20 +766,6 @@ if (!$current_category) {
             font-size: 13px;
         }
 
-        @media (max-width: 1400px) {
-            .product-grid {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 20px;
-            }
-        }
-
-        @media (max-width: 1200px) {
-            .product-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 20px;
-            }
-        }
-
         @media (max-width: 768px) {
             body {
                 padding-top: 120px;
@@ -810,17 +782,11 @@ if (!$current_category) {
             }
 
             .category-header {
-                padding: 35px 25px;
-                margin-bottom: 30px;
+                padding: 25px;
             }
 
             .category-header h1 {
-                font-size: 28px;
-                margin-bottom: 12px;
-            }
-
-            .category-header p {
-                font-size: 15px;
+                font-size: 24px;
             }
 
             .category-content {
@@ -897,6 +863,7 @@ if (!$current_category) {
             }
         }
 
+        /* Overlay sidebar (full-height left panel) */
         .overlay-backdrop {
             position: fixed;
             inset: 0;
@@ -971,6 +938,16 @@ if (!$current_category) {
         .sidebar-list a.active .sidebar-icon {
             color: #2B11DB;
         }
+        .sidebar-list li a.active {
+            background: #f3f4f6;
+            color: #2B11DB;
+            font-weight: 600;
+            border-left: 4px solid #2B11DB;
+            padding-left: 12px;
+        }
+        .sidebar-list li a.active .sidebar-icon {
+            color: #2B11DB;
+        }
         .sidebar-icon { 
             color: #5b21b6; 
             width: 24px; 
@@ -1033,6 +1010,7 @@ if (!$current_category) {
             padding-left: 12px;
         }
 
+        /* Nested sublists */
         .sidebar-sublist li.has-nested-sub { position: relative; }
         .sidebar-sublist li.has-nested-sub > a { padding-right: 24px; }
         
@@ -1146,6 +1124,7 @@ if (!$current_category) {
     </style>
 </head>
 <body>
+    <!-- Header -->
     <header>
         <div class="header-top">
             <div class="logo">
@@ -1178,6 +1157,7 @@ if (!$current_category) {
             </div>
         </div>
 
+        <!-- Navigation -->
         <nav>
             <div class="nav-inner">
                 <button id="browseToggle" class="browse-toggle"><span class="hamburger"><i class="bi bi-list"></i></span> BROWSE PRODUCTS</button>
@@ -1276,29 +1256,170 @@ if (!$current_category) {
         </nav>
     </header>
 
-    <div class="category-container">
+    <!-- Overlay Backdrop -->
+    <div class="overlay-backdrop" id="overlayBackdrop"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="sidebar-overlay" aria-hidden="true">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 12px; border-bottom: 1px solid #e5e7eb;">
+            <h3 style="margin: 0; font-size: 18px; color: #1f2937;">Categories</h3>
+            <button class="sidebar-close" id="closeSidebar"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <ul class="sidebar-list">
+            <li class="has-sub">
+                <a href="../arc-welding-machine/arc-welding-machine.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span><span class="sidebar-label"><?php echo htmlspecialchars($current_category['name']); ?></span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-welding" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
+                    <?php if (!empty($current_category['subcategories'])): ?>
+                        <?php foreach ($current_category['subcategories'] as $subcat): ?>
+                            <li><a href="../arc-welding-machine/<?php echo htmlspecialchars($subcat['id']); ?>.php"><?php echo htmlspecialchars($subcat['name']); ?></a></li>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </ul>
+            </li>
+            <li class="has-sub">
+                <a href="../arc-welding-robots/arc-welding-robot.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label">Arc Welding Robots</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-robot" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-arc-robot" class="sidebar-sublist collapsed">
+                    <li><a href="../arc-welding-robots/g3-controller-series.php">G3 Controller Series</a></li>
+                    <li><a href="../arc-welding-robots/g4-controller-series.php">G4 Controller Series</a></li>
+                    <li><a href="../arc-welding-robots/featured-products-and-solution.php">Featured Products & Solutions</a></li>
+                    <li><a href="../arc-welding-robots/robot-system-peripherals.php">Robot System Peripherals</a></li>
+                </ul>
+            </li>
+            <li class="has-sub">
+                <a href="../batteries/batteries.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-battery-full"></i></span><span class="sidebar-label">Batteries</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-batteries" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-batteries" class="sidebar-sublist collapsed">
+                    <li><a href="../batteries/maintenance-free.php">Maintenance Free</a></li>
+                    <li><a href="../batteries/low-maintenance.php">Low Maintenance</a></li>
+                    <li><a href="../batteries/special-batteries.php">Special Batteries</a></li>
+                </ul>
+            </li>
+            <li class="has-sub">
+                <a href="../drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling and Lifting</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-drilling-lifting" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
+                    <li><a href="../drilling-and-lifting/lifting.php">Lifting</a></li>
+                    <li><a href="../drilling-and-lifting/magnetic-drill.php">Magnetic Drill</a></li>
+                    <li><a href="../drilling-and-lifting/cutters.php">Cutters</a></li>
+                </ul>
+            </li>
+            <li class="has-sub">
+                <a href="../gas-detectors/portable-gas-detectors.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></span><span class="sidebar-label">Portable Gas Detectors</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-gas-detectors" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-gas-detectors" class="sidebar-sublist collapsed">
+                    <li><a href="../gas-detectors/single-gas-detector.php">Single Gas Detector</a></li>
+                    <li><a href="../gas-detectors/multi-gas-detector.php">Multi Gas Detector</a></li>
+                    <li><a href="../gas-detectors/docking-data-management.php">Docking and Data Management</a></li>
+                    <li><a href="../gas-detectors/calibration-gas-regulators.php">Calibration Gas and Regulators</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="../portable-ventilators/portable-ventilators.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-fan"></i></span><span class="sidebar-label">Portable Ventilators</span></a>
+            </li>
+            <li class="has-sub">
+                <a href="../power-tools/power-tools.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-tools"></i></span><span class="sidebar-label">Power Tools</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-power-tool" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-power-tool" class="sidebar-sublist collapsed">
+                    <li><a href="../power-tools/grinder/grinder.php">Grinder</a></li>
+                    <li><a href="../power-tools/saw/saw.php">Saw</a></li>
+                    <li><a href="../power-tools/drill-and-wrench/drill-and-wrench.php">Drill and Wrench</a></li>
+                    <li><a href="../power-tools/rotary-and-demolition-hammer/rotary-and-demolition-hammer.php">Rotary and Demolition Hammer</a></li>
+                    <li><a href="../power-tools/accessories/accessories.php">Accessories</a></li>
+                </ul>
+            </li>
+            <li class="has-sub">
+                <a href="../protection/protection.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-shield-check"></i></span><span class="sidebar-label">Personal Protective Equipment</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-protection-safety" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-protection-safety" class="sidebar-sublist collapsed">
+                    <li><a href="../protection/eye-protection.php">Eye Protection</a></li>
+                    <li class="has-nested-sub">
+                        <a href="../protection/hand-protection.php">Hand Protection</a>
+                        <button class="nested-toggle" aria-expanded="false" aria-controls="nested-hand-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                        <ul id="nested-hand-protection" class="sidebar-nested-sublist collapsed">
+                            <li><a href="../protection/working-gloves.php">Working Gloves</a></li>
+                            <li><a href="../protection/chemical-liquid-protection-gloves.php">Chemical and Liquid Protection Gloves</a></li>
+                            <li><a href="../protection/disposable-gloves.php">Disposable Gloves</a></li>
+                            <li><a href="../protection/welding-gloves.php">Welding Gloves</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="../protection/hearing-respiratory-protection.php">Hearing &amp; Respiratory Protection</a></li>
+                    <li class="has-nested-sub">
+                        <a href="../protection/body-protection.php">Body Protection</a>
+                        <button class="nested-toggle" aria-expanded="false" aria-controls="nested-body-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                        <ul id="nested-body-protection" class="sidebar-nested-sublist collapsed">
+                            <li><a href="../protection/chemical-flame-retardant.php">Chemical and Flame Retardant</a></li>
+                            <li><a href="../protection/liquid-spray-splash.php">Liquid Spray and Splash</a></li>
+                            <li><a href="../protection/particulate-low-hazard.php">Particulate and Low Hazard</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li class="has-sub">
+                <a href="../welding-accessories/welding-accessories.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-gear"></i></span><span class="sidebar-label">Welding Accessories</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-accessories" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-welding-accessories" class="sidebar-sublist collapsed">
+                    <li><a href="../welding-accessories/welding-electrode-oven.php">Welding Electrode Oven</a></li>
+                    <li><a href="../welding-accessories/non-destructive-crack-detection.php">Non-Destructive Crack Detection</a></li>
+                    <li><a href="../welding-accessories/gas-saving-regulator.php">Gas Saving Regulator</a></li>
+                    <li><a href="../welding-accessories/gas-cutting-equipment.php">Gas Cutting Equipment</a></li>
+                    <li><a href="../welding-accessories/industrial-markers.php">Industrial Markers</a></li>
+                    <li><a href="../welding-accessories/measuring-gauge.php">Measuring Gauge</a></li>
+                    <li><a href="../welding-accessories/others.php">Others</a></li>
+                </ul>
+            </li>
+            <li class="has-sub">
+                <a href="../welding-consumables/welding-consumables.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-box"></i></span><span class="sidebar-label">Welding Consumables</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-consumables" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-welding-consumables" class="sidebar-sublist collapsed">
+                    <li><a href="../welding-consumables/kobelco.php">Kobelco</a></li>
+                    <li><a href="../welding-consumables/metrode.php">Metrode</a></li>
+                </ul>
+            </li>
+        </ul>
+    </aside>
+
         <div class="category-header">
             <h1><?php echo $category_name; ?></h1>
             <p><?php echo $category_description; ?></p>
         </div>
 
         <div class="category-content">
-            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Special Batteries'); ?></h2>
+            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Arc Welding Machines'); ?></h2>
             <?php if (!empty($current_category['description'])): ?>
                 <p class="category-description"><?php echo htmlspecialchars($current_category['description']); ?></p>
             <?php endif; ?>
             <div class="product-grid">
                 <?php 
-                $products = andison_get_products_for_subcategory("batteries", "special-batteries");
-                if (!empty($products)) {
-                    foreach ($products as $product) {
+                // Dynamically fetch all products from all arc-welding-machine subcategories
+                $subcategories = array();
+                if (!empty($current_category['subcategories']) && is_array($current_category['subcategories'])) {
+                    foreach ($current_category['subcategories'] as $subcat) {
+                        $subcategories[] = $subcat['id'];
+                    }
+                }
+                
+                $all_products = array();
+                foreach ($subcategories as $subcat) {
+                    $products = andison_get_products_for_subcategory('arc-welding-machine', $subcat);
+                    if ($products) {
+                        $all_products = array_merge($all_products, $products);
+                    }
+                }
+                
+                // Display products
+                if (!empty($all_products)) {
+                    foreach ($all_products as $product) {
                         $image_src = htmlspecialchars($product['image'] ?? '');
-                        if ($image_src && strpos($image_src, 'andison/') === 0) {
+                        // Adjust image path for subdirectory context
+                        if ($image_src && strpos($image_src, '../') !== 0 && strpos($image_src, 'assets/') === 0) {
+                            // For product pages in subdirectories, add ../ prefix to assets
                             $image_src = '../' . $image_src;
                         }
                         $model = htmlspecialchars($product['model'] ?? '');
                         $name = htmlspecialchars($product['name'] ?? '');
-                        $type = htmlspecialchars($product['type'] ?? 'Battery');
+                        $type = htmlspecialchars($product['type'] ?? 'Premium Arc Welding Equipment');
                         $brand = htmlspecialchars($product['brand'] ?? 'Industrial');
                         $description = htmlspecialchars($product['description'] ?? '');
                         $badge = htmlspecialchars($product['badge'] ?? '');
@@ -1306,9 +1427,9 @@ if (!$current_category) {
                 <div class="product-card">
                     <div class="product-image">
                         <?php if (!empty($image_src)): ?>
-                            <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=&quot;bi bi-battery-charging&quot; style=&quot;font-size: 60px; color: #ccc;&quot;></i>'">
+                            <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=\"bi bi-lightning-fill\" style=\"font-size: 60px; color: #ccc;\"></i>
                         <?php else: ?>
-                            <i class="bi bi-battery-charging" style="font-size: 60px; color: #ccc;"></i>
+                            <i class="bi bi-lightning-fill" style="font-size: 60px; color: #ccc;\"></i>
                         <?php endif; ?>
                         <?php if (!empty($badge)): ?>
                             <div class="product-badge"><?php echo $badge; ?></div>
@@ -1326,14 +1447,15 @@ if (!$current_category) {
                         <?php
                     }
                 } else {
+                    // Fallback to placeholder if no products
                     ?>
                 <div class="product-card">
                     <div class="product-image">
-                        <i class="bi bi-battery-charging" style="font-size: 60px; color: #ccc;"></i>
+                        <i class="bi bi-lightning-fill" style="font-size: 60px; color: #ccc;"></i>
                     </div>
-                    <h4>Special Battery</h4>
+                    <h4>Arc Welding Machines</h4>
                     <p class="product-type">No products available</p>
-                    <button class="add-to-inquiry" type="button" data-model="Special Battery" data-type="Battery Equipment" data-brand="Industrial">ADD TO INQUIRY</button>
+                    <button class="add-to-inquiry" type="button" data-model="Arc Welding" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
                 </div>
                     <?php
                 }
@@ -1342,6 +1464,7 @@ if (!$current_category) {
         </div>
     </div>
 
+    <!-- Footer -->
     <footer>
         <div class="footer-content">
             <div class="footer-links">
@@ -1356,6 +1479,7 @@ if (!$current_category) {
     </footer>
 
     <script>
+        // Add to Inquiry client-side handling
         (function(){
             function getItems(){
                 try{ return JSON.parse(localStorage.getItem('inquiryItems')||'[]'); }catch(e){ return []; }
@@ -1365,7 +1489,7 @@ if (!$current_category) {
                 var items = getItems();
                 var found = items.find(function(i){ return i.model === item.model && i.brand === item.brand; });
                 if(found){
-                    return false;
+                    return false; // already present
                 }
                 item.qty = 1; items.push(item);
                 setItems(items);
@@ -1390,6 +1514,7 @@ if (!$current_category) {
                 var added = addItem({ model: model, type: type, brand: brand });
                 if(!added){
                     showToast('Product already in inquiry list');
+                    // small visual feedback on button
                     btn.classList.add('already');
                     setTimeout(function(){ btn.classList.remove('already'); }, 700);
                     return;
@@ -1401,6 +1526,7 @@ if (!$current_category) {
     </script>
     
     <script>
+        // Sidebar toggle functionality
         (function(){
             var browseToggle = document.getElementById('browseToggle');
             var sidebarOverlay = document.querySelector('.sidebar-overlay');
@@ -1426,6 +1552,7 @@ if (!$current_category) {
                 }
             }
             
+            // Sidebar sub-toggle functionality
             var subToggles = document.querySelectorAll('.sub-toggle');
             subToggles.forEach(function(toggle) {
                 toggle.addEventListener('click', function(e) {
@@ -1439,6 +1566,7 @@ if (!$current_category) {
                 });
             });
             
+            // Nested toggle functionality
             var nestedToggles = document.querySelectorAll('.nested-toggle');
             nestedToggles.forEach(function(toggle) {
                 toggle.addEventListener('click', function(e) {
@@ -1555,4 +1683,3 @@ if (!$current_category) {
     </script>
 </body>
 </html>
-

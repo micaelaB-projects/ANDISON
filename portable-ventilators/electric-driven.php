@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/brands_info.php';
@@ -260,7 +260,7 @@ $category_id = "portable-ventilators";
         }
 
         .search-bar .search-field::before {
-            content: 'ðŸ”';
+            content: '🔍';
             position: absolute;
             left: 12px;
             font-size: 16px;
@@ -1099,9 +1099,9 @@ $category_id = "portable-ventilators";
                 <a href="../inquirylist.php" class="inquiry-btn">INQUIRY LIST</a>
                 <div class="header-contact">
                     <div class="contact-dropdown" tabindex="0" aria-haspopup="true">
-                        <a href="#contact" class="contact-link" aria-label="Contact Us">Contact Us â–¾</a>
+                        <a href="#contact" class="contact-link" aria-label="Contact Us">Contact Us ▾</a>
                         <div class="contact-popover" role="menu" aria-hidden="true">
-                            <button class="contact-close" aria-label="Close contact popover">âœ•</button>
+                            <button class="contact-close" aria-label="Close contact popover">✕</button>
                             <ul class="contact-list">
                                 <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone; ?>"><?php echo $phone; ?></a></li>
                                 <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone2; ?>"><?php echo $phone2; ?></a></li>
@@ -1117,6 +1117,7 @@ $category_id = "portable-ventilators";
         <!-- Navigation -->
         <nav>
             <div class="nav-inner">
+                <button id="browseToggle" class="browse-toggle"><span class="hamburger"><i class="bi bi-list"></i></span> BROWSE PRODUCTS</button>
                 <ul class="nav-list">
                     <li>
                         <a href="../home.php">Home</a>
@@ -1134,6 +1135,37 @@ $category_id = "portable-ventilators";
             </div>
         </nav>
     </header>
+
+    <!-- Overlay Backdrop -->
+    <div class="overlay-backdrop" id="overlayBackdrop"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="sidebar-overlay" aria-hidden="true">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 12px; border-bottom: 1px solid #e5e7eb;">
+            <h3 style="margin: 0; font-size: 18px; color: #1f2937;">Categories</h3>
+            <button class="sidebar-close" id="closeSidebar"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <ul class="sidebar-list">
+            <li class="has-sub">
+                <a href="../arc-welding-machine/arc-welding-machine.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span><span class="sidebar-label">Arc Welding Machines</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-welding" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
+                    <li><a href="../arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
+                    <li><a href="../arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
+                    <li><a href="../arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
+                    <li><a href="../arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
+                </ul>
+            </li>
+            <li class="has-sub">
+                <a href="../portable-ventilators/portable-ventilators.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-fan"></i></span><span class="sidebar-label">Portable Ventilators</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-portable-ventilators" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-portable-ventilators" class="sidebar-sublist collapsed">
+                    <li><a href="../portable-ventilators/electric-driven.php">Electric Driven</a></li>
+                    <li><a href="../portable-ventilators/pneumatic-driven.php">Pneumatic Driven</a></li>
+                </ul>
+            </li>
+        </ul>
+    </aside>
 
     <div class="category-container">
         <div class="category-header">

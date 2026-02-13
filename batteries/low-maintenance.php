@@ -1190,6 +1190,7 @@ if (!$current_category) {
         <!-- Navigation -->
         <nav>
             <div class="nav-inner">
+                <button id="browseToggle" class="browse-toggle"><span class="hamburger"><i class="bi bi-list"></i></span> BROWSE PRODUCTS</button>
                 <ul class="nav-list">
                     <li>
                         <a href="../home.php">Home</a>
@@ -1284,6 +1285,121 @@ if (!$current_category) {
             </div>
         </nav>
     </header>
+
+    <!-- Overlay Backdrop -->
+    <div class="overlay-backdrop" id="overlayBackdrop"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="sidebar-overlay" aria-hidden="true">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 12px; border-bottom: 1px solid #e5e7eb;">
+            <h3 style="margin: 0; font-size: 18px; color: #1f2937;">Categories</h3>
+            <button class="sidebar-close" id="closeSidebar"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <ul class="sidebar-list">
+            <li class="has-sub">
+                <a href="../arc-welding-machine/arc-welding-machine.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span><span class="sidebar-label">Arc Welding Machines</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-welding" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
+                    <li><a href="../arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
+                    <li><a href="../arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
+                    <li><a href="../arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
+                    <li><a href="../arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
+                </ul>
+            </li>
+            <li class="has-sub">
+                <a href="../arc-welding-robots/arc-welding-robot.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label">Arc Welding Robots</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-robot" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-arc-robot" class="sidebar-sublist collapsed">
+                    <li><a href="../arc-welding-robots/G3-Controller-Series.php">G3 Controller Series</a></li>
+                    <li><a href="../arc-welding-robots/G4-Controller-Series.php">G4 Controller Series</a></li>
+                </ul>
+            </li>
+            <li class="has-sub active">
+                <a href="batteries.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-fill"></i></span><span class="sidebar-label">Batteries</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-batteries" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-batteries" class="sidebar-sublist collapsed">
+                    <li><a href="batteries.php">Batteries</a></li>
+                    <li><a href="low-maintenance.php">Low Maintenance</a></li>
+                    <li><a href="special-batteries.php">Special Batteries</a></li>
+                    <li><a href="maintenance-free.php">Maintenance Free</a></li>
+                </ul>
+            </li>
+            <li class="has-sub">
+                <a href="../drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling &amp; Lifting</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-drilling-lifting" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
+                    <li><a href="../drilling-and-lifting/lifting.php">Lifting</a></li>
+                    <li><a href="../drilling-and-lifting/magnetic-drill.php">Magnetic Drill</a></li>
+                    <li><a href="../drilling-and-lifting/cutters.php">Cutters</a></li>
+                </ul>
+            </li>
+            <li class="has-sub">
+                <a href="../gas-detectors/portable-gas-detectors.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></span><span class="sidebar-label">Portable Gas Detectors</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-gas-detectors" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-gas-detectors" class="sidebar-sublist collapsed">
+                    <li><a href="../gas-detectors/single-gas-detector.php">Single Gas Detector</a></li>
+                    <li><a href="../gas-detectors/multi-gas-detector.php">Multi Gas Detector</a></li>
+                    <li><a href="../gas-detectors/docking-data-management.php">Docking and Data Management</a></li>
+                    <li><a href="../gas-detectors/calibration-gas-regulators.php">Calibration Gas and Regulators</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="../portable-ventilators/portable-ventilators.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-fan"></i></span><span class="sidebar-label">Portable Ventilators</span></a>
+            </li>
+            <li class="has-sub">
+                <a href="../power-tools/power-tools.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-tools"></i></span><span class="sidebar-label">Power Tools</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-power-tools" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-power-tools" class="sidebar-sublist collapsed">
+                    <li><a href="../power-tools/power-tools.php">Power Tools</a></li>
+                    <li><a href="../power-tools/grinder.php">Grinder</a></li>
+                    <li><a href="../power-tools/saw.php">Saw</a></li>
+                    <li><a href="../power-tools/drill-and-wrench.php">Drill and Wrench</a></li>
+                    <li><a href="../power-tools/rotary-and-demolition-hammer.php">Rotary and Demolition Hammer</a></li>
+                    <li><a href="../power-tools/accessories.php">Accessories</a></li>
+                </ul>
+            </li>
+            <li class="has-sub">
+                <a href="../protection/protection.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-shield-check"></i></span><span class="sidebar-label">Personal Protective Equipment</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-protection-safety" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-protection-safety" class="sidebar-sublist collapsed">
+                    <li><a href="../protection/eye-protection.php">Eye Protection</a></li>
+                    <li class="has-nested-sub">
+                        <a href="../protection/hand-protection.php">Hand Protection</a>
+                        <button class="nested-toggle" aria-expanded="false" aria-controls="nested-hand-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                        <ul id="nested-hand-protection" class="sidebar-nested-sublist collapsed">
+                            <li><a href="../protection/working-gloves.php">Working Gloves</a></li>
+                            <li><a href="../protection/chemical-liquid-protection-gloves.php">Chemical and Liquid Protection Gloves</a></li>
+                            <li><a href="../protection/disposable-gloves.php">Disposable Gloves</a></li>
+                            <li><a href="../protection/welding-gloves.php">Welding Gloves</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="../protection/hearing-respiratory-protection.php">Hearing &amp; Respiratory Protection</a></li>
+                    <li class="has-nested-sub">
+                        <a href="../protection/body-protection.php">Body Protection</a>
+                        <button class="nested-toggle" aria-expanded="false" aria-controls="nested-body-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                        <ul id="nested-body-protection" class="sidebar-nested-sublist collapsed">
+                            <li><a href="../protection/chemical-flame-retardant.php">Chemical and Flame Retardant</a></li>
+                            <li><a href="../protection/liquid-spray-splash.php">Liquid Spray and Splash</a></li>
+                            <li><a href="../protection/particulate-low-hazard.php">Particulate and Low Hazard</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li class="has-sub">
+                <a href="../welding-accessories/welding-accessories.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-gear"></i></span><span class="sidebar-label">Welding Accessories</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-accessories" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-welding-accessories" class="sidebar-sublist collapsed">
+                    <li><a href="../welding-accessories/welding-electrode-oven.php">Welding Electrode Oven</a></li>
+                    <li><a href="../welding-accessories/non-destructive-crack-detection.php">Non-Destructive Crack Detection</a></li>
+                    <li><a href="../welding-accessories/gas-saving-regulator.php">Gas Saving Regulator</a></li>
+                    <li><a href="../welding-accessories/gas-cutting-equipment.php">Gas Cutting Equipment</a></li>
+                    <li><a href="../welding-accessories/industrial-markers.php">Industrial Markers</a></li>
+                    <li><a href="../welding-accessories/measuring-gauge.php">Measuring Gauge</a></li>
+                    <li><a href="../welding-accessories/others.php">Others</a></li>
+                </ul>
+            </li>
+        </ul>
+    </aside>
 
     <div class="category-container">
         <div class="category-header">
@@ -1575,4 +1691,3 @@ if (!$current_category) {
     </script>
 </body>
 </html>
-

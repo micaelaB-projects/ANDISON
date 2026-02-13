@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 if (!function_exists('andison_get_brands_info')) {
     function andison_get_brands_info(): array
     {

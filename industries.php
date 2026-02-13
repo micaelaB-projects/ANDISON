@@ -1326,7 +1326,6 @@
         <!-- Navigation -->
         <nav>
             <div class="nav-inner">
-                <button id="browseToggle" class="browse-toggle"><span class="browse-icon"><i class="bi bi-list"></i></span><span class="browse-text">BROWSE PRODUCTS</span></button>
                 <ul class="nav-list">
                     <li>
                         <a href="home.php">Home</a>
