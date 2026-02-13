@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 if (!function_exists('andison_read_json_file')) {
     function andison_read_json_file(string $path, array $default = []): array

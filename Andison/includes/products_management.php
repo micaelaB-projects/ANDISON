@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 function andison_get_products_for_subcategory(string $categoryId, string $subcategoryId): array
 {

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 require_once __DIR__ . '/_auth.php';
 andison_require_admin();

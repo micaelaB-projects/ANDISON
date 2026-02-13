@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 require_once __DIR__ . '/_layout.php';
 
 // Handle POST actions: update profile or change password
