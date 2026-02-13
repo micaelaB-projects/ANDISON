@@ -789,6 +789,7 @@
 
         .about-section {
             margin-bottom: 60px;
+            text-align: center;
         }
 
         .section-title {
@@ -796,8 +797,7 @@
             font-weight: bold;
             color: #2B11DB;
             margin-bottom: 20px;
-            border-left: 4px solid #0015d1;
-            padding-left: 20px;
+            text-align: center;
         }
 
         .section-content {
@@ -805,6 +805,10 @@
             color: #555;
             line-height: 1.8;
             margin-bottom: 20px;
+            text-align: center;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .features-grid {
@@ -812,6 +816,10 @@
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 30px;
             margin-top: 40px;
+            justify-items: center;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .feature-card {
@@ -820,6 +828,8 @@
             border-radius: 8px;
             border-left: 4px solid #2B11DB;
             transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+            width: 100%;
         }
 
         .feature-card:hover {
@@ -1280,14 +1290,13 @@
         }
 
         .main-content, .category-container {
-            margin-left: 80px;
-            transition: margin-left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+           max-width: 1200px;
+        margin: 0 auto;
+         padding: 60px 20px;
+            transition: margin-left 0.5s cubic-bezier(0.4, 0, 0.2, 1), margin-right 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .mini-sidebar.expanded ~ .main-content,
-        .mini-sidebar.expanded ~ .category-container {
-            margin-left: 280px;
-        }
+        
 
         /* Mini popover styles */
         .mini-popover {
@@ -1396,6 +1405,7 @@
             }
             .main-content, .category-container {
                 margin-left: 0 !important;
+                margin-right: 0 !important;
             }
         }
 
@@ -1703,8 +1713,8 @@
         <p class="page-subtitle">Leading provider of high-quality industrial solutions and equipment for over two decades.</p>
 
         <!-- Hero Image Section -->
-        <div class="hero-section" style="margin-bottom: 60px;">
-            <img src="assets/about us/Andison Manila Picture - Edited.jpg" alt="Andison Industrial Facility" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-height: 400px; object-fit: cover; display: block;">
+        <div class="hero-section" style="margin-bottom: 60px; text-align: center;">
+            <img src="assets/about us/Andison Manila Picture - Edited.jpg" alt="Andison Industrial Facility" style="width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-height: 400px; object-fit: cover; display: block; margin: 0 auto;">
         </div>
 
         <!-- Company Overview Section -->

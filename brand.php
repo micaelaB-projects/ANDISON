@@ -21,14 +21,19 @@
         }
 
         body {
-            --footer-height: 160px; /* adjust if footer height changes */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #333;
             padding-top: 142px;
+            padding-left: 80px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            transition: padding-left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body.sidebar-expanded {
+            padding-left: 280px;
         }
 
         /* Header */
@@ -491,8 +496,9 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            margin-bottom: 40px;
+            margin: 0 auto 40px auto;
             z-index: 1;
+            max-width: 1400px;
         }
 
         .hero-slider {
@@ -683,6 +689,9 @@
             position: relative;
             z-index: 10;
             background: white;
+            text-align: center;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         section h2 {
@@ -690,11 +699,14 @@
             font-size: 45px;
             margin-bottom: 20px;
             color: #2B11DB;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
         }
     
         .section-description {
             text-align: center;
-            max-width: 700px;
+            max-width: 900px;
             margin: 0 auto 50px;
             color: #666;
             line-height: 1.8;
@@ -706,6 +718,9 @@
             grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
             gap: 30px;
             margin-bottom: 50px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .product-card {
@@ -787,18 +802,21 @@
         .product-info {
             padding: 20px;
             background: white;
+            text-align: center;
         }
 
         .product-info h3 {
             font-size: 16px;
             margin-bottom: 10px;
             color: #333;
+            text-align: center;
         }
 
         .product-info p {
             font-size: 13px;
             color: #666;
             line-height: 1.6;
+            text-align: center;
         }
 
         /* Featured Section */
@@ -810,6 +828,8 @@
             grid-template-columns: 1fr 1fr;
             gap: 30px;
             align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .featured-badge {
@@ -827,12 +847,14 @@
             font-size: 28px;
             margin-bottom: 15px;
             color: #333;
+            text-align: center;
         }
 
         .featured-content p {
             color: #666;
             margin-bottom: 20px;
             line-height: 1.8;
+            text-align: center;
         }
 
         .featured-btn {
@@ -879,10 +901,15 @@
 
         .footer-content {
             width: 100%;
-            margin: 0 auto;
-            padding: 18px 20px; /* inner spacing for links and text */
-            box-sizing: border-box;
-            max-width: 1400px; /* keep content centered while footer background stays full-bleed */
+            margin: 0;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        body.sidebar-expanded .footer-content {
+            width: 100%;
+            margin: 0;
+            padding: 0 20px;
         }
 
         .footer-links {
@@ -909,10 +936,6 @@
             border-top: 1px solid rgba(255, 255, 255, 0.2);
             padding-top: 20px;
         }
-         justify-content: center;
-            gap: 30px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
 
         /* Responsive */
         @media (max-width: 768px) {
@@ -1461,6 +1484,7 @@
             border-radius: 2px;
         }
 
+        /*
         .footer-links a {
             position: relative;
             animation: textFadeIn 0.6s ease;
@@ -1480,6 +1504,7 @@
         .footer-links a:hover::before {
             width: 100%;
         }
+        */
 
         /* Stagger text animations */
         .nav-list li { opacity: 1; }
@@ -1526,8 +1551,8 @@
         @media (prefers-reduced-motion: reduce) {
             .reveal, .reveal-hidden, img { animation: none !important; transition: none !important; }
         }
-        /* Ensure header/navigation/footer do not animate or move */
-        header, nav, footer, .header-top, .nav-inner, .browse-toggle, .nav-list, .right-actions, .footer-content {
+        /* Ensure header/navigation do not animate or move */
+        header, nav, .header-top, .nav-inner, .browse-toggle, .nav-list, .right-actions {
             animation: none !important;
             transition: none !important;
             transform: none !important;
@@ -1543,17 +1568,18 @@
         
         /* Brand Container */
         .brand-container {
-            max-width: 1500px;
-            margin: 40px auto 40px;
-            padding: 0 40px;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
             flex: 1;
+            text-align: center;
         }
 
         .brand-header {
             background: white;
             border-radius: 10px;
             padding: 40px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
             text-align: center;
         }
@@ -1564,6 +1590,7 @@
             margin-bottom: 10px;
             margin-top: 10px;
             display: block;
+            text-align: center;
         }
 
         .brand-logo-container {
@@ -1592,14 +1619,16 @@
             font-size: 18px;
             max-width: 800px;
             margin: 0 auto;
+            text-align: center;
         }
 
         .brand-content {
             background: white;
             border-radius: 10px;
             padding: 40px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
+            text-align: center;
         }
 
         .brand-content h2 {
@@ -1608,6 +1637,7 @@
             margin-bottom: 20px;
             border-bottom: 3px solid #2B11DB;
             padding-bottom: 5px;
+            text-align: center;
         }
 
         .brand-content h3 {
@@ -1615,6 +1645,7 @@
             font-size: 24px;
             margin-top: 30px;
             margin-bottom: 15px;
+            text-align: center;
         }
 
         .brand-content p {
@@ -1622,11 +1653,19 @@
             font-size: 16px;
             line-height: 1.8;
             margin-bottom: 15px;
+            text-align: center;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .brand-content ul {
-            margin-left: 30px;
+            margin-left: auto;
+            margin-right: auto;
             margin-bottom: 20px;
+            max-width: 900px;
+            text-align: left;
+            display: inline-block;
         }
 
         .brand-content li {
@@ -2222,6 +2261,12 @@
             -ms-overflow-style: none;
         }
 
+        .mini-sidebar.expanded ~ .main-content,
+        .mini-sidebar.expanded ~ .category-container {
+            margin-left: 280px;
+            margin-right: 0;
+        }
+
         .mini-sidebar.expanded::-webkit-scrollbar {
             display: none;
         }
@@ -2380,12 +2425,10 @@
         }
 
         .brand-container {
-            margin-left: 80px;
-            transition: margin-left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .mini-sidebar.expanded ~ .brand-container {
-            margin-left: 280px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            text-align: center;
         }
 
         /* Mini popover styles */
@@ -2493,8 +2536,11 @@
             .mini-sidebar {
                 display: none !important;
             }
+            body {
+                padding-left: 0 !important;
+            }
             .brand-container {
-                margin-left: 0 !important;
+                padding: 20px 15px;
             }
         }
 
@@ -2676,6 +2722,10 @@
         <!-- Navigation -->
         <nav>
             <div class="nav-inner">
+                <button id="browseToggle" class="browse-toggle" aria-label="Browse Categories">
+                    <i class="bi bi-list" style="font-size: 22px;"></i>
+                    <span>BROWSE CATEGORIES</span>
+                </button>
                 <ul class="nav-list">
                     <li>
                         <a href="home.php">Home</a>
@@ -3005,7 +3055,8 @@
         </div>
     </div>
 
-    <!-- Footer -->
+    <!-- Footer REMOVED -->
+    <!--
     <footer>
         <div class="footer-content">
             <div class="footer-links">
@@ -3014,10 +3065,11 @@
                 <a href="#sitemap">Sitemap</a>
             </div>
             <div class="footer-copyright">
-                &copy; 2026 <?php echo $company_name; ?>. All rights reserved.
+                <p>&copy; 2026 <?php echo $company_name; ?>. All rights reserved.</p>
             </div>
         </div>
     </footer>
+    -->
     <script>
         // Sidebar toggle functionality
         (function(){
@@ -3574,6 +3626,7 @@
                 var isMiniSidebarVisible = window.getComputedStyle(miniSidebar).display !== 'none';
                 if(window.innerWidth > 1024 && isMiniSidebarVisible) {
                     miniSidebar.classList.toggle('expanded');
+                    document.body.classList.toggle('sidebar-expanded');
                     browseToggle.classList.toggle('expanded');
                 } else {
                     if(mainSidebar.classList.contains('active')) {
@@ -3591,6 +3644,7 @@
 
         expandBtn.addEventListener('click', function() {
             miniSidebar.classList.toggle('expanded');
+            document.body.classList.toggle('sidebar-expanded');
             if(browseToggle) browseToggle.classList.toggle('expanded');
         });
 
@@ -3847,6 +3901,7 @@
                 
                 if(window.innerWidth > 1024 && isMiniSidebarVisible) {
                     miniSidebar.classList.toggle('expanded');
+                    document.body.classList.toggle('sidebar-expanded');
                     browseToggle.classList.toggle('expanded');
                 } else {
                     if(mainSidebar.classList.contains('active')) {
@@ -3865,6 +3920,7 @@
         // Expand/collapse sidebar when clicking expand button
         expandBtn.addEventListener('click', function() {
             miniSidebar.classList.toggle('expanded');
+            document.body.classList.toggle('sidebar-expanded');
             if(browseToggle) browseToggle.classList.toggle('expanded');
         });
 

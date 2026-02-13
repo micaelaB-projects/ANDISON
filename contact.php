@@ -1384,15 +1384,13 @@
 
         /* Adjust main container for mini sidebar */
         .main-content, .category-container {
-            margin-left: 80px;
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 60px 20px;
             transition: margin-left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .mini-sidebar.expanded ~ .main-content,
-        .mini-sidebar.expanded ~ .category-container {
-            margin-left: 280px;
-        }
-
+       
         /* When sidebar is expanded (collapsed mini) */
         .sidebar-overlay.expanded {
             width: 380px;
