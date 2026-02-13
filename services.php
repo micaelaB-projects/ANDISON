@@ -1910,25 +1910,18 @@
         document.addEventListener('keydown', function(e){ if (e.key === 'Escape') hidePopover(); });
 
         // Set up click handler for browse/expand button
-        var sidebarToggleBtn = browseToggle || expandBtn;
-        if(sidebarToggleBtn) {
-            sidebarToggleBtn.addEventListener('click', function(e) {
+        if(browseToggle) {
+            browseToggle.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                var isMiniSidebarVisible = window.getComputedStyle(miniSidebar).display !== 'none';
-                if(window.innerWidth > 1024 && isMiniSidebarVisible) {
-                    miniSidebar.classList.toggle('expanded');
-                    if(browseToggle) browseToggle.classList.toggle('expanded');
+                if(mainSidebar.classList.contains('active')) {
+                    mainSidebar.classList.remove('active');
+                    backdrop.classList.remove('active');
                 } else {
-                    if(mainSidebar.classList.contains('active')) {
-                        mainSidebar.classList.remove('active');
-                        backdrop.classList.remove('active');
-                    } else {
-                        mainSidebar.classList.add('active');
-                        backdrop.classList.add('active');
-                        mainSidebar.style.display = 'block';
-                        backdrop.style.display = 'block';
-                    }
+                    mainSidebar.classList.add('active');
+                    backdrop.classList.add('active');
+                    mainSidebar.style.display = 'block';
+                    backdrop.style.display = 'block';
                 }
             });
         }

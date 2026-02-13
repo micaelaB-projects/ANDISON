@@ -1,9 +1,9 @@
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Our Trusted Brands & Partners - ANDISION INDUSTRIAL</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Trusted Brands & Partners - ANDISION INDUSTRIAL</title>
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
       <style>
           * {
@@ -2573,25 +2573,18 @@
         document.addEventListener('keydown', function(e){ if (e.key === 'Escape') hidePopover(); });
 
         // Set up click handler for browse/expand button
-        var sidebarToggleBtn = browseToggle || expandBtn;
-        if(sidebarToggleBtn) {
-            sidebarToggleBtn.addEventListener('click', function(e) {
+        if(browseToggle) {
+            browseToggle.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                var isMiniSidebarVisible = window.getComputedStyle(miniSidebar).display !== 'none';
-                if(window.innerWidth > 1024 && isMiniSidebarVisible) {
-                    miniSidebar.classList.toggle('expanded');
-                    if(browseToggle) browseToggle.classList.toggle('expanded');
+                if(mainSidebar.classList.contains('active')) {
+                    mainSidebar.classList.remove('active');
+                    backdrop.classList.remove('active');
                 } else {
-                    if(mainSidebar.classList.contains('active')) {
-                        mainSidebar.classList.remove('active');
-                        backdrop.classList.remove('active');
-                    } else {
-                        mainSidebar.classList.add('active');
-                        backdrop.classList.add('active');
-                        mainSidebar.style.display = 'block';
-                        backdrop.style.display = 'block';
-                    }
+                    mainSidebar.classList.add('active');
+                    backdrop.classList.add('active');
+                    mainSidebar.style.display = 'block';
+                    backdrop.style.display = 'block';
                 }
             });
         }

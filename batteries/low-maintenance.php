@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/brands_info.php';
@@ -264,7 +264,7 @@ if (!$current_category) {
         }
 
         .search-bar .search-field::before {
-            content: 'ðŸ”';
+            content: '🔍';
             position: absolute;
             left: 12px;
             font-size: 16px;
@@ -1172,9 +1172,9 @@ if (!$current_category) {
                 <a href="../inquirylist.php" class="inquiry-btn">INQUIRY LIST</a>
                 <div class="header-contact">
                     <div class="contact-dropdown" tabindex="0" aria-haspopup="true">
-                        <a href="#contact" class="contact-link" aria-label="Contact Us">Contact Us â–¾</a>
+                        <a href="#contact" class="contact-link" aria-label="Contact Us">Contact Us ▾</a>
                         <div class="contact-popover" role="menu" aria-hidden="true">
-                            <button class="contact-close" aria-label="Close contact popover">âœ•</button>
+                            <button class="contact-close" aria-label="Close contact popover">✕</button>
                             <ul class="contact-list">
                                 <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone; ?>"><?php echo $phone; ?></a></li>
                                 <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone2; ?>"><?php echo $phone2; ?></a></li>
@@ -1575,3 +1575,4 @@ if (!$current_category) {
     </script>
 </body>
 </html>
+
