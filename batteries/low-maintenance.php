@@ -1151,6 +1151,285 @@ if (!$current_category) {
         .sidebar-close:hover {
             color: #374151;
         }
+
+        /* ============================================
+        MINI SIDEBAR COMPONENT STYLES
+        ============================================ */
+        .mini-sidebar {
+            position: fixed;
+            left: 0;
+            top: 142px;
+            width: 80px;
+            height: calc(100vh - 142px);
+            background: linear-gradient(180deg, #2B11DB 0%, #2B11DB 100%);
+            z-index: 65;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            gap: 16px;
+            transition: width 500ms cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .mini-sidebar.expanded {
+            width: 280px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .mini-sidebar-menu-bar {
+            width: 100%;
+            height: 52px;
+            background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%);
+            border-radius: 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 20px;
+            flex-shrink: 0;
+            margin: -20px 0 0 0;
+            padding: 0;
+            border: none;
+            transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-menu-bar {
+            justify-content: space-between;
+            padding: 0 16px;
+            border-radius: 0;
+        }
+
+        .mini-sidebar-menu-bar .label {
+            display: none;
+            font-size: 16px;
+            color: white;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-menu-bar .label {
+            display: inline-block;
+        }
+
+        .mini-sidebar-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 2px solid rgba(255, 255, 255, 0.18);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+            color: white;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .mini-sidebar-icon:hover {
+            background: rgba(255, 255, 255, 0.18);
+            border-color: rgba(255, 255, 255, 0.28);
+            transform: scale(1.08);
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-icon {
+            width: 100%;
+            border-radius: 8px;
+            margin: 0 12px;
+            padding: 0 12px;
+            justify-content: flex-start;
+            gap: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-icon:hover {
+            background: rgba(0, 215, 179, 0.25);
+            border-color: rgba(0, 215, 179, 0.4);
+        }
+
+        .mini-sidebar-icon-label {
+            display: none;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-icon-label {
+            display: inline-block;
+        }
+
+        .sub-indicator {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            background: rgba(0, 215, 179, 0.3);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            font-size: 14px;
+            transition: all 160ms cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(0, 215, 179, 0.2);
+        }
+
+        .mini-sidebar-icon:hover .sub-indicator {
+            background: rgba(0, 215, 179, 0.5);
+            border-color: rgba(0, 215, 179, 0.4);
+            transform: translateY(-50%) scale(1.12);
+        }
+
+        .mini-sidebar.expanded .sub-indicator {
+            position: relative;
+            right: auto;
+            top: auto;
+            transform: none;
+            margin-left: auto;
+            width: 28px;
+            height: 28px;
+        }
+
+        .mini-popover {
+            position: fixed;
+            background: linear-gradient(180deg, #1976D2 0%, #19D2B6 100%);
+            border-radius: 12px;
+            padding: 16px 0;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25), 0 0 40px rgba(0, 215, 179, 0.15);
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.92);
+            transition: opacity 160ms cubic-bezier(0.4, 0, 0.2, 1), transform 160ms cubic-bezier(0.4, 0, 0.2, 1), visibility 160ms;
+            --arrow-offset: 0px;
+            max-width: 320px;
+            min-width: 280px;
+        }
+
+        .mini-popover.show {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        .mini-popover::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: var(--arrow-offset);
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 10px solid #1976D2;
+            filter: drop-shadow(-2px 0 2px rgba(0, 0, 0, 0.1));
+        }
+
+        .mini-popover-title {
+            padding: 12px 20px;
+            color: white;
+            font-weight: 700;
+            font-size: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            letter-spacing: 0.3px;
+        }
+
+        .mini-popover-list {
+            list-style: none;
+            margin: 0;
+            padding: 8px 0;
+        }
+
+        .mini-popover-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 120ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mini-popover-item:hover {
+            background: rgba(255, 255, 255, 0.12);
+            padding-left: 24px;
+        }
+
+        .mini-popover-item .square {
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .mini-popover-item:hover .square {
+            background: white;
+            width: 10px;
+            height: 10px;
+        }
+
+        .mini-popover-item a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 120ms ease;
+        }
+
+        .mini-popover-item:hover a {
+            color: white;
+            font-weight: 600;
+        }
+
+        .expand-sidebar-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 48px;
+            height: 48px;
+            background: rgba(0, 215, 179, 0.2);
+            border: 2px solid rgba(0, 215, 179, 0.4);
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(0, 215, 179, 0.8);
+            transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 18px;
+        }
+
+        .expand-sidebar-btn:hover {
+            background: rgba(0, 215, 179, 0.35);
+            border-color: rgba(0, 215, 179, 0.6);
+            color: white;
+            transform: translateX(-50%) scale(1.1);
+        }
+
+        .expand-sidebar-btn i {
+            transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .expand-sidebar-btn.expanded i {
+            transform: rotate(180deg);
+        }
+
+        @media (max-width: 1024px) {
+            .mini-sidebar {
+                display: none;
+            }
+            .mini-popover { display: none; }
+        }
     </style>
 </head>
 <body>
@@ -1318,10 +1597,9 @@ if (!$current_category) {
                 <a href="batteries.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-fill"></i></span><span class="sidebar-label">Batteries</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-batteries" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-batteries" class="sidebar-sublist collapsed">
-                    <li><a href="batteries.php">Batteries</a></li>
+                    <li><a href="maintenance-free.php">Maintenance Free</a></li>
                     <li><a href="low-maintenance.php">Low Maintenance</a></li>
                     <li><a href="special-batteries.php">Special Batteries</a></li>
-                    <li><a href="maintenance-free.php">Maintenance Free</a></li>
                 </ul>
             </li>
             <li class="has-sub">
@@ -1400,6 +1678,68 @@ if (!$current_category) {
             </li>
         </ul>
     </aside>
+
+    <div class="mini-sidebar active" id="miniSidebar">
+        <div class="mini-sidebar-menu-bar" id="miniSidebarMenuBar">
+            <i class="bi bi-grid-3x3-gap"></i>
+            <span class="label">Categories</span>
+        </div>
+        <div class="mini-sidebar-icon" data-target="../arc-welding-machine/arc-welding-machine.php">
+            <i class="bi bi-fire"></i>
+            <span class="mini-sidebar-icon-label">Arc Welding</span>
+            <button class="sub-indicator" aria-label="Show subcategories"><i class="bi bi-chevron-down"></i></button>
+        </div>
+        <div class="mini-sidebar-icon" data-target="../arc-welding-robots/featured-products-and-solution.php">
+            <i class="bi bi-robot"></i>
+            <span class="mini-sidebar-icon-label">Robots</span>
+            <button class="sub-indicator" aria-label="Show subcategories"><i class="bi bi-chevron-down"></i></button>
+        </div>
+        <div class="mini-sidebar-icon" data-target="../batteries/batteries.php">
+            <i class="bi bi-battery-half"></i>
+            <span class="mini-sidebar-icon-label">Batteries</span>
+            <button class="sub-indicator" aria-label="Show subcategories"><i class="bi bi-chevron-down"></i></button>
+        </div>
+        <div class="mini-sidebar-icon" data-target="../drilling-and-lifting/drilling-and-lifting.php">
+            <i class="bi bi-drill"></i>
+            <span class="mini-sidebar-icon-label">Drilling</span>
+            <button class="sub-indicator" aria-label="Show subcategories"><i class="bi bi-chevron-down"></i></button>
+        </div>
+        <div class="mini-sidebar-icon" data-target="../gas-detectors/gas-detectors.php">
+            <i class="bi bi-droplet-half"></i>
+            <span class="mini-sidebar-icon-label">Gas</span>
+            <button class="sub-indicator" aria-label="Show subcategories"><i class="bi bi-chevron-down"></i></button>
+        </div>
+        <div class="mini-sidebar-icon" data-target="../portable-ventilators/portable-ventilators.php">
+            <i class="bi bi-wind"></i>
+            <span class="mini-sidebar-icon-label">Ventilators</span>
+            <button class="sub-indicator" aria-label="Show subcategories"><i class="bi bi-chevron-down"></i></button>
+        </div>
+        <div class="mini-sidebar-icon" data-target="../power-tools/power-tools.php">
+            <i class="bi bi-hammer"></i>
+            <span class="mini-sidebar-icon-label">Power Tools</span>
+            <button class="sub-indicator" aria-label="Show subcategories"><i class="bi bi-chevron-down"></i></button>
+        </div>
+        <div class="mini-sidebar-icon" data-target="../protection/protection.php">
+            <i class="bi bi-shield-check"></i>
+            <span class="mini-sidebar-icon-label">Protection</span>
+            <button class="sub-indicator" aria-label="Show subcategories"><i class="bi bi-chevron-down"></i></button>
+        </div>
+        <div class="mini-sidebar-icon" data-target="../welding-accessories/welding-accessories.php">
+            <i class="bi bi-box2"></i>
+            <span class="mini-sidebar-icon-label">Accessories</span>
+            <button class="sub-indicator" aria-label="Show subcategories"><i class="bi bi-chevron-down"></i></button>
+        </div>
+        <div class="mini-sidebar-icon" data-target="../welding-consumables/welding-consumables.php">
+            <i class="bi bi-box"></i>
+            <span class="mini-sidebar-icon-label">Consumables</span>
+            <button class="sub-indicator" aria-label="Show subcategories"><i class="bi bi-chevron-down"></i></button>
+        </div>
+        <div class="mini-popover" id="miniPopover" aria-hidden="true">
+            <div class="mini-popover-title">Categories</div>
+            <ul class="mini-popover-list"></ul>
+        </div>
+        <button class="expand-sidebar-btn" id="expandSidebar" aria-label="Expand sidebar"><i class="bi bi-chevron-left"></i></button>
+    </div>
 
     <div class="category-container">
         <div class="category-header">
@@ -1588,6 +1928,119 @@ if (!$current_category) {
                 });
             });
         })();
+    </script>
+
+    <script>
+        var miniSidebar = document.getElementById('miniSidebar');
+        var mainSidebar = document.getElementById('sidebar');
+        var backdrop = document.getElementById('overlayBackdrop');
+        var expandBtn = document.getElementById('expandSidebar');
+        var browseToggle = document.getElementById('browseToggle');
+        var miniIcons = document.querySelectorAll('.mini-sidebar-icon');
+        var miniPopover = document.getElementById('miniPopover');
+        var popoverTitle = miniPopover ? miniPopover.querySelector('.mini-popover-title') : null;
+        var popoverList = miniPopover ? miniPopover.querySelector('.mini-popover-list') : null;
+        var currentPopoverKey = null;
+
+        function updateBrowseToggleVisibility() {
+            if(window.innerWidth <= 1024) {
+                browseToggle.classList.add('active');
+            } else {
+                browseToggle.classList.remove('active');
+            }
+        }
+
+        if(browseToggle) updateBrowseToggleVisibility();
+        if(browseToggle) window.addEventListener('resize', updateBrowseToggleVisibility);
+
+        function getCategoryKeyFromTarget(dataTarget) {
+            if (!dataTarget) return null;
+            var keys = ['arc-welding-machine','arc-welding-robots','batteries','drilling-and-lifting','gas-detectors','portable-ventilators','power-tools','protection','welding-accessories','welding-consumables'];
+            for (var i=0;i<keys.length;i++) { if (dataTarget.indexOf('/'+keys[i]+'/') !== -1 || dataTarget.indexOf(keys[i]+'/') !== -1) return keys[i]; }
+            return null;
+        }
+
+        function getCategoryTitle(key) {
+            var map = {'arc-welding-machine': 'Arc Welding Machines','arc-welding-robots': 'Arc Welding Robots','batteries': 'Batteries','drilling-and-lifting': 'Drilling and Lifting','gas-detectors': 'Gas Detectors','portable-ventilators': 'Portable Ventilators','power-tools': 'Power Tools','protection': 'Personal Protective Equipment','welding-accessories': 'Welding Accessories','welding-consumables': 'Welding Consumables'};
+            return map[key] || 'Categories';
+        }
+
+        function getPopoverItems(key) {
+            var base = '..';
+            var maps = {
+                'arc-welding-robots': [{label: 'G3 Controller Series', href: base + '/arc-welding-robots/g3-controller-series.php'},{label: 'G4 Controller Series', href: base + '/arc-welding-robots/g4-controller-series.php'},{label: 'Featured Products and Solutions', href: base + '/arc-welding-robots/featured-products-and-solution.php'},{label: 'Robot System Peripherals', href: base + '/arc-welding-robots/robot-system-peripherals.php'}],
+                'arc-welding-machine': [{label: 'CO2/MAG Welding Machine', href: base + '/arc-welding-machine/co2-mag-welding-machine.php'},{label: 'MIG Welding Machine', href: base + '/arc-welding-machine/mig-welding-machine.php'},{label: 'TIG Welding Machine', href: base + '/arc-welding-machine/tig-welding-machine.php'},{label: 'Plasma Cutting Machine', href: base + '/arc-welding-machine/plasma-cutting-machine.php'},{label: 'Stud Welding', href: base + '/arc-welding-machine/stud-welding-machine.php'},{label: 'Accessories & Consumables', href: base + '/arc-welding-machine/accessories-and-consumables.php'}],
+                'batteries': [{label: 'Maintenance Free', href: base + '/batteries/maintenance-free.php'},{label: 'Low Maintenance', href: base + '/batteries/low-maintenance.php'},{label: 'Special Batteries', href: base + '/batteries/special-batteries.php'}],
+                'drilling-and-lifting': [{label: 'Material Handling & Lifting', href: base + '/drilling-and-lifting/lifting.php'},{label: 'Magnetic Drill', href: base + '/drilling-and-lifting/magnetic-drill.php'},{label: 'Core Cutters', href: base + '/drilling-and-lifting/cutters.php'}],
+                'gas-detectors': [{label: 'Single Gas Detector', href: base + '/gas-detectors/single-gas-detector.php'},{label: 'Multi Gas Detector', href: base + '/gas-detectors/multi-gas-detector.php'},{label: 'Portable Gas Detectors', href: base + '/gas-detectors/portable-gas-detectors.php'},{label: 'Docking and Data Management', href: base + '/gas-detectors/docking-data-management.php'},{label: 'Calibration Gas and Regulators', href: base + '/gas-detectors/calibration-gas-regulators.php'}],
+                'power-tools': [{label: 'Grinder', href: base + '/power-tools/grinder.php'},{label: 'Saw', href: base + '/power-tools/saw.php'},{label: 'Drill and Wrench', href: base + '/power-tools/drill-and-wrench.php'},{label: 'Rotary and Demolition Hammer', href: base + '/power-tools/rotary-and-demolition-hammer.php'},{label: 'Accessories', href: base + '/power-tools/accessories.php'}],
+                'portable-ventilators': [{label: 'Electric Driven', href: base + '/portable-ventilators/electric-driven.php'},{label: 'Pneumatic Driven', href: base + '/portable-ventilators/pneumatic-driven.php'}],
+                'protection': [{label: 'Eye Protection', href: base + '/protection/eye-protection.php'},{label: 'Hand Protection', href: base + '/protection/hand-protection.php'},{label: 'Hearing & Respiratory Protection', href: base + '/protection/hearing-respiratory-protection.php'},{label: 'Welding Head and Face Protection', href: base + '/protection/welding-head-and-face-protection.php'},{label: 'Body Protection', href: base + '/protection/body-protection.php'}],
+                'welding-accessories': [{label: 'Welding Electrode Oven', href: base + '/welding-accessories/welding-electrode-oven.php'},{label: 'Non-Destructive Crack Detection', href: base + '/welding-accessories/non-destructive-crack-detection.php'},{label: 'Gas Saving Regulator', href: base + '/welding-accessories/gas-saving-regulator.php'},{label: 'Gas Cutting Equipment', href: base + '/welding-accessories/gas-cutting-equipment.php'},{label: 'Industrial Markers', href: base + '/welding-accessories/industrial-markers.php'},{label: 'Measuring Gauge', href: base + '/welding-accessories/measuring-gauge.php'},{label: 'Others', href: base + '/welding-accessories/others.php'}],
+                'welding-consumables': [{label: 'Kobelco', href: base + '/welding-consumables/kobelco.php'},{label: 'Metrode', href: base + '/welding-consumables/metrode.php'}]
+            };
+            return maps[key] || [];
+        }
+
+        function renderPopover(key) {
+            if (!miniPopover || !popoverList) return;
+            popoverList.innerHTML = '';
+            var items = getPopoverItems(key);
+            items.forEach(function(it){var li = document.createElement('li'); li.className = 'mini-popover-item'; li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a>'; popoverList.appendChild(li);});
+            if (popoverTitle) popoverTitle.textContent = getCategoryTitle(key);
+        }
+
+        function positionPopoverForIcon(icon) {
+            if (!miniPopover || !icon) return;
+            miniPopover.style.left = '-9999px'; miniPopover.style.top = '-9999px'; miniPopover.classList.add('show');
+            var rect = icon.getBoundingClientRect(); var pw = miniPopover.offsetWidth; var ph = miniPopover.offsetHeight;
+            var iconCenterY = rect.top + rect.height / 2; var left = Math.round(rect.right + 14); var top = Math.round(iconCenterY - ph / 2);
+            if (left + pw + 12 > window.innerWidth) left = Math.round(rect.left - pw - 14);
+            var headerHeight = 170; var minTop = headerHeight + 12; var maxTop = window.innerHeight - ph - 12;
+            if (top < minTop) top = minTop; if (top > maxTop) top = maxTop;
+            var arrowOffset = iconCenterY - top - 26;
+            miniPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+            miniPopover.style.left = left + 'px'; miniPopover.style.top = top + 'px';
+        }
+
+        function hidePopover() {
+            if (!miniPopover) return;
+            miniPopover.classList.remove('show');
+            miniPopover.setAttribute('aria-hidden', 'true');
+            currentPopoverKey = null;
+        }
+
+        function showPopoverForKey(key, icon) {
+            if (!miniPopover) return;
+            if (currentPopoverKey === key && miniPopover.classList.contains('show')) { hidePopover(); return; }
+            renderPopover(key);
+            positionPopoverForIcon(icon);
+            miniPopover.classList.add('show');
+            miniPopover.setAttribute('aria-hidden', 'false');
+            currentPopoverKey = key;
+        }
+
+        document.addEventListener('click', function(e){ if (!miniPopover) return; if (!miniPopover.classList.contains('show')) return; if (e.target.closest('.mini-popover') || e.target.closest('.sub-indicator')) return; hidePopover(); });
+        document.addEventListener('keydown', function(e){ if (e.key === 'Escape') hidePopover(); });
+
+        if(browseToggle) { browseToggle.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); var isMiniSidebarVisible = miniSidebar && window.getComputedStyle(miniSidebar).display !== 'none'; if(window.innerWidth > 1024 && isMiniSidebarVisible) { miniSidebar.classList.toggle('expanded'); browseToggle.classList.toggle('expanded'); } else { if(mainSidebar.classList.contains('active')) { mainSidebar.classList.remove('active'); backdrop.classList.remove('active'); } else { mainSidebar.classList.add('active'); backdrop.classList.add('active'); mainSidebar.style.display = 'block'; backdrop.style.display = 'block'; } } }); }
+
+        if(expandBtn) { expandBtn.addEventListener('click', function() { miniSidebar.classList.toggle('expanded'); if(browseToggle) browseToggle.classList.toggle('expanded'); }); }
+
+        var menuBar = document.getElementById('miniSidebarMenuBar');
+        if(menuBar) { menuBar.addEventListener('click', function() { miniSidebar.classList.toggle('expanded'); if(browseToggle) browseToggle.classList.toggle('expanded'); }); }
+
+        var arrowHandler = function(e) { e.stopPropagation(); e.preventDefault(); var arrow = (e.target && e.target.closest('.sub-indicator')) || e.currentTarget; var icon = arrow ? arrow.closest('.mini-sidebar-icon') : null; if (!icon) return; var dataTarget = icon.getAttribute('data-target') || ''; var categoryKey = getCategoryKeyFromTarget(dataTarget); if (!categoryKey) return; showPopoverForKey(categoryKey, icon); };
+
+        document.querySelectorAll('.sub-indicator').forEach(function(arrow) { arrow.addEventListener('click', arrowHandler, true); });
+        document.addEventListener('click', function(e) { if (e.target.closest('.sub-indicator')) { arrowHandler(e); } }, true);
+
+        miniIcons.forEach(function(icon) { icon.addEventListener('click', function(e) { if (e.target.closest('.sub-indicator')) { e.stopPropagation(); return; } var target = this.getAttribute('data-target'); if (target) { window.location.href = target; } }, true); });
+
+        if(backdrop) { backdrop.addEventListener('click', function() { if(mainSidebar.classList.contains('active')) { mainSidebar.classList.remove('active'); backdrop.classList.remove('active'); } }); }
+
+        var closeSidebarBtn = document.getElementById('closeSidebar');
+        if(closeSidebarBtn) { closeSidebarBtn.addEventListener('click', function() { if(mainSidebar.classList.contains('active')) { mainSidebar.classList.remove('active'); backdrop.classList.remove('active'); } }); }
     </script>
 
 
