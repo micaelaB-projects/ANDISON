@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/brands_info.php';
@@ -252,7 +252,7 @@ if (!$current_category) {
         }
 
         .search-bar .search-field::before {
-            content: '🔍';
+            content: 'ðŸ”';
             position: absolute;
             left: 12px;
             font-size: 16px;
@@ -1259,6 +1259,12 @@ if (!$current_category) {
             flex-shrink: 0;
         }
 
+        .browse-label {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         .mini-sidebar.expanded #miniSidebarMenuBar {
             justify-content: flex-start;
             width: 100%;
@@ -1269,6 +1275,7 @@ if (!$current_category) {
 
         .mini-sidebar.expanded .browse-label {
             display: inline-block !important;
+            opacity: 1;
         }
 
         .mini-sidebar-icon:hover {
@@ -1533,9 +1540,9 @@ if (!$current_category) {
                 <a href="../inquirylist.php" class="inquiry-btn">INQUIRY LIST</a>
                 <div class="header-contact">
                     <div class="contact-dropdown" tabindex="0" aria-haspopup="true">
-                        <a href="#contact" class="contact-link" aria-label="Contact Us">Contact Us ▾</a>
+                        <a href="#contact" class="contact-link" aria-label="Contact Us">Contact Us â–¾</a>
                         <div class="contact-popover" role="menu" aria-hidden="true">
-                            <button class="contact-close" aria-label="Close contact popover">✕</button>
+                            <button class="contact-close" aria-label="Close contact popover">âœ•</button>
                             <ul class="contact-list">
                                 <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone; ?>"><?php echo $phone; ?></a></li>
                                 <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone2; ?>"><?php echo $phone2; ?></a></li>
@@ -1551,7 +1558,6 @@ if (!$current_category) {
         <!-- Navigation -->
         <nav>
             <div class="nav-inner">
-                <button id="browseToggle" class="browse-toggle"><span class="browse-icon"><i class="bi bi-list"></i></span><span class="browse-text">BROWSE PRODUCTS</span></button>
                 <ul class="nav-list">
                     <li>
                         <a href="../home.php">Home</a>
@@ -1647,139 +1653,12 @@ if (!$current_category) {
         </nav>
     </header>
 
-    <!-- Overlay Backdrop -->
-    <div class="overlay-backdrop" id="overlayBackdrop"></div>
-
-    <!-- Sidebar Navigation -->
-    <aside id="sidebar" class="sidebar-overlay" aria-hidden="true">
-        <div style="padding: 14px 20px; background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); display: flex; align-items: center; justify-content: space-between; gap: 12px;">
-            <div style="display: flex; align-items: center; gap: 8px; color: white; flex: 1;">
-                <i class="bi bi-list" style="font-size: 20px; font-weight: 700;"></i>
-                <span style="font-size: 14px; font-weight: 700; letter-spacing: 0.5px;">BROWSE</span>
-            </div>
-            <button id="closeSidebar" style="background: transparent; border: none; color: white; cursor: pointer; font-size: 24px; padding: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; line-height: 1;">×</button>
-        </div>
-        <ul class="sidebar-list">
-            <li class="has-sub">
-                <a href="../arc-welding-machine/arc-welding-machine.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span><span class="sidebar-label">Arc Welding Machines</span></a>
-                <button class="sub-toggle" aria-controls="sub-arc-welding" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
-                <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
-                    <li><a href="../arc-welding-machine/co2-mag-welding-machine.php">CO2/MAG Welding Machine</a></li>
-                    <li><a href="../arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
-                    <li><a href="../arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
-                    <li><a href="../arc-welding-machine/plasma-cutting-machine.php">Plasma Cutting Machine</a></li>
-                    <li><a href="../arc-welding-machine/stud-welding-machine.php">Stud Welding</a></li>
-                    <li><a href="../arc-welding-machine/accessories-and-consumables.php">Accessories &amp; Consumables</a></li>
-                </ul>
-            </li>
-            <li class="has-sub active">
-                <a href="../arc-welding-robots/arc-welding-robot.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label"><?php echo htmlspecialchars($current_category['name']); ?></span></a>
-                <button class="sub-toggle" aria-controls="sub-arc-robots" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
-                <ul id="sub-arc-robots" class="sidebar-sublist collapsed">
-                    <li><a href="../arc-welding-robots/g3-controller-series.php">G3 Controller Series</a></li>
-                    <li><a href="../arc-welding-robots/g4-controller-series.php">G4 Controller Series</a></li>
-                    <li><a href="../arc-welding-robots/featured-products-and-solution.php">Featured Products and Solutions</a></li>
-                    <li><a href="../arc-welding-robots/robot-system-peripherals.php">Robot System Peripherals</a></li>
-                </ul>
-            </li>
-            <li class="has-sub">
-                <a href="../batteries/batteries.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-fill"></i></span><span class="sidebar-label">Batteries</span></a>
-                <button class="sub-toggle" aria-controls="sub-batteries" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
-                <ul id="sub-batteries" class="sidebar-sublist collapsed">
-                    <li><a href="../batteries/maintenance-free.php">Maintenance Free</a></li>
-                    <li><a href="../batteries/low-maintenance.php">Low Maintenance</a></li>
-                    <li><a href="../batteries/special-batteries.php">Special Batteries</a></li>
-                </ul>
-            </li>
-            <li class="has-sub">
-                <a href="../drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling and Lifting</span></a>
-                <button class="sub-toggle" aria-controls="sub-drilling-lifting" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
-                <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
-                    <li><a href="../drilling-and-lifting/lifting.php">Lifting</a></li>
-                    <li><a href="../drilling-and-lifting/magnetic-drill.php">Magnetic Drill</a></li>
-                    <li><a href="../drilling-and-lifting/cutters.php">Cutters</a></li>
-                </ul>
-            </li>
-            <li class="has-sub">
-                <a href="../gas-detectors/gas-detectors.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></span><span class="sidebar-label">Gas Detectors</span></a>
-                <button class="sub-toggle" aria-controls="sub-gas-detectors" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
-                <ul id="sub-gas-detectors" class="sidebar-sublist collapsed">
-                    <li><a href="../gas-detectors/single-gas-detector.php">Single Gas Detector</a></li>
-                    <li><a href="../gas-detectors/multi-gas-detector.php">Multi Gas Detector</a></li>
-                    <li><a href="../gas-detectors/portable-gas-detectors.php">Portable Gas Detectors</a></li>
-                    <li><a href="../gas-detectors/docking-data-management.php">Docking and Data Management</a></li>
-                    <li><a href="../gas-detectors/calibration-gas-regulators.php">Calibration Gas and Regulators</a></li>
-                </ul>
-            </li>
-            <li class="">
-                <a href="../portable-ventilators/portable-ventilators.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-fan"></i></span><span class="sidebar-label">Portable Ventilators</span></a>
-                
-            </li>
-            <li class="has-sub">
-                <a href="../power-tools/power-tools.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-tools"></i></span><span class="sidebar-label">Power Tools</span></a>
-                <button class="sub-toggle" aria-controls="sub-power-tool" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
-                <ul id="sub-power-tool" class="sidebar-sublist collapsed">
-                    <li><a href="../power-tools/grinder.php">Grinder</a></li>
-                    <li><a href="../power-tools/saw.php">Saw</a></li>
-                    <li><a href="../power-tools/drill-and-wrench.php">Drill and Wrench</a></li>
-                    <li><a href="../power-tools/rotary-and-demolition-hammer.php">Rotary and Demolition Hammer</a></li>
-                    <li><a href="../power-tools/accessories.php">Accessories</a></li>
-                </ul>
-            </li>
-            <li class="has-sub">
-                <a href="../protection/protection.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-shield-check"></i></span><span class="sidebar-label">Personal Protective Equipment</span></a>
-                <button class="sub-toggle" aria-controls="sub-protection-safety" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
-                <ul id="sub-protection-safety" class="sidebar-sublist collapsed">
-                    <li><a href="../protection/eye-protection.php">Eye Protection</a></li>
-                    <li class="has-nested-sub">
-                        <a href="../protection/hand-protection.php">Hand Protection</a>
-                        <ul id="nested-hand-protection" class="sidebar-nested-sublist collapsed">
-                            <li><a href="../protection/working-gloves.php">Working Gloves</a></li>
-                            <li><a href="../protection/chemical-liquid-protection-gloves.php">Chemical and Liquid Protection Gloves</a></li>
-                            <li><a href="../protection/disposable-gloves.php">Disposable Gloves</a></li>
-                            <li><a href="../protection/welding-gloves.php">Welding Gloves</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="../protection/hearing-respiratory-protection.php">Hearing &amp; Respiratory Protection</a></li>
-                    <li class="has-nested-sub">
-                        <a href="../protection/body-protection.php">Body Protection</a>
-                        <ul id="nested-body-protection" class="sidebar-nested-sublist collapsed">
-                            <li><a href="../protection/chemical-flame-retardant.php">Chemical and Flame Retardant</a></li>
-                            <li><a href="../protection/liquid-spray-splash.php">Liquid Spray and Splash</a></li>
-                            <li><a href="../protection/particulate-low-hazard.php">Particulate and Low Hazard</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-            <li class="has-sub">
-                <a href="../welding-accessories/welding-accessories.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-gear"></i></span><span class="sidebar-label">Welding Accessories</span></a>
-                <button class="sub-toggle" aria-controls="sub-welding-accessories" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
-                <ul id="sub-welding-accessories" class="sidebar-sublist collapsed">
-                    <li><a href="../welding-accessories/welding-electrode-oven.php">Welding Electrode Oven</a></li>
-                    <li><a href="../welding-accessories/non-destructive-crack-detection.php">Non-Destructive Crack Detection</a></li>
-                    <li><a href="../welding-accessories/gas-saving-regulator.php">Gas Saving Regulator</a></li>
-                    <li><a href="../welding-accessories/gas-cutting-equipment.php">Gas Cutting Equipment</a></li>
-                    <li><a href="../welding-accessories/industrial-markers.php">Industrial Markers</a></li>
-                    <li><a href="../welding-accessories/measuring-gauge.php">Measuring Gauge</a></li>
-                    <li><a href="../welding-accessories/others.php">Others</a></li>
-                </ul>
-            </li>
-            <li class="has-sub">
-                <a href="../welding-consumables/welding-consumables.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-box"></i></span><span class="sidebar-label">Welding Consumables</span></a>
-                <button class="sub-toggle" aria-controls="sub-welding-consumables" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
-                <ul id="sub-welding-consumables" class="sidebar-sublist collapsed">
-                    <li><a href="../welding-consumables/kobelco.php">Kobelco</a></li>
-                    <li><a href="../welding-consumables/metrode.php">Metrode</a></li>
-                </ul>
-            </li>
-        </ul>
-    </aside>
 
     <!-- Mini Sidebar (Icon Bar) -->
     <div class="mini-sidebar active" id="miniSidebar">
         <div id="miniSidebarMenuBar" style="background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); border-radius: 0; display: flex; align-items: center; gap: 8px; cursor: pointer;">
             <i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i>
-            <span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px; display: none;" class="browse-label">BROWSE CATEGORIES</span>
+            <span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px; white-space: nowrap;" class="browse-label">BROWSE CATEGORIES</span>
         </div>
         <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-machine/arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon active-icon has-sub" data-target="../arc-welding-robots/arc-welding-robot.php" title="Arc Welding Robots"><i class="bi bi-robot"></i><span class="label">Arc Welding Robots</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
@@ -2300,6 +2179,38 @@ if (!$current_category) {
         document.querySelectorAll('.sub-indicator').forEach(function(arrow) {
             arrow.addEventListener('click', arrowHandler, true);
         });
+
+        // Hover handlers for mini-sidebar icons - show popover on mouseenter
+        var popoverHideTimeout = null;
+        
+        document.querySelectorAll('.mini-sidebar-icon.has-sub').forEach(function(icon) {
+            icon.addEventListener('mouseenter', function(e) {
+                clearTimeout(popoverHideTimeout);
+                var dataTarget = icon.getAttribute('data-target') || '';
+                var categoryKey = getCategoryKeyFromTarget(dataTarget);
+                if (!categoryKey) return;
+                showPopoverForKey(categoryKey, icon);
+            });
+            
+            icon.addEventListener('mouseleave', function(e) {
+                popoverHideTimeout = setTimeout(function() {
+                    hidePopover();
+                }, 150);
+            });
+        });
+
+        // Keep popover visible when hovering over the popover itself
+        if (miniPopover) {
+            miniPopover.addEventListener('mouseenter', function(e) {
+                clearTimeout(popoverHideTimeout);
+            });
+            
+            miniPopover.addEventListener('mouseleave', function(e) {
+                popoverHideTimeout = setTimeout(function() {
+                    hidePopover();
+                }, 150);
+            });
+        }
         
         // Also use event delegation for arrows added dynamically
         document.addEventListener('click', function(e) {
@@ -2314,16 +2225,32 @@ if (!$current_category) {
             icon.addEventListener('click', function(e) {
                 // IMPORTANT: Skip completely if clicking on the arrow indicator
                 if (e.target.closest('.sub-indicator')) {
-                    e.stopPropagation();
                     return;
                 }
+                
+                e.preventDefault();
+                e.stopPropagation();
                 
                 var target = this.getAttribute('data-target');
                 if (target) {
                     window.location.href = target;
                 }
-            }, true); // Use capture phase for priority
+            }, false); // Use bubbling phase for reliability
         });
+        
+        // Direct click handler on mini sidebar icons to ensure navigation
+        document.addEventListener('click', function(e) {
+            var icon = e.target.closest('.mini-sidebar-icon');
+            if (!icon) return;
+            
+            // Skip if clicking the arrow indicator
+            if (e.target.closest('.sub-indicator')) return;
+            
+            var target = icon.getAttribute('data-target');
+            if (target) {
+                window.location.href = target;
+            }
+        }, false);
 
         // Close sidebar backdrop click
         backdrop.addEventListener('click', function() {
@@ -2370,5 +2297,6 @@ if (!$current_category) {
         </script>
     </body>
     </html>
+
 
 
