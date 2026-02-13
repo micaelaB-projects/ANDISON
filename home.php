@@ -12,7 +12,7 @@ $ytLinks = andison_get_youtube_links();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Industrial Solutions Inc. - Homepage Redesign</title>
+    <title>Andison Industrial Solutions Inc. - Homepage Redesign</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
         * {
@@ -1952,7 +1952,7 @@ $ytLinks = andison_get_youtube_links();
             width: 0; height: 0;
             border-top: 10px solid transparent;
             border-bottom: 10px solid transparent;
-            border-right: 10px solid #1976D2;
+            border-right: 10px solid #ffffff;
             filter: drop-shadow(-2px 2px 2px rgba(0,0,0,0.12));
         }
         .mini-popover-header {
@@ -3189,6 +3189,19 @@ $ytLinks = andison_get_youtube_links();
         document.addEventListener('click', function(e){
             if (!miniPopover) return;
             if (!miniPopover.classList.contains('show')) return;
+            
+            // Allow clicks on popover items to navigate
+            var popoverLink = e.target.closest('.mini-popover-item a');
+            if (popoverLink) {
+                e.preventDefault();
+                var href = popoverLink.getAttribute('href');
+                if (href) {
+                    window.location.href = href;
+                }
+                return;
+            }
+            
+            // Close popover if clicking outside of it
             if (e.target.closest('.mini-popover') || e.target.closest('.sub-indicator')) return;
             hidePopover();
         });
@@ -3220,7 +3233,6 @@ $ytLinks = andison_get_youtube_links();
 
         if(expandBtn) {
             expandBtn.addEventListener('click', function(e) {
-                e.preventDefault();
                 e.stopPropagation();
                 miniSidebar.classList.toggle('expanded');
                 if(browseToggle) browseToggle.classList.toggle('expanded');
@@ -3241,16 +3253,17 @@ $ytLinks = andison_get_youtube_links();
                 e.stopPropagation();
                 var subIndicator = e.target.closest('.sub-indicator');
                 if (subIndicator) {
-                    // Arrow was clicked, show popover
+                    // Arrow/button was clicked, show/toggle popover
+                    e.preventDefault();
                     arrowHandler(e);
-                } else {
-                    // Icon was clicked, navigate to category
+                } else if (!e.target.closest('.label')) {
+                    // Icon was clicked (not the label), navigate to category
                     var dataTarget = icon.getAttribute('data-target') || '';
                     if (dataTarget) {
                         window.location.href = dataTarget;
                     }
                 }
-            });
+            }, true);
         });
 
         // Sub-indicator (arrow) click handler - show popover
@@ -3269,6 +3282,37 @@ $ytLinks = andison_get_youtube_links();
         document.querySelectorAll('.sub-indicator').forEach(function(arrow) {
             arrow.addEventListener('click', arrowHandler, true);
         });
+
+        // HOVER handlers for mini-sidebar icons to show popover
+        var popoverHideTimeout = null;
+        document.querySelectorAll('.mini-sidebar-icon.has-sub').forEach(function(icon) {
+            icon.addEventListener('mouseenter', function(e) {
+                clearTimeout(popoverHideTimeout);
+                var dataTarget = icon.getAttribute('data-target') || '';
+                var categoryKey = getCategoryKeyFromTarget(dataTarget);
+                if (!categoryKey) return;
+                showPopoverForKey(categoryKey, icon);
+            });
+            
+            icon.addEventListener('mouseleave', function(e) {
+                popoverHideTimeout = setTimeout(function() {
+                    hidePopover();
+                }, 150);
+            });
+        });
+
+        // Keep popover visible when hovering over it
+        if (miniPopover) {
+            miniPopover.addEventListener('mouseenter', function() {
+                clearTimeout(popoverHideTimeout);
+            });
+            
+            miniPopover.addEventListener('mouseleave', function() {
+                popoverHideTimeout = setTimeout(function() {
+                    hidePopover();
+                }, 150);
+            });
+        }
 
         // ============================================
         // MAIN SIDEBAR CATEGORY AND SUBCATEGORY LINKS
