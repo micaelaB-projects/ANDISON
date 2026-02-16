@@ -1026,6 +1026,7 @@ $ytLinks = andison_get_youtube_links();
             margin: 0;
             padding: 0 20px;
         }
+        }
 
         .footer-links {
             display: flex;
@@ -3522,4 +3523,3 @@ $ytLinks = andison_get_youtube_links();
     </script>
 </body>
 </html>
-

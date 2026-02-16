@@ -1299,12 +1299,12 @@ $category_id = "arc-welding-machine";
                 <a href="../arc-welding-machine/arc-welding-machine.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span><span class="sidebar-label">Arc Welding Machines</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-welding" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
-                    <li><a href="../arc-welding-machine/co2-mag-welding-machine.php">CO2/MAG Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
+                    <li><a href="../arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
+                    <li><a href="../arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/plasma-cutting-machine.php">Plasma Cutting Machine</a></li>
-                    <li><a href="../arc-welding-machine/stud-welding-machine.php">Stud Welding</a></li>
-                    <li><a href="../arc-welding-machine/accessories-and-consumables.php">Accessories &amp; Consumables</a></li>
+                    <li><a href="../arc-welding-machine/accessories-and-consumables.php">Accessories & Consumables</a></li>
                 </ul>
             </li>
             <li class="has-sub">
@@ -1414,6 +1414,32 @@ $category_id = "arc-welding-machine";
             </li>
         </ul>
     </aside>
+
+    <!-- Mini Sidebar (Icon Bar) -->
+    <div class="mini-sidebar active" id="miniSidebar">
+        <div id="miniSidebarMenuBar" style="background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); border-radius: 0; display: flex; align-items: center; gap: 8px; cursor: pointer;"><i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i><span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px; display: none;" class="browse-label">BROWSE CATEGORIES</span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-machine/arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-robots/arc-welding-robot.php" title="Arc Welding Robots"><i class="bi bi-robot"></i><span class="label">Arc Welding Robots</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="../batteries/batteries.php" title="Batteries"><i class="bi bi-lightning-fill"></i><span class="label">Batteries</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="../drilling-and-lifting/drilling-and-lifting.php" title="Drilling and Lifting"><i class="bi bi-hammer"></i><span class="label">Drilling and Lifting</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="../gas-detectors/gas-detectors.php" title="Gas Detectors"><i class="bi bi-bullseye"></i><span class="label">Gas Detectors</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="../portable-ventilators/portable-ventilators.php" title="Portable Ventilators"><i class="bi bi-fan"></i><span class="label">Portable Ventilators</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="../power-tools/power-tools.php" title="Power Tools"><i class="bi bi-tools"></i><span class="label">Power Tools</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="../protection/protection.php" title="Personal Protective Equipment"><i class="bi bi-shield-check"></i><span class="label">PPE</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="../welding-accessories/welding-accessories.php" title="Welding Accessories"><i class="bi bi-gear"></i><span class="label">Welding Accessories</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="../welding-consumables/welding-consumables.php" title="Welding Consumables"><i class="bi bi-box"></i><span class="label">Welding Consumables</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <button class="mini-sidebar-toggle" id="expandSidebar" title="Toggle Sidebar"><i class="bi bi-chevron-right"></i></button>
+    </div>
+
+    <!-- Floating popover for mini sidebar subcategories -->
+    <div id="miniPopover" class="mini-popover" aria-hidden="true">
+        <div class="mini-popover-header">
+            <div class="mini-popover-title">Arc Welding Robots</div>
+        </div>
+        <div class="mini-popover-body">
+            <ul class="mini-popover-list"></ul>
+        </div>
+    </div>
 
         <div class="category-header">
             <h1><?php echo $category_name; ?></h1>
