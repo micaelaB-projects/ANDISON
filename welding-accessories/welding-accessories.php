@@ -1687,6 +1687,7 @@ if (!$current_category) {
                     <li><a href="../protection/eye-protection.php">Eye Protection</a></li>
                     <li class="has-nested-sub">
                         <a href="../protection/hand-protection.php">Hand Protection</a>
+                        <button class="nested-toggle" aria-controls="nested-hand-protection" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>
                         <ul id="nested-hand-protection" class="sidebar-nested-sublist collapsed">
                             <li><a href="../protection/working-gloves.php">Working Gloves</a></li>
                             <li><a href="../protection/chemical-liquid-protection-gloves.php">Chemical and Liquid Protection Gloves</a></li>
@@ -1695,8 +1696,10 @@ if (!$current_category) {
                         </ul>
                     </li>
                     <li><a href="../protection/hearing-respiratory-protection.php">Hearing &amp; Respiratory Protection</a></li>
+                    <li><a href="../protection/welding-head-and-face-protection.php">Welding Head and Face Protection</a></li>
                     <li class="has-nested-sub">
                         <a href="../protection/body-protection.php">Body Protection</a>
+                        <button class="nested-toggle" aria-controls="nested-body-protection" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>
                         <ul id="nested-body-protection" class="sidebar-nested-sublist collapsed">
                             <li><a href="../protection/chemical-flame-retardant.php">Chemical and Flame Retardant</a></li>
                             <li><a href="../protection/liquid-spray-splash.php">Liquid Spray and Splash</a></li>
@@ -2250,6 +2253,7 @@ if (!$current_category) {
                     { label: 'Eye Protection', href: base + '/../protection/eye-protection.php' },
                     { label: 'Hand Protection', href: base + '/../protection/hand-protection.php' },
                     { label: 'Hearing & Respiratory Protection', href: base + '/../protection/hearing-respiratory-protection.php' },
+                    { label: 'Welding Head and Face Protection', href: base + '/../protection/welding-head-and-face-protection.php' },
                     { label: 'Body Protection', href: base + '/../protection/body-protection.php' }
                 ],
                 'welding-accessories': [

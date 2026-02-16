@@ -522,9 +522,16 @@ if (!$current_category) {
 
         .category-container {
             max-width: 1500px;
-            margin: 40px auto 40px;
+            margin: 40px auto 40px 80px;
             padding: 0 40px;
             flex: 1;
+            transition: margin-left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .mini-sidebar.expanded ~ .category-container {
+            margin-left: 280px;
         }
 
         .category-header {
@@ -1151,6 +1158,348 @@ if (!$current_category) {
         .sidebar-close:hover {
             color: #374151;
         }
+
+        /* Mini Sidebar Styles */
+        .mini-sidebar {
+            position: fixed;
+            left: 0;
+            top: calc(14px + 50px + 14px + 12px + 52px);
+            bottom: 0;
+            width: 80px;
+            background: #2B11DB;
+            box-shadow: 2px 0 16px rgba(0,0,0,0.1);
+            z-index: 999;
+            padding: 20px 12px;
+            overflow: hidden;
+            clip-path: inset(0);
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .mini-sidebar.expanded {
+            width: 280px;
+            overflow-y: auto;
+            padding: 20px 12px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .mini-sidebar.expanded::-webkit-scrollbar {
+            display: none;
+        }
+
+        .mini-sidebar.active {
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .mini-sidebar.active.expanded {
+            align-items: stretch;
+        }
+
+        .mini-sidebar-icon {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            position: relative;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), justify-content 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease;
+            gap: 12px;
+            padding: 0;
+            flex-shrink: 0;
+            min-width: 56px;
+            overflow: hidden;
+        }
+
+        .mini-sidebar-icon .label {
+            display: none;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            flex: 0;
+            text-align: left;
+            opacity: 0;
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
+            width: 0;
+            height: 0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-icon {
+            width: 100%;
+            justify-content: flex-start;
+            padding: 12px;
+            min-width: auto;
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-icon .label {
+            display: block;
+            opacity: 1;
+            width: auto;
+            height: auto;
+            flex: 1;
+            margin: 0;
+            padding: 0;
+        }
+
+        #miniSidebarMenuBar {
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            margin-bottom: 8px;
+            margin-top: 0;
+            flex-shrink: 0;
+        }
+
+        .mini-sidebar.expanded #miniSidebarMenuBar {
+            justify-content: flex-start;
+            width: 100%;
+            height: auto;
+            padding: 12px;
+            margin-bottom: 8px;
+        }
+
+        .mini-sidebar.expanded .browse-label {
+            display: inline-block !important;
+        }
+
+        .mini-sidebar-icon:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.05);
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-icon:hover {
+            transform: translateX(4px);
+        }
+
+        .mini-sidebar-icon.active-icon {
+            background: #00D7B3;
+            color: #2B11DB;
+        }
+
+        .mini-sidebar-icon .sub-indicator {
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            background: rgba(255,255,255,0.1);
+            color: #ffffff;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            opacity: 0.95;
+            transition: background 0.15s ease, color 0.15s ease;
+            z-index: 999;
+            cursor: pointer;
+            pointer-events: auto;
+            border: 1px solid #ffffff;
+            box-shadow: none;
+        }
+
+        .mini-sidebar-icon:hover .sub-indicator {
+            opacity: 1;
+            background: #00D7B3;
+            color: #2B11DB;
+        }
+
+        .mini-sidebar-icon .sub-indicator:active {
+            transform: translateY(0);
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-icon .sub-indicator {
+            position: static;
+            background: transparent;
+            color: #2B11DB;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: auto;
+            opacity: 1;
+            border: 0;
+            cursor: pointer;
+            pointer-events: auto;
+            z-index: 100;
+            box-shadow: none;
+        }
+
+        .mini-sidebar-toggle {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 20px;
+            margin-top: auto;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .mini-sidebar-toggle:hover {
+            background: rgba(255,255,255,0.25);
+            transform: scale(1.05);
+        }
+
+        .mini-sidebar-toggle:active {
+            transform: scale(0.95);
+        }
+
+        .mini-sidebar-toggle i {
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-block;
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-toggle i {
+            transform: rotate(180deg);
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-toggle {
+            width: 100%;
+            padding: 12px;
+            min-width: auto;
+        }
+
+        /* Adjust main container for mini sidebar */
+        .main-content, .category-container {
+            margin-left: 80px;
+            transition: margin-left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mini-sidebar.expanded ~ .main-content,
+        .mini-sidebar.expanded ~ .category-container {
+            margin-left: 280px;
+        }
+
+        /* Mini Popover Styles */
+        .mini-popover {
+            position: fixed;
+            top: -9999px;
+            left: -9999px;
+            width: 320px;
+            max-width: calc(100vw - 32px);
+            background: linear-gradient(180deg, #1976D2FF 0%, #19D2B6FF 100%);
+            color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-6px);
+            transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease;
+            z-index: 1000;
+        }
+
+        .mini-popover.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .mini-popover::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: calc(26px + var(--arrow-offset, 0px));
+            width: 0; height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 10px solid #1976D2;
+            filter: drop-shadow(-2px 2px 2px rgba(0,0,0,0.12));
+        }
+
+        .mini-popover-header {
+            background: #f5f9ff;
+            color: #0f5132;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            padding: 12px 16px;
+            font-weight: 800;
+            font-size: 15px;
+            letter-spacing: 0.3px;
+        }
+
+        .mini-popover-title {
+            color: #0f5132;
+        }
+
+        .mini-popover-body {
+            padding: 12px 16px 16px 16px;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+        }
+
+        .mini-popover-list {
+            list-style: none;
+            margin: 0;
+            padding: 6px 0 6px 0;
+            position: relative;
+        }
+
+        .mini-popover-list::before {
+            content: '';
+            position: absolute;
+            left: 24px;
+            top: 6px;
+            bottom: 6px;
+            width: 2px;
+            background: rgba(255,255,255,0.35);
+            border-radius: 2px;
+        }
+
+        .mini-popover-item {
+            position: relative;
+            padding-left: 42px;
+            margin: 12px 0;
+            display: flex;
+            align-items: stretch;
+            min-height: 32px;
+        }
+
+        .mini-popover-item .square {
+            position: absolute;
+            left: 16px;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            width: 14px; height: 14px;
+            border-radius: 3px;
+            background: #7aa7ff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.18), inset 0 -1px 0 rgba(0,0,0,0.08);
+            flex-shrink: 0;
+            pointer-events: none;
+        }
+
+        .mini-popover-item a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            display: block;
+            padding: 8px 10px;
+            border-radius: 8px;
+            transition: background 140ms ease, transform 120ms ease;
+            width: 100%;
+        }
+
+        .mini-popover-item a:hover {
+            background: rgba(255,255,255,0.12);
+            transform: translateX(2px);
+        }
     </style>
 </head>
 <body>
@@ -1291,34 +1640,38 @@ if (!$current_category) {
 
     <!-- Sidebar Navigation -->
     <aside id="sidebar" class="sidebar-overlay" aria-hidden="true">
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 12px; border-bottom: 1px solid #e5e7eb;">
-            <h3 style="margin: 0; font-size: 18px; color: #1f2937;">Categories</h3>
-            <button class="sidebar-close" id="closeSidebar"><i class="bi bi-x-lg"></i></button>
+        <div style="padding: 14px 20px; background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 8px; color: white; flex: 1;">
+                <i class="bi bi-list" style="font-size: 20px; font-weight: 700;"></i>
+                <span style="font-size: 14px; font-weight: 700; letter-spacing: 0.5px;">BROWSE</span>
+            </div>
+            <button id="closeSidebar" style="background: transparent; border: none; color: white; cursor: pointer; font-size: 24px; padding: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; line-height: 1;">×</button>
         </div>
         <ul class="sidebar-list">
             <li class="has-sub">
                 <a href="../arc-welding-machine/arc-welding-machine.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span><span class="sidebar-label">Arc Welding Machines</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-welding" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <button class="sub-toggle" aria-controls="sub-arc-welding" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
                     <li><a href="../arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
+                    <li><a href="../arc-welding-machine/plasma-cutting-machine.php">Plasma Cutting Machine</a></li>
                 </ul>
             </li>
             <li class="has-sub">
                 <a href="../arc-welding-robots/arc-welding-robot.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label">Arc Welding Robots</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-robot" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
-                <ul id="sub-arc-robot" class="sidebar-sublist collapsed">
+                <button class="sub-toggle" aria-controls="sub-arc-robots" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
+                <ul id="sub-arc-robots" class="sidebar-sublist collapsed">
                     <li><a href="../arc-welding-robots/g3-controller-series.php">G3 Controller Series</a></li>
                     <li><a href="../arc-welding-robots/g4-controller-series.php">G4 Controller Series</a></li>
-                    <li><a href="../arc-welding-robots/featured-products-and-solution.php">Featured Products & Solutions</a></li>
+                    <li><a href="../arc-welding-robots/featured-products-and-solution.php">Featured Products and Solutions</a></li>
                     <li><a href="../arc-welding-robots/robot-system-peripherals.php">Robot System Peripherals</a></li>
                 </ul>
             </li>
             <li class="has-sub">
                 <a href="../batteries/batteries.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-fill"></i></span><span class="sidebar-label">Batteries</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-batteries" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <button class="sub-toggle" aria-controls="sub-batteries" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-batteries" class="sidebar-sublist collapsed">
                     <li><a href="../batteries/maintenance-free.php">Maintenance Free</a></li>
                     <li><a href="../batteries/low-maintenance.php">Low Maintenance</a></li>
@@ -1326,46 +1679,47 @@ if (!$current_category) {
                 </ul>
             </li>
             <li class="has-sub">
-                <a href="../drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling &amp; Lifting</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-drilling-lifting" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <a href="../drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling and Lifting</span></a>
+                <button class="sub-toggle" aria-controls="sub-drilling-lifting" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
                     <li><a href="../drilling-and-lifting/lifting.php">Lifting</a></li>
                     <li><a href="../drilling-and-lifting/magnetic-drill.php">Magnetic Drill</a></li>
                     <li><a href="../drilling-and-lifting/cutters.php">Cutters</a></li>
                 </ul>
             </li>
-            <li class="has-sub active">
-                <a href="../gas-detectors/portable-gas-detectors.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></span><span class="sidebar-label">Portable Gas Detectors</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-gas-detectors" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+            <li class="has-sub">
+                <a href="../gas-detectors/gas-detectors.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></span><span class="sidebar-label">Gas Detectors</span></a>
+                <button class="sub-toggle" aria-controls="sub-gas-detectors" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-gas-detectors" class="sidebar-sublist collapsed">
                     <li><a href="../gas-detectors/single-gas-detector.php">Single Gas Detector</a></li>
                     <li><a href="../gas-detectors/multi-gas-detector.php">Multi Gas Detector</a></li>
+                    <li><a href="../gas-detectors/portable-gas-detectors.php">Portable Gas Detectors</a></li>
                     <li><a href="../gas-detectors/docking-data-management.php">Docking and Data Management</a></li>
                     <li><a href="../gas-detectors/calibration-gas-regulators.php">Calibration Gas and Regulators</a></li>
                 </ul>
             </li>
-            <li>
+            <li class="">
                 <a href="../portable-ventilators/portable-ventilators.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-fan"></i></span><span class="sidebar-label">Portable Ventilators</span></a>
             </li>
             <li class="has-sub">
                 <a href="../power-tools/power-tools.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-tools"></i></span><span class="sidebar-label">Power Tools</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-power-tool" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <button class="sub-toggle" aria-controls="sub-power-tool" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-power-tool" class="sidebar-sublist collapsed">
-                    <li><a href="../power-tools/grinder/grinder.php">Grinder</a></li>
-                    <li><a href="../power-tools/saw/saw.php">Saw</a></li>
-                    <li><a href="../power-tools/drill-and-wrench/drill-and-wrench.php">Drill and Wrench</a></li>
-                    <li><a href="../power-tools/rotary-and-demolition-hammer/rotary-and-demolition-hammer.php">Rotary and Demolition Hammer</a></li>
-                    <li><a href="../power-tools/accessories/accessories.php">Accessories</a></li>
+                    <li><a href="../power-tools/grinder.php">Grinder</a></li>
+                    <li><a href="../power-tools/saw.php">Saw</a></li>
+                    <li><a href="../power-tools/drill-and-wrench.php">Drill and Wrench</a></li>
+                    <li><a href="../power-tools/rotary-and-demolition-hammer.php">Rotary and Demolition Hammer</a></li>
+                    <li><a href="../power-tools/accessories.php">Accessories</a></li>
                 </ul>
             </li>
             <li class="has-sub">
                 <a href="../protection/protection.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-shield-check"></i></span><span class="sidebar-label">Personal Protective Equipment</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-protection-safety" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <button class="sub-toggle" aria-controls="sub-protection-safety" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-protection-safety" class="sidebar-sublist collapsed">
                     <li><a href="../protection/eye-protection.php">Eye Protection</a></li>
                     <li class="has-nested-sub">
                         <a href="../protection/hand-protection.php">Hand Protection</a>
-                        <button class="nested-toggle" aria-expanded="false" aria-controls="nested-hand-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                        <button class="nested-toggle" aria-controls="nested-hand-protection" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>
                         <ul id="nested-hand-protection" class="sidebar-nested-sublist collapsed">
                             <li><a href="../protection/working-gloves.php">Working Gloves</a></li>
                             <li><a href="../protection/chemical-liquid-protection-gloves.php">Chemical and Liquid Protection Gloves</a></li>
@@ -1376,7 +1730,7 @@ if (!$current_category) {
                     <li><a href="../protection/hearing-respiratory-protection.php">Hearing &amp; Respiratory Protection</a></li>
                     <li class="has-nested-sub">
                         <a href="../protection/body-protection.php">Body Protection</a>
-                        <button class="nested-toggle" aria-expanded="false" aria-controls="nested-body-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                        <button class="nested-toggle" aria-controls="nested-body-protection" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>
                         <ul id="nested-body-protection" class="sidebar-nested-sublist collapsed">
                             <li><a href="../protection/chemical-flame-retardant.php">Chemical and Flame Retardant</a></li>
                             <li><a href="../protection/liquid-spray-splash.php">Liquid Spray and Splash</a></li>
@@ -1387,7 +1741,7 @@ if (!$current_category) {
             </li>
             <li class="has-sub">
                 <a href="../welding-accessories/welding-accessories.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-gear"></i></span><span class="sidebar-label">Welding Accessories</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-accessories" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <button class="sub-toggle" aria-controls="sub-welding-accessories" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-welding-accessories" class="sidebar-sublist collapsed">
                     <li><a href="../welding-accessories/welding-electrode-oven.php">Welding Electrode Oven</a></li>
                     <li><a href="../welding-accessories/non-destructive-crack-detection.php">Non-Destructive Crack Detection</a></li>
@@ -1400,7 +1754,7 @@ if (!$current_category) {
             </li>
             <li class="has-sub">
                 <a href="../welding-consumables/welding-consumables.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-box"></i></span><span class="sidebar-label">Welding Consumables</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-consumables" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <button class="sub-toggle" aria-controls="sub-welding-consumables" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-welding-consumables" class="sidebar-sublist collapsed">
                     <li><a href="../welding-consumables/kobelco.php">Kobelco</a></li>
                     <li><a href="../welding-consumables/metrode.php">Metrode</a></li>
@@ -1411,7 +1765,10 @@ if (!$current_category) {
 
     <!-- Mini Sidebar (Icon Bar) -->
     <div class="mini-sidebar active" id="miniSidebar">
-        <div id="miniSidebarMenuBar" style="background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); border-radius: 0; display: flex; align-items: center; gap: 8px; cursor: pointer;"><i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i><span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px; display: none;" class="browse-label">BROWSE CATEGORIES</span></div>
+        <div id="miniSidebarMenuBar" style="background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); border-radius: 0; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i>
+            <span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px; display: none;" class="browse-label">BROWSE CATEGORIES</span>
+        </div>
         <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-machine/arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-robots/arc-welding-robot.php" title="Arc Welding Robots"><i class="bi bi-robot"></i><span class="label">Arc Welding Robots</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../batteries/batteries.php" title="Batteries"><i class="bi bi-lightning-fill"></i><span class="label">Batteries</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
@@ -1435,6 +1792,7 @@ if (!$current_category) {
         </div>
     </div>
 
+    <div class="category-container">
         <div class="category-header">
             <h1><?php echo $category_name; ?></h1>
             <p><?php echo $category_description; ?></p>

@@ -2084,6 +2084,7 @@ if (!$current_category) {
                     { label: 'Eye Protection', href: base + '/../protection/eye-protection.php' },
                     { label: 'Hand Protection', href: base + '/../protection/hand-protection.php' },
                     { label: 'Hearing & Respiratory Protection', href: base + '/../protection/hearing-respiratory-protection.php' },
+                    { label: 'Welding Head and Face Protection', href: base + '/../protection/welding-head-and-face-protection.php' },
                     { label: 'Body Protection', href: base + '/../protection/body-protection.php' }
                 ],
                 'welding-accessories': [

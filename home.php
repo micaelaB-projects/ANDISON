@@ -1240,19 +1240,7 @@ $ytLinks = andison_get_youtube_links();
             display: flex;
         }
 
-        .sidebar-sublist { 
-            list-style: none; 
-            margin: 0; 
-            padding: 8px 0 8px 44px; 
-            display: none;
-            background: #fafafa;
-            margin-left: 12px;
-            margin-right: 12px;
-            padding-left: 16px;
-            border-left: 2px solid #e5e7eb;
-            padding-top: 8px;
-            padding-bottom: 8px;
-        }
+
         .sidebar-sublist li { 
             padding: 4px 0; 
             border: none;
@@ -1295,12 +1283,7 @@ $ytLinks = andison_get_youtube_links();
         .nested-toggle .bi { transition: transform 200ms ease; }
         .nested-toggle[aria-expanded="true"] .bi { transform: rotate(90deg); }
 
-        .sidebar-nested-sublist { 
-            list-style: none; 
-            margin: 10px 0 10px -12px; 
-            padding: 0; 
-            display: none;
-        }
+
         .sidebar-nested-sublist li { 
             padding: 0;
             border: none;
@@ -1316,52 +1299,10 @@ $ytLinks = andison_get_youtube_links();
             border-radius: 6px;
             margin: 2px 0;
         }
-        .sidebar-nested-sublist a::before {
-            content: '';
-            position: absolute;
-            left: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 6px;
-            height: 6px;
-            background: linear-gradient(135deg, #2B11DB 0%, #6d28d9 100%);
-            border-radius: 50%;
-            box-shadow: 0 2px 4px rgba(43, 17, 219, 0.2);
-        }
-        .sidebar-nested-sublist a:hover { 
-            color: #2B11DB;
-            background: rgba(43, 17, 219, 0.08);
-            padding-left: 32px;
-            transform: translateX(4px);
-        }
 
-        .sidebar-nested-sublist.collapsed { display: none; }
-        .sidebar-nested-sublist:not(.collapsed) { display: block; }
         .sidebar-list li.has-sub { position: relative; }
         .has-sub > a { padding-right: 40px; }
-        .sub-toggle {
-            position: absolute;
-            right: 12px;
-            top: 16px;
-            transform: none;
-            background: transparent;
-            border: none;
-            color: #9ca3af;
-            cursor: pointer;
-            padding: 0;
-            width: 24px;
-            height: 24px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 0;
-            box-shadow: none;
-        }
-        .sub-toggle:focus { outline: none; }
-        .sub-toggle .bi { transition: transform 200ms ease; font-size: 16px; }
-        .sub-toggle[aria-expanded="true"] .bi { transform: rotate(90deg); }
-        .sidebar-sublist.collapsed { display: none; }
-        .sidebar-sublist:not(.collapsed) { display: block; }
+
 
         .sidebar-close { 
             background: transparent; 
@@ -2542,6 +2483,7 @@ $ytLinks = andison_get_youtube_links();
                     <li><a href="protection/eye-protection.php">Eye Protection</a></li>
                     <li class="has-nested-sub">
                         <a href="protection/hand-protection.php">Hand Protection</a>
+                        <button class="nested-toggle" aria-controls="nested-hand-protection" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>
                         <ul id="nested-hand-protection" class="sidebar-nested-sublist collapsed">
                             <li><a href="protection/working-gloves.php">Working Gloves</a></li>
                             <li><a href="protection/chemical-liquid-protection-gloves.php">Chemical and Liquid Protection Gloves</a></li>
@@ -2550,8 +2492,10 @@ $ytLinks = andison_get_youtube_links();
                         </ul>
                     </li>
                     <li><a href="protection/hearing-respiratory-protection.php">Hearing &amp; Respiratory Protection</a></li>
+                    <li><a href="protection/welding-head-and-face-protection.php">Welding Head and Face Protection</a></li>
                     <li class="has-nested-sub">
                         <a href="protection/body-protection.php">Body Protection</a>
+                        <button class="nested-toggle" aria-controls="nested-body-protection" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>
                         <ul id="nested-body-protection" class="sidebar-nested-sublist collapsed">
                             <li><a href="protection/chemical-flame-retardant.php">Chemical and Flame Retardant</a></li>
                             <li><a href="protection/liquid-spray-splash.php">Liquid Spray and Splash</a></li>
@@ -3334,6 +3278,7 @@ $ytLinks = andison_get_youtube_links();
                     { label: 'Eye Protection', href: base + '/protection/eye-protection.php' },
                     { label: 'Hand Protection', href: base + '/protection/hand-protection.php' },
                     { label: 'Hearing & Respiratory Protection', href: base + '/protection/hearing-respiratory-protection.php' },
+                    { label: 'Welding Head and Face Protection', href: base + '/protection/welding-head-and-face-protection.php' },
                     { label: 'Body Protection', href: base + '/protection/body-protection.php' }
                 ],
                 'welding-accessories': [

@@ -1660,6 +1660,7 @@ if (!$current_category) {
                     <li><a href="../protection/eye-protection.php">Eye Protection</a></li>
                     <li><a href="../protection/hand-protection.php">Hand Protection</a></li>
                     <li><a href="../protection/hearing-respiratory-protection.php">Hearing &amp; Respiratory Protection</a></li>
+                    <li><a href="../protection/welding-head-and-face-protection.php">Welding Head and Face Protection</a></li>
                     <li><a href="../protection/body-protection.php">Body Protection</a></li>
                 </ul>
             </li>
@@ -2138,6 +2139,7 @@ if (!$current_category) {
                     { label: 'Eye Protection', href: base + '/../protection/eye-protection.php' },
                     { label: 'Hand Protection', href: base + '/../protection/hand-protection.php' },
                     { label: 'Hearing & Respiratory Protection', href: base + '/../protection/hearing-respiratory-protection.php' },
+                    { label: 'Welding Head and Face Protection', href: base + '/../protection/welding-head-and-face-protection.php' },
                     { label: 'Body Protection', href: base + '/../protection/body-protection.php' }
                 ],
                 'welding-accessories': [

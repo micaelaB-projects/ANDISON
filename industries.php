@@ -1509,6 +1509,7 @@
                         </ul>
                     </li>
                     <li><a href="protection/hearing-respiratory-protection.php">Hearing &amp; Respiratory Protection</a></li>
+                    <li><a href="protection/welding-head-and-face-protection.php">Welding Head and Face Protection</a></li>
                     <li class="has-nested-sub">
                         <a href="protection/body-protection.php">Body Protection</a>
                         <button class="nested-toggle" aria-expanded="false" aria-controls="nested-body-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>

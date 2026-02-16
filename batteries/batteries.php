@@ -1784,6 +1784,7 @@ if (!$current_category) {
                         </ul>
                     </li>
                     <li><a href="../protection/hearing-respiratory-protection.php">Hearing &amp; Respiratory Protection</a></li>
+                    <li><a href="../protection/welding-head-and-face-protection.php">Welding Head and Face Protection</a></li>
                     <li class="has-nested-sub">
                         <a href="../protection/body-protection.php">Body Protection</a>
                         <ul id="nested-body-protection" class="sidebar-nested-sublist collapsed">
@@ -2163,6 +2164,7 @@ if (!$current_category) {
                     { label: 'Eye Protection', href: base + '/../protection/eye-protection.php' },
                     { label: 'Hand Protection', href: base + '/../protection/hand-protection.php' },
                     { label: 'Hearing & Respiratory Protection', href: base + '/../protection/hearing-respiratory-protection.php' },
+                    { label: 'Welding Head and Face Protection', href: base + '/../protection/welding-head-and-face-protection.php' },
                     { label: 'Body Protection', href: base + '/../protection/body-protection.php' }
                 ],
                 'welding-accessories': [
