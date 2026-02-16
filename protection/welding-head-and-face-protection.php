@@ -5,7 +5,7 @@ require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
 
-$subcategory_id = "tig-welding-machine";
+$subcategory_id = "welding-head-and-face-protection";
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";
@@ -17,7 +17,7 @@ $parent_category = null;
 
 // Find the parent category and the subcategory
 foreach ($categories as $cat) {
-    if ($cat['id'] === 'arc-welding-machine') {
+    if ($cat['id'] === 'protection') {
         $parent_category = $cat;
         if (!empty($cat['subcategories'])) {
             foreach ($cat['subcategories'] as $subcat) {
@@ -32,11 +32,11 @@ foreach ($categories as $cat) {
 }
 
 if (!$current_category) {
-    die("TIG Welding Machine category not found");
+    die("Welding Head and Face Protection category not found");
 }
 
-$page_title = $current_category['name'] ?? "TIG Welding Machine";
-$category_id = "arc-welding-machine";
+$page_title = $current_category['name'] ?? "Welding Head and Face Protection";
+$category_id = "welding-head-and-face-protection";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -44,8 +44,8 @@ $category_id = "arc-welding-machine";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = $current_category['name'] ?? 'TIG Welding Machine';
-    $category_description = $current_category['description'] ?? 'Professional TIG welding machines for industrial applications.';
+    $category_name = $current_category['name'] ?? 'Welding Head and Face Protection';
+    $category_description = $current_category['description'] ?? 'Professional welding head and face protection equipment for industrial applications.';
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -2095,14 +2095,28 @@ $category_id = "arc-welding-machine";
         if(browseToggle) updateBrowseToggleVisibility();
         window.addEventListener('resize', updateBrowseToggleVisibility);
 
+        // Helpers for popover
         function getCategoryKeyFromTarget(dataTarget) {
             if (!dataTarget) return null;
-            var keys = ['arc-welding-machine','arc-welding-robots','batteries','drilling-and-lifting','gas-detectors','portable-ventilators','power-tools','protection','welding-accessories','welding-consumables'];
+            var keys = [
+                'arc-welding-machine','arc-welding-robots','batteries','drilling-and-lifting','gas-detectors','portable-ventilators','power-tools','protection','welding-accessories','welding-consumables'
+            ];
             for (var i=0;i<keys.length;i++) { if (dataTarget.indexOf('/'+keys[i]+'/') !== -1 || dataTarget.indexOf(keys[i]+'/') !== -1) return keys[i]; }
             return null;
         }
         function getCategoryTitle(key) {
-            var map = {'arc-welding-machine': 'Arc Welding Machines','arc-welding-robots': 'Arc Welding Robots','batteries': 'Batteries','drilling-and-lifting': 'Drilling and Lifting','gas-detectors': 'Gas Detectors','portable-ventilators': 'Portable Ventilators','power-tools': 'Power Tools','protection': 'Personal Protective Equipment','welding-accessories': 'Welding Accessories','welding-consumables': 'Welding Consumables'};
+            var map = {
+                'arc-welding-machine': 'Arc Welding Machines',
+                'arc-welding-robots': 'Arc Welding Robots',
+                'batteries': 'Batteries',
+                'drilling-and-lifting': 'Drilling and Lifting',
+                'gas-detectors': 'Gas Detectors',
+                'portable-ventilators': 'Portable Ventilators',
+                'power-tools': 'Power Tools',
+                'protection': 'Personal Protective Equipment',
+                'welding-accessories': 'Welding Accessories',
+                'welding-consumables': 'Welding Consumables'
+            };
             return map[key] || 'Categories';
         }
         function getPopoverItems(key) {

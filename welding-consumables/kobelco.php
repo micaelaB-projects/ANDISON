@@ -5,7 +5,7 @@ require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
 
-$subcategory_id = "tig-welding-machine";
+$subcategory_id = "kobelco";
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";
@@ -17,7 +17,7 @@ $parent_category = null;
 
 // Find the parent category and the subcategory
 foreach ($categories as $cat) {
-    if ($cat['id'] === 'arc-welding-machine') {
+    if ($cat['id'] === 'welding-consumables') {
         $parent_category = $cat;
         if (!empty($cat['subcategories'])) {
             foreach ($cat['subcategories'] as $subcat) {
@@ -32,11 +32,11 @@ foreach ($categories as $cat) {
 }
 
 if (!$current_category) {
-    die("TIG Welding Machine category not found");
+    die("Kobelco category not found");
 }
 
-$page_title = $current_category['name'] ?? "TIG Welding Machine";
-$category_id = "arc-welding-machine";
+$page_title = $current_category['name'] ?? "Kobelco";
+$category_id = "welding-consumables";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -44,8 +44,8 @@ $category_id = "arc-welding-machine";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = $current_category['name'] ?? 'TIG Welding Machine';
-    $category_description = $current_category['description'] ?? 'Professional TIG welding machines for industrial applications.';
+    $category_name = $current_category['name'] ?? 'Kobelco';
+    $category_description = $current_category['description'] ?? 'Professional Kobelco welding consumables and electrodes.';
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -1666,7 +1666,7 @@ $category_id = "arc-welding-machine";
                     <li><a href="../batteries/special-batteries.php">Special Batteries</a></li>
                 </ul>
             </li>
-            <li class="has-sub active">
+            <li class="has-sub">
                 <a href="../drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling &amp; Lifting</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-drilling-lifting" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
@@ -1739,7 +1739,7 @@ $category_id = "arc-welding-machine";
                     <li><a href="../welding-accessories/others.php">Others</a></li>
                 </ul>
             </li>
-            <li class="has-sub">
+            <li class="has-sub active">
                 <a href="../welding-consumables/welding-consumables.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-box"></i></span><span class="sidebar-label">Welding Consumables</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-consumables" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-welding-consumables" class="sidebar-sublist collapsed">
@@ -1756,7 +1756,7 @@ $category_id = "arc-welding-machine";
             <i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i>
             <span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px; display: none;" class="browse-label">BROWSE CATEGORIES</span>
         </div>
-        <div class="mini-sidebar-icon has-sub" data-target="arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-machine/arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-robots/arc-welding-robot.php" title="Arc Welding Robots"><i class="bi bi-robot"></i><span class="label">Arc Welding Robots</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../batteries/batteries.php" title="Batteries"><i class="bi bi-lightning-fill"></i><span class="label">Batteries</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../drilling-and-lifting/drilling-and-lifting.php" title="Drilling and Lifting"><i class="bi bi-hammer"></i><span class="label">Drilling and Lifting</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
@@ -1765,7 +1765,7 @@ $category_id = "arc-welding-machine";
         <div class="mini-sidebar-icon has-sub" data-target="../power-tools/power-tools.php" title="Power Tools"><i class="bi bi-tools"></i><span class="label">Power Tools</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../protection/protection.php" title="Personal Protective Equipment"><i class="bi bi-shield-check"></i><span class="label">PPE</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../welding-accessories/welding-accessories.php" title="Welding Accessories"><i class="bi bi-gear"></i><span class="label">Welding Accessories</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="../welding-consumables/welding-consumables.php" title="Welding Consumables"><i class="bi bi-box"></i><span class="label">Welding Consumables</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="welding-consumables.php" title="Welding Consumables"><i class="bi bi-box"></i><span class="label">Welding Consumables</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <button class="mini-sidebar-toggle" id="expandSidebar" title="Toggle Sidebar"><i class="bi bi-chevron-right"></i></button>
     </div>
 
@@ -1785,13 +1785,13 @@ $category_id = "arc-welding-machine";
         </div>
 
         <div class="category-content">
-            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'CO1/MAG Welding Machine'); ?></h2>
+            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Kobelco'); ?></h2>
             <?php if (!empty($current_category['description'])): ?>
                 <p class="category-description"><?php echo htmlspecialchars($current_category['description']); ?></p>
             <?php endif; ?>
             <div class="product-grid">
                 <?php 
-                // Dynamically fetch products for CO1/MAG Welding Machine subcategory
+                // Dynamically fetch products for Kobelco subcategory
                 $all_products = array();
                 $products = andison_get_products_for_subcategory($category_id, $subcategory_id);
                 if ($products) {
@@ -1840,11 +1840,11 @@ $category_id = "arc-welding-machine";
                     ?>
                 <div class="product-card">
                     <div class="product-image">
-                        <i class="bi bi-lightning-charge" style="font-size: 60px; color: #ccc;"></i>
+                        <i class="bi bi-upc-scan" style="font-size: 60px; color: #ccc;"></i>
                     </div>
-                    <h4>TIG Welding Equipment</h4>
+                    <h4>Kobelco Consumables</h4>
                     <p class="product-type">No products available</p>
-                    <button class="add-to-inquiry" type="button" data-model="TIG Welding Machine" data-type="Welding Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
+                    <button class="add-to-inquiry" type="button" data-model="Kobelco" data-type="Welding Consumables" data-brand="Kobelco" disabled>ADD TO INQUIRY</button>
                 </div>
                     <?php
                 }
