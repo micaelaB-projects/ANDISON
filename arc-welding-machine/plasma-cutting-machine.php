@@ -1522,7 +1522,6 @@ $category_id = "arc-welding-machine";
         <!-- Navigation -->
         <nav>
             <div class="nav-inner">
-                <button id="browseToggle" class="browse-toggle"><span class="hamburger"><i class="bi bi-list"></i></span> BROWSE PRODUCTS</button>
                 <ul class="nav-list">
                     <li>
                         <a href="../home.php">Home</a>
@@ -2263,3 +2262,4 @@ $category_id = "arc-welding-machine";
         }
     </script>
 </html>
+

@@ -28,3 +28,4 @@ $page_title = "CO1/MAG Welding Machine";
 </body>
 </html>
 
+

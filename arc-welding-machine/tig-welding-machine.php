@@ -1378,12 +1378,6 @@ $category_id = "arc-welding-machine";
             .mini-sidebar {
                 display: none !important;
             }
-            .browse-toggle {
-                display: inline-flex !important;
-            }
-            .browse-toggle .browse-text {
-                display: inline !important;
-            }
             .main-content, .category-container {
                 margin-left: 0 !important;
             }
@@ -1489,7 +1483,6 @@ $category_id = "arc-welding-machine";
             background: rgba(255,255,255,0.12);
             transform: translateX(2px);
         }
-
     </style>
 </head>
 <body>
@@ -1529,7 +1522,6 @@ $category_id = "arc-welding-machine";
         <!-- Navigation -->
         <nav>
             <div class="nav-inner">
-                <button id="browseToggle" class="browse-toggle"><span class="hamburger"><i class="bi bi-list"></i></span> BROWSE PRODUCTS</button>
                 <ul class="nav-list">
                     <li>
                         <a href="../home.php">Home</a>
@@ -1630,9 +1622,12 @@ $category_id = "arc-welding-machine";
 
     <!-- Sidebar Navigation -->
     <aside id="sidebar" class="sidebar-overlay" aria-hidden="true">
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 12px; border-bottom: 1px solid #e5e7eb;">
-            <h3 style="margin: 0; font-size: 18px; color: #1f2937;">Categories</h3>
-            <button class="sidebar-close" id="closeSidebar"><i class="bi bi-x-lg"></i></button>
+        <div style="padding: 14px 20px; background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); display: flex; align-items: center; justify-content: space-between; gap: 12px; color: white; position: sticky; top: 0; z-index: 2;">
+            <div style="display: flex; align-items: center; gap: 8px; color: white; flex: 1;">
+                <i class="bi bi-list" style="font-size: 20px; font-weight: 700;"></i>
+                <span style="font-size: 14px; font-weight: 700; letter-spacing: 0.5px;">BROWSE</span>
+            </div>
+            <button id="closeSidebar" style="background: none; border: none; color: white; font-size: 28px; cursor: pointer; padding: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">×</button>
         </div>
         <ul class="sidebar-list">
             <li class="has-sub">
@@ -1667,7 +1662,7 @@ $category_id = "arc-welding-machine";
                     <li><a href="../batteries/special-batteries.php">Special Batteries</a></li>
                 </ul>
             </li>
-            <li class="has-sub active">
+            <li class="has-sub">
                 <a href="../drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling &amp; Lifting</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-drilling-lifting" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
@@ -1751,13 +1746,13 @@ $category_id = "arc-welding-machine";
         </ul>
     </aside>
 
-<!-- Mini Sidebar (Icon Bar) -->
+    <!-- Mini Sidebar (Icon Bar) -->
     <div class="mini-sidebar active" id="miniSidebar">
         <div id="miniSidebarMenuBar" style="background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); border-radius: 0; display: flex; align-items: center; gap: 8px; cursor: pointer;">
             <i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i>
             <span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px; display: none;" class="browse-label">BROWSE CATEGORIES</span>
         </div>
-        <div class="mini-sidebar-icon has-sub" data-target="arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-machine/arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-robots/arc-welding-robot.php" title="Arc Welding Robots"><i class="bi bi-robot"></i><span class="label">Arc Welding Robots</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../batteries/batteries.php" title="Batteries"><i class="bi bi-lightning-fill"></i><span class="label">Batteries</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../drilling-and-lifting/drilling-and-lifting.php" title="Drilling and Lifting"><i class="bi bi-hammer"></i><span class="label">Drilling and Lifting</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
@@ -1786,13 +1781,13 @@ $category_id = "arc-welding-machine";
         </div>
 
         <div class="category-content">
-            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'CO1/MAG Welding Machine'); ?></h2>
+            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Plasma Cutting Machine'); ?></h2>
             <?php if (!empty($current_category['description'])): ?>
                 <p class="category-description"><?php echo htmlspecialchars($current_category['description']); ?></p>
             <?php endif; ?>
             <div class="product-grid">
                 <?php 
-                // Dynamically fetch products for CO1/MAG Welding Machine subcategory
+                // Dynamically fetch products for Plasma Cutting Machine subcategory
                 $all_products = array();
                 $products = andison_get_products_for_subcategory($category_id, $subcategory_id);
                 if ($products) {
@@ -1809,7 +1804,7 @@ $category_id = "arc-welding-machine";
                         }
                         $model = htmlspecialchars($product['model'] ?? '');
                         $name = htmlspecialchars($product['name'] ?? '');
-                        $type = htmlspecialchars($product['type'] ?? 'Welding Equipment');
+                        $type = htmlspecialchars($product['type'] ?? 'Cutting Equipment');
                         $brand = htmlspecialchars($product['brand'] ?? 'Industrial');
                         $description = htmlspecialchars($product['description'] ?? '');
                         $badge = htmlspecialchars($product['badge'] ?? '');
@@ -1843,9 +1838,9 @@ $category_id = "arc-welding-machine";
                     <div class="product-image">
                         <i class="bi bi-lightning-charge" style="font-size: 60px; color: #ccc;"></i>
                     </div>
-                    <h4>TIG Welding Equipment</h4>
+                    <h4>Plasma Cutting Equipment</h4>
                     <p class="product-type">No products available</p>
-                    <button class="add-to-inquiry" type="button" data-model="TIG Welding Machine" data-type="Welding Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
+                    <button class="add-to-inquiry" type="button" data-model="Plasma Cutting Machine" data-type="Cutting Equipment" data-brand="Industrial">ADD TO INQUIRY</button>
                 </div>
                     <?php
                 }
@@ -2066,7 +2061,7 @@ $category_id = "arc-welding-machine";
                             console.log('Added active to:', href);
                         }
                     }
-                });  
+                });
             }
         }, 500);
 
@@ -2267,3 +2262,4 @@ $category_id = "arc-welding-machine";
         }
     </script>
 </html>
+

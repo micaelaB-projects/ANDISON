@@ -5,7 +5,7 @@ require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
 
-$subcategory_id = "welding-head-and-face-protection";
+$subcategory_id = "mig-welding-machine";
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";
@@ -32,10 +32,10 @@ foreach ($categories as $cat) {
 }
 
 if (!$current_category) {
-    die("Welding Head and Face Protection category not found");
+    die("MIG Welding Machine category not found");
 }
 
-$page_title = $current_category['name'] ?? "Welding Head and Face Protection";
+$page_title = $current_category['name'] ?? "MIG Welding Machine";
 $category_id = "arc-welding-machine";
 ?>
 <!DOCTYPE html>
@@ -44,8 +44,8 @@ $category_id = "arc-welding-machine";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = $current_category['name'] ?? 'Welding Head and Face Protection';
-    $category_description = $current_category['description'] ?? 'Professional welding head and face protection equipment for industrial applications.';
+    $category_name = $current_category['name'] ?? 'MIG Welding Machine';
+    $category_description = $current_category['description'] ?? 'Professional MIG welding machines for industrial applications.';
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -1529,7 +1529,6 @@ $category_id = "arc-welding-machine";
         <!-- Navigation -->
         <nav>
             <div class="nav-inner">
-                <button id="browseToggle" class="browse-toggle"><span class="hamburger"><i class="bi bi-list"></i></span> BROWSE PRODUCTS</button>
                 <ul class="nav-list">
                     <li>
                         <a href="../home.php">Home</a>

@@ -669,3 +669,4 @@ function getStrengthInfo(strength) {
 </script>
 
 
+

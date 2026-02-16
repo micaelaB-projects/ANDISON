@@ -1517,7 +1517,6 @@ if (!$current_category) {
         <!-- Navigation -->
         <nav>
             <div class="nav-inner">
-                <button id="browseToggle" class="browse-toggle"><span class="hamburger"><i class="bi bi-list"></i></span> BROWSE PRODUCTS</button>
                 <ul class="nav-list">
                     <li>
                         <a href="../home.php">Home</a>
@@ -1636,7 +1635,6 @@ if (!$current_category) {
                     <li><a href="../arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/plasma-cutting-machine.php">Plasma Cutting Machine</a></li>
                     <li><a href="../arc-welding-machine/accessories-and-consumables.php">Accessories & Consumables</a></li>
-                    <li><a href="../protection/welding-head-and-face-protection.php">Welding Head and Face Protection</a></li>
                 </ul>
             </li>
             <li class="has-sub">

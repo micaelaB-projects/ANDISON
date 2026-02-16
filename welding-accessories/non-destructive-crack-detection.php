@@ -2266,3 +2266,4 @@ $category_id = "welding-accessories";
         }
     </script>
 </html><?php
+
