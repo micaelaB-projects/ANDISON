@@ -52,6 +52,10 @@
             {
                 "id": "accessories-and-consumables",
                 "name": "Accessories & Consumables"
+            },
+            {
+                "id": "welding-head-and-face-protection",
+                "name": "Welding Head and Face Protection"
             }
         ]
     },
