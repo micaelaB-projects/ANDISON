@@ -17,6 +17,7 @@ $categories = andison_get_categories();
 $current_category = null;
 $parent_category = null;
 
+// Find the parent category and the subcategory
 foreach ($categories as $cat) {
     if ($cat['id'] === $category_id) {
         $parent_category = $cat;
@@ -37,8 +38,7 @@ if (!$current_category) {
     $current_category = array(
         'id' => $subcategory_id,
         'name' => 'Liquid Spray and Splash',
-        'description' => 'Protection against liquid spray and splash hazards.',
-        'subcategories' => array()
+        'description' => 'Professional liquid spray and splash protection equipment.'
     );
 }
 ?>
@@ -49,7 +49,7 @@ if (!$current_category) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
     $category_name = $current_category['name'] ?? 'Liquid Spray and Splash';
-    $category_description = $current_category['description'] ?? 'Protection against liquid spray and splash hazards.';
+    $category_description = $current_category['description'] ?? 'Professional liquid spray and splash protection equipment.';
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -1013,7 +1013,10 @@ if (!$current_category) {
             list-style: none; 
             margin: 0; 
             padding: 8px 0 8px 44px; 
-            display: none;
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 1;
             background: #fafafa;
             margin-left: 12px;
             margin-right: 12px;
@@ -1021,6 +1024,12 @@ if (!$current_category) {
             border-left: 2px solid #e5e7eb;
             padding-top: 8px;
             padding-bottom: 8px;
+        }
+        
+        .sidebar-sublist.collapsed {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
         }
         .sidebar-sublist li { 
             padding: 4px 0; 
@@ -1041,32 +1050,24 @@ if (!$current_category) {
         }
 
         /* Nested sublists */
-        .sidebar-sublist li.has-nested-sub { 
-            position: relative;
-            padding-right: 0;
-        }
-        .sidebar-sublist li.has-nested-sub > a { 
-            padding-right: 30px;
-        }
+        .sidebar-sublist li.has-nested-sub { position: relative; }
+        .sidebar-sublist li.has-nested-sub > a { padding-right: 24px; }
         
         .nested-toggle {
             position: absolute;
-            right: 8px;
-            top: 50%;
-            transform: translateY(-50%);
+            right: 0;
+            top: 6px;
             background: transparent;
             border: none;
             color: #9ca3af;
             cursor: pointer;
-            padding: 4px;
-            width: auto;
-            height: auto;
+            padding: 0;
+            width: 20px;
+            height: 20px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
-            z-index: 100;
-            pointer-events: auto;
+            font-size: 12px;
         }
         .nested-toggle:focus { outline: none; }
         .nested-toggle .bi { transition: transform 200ms ease; }
@@ -1074,15 +1075,9 @@ if (!$current_category) {
 
         .sidebar-nested-sublist { 
             list-style: none; 
-            margin: 0 !important; 
-            padding: 0 !important; 
-            display: none !important;
-            visibility: hidden !important;
-            height: 0 !important;
-            overflow: hidden !important;
-            position: absolute !important;
-            width: 0 !important;
-            max-height: 0 !important;
+            margin: 10px 0 10px -12px; 
+            padding: 0; 
+            display: none;
         }
         .sidebar-nested-sublist li { 
             padding: 0;
@@ -1118,19 +1113,8 @@ if (!$current_category) {
             transform: translateX(4px);
         }
 
-        .sidebar-nested-sublist.collapsed { 
-            display: none !important;
-            visibility: hidden !important;
-            height: 0 !important;
-            overflow: hidden !important;
-        }
-        .sidebar-nested-sublist:not(.collapsed) { 
-            display: block !important;
-            visibility: visible !important;
-            height: auto !important;
-            overflow: visible !important;
-            position: relative !important;
-        }
+        .sidebar-nested-sublist.collapsed { display: none; }
+        .sidebar-nested-sublist:not(.collapsed) { display: block; }
         .sidebar-list li.has-sub { position: relative; }
         .has-sub > a { padding-right: 40px; }
         .sub-toggle {
@@ -1176,6 +1160,348 @@ if (!$current_category) {
         .sidebar-close:hover {
             color: #374151;
         }
+
+        /* Mini Sidebar (always visible icon bar) */
+        .mini-sidebar {
+            position: fixed;
+            left: 0;
+            top: calc(14px + 50px + 14px + 12px + 52px);
+            bottom: 0;
+            width: 80px;
+            background: #2B11DB;
+            box-shadow: 2px 0 16px rgba(0,0,0,0.1);
+            z-index: 65;
+            padding: 20px 12px;
+            overflow: hidden;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .mini-sidebar.expanded {
+            width: 280px;
+            overflow-y: auto;
+            padding: 20px 12px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .mini-sidebar.expanded::-webkit-scrollbar {
+            display: none;
+        }
+
+        .mini-sidebar.active {
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .mini-sidebar.active.expanded {
+            align-items: stretch;
+        }
+
+        .mini-sidebar-icon {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            position: relative;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), justify-content 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease;
+            gap: 12px;
+            padding: 0;
+            flex-shrink: 0;
+            min-width: 56px;
+        }
+
+        .mini-sidebar-icon .label {
+            display: none;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            flex: 1;
+            text-align: left;
+            opacity: 0;
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-icon {
+            width: 100%;
+            justify-content: flex-start;
+            padding: 12px;
+            min-width: auto;
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-icon .label {
+            display: block;
+            opacity: 1;
+        }
+
+        #miniSidebarMenuBar {
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            margin-bottom: 8px;
+            margin-top: 0;
+            flex-shrink: 0;
+        }
+
+        .mini-sidebar.expanded #miniSidebarMenuBar {
+            justify-content: flex-start;
+            width: 100%;
+            height: auto;
+            padding: 12px;
+            margin-bottom: 8px;
+        }
+
+        .mini-sidebar.expanded .browse-label {
+            display: inline-block !important;
+        }
+
+        .mini-sidebar-icon:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.05);
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-icon:hover {
+            transform: translateX(4px);
+        }
+
+        .mini-sidebar-icon.active-icon {
+            background: #00D7B3;
+            color: #2B11DB;
+        }
+
+        .mini-sidebar-icon .sub-indicator {
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            background: rgba(255,255,255,0.1);
+            color: #ffffff;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            opacity: 0.95;
+            transition: background 0.15s ease, color 0.15s ease;
+            z-index: 999;
+            cursor: pointer;
+            pointer-events: auto;
+            border: 1px solid #ffffff;
+            box-shadow: none;
+        }
+
+        .mini-sidebar-icon:hover .sub-indicator {
+            opacity: 1;
+            background: #00D7B3;
+            color: #2B11DB;
+        }
+
+        .mini-sidebar-icon .sub-indicator:active {
+            transform: translateY(0);
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-icon .sub-indicator {
+            position: static;
+            background: transparent;
+            color: #2B11DB;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-left: auto;
+            opacity: 1;
+            border: 0;
+            cursor: pointer;
+            pointer-events: auto;
+            z-index: 100;
+            box-shadow: none;
+        }
+
+        .mini-sidebar-toggle {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 20px;
+            margin-top: auto;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .mini-sidebar-toggle:hover {
+            background: rgba(255,255,255,0.25);
+            transform: scale(1.05);
+        }
+
+        .mini-sidebar-toggle:active {
+            transform: scale(0.95);
+        }
+
+        .mini-sidebar-toggle i {
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-block;
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-toggle i {
+            transform: rotate(180deg);
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-toggle {
+            width: 100%;
+            padding: 12px;
+            min-width: auto;
+        }
+
+        /* Adjust main container for mini sidebar */
+        .main-content, .category-container {
+            margin-left: 80px;
+            transition: margin-left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mini-sidebar.expanded ~ .main-content,
+        .mini-sidebar.expanded ~ .category-container {
+            margin-left: 280px;
+        }
+
+        /* When sidebar is expanded (collapsed mini) */
+        .sidebar-overlay.expanded {
+            width: 380px;
+        }
+
+        .overlay-backdrop.expanded {
+            display: none !important;
+        }
+
+        @media (max-width: 1024px) {
+            .mini-sidebar {
+                display: none !important;
+            }
+            .browse-toggle {
+                display: inline-flex !important;
+            }
+            .browse-toggle .browse-text {
+                display: inline !important;
+            }
+            .main-content, .category-container {
+                margin-left: 0 !important;
+            }
+        }
+
+        /* Mini popover styles for subcategories */
+        .mini-popover {
+            position: fixed;
+            top: -9999px;
+            left: -9999px;
+            width: 320px;
+            max-width: calc(100vw - 32px);
+            background: linear-gradient(180deg, #1976D2FF 0%, #19D2B6FF 100%);
+            color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-6px);
+            transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease;
+            z-index: 200;
+        }
+        .mini-popover.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .mini-popover::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: calc(26px + var(--arrow-offset, 0px));
+            width: 0; height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 10px solid #1976D2;
+            filter: drop-shadow(-2px 2px 2px rgba(0,0,0,0.12));
+        }
+        .mini-popover-header {
+            background: #f5f9ff;
+            color: #0f5132;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            padding: 12px 16px;
+            font-weight: 800;
+            font-size: 15px;
+            letter-spacing: 0.3px;
+        }
+        .mini-popover-title { color: #0f5132; }
+        .mini-popover-body {
+            padding: 12px 16px 16px 16px;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+        }
+        .mini-popover-list {
+            list-style: none;
+            margin: 0;
+            padding: 6px 0 6px 0;
+            position: relative;
+        }
+        .mini-popover-list::before {
+            content: '';
+            position: absolute;
+            left: 24px;
+            top: 6px;
+            bottom: 6px;
+            width: 2px;
+            background: rgba(255,255,255,0.35);
+            border-radius: 2px;
+        }
+        .mini-popover-item {
+            position: relative;
+            padding-left: 42px;
+            margin: 12px 0;
+            display: flex;
+            align-items: stretch;
+            min-height: 32px;
+        }
+        .mini-popover-item .square {
+            position: absolute;
+            left: 16px;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            width: 14px; height: 14px;
+            border-radius: 3px;
+            background: #7aa7ff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.18), inset 0 -1px 0 rgba(0,0,0,0.08);
+            flex-shrink: 0;
+            pointer-events: none;
+        }
+        .mini-popover-item a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            display: block;
+            padding: 8px 10px;
+            border-radius: 8px;
+            transition: background 140ms ease, transform 120ms ease;
+            width: 100%;
+        }
+        .mini-popover-item a:hover {
+            background: rgba(255,255,255,0.12);
+            transform: translateX(2px);
+        }
     </style>
 </head>
 <body>
@@ -1215,7 +1541,6 @@ if (!$current_category) {
         <!-- Navigation -->
         <nav>
             <div class="nav-inner">
-                <button id="browseToggle" class="browse-toggle"><span class="hamburger"><i class="bi bi-list"></i></span> BROWSE PRODUCTS</button>
                 <ul class="nav-list">
                     <li>
                         <a href="../home.php">Home</a>
@@ -1412,7 +1737,7 @@ if (!$current_category) {
                 </ul>
             </li>
             <li class="has-sub">
-              <a href="../welding-accessories/welding-accessories.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-gear"></i></span><span class="sidebar-label">Welding Accessories</span></a>
+                <a href="../welding-accessories/welding-accessories.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-gear"></i></span><span class="sidebar-label">Welding Accessories</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-accessories" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-welding-accessories" class="sidebar-sublist collapsed">
                     <li><a href="../welding-accessories/welding-electrode-oven.php">Welding Electrode Oven</a></li>
@@ -1437,7 +1762,10 @@ if (!$current_category) {
 
     <!-- Mini Sidebar (Icon Bar) -->
     <div class="mini-sidebar active" id="miniSidebar">
-        <div id="miniSidebarMenuBar" style="background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); border-radius: 0; display: flex; align-items: center; gap: 8px; cursor: pointer;"><i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i><span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px; display: none;" class="browse-label">BROWSE CATEGORIES</span></div>
+        <div id="miniSidebarMenuBar" style="background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); border-radius: 0; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i>
+            <span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px; display: none;" class="browse-label">BROWSE CATEGORIES</span>
+        </div>
         <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-machine/arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-robots/arc-welding-robot.php" title="Arc Welding Robots"><i class="bi bi-robot"></i><span class="label">Arc Welding Robots</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../batteries/batteries.php" title="Batteries"><i class="bi bi-lightning-fill"></i><span class="label">Batteries</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
@@ -1473,24 +1801,11 @@ if (!$current_category) {
             <?php endif; ?>
             <div class="product-grid">
                 <?php 
-                // Dynamically fetch products for liquid-spray-splash
+                // Dynamically fetch products for this subcategory
                 $all_products = array();
-                
-                // Check if current category has subcategories (like magnetic-drill has b-line, rl-e, etc)
-                if (!empty($current_category['subcategories']) && is_array($current_category['subcategories'])) {
-                    // If it has subcategories, fetch from each subcategory
-                    foreach ($current_category['subcategories'] as $subcat) {
-                        $products = andison_get_products_for_subcategory($category_id, $subcat['id']);
-                        if ($products) {
-                            $all_products = array_merge($all_products, $products);
-                        }
-                    }
-                } else {
-                    // If it doesn't have subcategories, fetch directly for this category
-                    $products = andison_get_products_for_subcategory($category_id, $subcategory_id);
-                    if ($products) {
-                        $all_products = $products;
-                    }
+                $products = andison_get_products_for_subcategory($category_id, $subcategory_id);
+                if ($products) {
+                    $all_products = array_merge($all_products, $products);
                 }
                 
                 // Display products
@@ -1503,7 +1818,7 @@ if (!$current_category) {
                         }
                         $model = htmlspecialchars($product['model'] ?? '');
                         $name = htmlspecialchars($product['name'] ?? '');
-                        $type = htmlspecialchars($product['type'] ?? 'Gas Detection Equipment');
+                        $type = htmlspecialchars($product['type'] ?? 'Ventilation Equipment');
                         $brand = htmlspecialchars($product['brand'] ?? 'Industrial');
                         $description = htmlspecialchars($product['description'] ?? '');
                         $badge = htmlspecialchars($product['badge'] ?? '');
@@ -1537,9 +1852,9 @@ if (!$current_category) {
                     <div class="product-image">
                         <i class="bi bi-hammer" style="font-size: 60px; color: #ccc;"></i>
                     </div>
-                    <h4>Single Gas Detector</h4>
+                    <h4>Portable Ventilators</h4>
                     <p class="product-type">No products available</p>
-                    <button class="add-to-inquiry" type="button" data-model="Single Gas Detector" data-type="Detection Equipment" data-brand="Industrial">ADD TO INQUIRY</button>
+                    <button class="add-to-inquiry" type="button" data-model="Portable Ventilators" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
                 </div>
                     <?php
                 }
@@ -1716,13 +2031,8 @@ if (!$current_category) {
         // ============================================
         setTimeout(function(){
             var currentPath = window.location.pathname.toLowerCase();
-            console.log('Delayed run - Pathname:', currentPath);
-            
             var sidebar = document.getElementById('sidebar');
-            if(!sidebar) {
-                console.log('Sidebar NOT found even after delay');
-                return;
-            }
+            if(!sidebar) return;
 
             var pathParts = currentPath.split('/').filter(function(p) { return p && p !== 'andison-1'; });
             var currentCategory = null;
@@ -1749,15 +2059,12 @@ if (!$current_category) {
 
             if(currentCategory){
                 var links = sidebar.querySelectorAll('.sidebar-list > li > a');
-                console.log('Highlighting for category:', currentCategory, 'Links found:', links.length);
-                
                 links.forEach(function(link){
                     var href = link.getAttribute('href');
                     if(href){
                         var hrefLower = href.toLowerCase();
                         if(hrefLower.includes(currentCategory)){
                             link.classList.add('active');
-                            console.log('Added active to:', href);
                         }
                     }
                 });
@@ -1766,19 +2073,322 @@ if (!$current_category) {
     </script>
 
     <script>
-        var miniSidebar = document.getElementById('miniSidebar');var mainSidebar = document.getElementById('sidebar');var backdrop = document.getElementById('overlayBackdrop');var expandBtn = document.getElementById('expandSidebar');var miniIcons = document.querySelectorAll('.mini-sidebar-icon');var miniPopover = document.getElementById('miniPopover');var popoverTitle = miniPopover ? miniPopover.querySelector('.mini-popover-title') : null;var popoverList = miniPopover ? miniPopover.querySelector('.mini-popover-list') : null;var currentPopoverKey = null;
-        function getCategoryKeyFromTarget(dataTarget) {if (!dataTarget) return null;var keys = ['arc-welding-machine','arc-welding-robots','batteries','drilling-and-lifting','gas-detectors','portable-ventilators','power-tools','protection','welding-accessories','welding-consumables'];for (var i=0;i<keys.length;i++) { if (dataTarget.indexOf('/'+ keys[i]+'/') !== -1 || dataTarget.indexOf(keys[i]+'/') !== -1) return keys[i]; }return null;}
-        function getCategoryTitle(key) {var map = {'arc-welding-machine': 'Arc Welding Machines','arc-welding-robots': 'Arc Welding Robots','batteries': 'Batteries','drilling-and-lifting': 'Drilling and Lifting','gas-detectors': 'Gas Detectors','portable-ventilators': 'Portable Ventilators','power-tools': 'Power Tools','protection': 'Personal Protective Equipment','welding-accessories': 'Welding Accessories','welding-consumables': 'Welding Consumables'};return map[key] || 'Categories';}
-        function getPopoverItems(key) {var base = '.';var maps = {'arc-welding-robots': [{label: 'G3 Controller Series', href: base + '/../arc-welding-robots/g3-controller-series.php'},{label: 'G4 Controller Series', href: base + '/../arc-welding-robots/g4-controller-series.php'},{label: 'Featured Products and Solutions', href: base + '/../arc-welding-robots/featured-products-and-solution.php'},{label: 'Robot System Peripherals', href: base + '/../arc-welding-robots/robot-system-peripherals.php'}],'arc-welding-machine': [{label: 'MIG Welding Machine', href: base + '/../arc-welding-machine/mig-welding-machine.php'},{label: 'CO1/MAG Welding Machine', href: base + '/../arc-welding-machine/co1-mag-welding-machine.php'},{label: 'STUD Welding Machine', href: base + '/../arc-welding-machine/stud-welding-machine.php'},{label: 'TIG Welding Machine', href: base + '/../arc-welding-machine/tig-welding-machine.php'},{label: 'Plasma Cutting Machine', href: base + '/../arc-welding-machine/plasma-cutting-machine.php'}],'batteries': [{label: 'Maintenance Free', href: base + '/../batteries/maintenance-free.php'},{label: 'Low Maintenance', href: base + '/../batteries/low-maintenance.php'},{label: 'Special Batteries', href: base + '/../batteries/special-batteries.php'}],'drilling-and-lifting': [{label: 'Lifting', href: base + '/../drilling-and-lifting/lifting.php'},{label: 'Magnetic Drill', href: base + '/../drilling-and-lifting/magnetic-drill.php'},{label: 'Cutters', href: base + '/../drilling-and-lifting/cutters.php'}],'gas-detectors': [{label: 'Single Gas Detector', href: base + '/../gas-detectors/single-gas-detector.php'},{label: 'Multi Gas Detector', href: base + '/../gas-detectors/multi-gas-detector.php'},{label: 'Portable Gas Detectors', href: base + '/../gas-detectors/portable-gas-detectors.php'},{label: 'Docking and Data Management', href: base + '/../gas-detectors/docking-data-management.php'},{label: 'Calibration Gas and Regulators', href: base + '/../gas-detectors/calibration-gas-regulators.php'}],'power-tools': [{label: 'Grinder', href: base + '/../power-tools/grinder.php'},{label: 'Saw', href: base + '/../power-tools/saw.php'},{label: 'Drill and Wrench', href: base + '/../power-tools/drill-and-wrench.php'},{label: 'Rotary and Demolition Hammer', href: base + '/../power-tools/rotary-and-demolition-hammer.php'},{label: 'Accessories', href: base + '/../power-tools/accessories.php'}],'portable-ventilators': [{label: 'Electric Driven', href: base + '/../portable-ventilators/electric-driven.php'},{label: 'Pneumatic Driven', href: base + '/../portable-ventilators/pneumatic-driven.php'}],'protection': [{label: 'Eye Protection', href: base + '/../protection/eye-protection.php'},{label: 'Hand Protection', href: base + '/../protection/hand-protection.php'},{label: 'Hearing & Respiratory Protection', href: base + '/../protection/hearing-respiratory-protection.php'},{label: 'Welding Head and Face Protection', href: base + '/../protection/welding-head-and-face-protection.php'},{label: 'Body Protection', href: base + '/../protection/body-protection.php'}],'welding-accessories': [{label: 'Welding Electrode Oven', href: base + '/../welding-accessories/welding-electrode-oven.php'},{label: 'Non-Destructive Crack Detection', href: base + '/../welding-accessories/non-destructive-crack-detection.php'},{label: 'Gas Saving Regulator', href: base + '/../welding-accessories/gas-saving-regulator.php'},{label: 'Gas Cutting Equipment', href: base + '/../welding-accessories/gas-cutting-equipment.php'},{label: 'Industrial Markers', href: base + '/../welding-accessories/industrial-markers.php'},{label: 'Measuring Gauge', href: base + '/../welding-accessories/measuring-gauge.php'},{label: 'Others', href: base + '/../welding-accessories/others.php'}],'welding-consumables': [{label: 'Kobelco', href: base + '/../welding-consumables/kobelco.php'},{label: 'Metrode', href: base + '/../welding-consumables/metrode.php'}]};return maps[key] || [];}
-        function renderPopover(key) {if (!miniPopover || !popoverList) return;popoverList.innerHTML = '';var items = getPopoverItems(key);items.forEach(function(it){var li = document.createElement('li');li.className = 'mini-popover-item';li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a>';popoverList.appendChild(li);});if (popoverTitle) popoverTitle.textContent = getCategoryTitle(key);}
-        function positionPopoverForIcon(icon) {if (!miniPopover || !icon) return;miniPopover.style.left = '-9999px';miniPopover.style.top = '-9999px';miniPopover.classList.add('show');var rect = icon.getBoundingClientRect();var pw = miniPopover.offsetWidth;var ph = miniPopover.offsetHeight;var iconCenterY = rect.top + rect.height / 2;var left = Math.round(rect.right + 14);var top = Math.round(iconCenterY - ph / 2);if (left + pw + 12 > window.innerWidth) { left = Math.round(rect.left - pw - 14); }var headerHeight = 170;var minTop = headerHeight + 12;var maxTop = window.innerHeight - ph - 12;if (top < minTop) top = minTop;if (top > maxTop) top = maxTop;var arrowOffset = iconCenterY - top - 26;miniPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');miniPopover.style.left = left + 'px';miniPopover.style.top = top + 'px';}
-        function hidePopover() {if (!miniPopover) return;miniPopover.classList.remove('show');miniPopover.setAttribute('aria-hidden', 'true');currentPopoverKey = null;}
-        function showPopoverForKey(key, icon) {if (!miniPopover) return;if (currentPopoverKey === key && miniPopover.classList.contains('show')) { hidePopover(); return; }renderPopover(key);positionPopoverForIcon(icon);miniPopover.classList.add('show');miniPopover.setAttribute('aria-hidden', 'false');currentPopoverKey = key;}
-        document.addEventListener('click', function(e){if (!miniPopover) return;if (!miniPopover.classList.contains('show')) return;if (e.target.closest('.mini-popover') || e.target.closest('.sub-indicator')) return;hidePopover();});document.addEventListener('keydown', function(e){if (e.key === 'Escape') hidePopover();});
-        expandBtn.addEventListener('click', function() {miniSidebar.classList.toggle('expanded');});var menuBar = document.getElementById('miniSidebarMenuBar');if(menuBar) {menuBar.addEventListener('click', function() {miniSidebar.classList.toggle('expanded');});}
-        var arrowHandler = function(e) {e.stopPropagation();e.preventDefault();var arrow = (e.target && e.target.closest('.sub-indicator')) || e.currentTarget;var icon = arrow ? arrow.closest('.mini-sidebar-icon') : null;if (!icon) return;var dataTarget = icon.getAttribute('data-target') || '';var categoryKey = getCategoryKeyFromTarget(dataTarget);if (!categoryKey) return;showPopoverForKey(categoryKey, icon);};document.querySelectorAll('.sub-indicator').forEach(function(arrow) {arrow.addEventListener('click', arrowHandler, true);});document.addEventListener('click', function(e) {if (e.target.closest('.sub-indicator')) {arrowHandler(e);}}, true);
-        miniIcons.forEach(function(icon) {icon.addEventListener('click', function(e) {if (e.target.closest('.sub-indicator')) {e.stopPropagation();return;}var target = this.getAttribute('data-target');if (target) {window.location.href = target;}}, true);});
-        backdrop.addEventListener('click', function() {if(mainSidebar.classList.contains('active')) {mainSidebar.classList.remove('active');backdrop.classList.remove('active');}});var closeSidebarBtn = document.getElementById('closeSidebar');if(closeSidebarBtn) {closeSidebarBtn.addEventListener('click', function() {if(mainSidebar.classList.contains('active')) {mainSidebar.classList.remove('active');backdrop.classList.remove('active');}})}
+        // ============================================
+        // MINI SIDEBAR AND BROWSE TOGGLE FUNCTIONALITY
+        // ============================================
+        var miniSidebar = document.getElementById('miniSidebar');
+        var mainSidebar = document.getElementById('sidebar');
+        var backdrop = document.getElementById('overlayBackdrop');
+        var expandBtn = document.getElementById('expandSidebar');
+        var browseToggle = document.getElementById('browseToggle');
+        var miniIcons = document.querySelectorAll('.mini-sidebar-icon');
+        var miniPopover = document.getElementById('miniPopover');
+        var popoverTitle = miniPopover ? miniPopover.querySelector('.mini-popover-title') : null;
+        var popoverList = miniPopover ? miniPopover.querySelector('.mini-popover-list') : null;
+        var currentPopoverKey = null;
+
+        // Responsive function to show/hide browse toggle
+        function updateBrowseToggleVisibility() {
+            if(!browseToggle) return;
+            if(window.innerWidth <= 1024) {
+                browseToggle.classList.add('active');
+            } else {
+                browseToggle.classList.remove('active');
+            }
+        }
+
+        // Initialize on load
+        if(browseToggle) updateBrowseToggleVisibility();
+
+        // Update on window resize
+        window.addEventListener('resize', updateBrowseToggleVisibility);
+
+        // Helpers for popover
+        function getCategoryKeyFromTarget(dataTarget) {
+            if (!dataTarget) return null;
+            var keys = [
+                'arc-welding-machine','arc-welding-robots','batteries','drilling-and-lifting','gas-detectors','portable-ventilators','power-tools','protection','welding-accessories','welding-consumables'
+            ];
+            for (var i=0;i<keys.length;i++) { if (dataTarget.indexOf('/'+keys[i]+'/') !== -1 || dataTarget.indexOf(keys[i]+'/') !== -1) return keys[i]; }
+            return null;
+        }
+        function getCategoryTitle(key) {
+            var map = {
+                'arc-welding-machine': 'Arc Welding Machines',
+                'arc-welding-robots': 'Arc Welding Robots',
+                'batteries': 'Batteries',
+                'drilling-and-lifting': 'Drilling and Lifting',
+                'gas-detectors': 'Gas Detectors',
+                'portable-ventilators': 'Portable Ventilators',
+                'power-tools': 'Power Tools',
+                'protection': 'Personal Protective Equipment',
+                'welding-accessories': 'Welding Accessories',
+                'welding-consumables': 'Welding Consumables'
+            };
+            return map[key] || 'Categories';
+        }
+        function getPopoverItems(key) {
+            var base = '.';
+            var maps = {
+                'arc-welding-robots': [
+                    { label: 'G3 Controller Series', href: base + '/../arc-welding-robots/g3-controller-series.php' },
+                    { label: 'G4 Controller Series', href: base + '/../arc-welding-robots/g4-controller-series.php' },
+                    { label: 'Featured Products and Solutions', href: base + '/../arc-welding-robots/featured-products-and-solution.php' },
+                    { label: 'Robot System Peripherals', href: base + '/../arc-welding-robots/robot-system-peripherals.php' }
+                ],
+                'arc-welding-machine': [
+                    { label: 'MIG Welding Machine', href: base + '/../arc-welding-machine/mig-welding-machine.php' },
+                    { label: 'CO1/MAG Welding Machine', href: base + '/../arc-welding-machine/co1-mag-welding-machine.php' },
+                    { label: 'STUD Welding Machine', href: base + '/../arc-welding-machine/stud-welding-machine.php' },
+                    { label: 'TIG Welding Machine', href: base + '/../arc-welding-machine/tig-welding-machine.php' },
+                    { label: 'Plasma Cutting Machine', href: base + '/../arc-welding-machine/plasma-cutting-machine.php' }
+                ],
+                'batteries': [
+                    { label: 'Maintenance Free', href: base + '/../batteries/maintenance-free.php' },
+                    { label: 'Low Maintenance', href: base + '/../batteries/low-maintenance.php' },
+                    { label: 'Special Batteries', href: base + '/../batteries/special-batteries.php' }
+                ],
+                'drilling-and-lifting': [
+                    { label: 'Lifting', href: base + '/../drilling-and-lifting/lifting.php' },
+                    { label: 'Magnetic Drill', href: base + '/../drilling-and-lifting/magnetic-drill.php' },
+                    { label: 'Cutters', href: base + '/../drilling-and-lifting/cutters.php' }
+                ],
+                'gas-detectors': [
+                    { label: 'Single Gas Detector', href: base + '/../gas-detectors/single-gas-detector.php' },
+                    { label: 'Multi Gas Detector', href: base + '/../gas-detectors/multi-gas-detector.php' },
+                    { label: 'Portable Gas Detectors', href: base + '/../gas-detectors/portable-gas-detectors.php' },
+                    { label: 'Docking and Data Management', href: base + '/../gas-detectors/docking-data-management.php' },
+                    { label: 'Calibration Gas and Regulators', href: base + '/../gas-detectors/calibration-gas-regulators.php' }
+                ],
+                'power-tools': [
+                    { label: 'Grinder', href: base + '/../power-tools/grinder.php' },
+                    { label: 'Saw', href: base + '/../power-tools/saw.php' },
+                    { label: 'Drill and Wrench', href: base + '/../power-tools/drill-and-wrench.php' },
+                    { label: 'Rotary and Demolition Hammer', href: base + '/../power-tools/rotary-and-demolition-hammer.php' },
+                    { label: 'Accessories', href: base + '/../power-tools/accessories.php' }
+                ],
+                'portable-ventilators': [
+                    { label: 'Electric Driven', href: base + '/../portable-ventilators/electric-driven.php' },
+                    { label: 'Pneumatic Driven', href: base + '/../portable-ventilators/pneumatic-driven.php' }
+                ],
+                'protection': [
+                    { label: 'Eye Protection', href: base + '/../protection/eye-protection.php' },
+                    { label: 'Hand Protection', href: base + '/../protection/hand-protection.php' },
+                    { label: 'Hearing & Respiratory Protection', href: base + '/../protection/hearing-respiratory-protection.php' },
+                    { label: 'Welding Head and Face Protection', href: base + '/../protection/welding-head-and-face-protection.php' },
+                    { label: 'Body Protection', href: base + '/../protection/body-protection.php' }
+                ],
+                'welding-accessories': [
+                    { label: 'Welding Electrode Oven', href: base + '/../welding-accessories/welding-electrode-oven.php' },
+                    { label: 'Non-Destructive Crack Detection', href: base + '/../welding-accessories/non-destructive-crack-detection.php' },
+                    { label: 'Gas Saving Regulator', href: base + '/../welding-accessories/gas-saving-regulator.php' },
+                    { label: 'Gas Cutting Equipment', href: base + '/../welding-accessories/gas-cutting-equipment.php' },
+                    { label: 'Industrial Markers', href: base + '/../welding-accessories/industrial-markers.php' },
+                    { label: 'Measuring Gauge', href: base + '/../welding-accessories/measuring-gauge.php' },
+                    { label: 'Others', href: base + '/../welding-accessories/others.php' }
+                ],
+                'welding-consumables': [
+                    { label: 'Kobelco', href: base + '/../welding-consumables/kobelco.php' },
+                    { label: 'Metrode', href: base + '/../welding-consumables/metrode.php' }
+                ]
+            };
+            return maps[key] || [];
+        }
+        function renderPopover(key) {
+            if (!miniPopover || !popoverList) return;
+            popoverList.innerHTML = '';
+            var items = getPopoverItems(key);
+            items.forEach(function(it){
+                var li = document.createElement('li');
+                li.className = 'mini-popover-item';
+                li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a>';
+                popoverList.appendChild(li);
+            });
+            if (popoverTitle) popoverTitle.textContent = getCategoryTitle(key);
+        }
+        function positionPopoverForIcon(icon) {
+            if (!miniPopover || !icon) return;
+            miniPopover.style.left = '-9999px';
+            miniPopover.style.top = '-9999px';
+            miniPopover.classList.add('show');
+            var rect = icon.getBoundingClientRect();
+            var pw = miniPopover.offsetWidth;
+            var ph = miniPopover.offsetHeight;
+            var iconCenterY = rect.top + rect.height / 2;
+
+            var left = Math.round(rect.right + 14);
+            var top = Math.round(iconCenterY - ph / 2);
+
+            if (left + pw + 12 > window.innerWidth) {
+                left = Math.round(rect.left - pw - 14);
+            }
+
+            var headerHeight = 170;
+            var minTop = headerHeight + 12;
+            var maxTop = window.innerHeight - ph - 12;
+            if (top < minTop) top = minTop;
+            if (top > maxTop) top = maxTop;
+
+            var arrowOffset = iconCenterY - top - 26;
+            miniPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+
+            miniPopover.style.left = left + 'px';
+            miniPopover.style.top = top + 'px';
+        }
+        function hidePopover() {
+            if (!miniPopover) return;
+            miniPopover.classList.remove('show');
+            miniPopover.setAttribute('aria-hidden', 'true');
+            currentPopoverKey = null;
+        }
+        function showPopoverForKey(key, icon) {
+            if (!miniPopover) return;
+            if (currentPopoverKey === key && miniPopover.classList.contains('show')) {
+                hidePopover();
+                return;
+            }
+            renderPopover(key);
+            positionPopoverForIcon(icon);
+            miniPopover.classList.add('show');
+            miniPopover.setAttribute('aria-hidden', 'false');
+            currentPopoverKey = key;
+        }
+
+        // Close on outside click / Escape
+        document.addEventListener('click', function(e){
+            if (!miniPopover) return;
+            if (!miniPopover.classList.contains('show')) return;
+            if (e.target.closest('.mini-popover') || e.target.closest('.sub-indicator')) return;
+            hidePopover();
+        });
+        document.addEventListener('keydown', function(e){ if (e.key === 'Escape') hidePopover(); });
+
+        // Browse toggle click
+        if(browseToggle) {
+            browseToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                var isMiniSidebarVisible = window.getComputedStyle(miniSidebar).display !== 'none';
+                
+                if(window.innerWidth > 1024 && isMiniSidebarVisible) {
+                    miniSidebar.classList.toggle('expanded');
+                    browseToggle.classList.toggle('expanded');
+                } else {
+                    if(mainSidebar.classList.contains('active')) {
+                        mainSidebar.classList.remove('active');
+                        backdrop.classList.remove('active');
+                    } else {
+                        mainSidebar.classList.add('active');
+                        backdrop.classList.add('active');
+                        mainSidebar.style.display = 'block';
+                        backdrop.style.display = 'block';
+                    }
+                }
+            });
+        }
+
+        // Expand/collapse sidebar when clicking expand button
+        expandBtn.addEventListener('click', function() {
+            miniSidebar.classList.toggle('expanded');
+            if(browseToggle) browseToggle.classList.toggle('expanded');
+        });
+
+        // Menu bar click handler
+        var menuBar = document.getElementById('miniSidebarMenuBar');
+        if(menuBar) {
+            menuBar.addEventListener('click', function() {
+                miniSidebar.classList.toggle('expanded');
+                if(browseToggle) browseToggle.classList.toggle('expanded');
+            });
+        }
+
+        // ARROW CLICK HANDLER
+        var arrowHandler = function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            var arrow = (e.target && e.target.closest('.sub-indicator')) || e.currentTarget;
+            var icon = arrow ? arrow.closest('.mini-sidebar-icon') : null;
+            if (!icon) return;
+
+            var dataTarget = icon.getAttribute('data-target') || '';
+            var categoryKey = getCategoryKeyFromTarget(dataTarget);
+            if (!categoryKey) return;
+
+            showPopoverForKey(categoryKey, icon);
+        };
+        
+        document.querySelectorAll('.sub-indicator').forEach(function(arrow) {
+            arrow.addEventListener('click', arrowHandler, true);
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.sub-indicator')) {
+                arrowHandler(e);
+            }
+        }, true);
+
+        // Mini icon navigation
+        miniIcons.forEach(function(icon) {
+            icon.addEventListener('click', function(e) {
+                if (e.target.closest('.sub-indicator')) {
+                    e.stopPropagation();
+                    return;
+                }
+                
+                var target = this.getAttribute('data-target');
+                if (target) {
+                    window.location.href = target;
+                }
+            }, true);
+        });
+
+        // Close sidebar backdrop click
+        backdrop.addEventListener('click', function() {
+            if(mainSidebar.classList.contains('active')) {
+                mainSidebar.classList.remove('active');
+                backdrop.classList.remove('active');
+            }
+        });
+
+        // Close sidebar button click
+        var closeSidebarBtn = document.getElementById('closeSidebar');
+        if(closeSidebarBtn) {
+            closeSidebarBtn.addEventListener('click', function() {
+                if(mainSidebar.classList.contains('active')) {
+                    mainSidebar.classList.remove('active');
+                    backdrop.classList.remove('active');
+                }
+            });
+        }
+
+        // Sub-toggle click handlers
+        var subToggles = document.querySelectorAll('.sub-toggle');
+        subToggles.forEach(function(toggle) {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var sublist = document.getElementById(toggle.getAttribute('aria-controls'));
+                if(sublist) {
+                    sublist.classList.toggle('collapsed');
+                    toggle.setAttribute('aria-expanded', !sublist.classList.contains('collapsed'));
+                }
+            });
+        });
+
+        // Nested toggle click handlers
+        var nestedToggles = document.querySelectorAll('.nested-toggle');
+        nestedToggles.forEach(function(toggle) {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var nested = document.getElementById(toggle.getAttribute('aria-controls'));
+                if(nested) {
+                    nested.classList.toggle('collapsed');
+                    toggle.setAttribute('aria-expanded', !nested.classList.contains('collapsed'));
+                }
+            });
+        });
     </script>
-</body>
 </html>

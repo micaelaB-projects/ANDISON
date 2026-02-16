@@ -5,6 +5,8 @@ require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
 
+$page_title = "Electric Driven";
+$category_id = "portable-ventilators";
 $subcategory_id = "electric-driven";
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
@@ -17,7 +19,7 @@ $parent_category = null;
 
 // Find the parent category and the subcategory
 foreach ($categories as $cat) {
-    if ($cat['id'] === 'portable-ventilators') {
+    if ($cat['id'] === $category_id) {
         $parent_category = $cat;
         if (!empty($cat['subcategories'])) {
             foreach ($cat['subcategories'] as $subcat) {
@@ -32,11 +34,13 @@ foreach ($categories as $cat) {
 }
 
 if (!$current_category) {
-    die("Electric Driven Ventilators category not found");
+    // Fallback: create a default category object
+    $current_category = array(
+        'id' => $subcategory_id,
+        'name' => 'Electric Driven',
+        'description' => 'Professional electric-driven portable ventilation equipment for industrial applications.'
+    );
 }
-
-$page_title = $current_category['name'] ?? "Electric Driven";
-$category_id = "portable-ventilators";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -323,6 +327,7 @@ $category_id = "portable-ventilators";
             padding-left: 160px;
         }
 
+        /* Pin the browse toggle to the left side of the nav area */
         .browse-toggle {
             position: absolute;
             left: 12px;
@@ -338,6 +343,7 @@ $category_id = "portable-ventilators";
             padding: 8px 14px;
             cursor: pointer;
             font-size: 15px;
+            line: height 6px;;
         }
 
         .nav-list {
@@ -362,6 +368,7 @@ $category_id = "portable-ventilators";
 
         .nav-list a:hover { color: rgba(255,255,255,0.8); }
 
+        /* Glowing underline + dark active background for top-level nav links */
         .nav-list > li > a {
             position: relative;
             padding: 10px 14px;
@@ -1006,7 +1013,10 @@ $category_id = "portable-ventilators";
             list-style: none; 
             margin: 0; 
             padding: 8px 0 8px 44px; 
-            display: none;
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 1;
             background: #fafafa;
             margin-left: 12px;
             margin-right: 12px;
@@ -1014,6 +1024,12 @@ $category_id = "portable-ventilators";
             border-left: 2px solid #e5e7eb;
             padding-top: 8px;
             padding-bottom: 8px;
+        }
+        
+        .sidebar-sublist.collapsed {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
         }
         .sidebar-sublist li { 
             padding: 4px 0; 
@@ -1033,6 +1049,72 @@ $category_id = "portable-ventilators";
             padding-left: 12px;
         }
 
+        /* Nested sublists */
+        .sidebar-sublist li.has-nested-sub { position: relative; }
+        .sidebar-sublist li.has-nested-sub > a { padding-right: 24px; }
+        
+        .nested-toggle {
+            position: absolute;
+            right: 0;
+            top: 6px;
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        .nested-toggle:focus { outline: none; }
+        .nested-toggle .bi { transition: transform 200ms ease; }
+        .nested-toggle[aria-expanded="true"] .bi { transform: rotate(90deg); }
+
+        .sidebar-nested-sublist { 
+            list-style: none; 
+            margin: 10px 0 10px -12px; 
+            padding: 0; 
+            display: none;
+        }
+        .sidebar-nested-sublist li { 
+            padding: 0;
+            border: none;
+        }
+        .sidebar-nested-sublist a { 
+            color: #5a6b7d; 
+            font-size: 13px; 
+            padding: 10px 12px 10px 28px; 
+            display: block; 
+            text-decoration: none;
+            position: relative;
+            transition: all 0.25s ease;
+            border-radius: 6px;
+            margin: 2px 0;
+        }
+        .sidebar-nested-sublist a::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            background: linear-gradient(135deg, #2B11DB 0%, #6d28d9 100%);
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(43, 17, 219, 0.2);
+        }
+        .sidebar-nested-sublist a:hover { 
+            color: #2B11DB;
+            background: rgba(43, 17, 219, 0.08);
+            padding-left: 32px;
+            transform: translateX(4px);
+        }
+
+        .sidebar-nested-sublist.collapsed { display: none; }
+        .sidebar-nested-sublist:not(.collapsed) { display: block; }
         .sidebar-list li.has-sub { position: relative; }
         .has-sub > a { padding-right: 40px; }
         .sub-toggle {
@@ -1347,8 +1429,7 @@ $category_id = "portable-ventilators";
             position: absolute;
             left: -10px;
             top: calc(26px + var(--arrow-offset, 0px));
-            width: 0;
-            height: 0;
+            width: 0; height: 0;
             border-top: 10px solid transparent;
             border-bottom: 10px solid transparent;
             border-right: 10px solid #1976D2;
@@ -1364,9 +1445,7 @@ $category_id = "portable-ventilators";
             font-size: 15px;
             letter-spacing: 0.3px;
         }
-        .mini-popover-title {
-            color: #0f5132;
-        }
+        .mini-popover-title { color: #0f5132; }
         .mini-popover-body {
             padding: 12px 16px 16px 16px;
             max-height: calc(100vh - 100px);
@@ -1402,8 +1481,7 @@ $category_id = "portable-ventilators";
             top: 0;
             bottom: 0;
             margin: auto;
-            width: 14px;
-            height: 14px;
+            width: 14px; height: 14px;
             border-radius: 3px;
             background: #7aa7ff;
             box-shadow: 0 2px 6px rgba(0,0,0,0.18), inset 0 -1px 0 rgba(0,0,0,0.08);
@@ -1463,19 +1541,95 @@ $category_id = "portable-ventilators";
         <!-- Navigation -->
         <nav>
             <div class="nav-inner">
-                <button id="browseToggle" class="browse-toggle"><span class="hamburger"><i class="bi bi-list"></i></span> BROWSE PRODUCTS</button>
                 <ul class="nav-list">
                     <li>
                         <a href="../home.php">Home</a>
+                        <div class="nav-dropdown">
+                            <h4>Welcome</h4>
+                            <p>Discover our complete range of industrial welding solutions and equipment.</p>
+                        </div>
                     </li>
                     <li>
                         <a href="../aboutus.php">About Us</a>
+                        <div class="nav-dropdown">
+                            <h4>Our Company</h4>
+                            <ul>
+                                <li><a href="../aboutus.php#mission">Our Mission</a></li>
+                                <li><a href="../aboutus.php#history">Company History</a></li>
+                                <li><a href="../aboutus.php#team">Our Team</a></li>
+                            </ul>
+                        </div>
                     </li>
                     <li>
                         <a href="../brands.php">Brands</a>
+                        <div class="nav-dropdown">
+                            <h4>Featured Brands</h4>
+                            <ul>
+                                <li><a href="../brand.php?name=Panasonic%20Connect"><img src="../assets/brands/PANASONIC.jpg" alt="Panasonic Connect" title="Panasonic Connect"></a></li>
+                                <li><a href="../brand.php?name=KOBELCO"><img src="../assets/brands/KOBELCO.jpg" alt="Kobelco" title="Kobelco"></a></li>
+                                <li><a href="../brand.php?name=METRODE"><img src="../assets/brands/METRODE.jpg" alt="Metrode" title="Metrode"></a></li>
+                                <li><a href="../brand.php?name=DRYROD"><img src="../assets/brands/DRYROD.jpg" alt="DryRod" title="DryRod"></a></li>
+                                <li><a href="../brand.php?name=WELDCRAFT"><img src="../assets/brands/WELDCRAFT.jpg" alt="Weldcraft" title="Weldcraft"></a></li>
+                                <li><a href="../brand.php?name=TRUWELD"><img src="../assets/brands/TRUWELD.jpg" alt="Truweld" title="Truweld"></a></li>
+                                <li><a href="../brand.php?name=ARCAIR"><img src="../assets/brands/ARCAIR.jpg" alt="Arcair" title="Arcair"></a></li>
+                                <li><a href="../brand.php?name=MAGNAFLUX"><img src="../assets/brands/MAGNAFLUX.jpg" alt="Magnaflux" title="Magnaflux"></a></li>
+                                <li><a href="../brand.php?name=TEMPILSTIK"><img src="../assets/brands/TEMPILSTIK.jpg" alt="Tempilstik" title="Tempilstik"></a></li>
+                                <li><a href="../brand.php?name=TANAKA"><img src="../assets/brands/TANAKA.jpg" alt="TANAKA" title="TANAKA"></a></li>
+                                <li><a href="../brand.php?name=CHIYODA"><img src="../assets/brands/CHIYODA.jpg" alt="CHIYODA" title="CHIYODA"></a></li>
+                                <li><a href="../brand.php?name=YUTAKA"><img src="../assets/brands/YUTAKA.jpg" alt="Yutaka" title="Yutaka"></a></li>
+                                <li><a href="../brand.php?name=HARDWORKER"><img src="../assets/brands/HARDWORKER.jpg" alt="HARDWORKER" title="HARDWORKER"></a></li>
+                                <li><a href="../brand.php?name=SOYER"><img src="../assets/brands/SOYER.jpg" alt="Soyer" title="Soyer"></a></li>
+                                <li><a href="../brand.php?name=AQUASOL"><img src="../assets/brands/AQUASOL.jpg" alt="Aquasol" title="Aquasol"></a></li>
+                                <li><a href="../brand.php?name=SK%20And%20GAL%20GAGE"><img src="../assets/brands/SK%20AND%20GAL%20GAGE.jpg" alt="SK And GAL GAGE" title="SK And GAL GAGE"></a></li>
+                                <li><a href="../brand.php?name=COPPUS"><img src="../assets/brands/COPPUS.jpg" alt="COPPUS" title="COPPUS"></a></li>
+                                <li><a href="../brand.php?name=BW%20Technologies"><img src="../assets/brands/BW%20TECHNOLOGIES.jpg" alt="BW Technologies" title="BW Technologies"></a></li>
+                                <li><a href="../brand.php?name=RAE%20SYSTEMS"><img src="../assets/brands/RAE%20SYSTEMS.jpg" alt="RAE SYSTEMS" title="RAE SYSTEMS"></a></li>
+                                <li><a href="../brand.php?name=WELDAS"><img src="../assets/brands/WELDAS.jpg" alt="WELDAS" title="WELDAS"></a></li>
+                                <li><a href="../brand.php?name=UVEX"><img src="../assets/brands/UVEX.jpg" alt="UVEX" title="UVEX"></a></li>
+                                <li><a href="../brand.php?name=ACES"><img src="../assets/brands/ACES.jpg" alt="ACES" title="ACES"></a></li>
+                                <li><a href="../brand.php?name=MICROGARD"><img src="../assets/brands/MICROGARD.jpg" alt="MICROGARD" title="MICROGARD"></a></li>
+                                <li><a href="../brand.php?name=ANSELL"><img src="../assets/brands/ANSELL.jpg" alt="ANSELL" title="ANSELL"></a></li>
+                                <li><a href="../brand.php?name=ALFRA"><img src="../assets/brands/ALFRA.jpg" alt="Alfra" title="Alfra"></a></li>
+                                <li><a href="../brand.php?name=BOSCH"><img src="../assets/brands/BOSCH.jpg" alt="Bosch" title="Bosch"></a></li>
+                                <li><a href="../brand.php?name=MAKITA"><img src="../assets/brands/MAKITA.jpg" alt="Makita" title="Makita"></a></li>
+                                <li><a href="../brand.php?name=WEILER"><img src="../assets/brands/WEILER.jpg" alt="WEILER" title="WEILER"></a></li>
+                                <li><a href="../brand.php?name=GARRYSON"><img src="../assets/brands/GARRYSON.jpg" alt="Garryson" title="Garryson"></a></li>
+                                <li><a href="../brand.php?name=SPILFYTER"><img src="../assets/brands/SPILFYTER.jpg" alt="Spilfyter" title="Spilfyter"></a></li>
+                                <li><a href="../brand.php?name=DALO"><img src="../assets/brands/DALO.jpg" alt="Dalo" title="Dalo"></a></li>
+                                <li><a href="../brand.php?name=MOTOLITE"><img src="../assets/brands/MOTOLITE.jpg" alt="MOTOLITE" title="MOTOLITE"></a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="../industries.php">Industries</a>
+                        <div class="nav-dropdown">
+                            <h4>Industries We Serve</h4>
+                            <ul>
+                                <li><a href="../industries.php#manufacturing">Manufacturing</a></li>
+                                <li><a href="../industries.php#construction">Construction</a></li>
+                                <li><a href="../industries.php#automotive">Automotive</a></li>
+                                <li><a href="../industries.php#shipbuilding">Shipbuilding</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="../services.php">Services</a>
+                        <div class="nav-dropdown">
+                            <h4>Our Services</h4>
+                            <ul>
+                                <li><a href="../services.php#consultation">Technical Consultation</a></li>
+                                <li><a href="../services.php#training">Training Programs</a></li>
+                                <li><a href="../services.php#maintenance">Equipment Maintenance</a></li>
+                                <li><a href="../services.php#support">After-Sales Support</a></li>
+                            </ul>
+                        </div>
                     </li>
                     <li>
                         <a href="../contact.php">Contact Us</a>
+                        <div class="nav-dropdown">
+                            <h4>Get In Touch</h4>
+                            <p>Reach out to our team for inquiries, quotes, or technical support.</p>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -1503,11 +1657,104 @@ $category_id = "portable-ventilators";
                 </ul>
             </li>
             <li class="has-sub">
+                <a href="../arc-welding-robots/arc-welding-robot.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label">Arc Welding Robots</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-robot" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-arc-robot" class="sidebar-sublist collapsed">
+                    <li><a href="../arc-welding-robots/g3-controller-series.php">G3 Controller Series</a></li>
+                    <li><a href="../arc-welding-robots/g4-controller-series.php">G4 Controller Series</a></li>
+                    <li><a href="../arc-welding-robots/featured-products-and-solution.php">Featured Products & Solutions</a></li>
+                    <li><a href="../arc-welding-robots/robot-system-peripherals.php">Robot System Peripherals</a></li>
+                </ul>
+            </li>
+            <li class="has-sub">
+                <a href="../batteries/batteries.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-fill"></i></span><span class="sidebar-label">Batteries</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-batteries" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-batteries" class="sidebar-sublist collapsed">
+                    <li><a href="../batteries/maintenance-free.php">Maintenance Free</a></li>
+                    <li><a href="../batteries/low-maintenance.php">Low Maintenance</a></li>
+                    <li><a href="../batteries/special-batteries.php">Special Batteries</a></li>
+                </ul>
+            </li>
+            <li class="has-sub">
+                <a href="../drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling &amp; Lifting</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-drilling-lifting" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
+                    <li><a href="../drilling-and-lifting/lifting.php">Lifting</a></li>
+                    <li><a href="../drilling-and-lifting/magnetic-drill.php">Magnetic Drill</a></li>
+                    <li><a href="../drilling-and-lifting/cutters.php">Cutters</a></li>
+                </ul>
+            </li>
+            <li class="has-sub active">
+                <a href="../gas-detectors/portable-gas-detectors.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></span><span class="sidebar-label">Portable Gas Detectors</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-gas-detectors" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-gas-detectors" class="sidebar-sublist collapsed">
+                    <li><a href="../gas-detectors/single-gas-detector.php">Single Gas Detector</a></li>
+                    <li><a href="../gas-detectors/multi-gas-detector.php">Multi Gas Detector</a></li>
+                    <li><a href="../gas-detectors/docking-data-management.php">Docking and Data Management</a></li>
+                    <li><a href="../gas-detectors/calibration-gas-regulators.php">Calibration Gas and Regulators</a></li>
+                </ul>
+            </li>
+            <li>
                 <a href="../portable-ventilators/portable-ventilators.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-fan"></i></span><span class="sidebar-label">Portable Ventilators</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-portable-ventilators" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
-                <ul id="sub-portable-ventilators" class="sidebar-sublist collapsed">
-                    <li><a href="../portable-ventilators/electric-driven.php">Electric Driven</a></li>
-                    <li><a href="../portable-ventilators/pneumatic-driven.php">Pneumatic Driven</a></li>
+            </li>
+            <li class="has-sub">
+                <a href="../power-tools/power-tools.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-tools"></i></span><span class="sidebar-label">Power Tools</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-power-tool" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-power-tool" class="sidebar-sublist collapsed">
+                    <li><a href="../power-tools/grinder/grinder.php">Grinder</a></li>
+                    <li><a href="../power-tools/saw/saw.php">Saw</a></li>
+                    <li><a href="../power-tools/drill-and-wrench/drill-and-wrench.php">Drill and Wrench</a></li>
+                    <li><a href="../power-tools/rotary-and-demolition-hammer/rotary-and-demolition-hammer.php">Rotary and Demolition Hammer</a></li>
+                    <li><a href="../power-tools/accessories/accessories.php">Accessories</a></li>
+                </ul>
+            </li>
+            <li class="has-sub">
+                <a href="../protection/protection.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-shield-check"></i></span><span class="sidebar-label">Personal Protective Equipment</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-protection-safety" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-protection-safety" class="sidebar-sublist collapsed">
+                    <li><a href="../protection/eye-protection.php">Eye Protection</a></li>
+                    <li class="has-nested-sub">
+                        <a href="../protection/hand-protection.php">Hand Protection</a>
+                        <button class="nested-toggle" aria-expanded="false" aria-controls="nested-hand-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                        <ul id="nested-hand-protection" class="sidebar-nested-sublist collapsed">
+                            <li><a href="../protection/working-gloves.php">Working Gloves</a></li>
+                            <li><a href="../protection/chemical-liquid-protection-gloves.php">Chemical and Liquid Protection Gloves</a></li>
+                            <li><a href="../protection/disposable-gloves.php">Disposable Gloves</a></li>
+                            <li><a href="../protection/welding-gloves.php">Welding Gloves</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="../protection/hearing-respiratory-protection.php">Hearing &amp; Respiratory Protection</a></li>
+                    <li><a href="../protection/welding-head-and-face-protection.php">Welding Head and Face Protection</a></li>
+                    <li class="has-nested-sub">
+                        <a href="../protection/body-protection.php">Body Protection</a>
+                        <button class="nested-toggle" aria-expanded="false" aria-controls="nested-body-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                        <ul id="nested-body-protection" class="sidebar-nested-sublist collapsed">
+                            <li><a href="../protection/chemical-flame-retardant.php">Chemical and Flame Retardant</a></li>
+                            <li><a href="../protection/liquid-spray-splash.php">Liquid Spray and Splash</a></li>
+                            <li><a href="../protection/particulate-low-hazard.php">Particulate and Low Hazard</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li class="has-sub">
+                <a href="../welding-accessories/welding-accessories.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-gear"></i></span><span class="sidebar-label">Welding Accessories</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-accessories" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-welding-accessories" class="sidebar-sublist collapsed">
+                    <li><a href="../welding-accessories/welding-electrode-oven.php">Welding Electrode Oven</a></li>
+                    <li><a href="../welding-accessories/non-destructive-crack-detection.php">Non-Destructive Crack Detection</a></li>
+                    <li><a href="../welding-accessories/gas-saving-regulator.php">Gas Saving Regulator</a></li>
+                    <li><a href="../welding-accessories/gas-cutting-equipment.php">Gas Cutting Equipment</a></li>
+                    <li><a href="../welding-accessories/industrial-markers.php">Industrial Markers</a></li>
+                    <li><a href="../welding-accessories/measuring-gauge.php">Measuring Gauge</a></li>
+                    <li><a href="../welding-accessories/others.php">Others</a></li>
+                </ul>
+            </li>
+            <li class="has-sub">
+                <a href="../welding-consumables/welding-consumables.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-box"></i></span><span class="sidebar-label">Welding Consumables</span></a>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-consumables" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <ul id="sub-welding-consumables" class="sidebar-sublist collapsed">
+                    <li><a href="../welding-consumables/kobelco.php">Kobelco</a></li>
+                    <li><a href="../welding-consumables/metrode.php">Metrode</a></li>
                 </ul>
             </li>
         </ul>
@@ -1515,7 +1762,10 @@ $category_id = "portable-ventilators";
 
     <!-- Mini Sidebar (Icon Bar) -->
     <div class="mini-sidebar active" id="miniSidebar">
-        <div id="miniSidebarMenuBar" style="background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); border-radius: 0; display: flex; align-items: center; gap: 8px; cursor: pointer;"><i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i><span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px; display: none;" class="browse-label">BROWSE CATEGORIES</span></div>
+        <div id="miniSidebarMenuBar" style="background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); border-radius: 0; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i>
+            <span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px; display: none;" class="browse-label">BROWSE CATEGORIES</span>
+        </div>
         <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-machine/arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-robots/arc-welding-robot.php" title="Arc Welding Robots"><i class="bi bi-robot"></i><span class="label">Arc Welding Robots</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../batteries/batteries.php" title="Batteries"><i class="bi bi-lightning-fill"></i><span class="label">Batteries</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
@@ -1539,7 +1789,6 @@ $category_id = "portable-ventilators";
         </div>
     </div>
 
-    <div class="category-container">
         <div class="category-header">
             <h1><?php echo $category_name; ?></h1>
             <p><?php echo $category_description; ?></p>
@@ -1577,9 +1826,9 @@ $category_id = "portable-ventilators";
                 <div class="product-card">
                     <div class="product-image">
                         <?php if (!empty($image_src)): ?>
-                            <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=&quot;bi bi-fan&quot; style=&quot;font-size: 60px; color: #ccc;&quot;></i>'">
+                            <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=&quot;bi bi-hammer&quot; style=&quot;font-size: 60px; color: #ccc;&quot;></i>'">
                         <?php else: ?>
-                            <i class="bi bi-fan" style="font-size: 60px; color: #ccc;"></i>
+                            <i class="bi bi-hammer" style="font-size: 60px; color: #ccc;"></i>
                         <?php endif; ?>
                         <?php if (!empty($badge)): ?>
                             <div class="product-badge"><?php echo $badge; ?></div>
@@ -1601,11 +1850,11 @@ $category_id = "portable-ventilators";
                     ?>
                 <div class="product-card">
                     <div class="product-image">
-                        <i class="bi bi-fan" style="font-size: 60px; color: #ccc;"></i>
+                        <i class="bi bi-hammer" style="font-size: 60px; color: #ccc;"></i>
                     </div>
-                    <h4>Electric Driven Ventilators</h4>
+                    <h4>Portable Ventilators</h4>
                     <p class="product-type">No products available</p>
-                    <button class="add-to-inquiry" type="button" data-model="Electric Driven Ventilator" data-type="Ventilation Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
+                    <button class="add-to-inquiry" type="button" data-model="Portable Ventilators" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
                 </div>
                     <?php
                 }
@@ -1639,7 +1888,7 @@ $category_id = "portable-ventilators";
                 var items = getItems();
                 var found = items.find(function(i){ return i.model === item.model && i.brand === item.brand; });
                 if(found){
-                    return false;
+                    return false; // already present
                 }
                 item.qty = 1; items.push(item);
                 setItems(items);
@@ -1664,6 +1913,7 @@ $category_id = "portable-ventilators";
                 var added = addItem({ model: model, type: type, brand: brand });
                 if(!added){
                     showToast('Product already in inquiry list');
+                    // small visual feedback on button
                     btn.classList.add('already');
                     setTimeout(function(){ btn.classList.remove('already'); }, 700);
                     return;
@@ -1714,49 +1964,110 @@ $category_id = "portable-ventilators";
                     }
                 });
             });
+            
+            // Nested toggle functionality
+            var nestedToggles = document.querySelectorAll('.nested-toggle');
+            nestedToggles.forEach(function(toggle) {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var nested = document.getElementById(toggle.getAttribute('aria-controls'));
+                    if(nested) {
+                        nested.classList.toggle('collapsed');
+                        toggle.setAttribute('aria-expanded', nested.classList.contains('collapsed') ? 'false' : 'true');
+                    }
+                });
+            });
+        })();
+    </script>
+    
+    <script>
+        // ACTIVE SIDEBAR CATEGORY HIGHLIGHTING
+        // ============================================
+        (function(){
+            var currentPath = window.location.pathname.toLowerCase();
+            var sidebar = document.getElementById('sidebar');
+            if(!sidebar) return;
+
+            // Extract category - split path and find category directory
+            var pathParts = currentPath.split('/').filter(function(p) { return p && p !== 'andison-1'; });
+            var currentCategory = null;
+            
+            var categoryList = [
+                'arc-welding-machine',
+                'arc-welding-robots',
+                'batteries',
+                'drilling-and-lifting',
+                'gas-detectors',
+                'portable-ventilators',
+                'power-tools',
+                'protection',
+                'welding-accessories',
+                'welding-consumables'
+            ];
+            
+            // Find matching category in path
+            for(var i = 0; i < pathParts.length; i++) {
+                if(categoryList.indexOf(pathParts[i]) !== -1) {
+                    currentCategory = pathParts[i];
+                    break;
+                }
+            }
+
+            if(currentCategory){
+                var links = sidebar.querySelectorAll('.sidebar-list > li > a');
+                links.forEach(function(link){
+                    var href = link.getAttribute('href').toLowerCase();
+                    if(href.includes(currentCategory)){
+                        link.classList.add('active');
+                    }
+                });
+            }
         })();
     </script>
 
     <script>
-        // ============================================
-        // ACTIVE SIDEBAR CATEGORY HIGHLIGHTING
+        // ACTIVE SIDEBAR CATEGORY HIGHLIGHTING WITH DELAY
         // ============================================
         setTimeout(function(){
             var currentPath = window.location.pathname.toLowerCase();
             var sidebar = document.getElementById('sidebar');
-            if(sidebar) {
-                var pathParts = currentPath.split('/').filter(function(p) { return p && p !== 'andison-1'; });
-                var currentCategory = null;
-                
-                var categoryList = [
-                    'arc-welding-machine',
-                    'arc-welding-robots',
-                    'batteries',
-                    'drilling-and-lifting',
-                    'gas-detectors',
-                    'portable-ventilators',
-                    'power-tools',
-                    'protection',
-                    'welding-accessories',
-                    'welding-consumables'
-                ];
-                
-                for(var i = 0; i < pathParts.length; i++) {
-                    if(categoryList.indexOf(pathParts[i]) !== -1) {
-                        currentCategory = pathParts[i];
-                        break;
-                    }
-                }
+            if(!sidebar) return;
 
-                if(currentCategory){
-                    var links = sidebar.querySelectorAll('.sidebar-list > li > a');
-                    links.forEach(function(link){
-                        var href = link.getAttribute('href').toLowerCase();
-                        if(href.includes(currentCategory)){
+            var pathParts = currentPath.split('/').filter(function(p) { return p && p !== 'andison-1'; });
+            var currentCategory = null;
+            
+            var categoryList = [
+                'arc-welding-machine',
+                'arc-welding-robots',
+                'batteries',
+                'drilling-and-lifting',
+                'gas-detectors',
+                'portable-ventilators',
+                'power-tools',
+                'protection',
+                'welding-accessories',
+                'welding-consumables'
+            ];
+            
+            for(var i = 0; i < pathParts.length; i++) {
+                if(categoryList.indexOf(pathParts[i]) !== -1) {
+                    currentCategory = pathParts[i];
+                    break;
+                }
+            }
+
+            if(currentCategory){
+                var links = sidebar.querySelectorAll('.sidebar-list > li > a');
+                links.forEach(function(link){
+                    var href = link.getAttribute('href');
+                    if(href){
+                        var hrefLower = href.toLowerCase();
+                        if(hrefLower.includes(currentCategory)){
                             link.classList.add('active');
                         }
-                    });
-                }
+                    }
+                });
             }
         }, 500);
     </script>
@@ -2051,6 +2362,33 @@ $category_id = "portable-ventilators";
                 }
             });
         }
+
+        // Sub-toggle click handlers
+        var subToggles = document.querySelectorAll('.sub-toggle');
+        subToggles.forEach(function(toggle) {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var sublist = document.getElementById(toggle.getAttribute('aria-controls'));
+                if(sublist) {
+                    sublist.classList.toggle('collapsed');
+                    toggle.setAttribute('aria-expanded', !sublist.classList.contains('collapsed'));
+                }
+            });
+        });
+
+        // Nested toggle click handlers
+        var nestedToggles = document.querySelectorAll('.nested-toggle');
+        nestedToggles.forEach(function(toggle) {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var nested = document.getElementById(toggle.getAttribute('aria-controls'));
+                if(nested) {
+                    nested.classList.toggle('collapsed');
+                    toggle.setAttribute('aria-expanded', !nested.classList.contains('collapsed'));
+                }
+            });
+        });
     </script>
-</body>
 </html>

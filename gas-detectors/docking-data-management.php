@@ -5,7 +5,7 @@ require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
 
-$page_title = "Docking Data Management";
+$page_title = "Docking and Data Management";
 $category_id = "gas-detectors";
 $subcategory_id = "docking-data-management";
 $phone = "+1(234) 567 8900";
@@ -15,19 +15,10 @@ $email = "info@andison-industrial.com";
 
 $categories = andison_get_categories();
 $current_category = null;
-$parent_category = null;
 
 foreach ($categories as $cat) {
     if ($cat['id'] === $category_id) {
-        $parent_category = $cat;
-        if (!empty($cat['subcategories'])) {
-            foreach ($cat['subcategories'] as $subcat) {
-                if ($subcat['id'] === $subcategory_id) {
-                    $current_category = $subcat;
-                    break;
-                }
-            }
-        }
+        $current_category = $cat;
         break;
     }
 }
@@ -35,10 +26,12 @@ foreach ($categories as $cat) {
 if (!$current_category) {
     // Fallback: create a default category object
     $current_category = array(
-        'id' => $subcategory_id,
-        'name' => 'Docking Data Management',
-        'description' => 'Professional docking and data management systems for gas detectors.',
-        'subcategories' => array()
+        'id' => $category_id,
+        'name' => 'Gas Detectors',
+        'description' => 'Advanced gas detection systems for safety monitoring.',
+        'subcategories' => array(
+            array('id' => 'docking-data-management', 'name' => 'Docking and Data Management')
+        )
     );
 }
 ?>
@@ -48,8 +41,8 @@ if (!$current_category) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = $current_category['name'] ?? 'Docking Data Management';
-    $category_description = $current_category['description'] ?? 'Professional docking and data management systems for gas detectors.';
+    $category_name = $current_category['name'] ?? 'Gas Detectors';
+    $category_description = $current_category['description'] ?? 'Advanced gas detection systems for safety monitoring.';
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -1013,7 +1006,10 @@ if (!$current_category) {
             list-style: none; 
             margin: 0; 
             padding: 8px 0 8px 44px; 
-            display: none;
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 1;
             background: #fafafa;
             margin-left: 12px;
             margin-right: 12px;
@@ -1021,6 +1017,12 @@ if (!$current_category) {
             border-left: 2px solid #e5e7eb;
             padding-top: 8px;
             padding-bottom: 8px;
+        }
+        
+        .sidebar-sublist.collapsed {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
         }
         .sidebar-sublist li { 
             padding: 4px 0; 
@@ -1150,20 +1152,6 @@ if (!$current_category) {
         }
         .sidebar-close:hover {
             color: #374151;
-        }
-
-        /* Sidebar sublist animation */
-        .sidebar-sublist {
-            max-height: 1000px;
-            overflow: hidden;
-            transition: max-height 0.3s ease, opacity 0.3s ease;
-            opacity: 1;
-        }
-        
-        .sidebar-sublist.collapsed {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
         }
 
         /* Mini Sidebar (always visible icon bar) */
@@ -1690,12 +1678,11 @@ if (!$current_category) {
                 </ul>
             </li>
             <li class="has-sub active">
-                <a href="../gas-detectors/gas-detectors.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></span><span class="sidebar-label">Gas Detectors</span></a>
+                <a href="../gas-detectors/portable-gas-detectors.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></span><span class="sidebar-label">Portable Gas Detectors</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-gas-detectors" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-gas-detectors" class="sidebar-sublist collapsed">
                     <li><a href="../gas-detectors/single-gas-detector.php">Single Gas Detector</a></li>
                     <li><a href="../gas-detectors/multi-gas-detector.php">Multi Gas Detector</a></li>
-                    <li><a href="../gas-detectors/portable-gas-detectors.php">Portable Gas Detectors</a></li>
                     <li><a href="../gas-detectors/docking-data-management.php">Docking and Data Management</a></li>
                     <li><a href="../gas-detectors/calibration-gas-regulators.php">Calibration Gas and Regulators</a></li>
                 </ul>
@@ -1730,6 +1717,7 @@ if (!$current_category) {
                         </ul>
                     </li>
                     <li><a href="../protection/hearing-respiratory-protection.php">Hearing &amp; Respiratory Protection</a></li>
+                    <li><a href="../protection/welding-head-and-face-protection.php">Welding Head and Face Protection</a></li>
                     <li class="has-nested-sub">
                         <a href="../protection/body-protection.php">Body Protection</a>
                         <button class="nested-toggle" aria-expanded="false" aria-controls="nested-body-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
@@ -1767,12 +1755,15 @@ if (!$current_category) {
 
     <!-- Mini Sidebar (Icon Bar) -->
     <div class="mini-sidebar active" id="miniSidebar">
-        <div id="miniSidebarMenuBar" style="background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); border-radius: 0; display: flex; align-items: center; gap: 8px; cursor: pointer;"><i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i><span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px; display: none;" class="browse-label">BROWSE CATEGORIES</span></div>
+        <div id="miniSidebarMenuBar" style="background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); border-radius: 0; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i>
+            <span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px; display: none;" class="browse-label">BROWSE CATEGORIES</span>
+        </div>
         <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-machine/arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-robots/arc-welding-robot.php" title="Arc Welding Robots"><i class="bi bi-robot"></i><span class="label">Arc Welding Robots</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../batteries/batteries.php" title="Batteries"><i class="bi bi-lightning-fill"></i><span class="label">Batteries</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../drilling-and-lifting/drilling-and-lifting.php" title="Drilling and Lifting"><i class="bi bi-hammer"></i><span class="label">Drilling and Lifting</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="gas-detectors.php" title="Gas Detectors"><i class="bi bi-bullseye"></i><span class="label">Gas Detectors</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="../gas-detectors/gas-detectors.php" title="Gas Detectors"><i class="bi bi-bullseye"></i><span class="label">Gas Detectors</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../portable-ventilators/portable-ventilators.php" title="Portable Ventilators"><i class="bi bi-fan"></i><span class="label">Portable Ventilators</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../power-tools/power-tools.php" title="Power Tools"><i class="bi bi-tools"></i><span class="label">Power Tools</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../protection/protection.php" title="Personal Protective Equipment"><i class="bi bi-shield-check"></i><span class="label">PPE</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
@@ -1791,20 +1782,19 @@ if (!$current_category) {
         </div>
     </div>
 
-    <div class="category-container">
         <div class="category-header">
             <h1><?php echo $category_name; ?></h1>
             <p><?php echo $category_description; ?></p>
         </div>
 
         <div class="category-content">
-            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Docking Data Management'); ?></h2>
+            <h2><?php echo htmlspecialchars('Docking and Data Management'); ?></h2>
             <?php if (!empty($current_category['description'])): ?>
                 <p class="category-description"><?php echo htmlspecialchars($current_category['description']); ?></p>
             <?php endif; ?>
             <div class="product-grid">
                 <?php 
-                // Dynamically fetch products for this subcategory
+                // Fetch products for docking-data-management subcategory
                 $all_products = andison_get_products_for_subcategory($category_id, $subcategory_id);
                 
                 // Display products
@@ -1817,7 +1807,7 @@ if (!$current_category) {
                         }
                         $model = htmlspecialchars($product['model'] ?? '');
                         $name = htmlspecialchars($product['name'] ?? '');
-                        $type = htmlspecialchars($product['type'] ?? 'Gas Detection Equipment');
+                        $type = htmlspecialchars($product['type'] ?? 'Ventilation Equipment');
                         $brand = htmlspecialchars($product['brand'] ?? 'Industrial');
                         $description = htmlspecialchars($product['description'] ?? '');
                         $badge = htmlspecialchars($product['badge'] ?? '');
@@ -1851,16 +1841,15 @@ if (!$current_category) {
                     <div class="product-image">
                         <i class="bi bi-hammer" style="font-size: 60px; color: #ccc;"></i>
                     </div>
-                    <h4>Docking Data Management</h4>
+                    <h4>Portable Ventilators</h4>
                     <p class="product-type">No products available</p>
-                    <button class="add-to-inquiry" type="button" data-model="Docking Data Management" data-type="Management System" data-brand="Industrial">ADD TO INQUIRY</button>
+                    <button class="add-to-inquiry" type="button" data-model="Portable Ventilators" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
                 </div>
                     <?php
                 }
                 ?>
             </div>
         </div>
-    </div>
     </div>
 
     <!-- Footer -->
@@ -1925,64 +1914,149 @@ if (!$current_category) {
     </script>
     
     <script>
-        // DOMContentLoaded handler for browseToggle
-        document.addEventListener('DOMContentLoaded', function() {
+        // Sidebar toggle functionality
+        (function(){
             var browseToggle = document.getElementById('browseToggle');
-            if (browseToggle) {
-                browseToggle.addEventListener('click', function(e) {
+            var sidebarOverlay = document.querySelector('.sidebar-overlay');
+            var overlayBackdrop = document.querySelector('.overlay-backdrop');
+            var sidebarClose = document.querySelector('.sidebar-close');
+            
+            if(browseToggle && sidebarOverlay && overlayBackdrop) {
+                browseToggle.addEventListener('click', function(){
+                    sidebarOverlay.classList.toggle('active');
+                    overlayBackdrop.classList.toggle('active');
+                });
+                
+                overlayBackdrop.addEventListener('click', function(){
+                    sidebarOverlay.classList.remove('active');
+                    overlayBackdrop.classList.remove('active');
+                });
+                
+                if(sidebarClose) {
+                    sidebarClose.addEventListener('click', function(){
+                        sidebarOverlay.classList.remove('active');
+                        overlayBackdrop.classList.remove('active');
+                    });
+                }
+            }
+            
+            // Sidebar sub-toggle functionality
+            var subToggles = document.querySelectorAll('.sub-toggle');
+            subToggles.forEach(function(toggle) {
+                toggle.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    var mainSidebar = document.getElementById('sidebar');
-                    var backdrop = document.getElementById('overlayBackdrop');
-                    if (mainSidebar && backdrop) {
-                        mainSidebar.classList.toggle('active');
-                        backdrop.classList.toggle('active');
+                    var sublist = document.getElementById(toggle.getAttribute('aria-controls'));
+                    if(sublist) {
+                        sublist.classList.toggle('collapsed');
+                        toggle.setAttribute('aria-expanded', sublist.classList.contains('collapsed') ? 'false' : 'true');
+                    }
+                });
+            });
+            
+            // Nested toggle functionality
+            var nestedToggles = document.querySelectorAll('.nested-toggle');
+            nestedToggles.forEach(function(toggle) {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var nested = document.getElementById(toggle.getAttribute('aria-controls'));
+                    if(nested) {
+                        nested.classList.toggle('collapsed');
+                        toggle.setAttribute('aria-expanded', nested.classList.contains('collapsed') ? 'false' : 'true');
+                    }
+                });
+            });
+        })();
+    </script>
+    
+    <script>
+        // ACTIVE SIDEBAR CATEGORY HIGHLIGHTING
+        // ============================================
+        (function(){
+            var currentPath = window.location.pathname.toLowerCase();
+            var sidebar = document.getElementById('sidebar');
+            if(!sidebar) return;
+
+            // Extract category - split path and find category directory
+            var pathParts = currentPath.split('/').filter(function(p) { return p && p !== 'andison-1'; });
+            var currentCategory = null;
+            
+            var categoryList = [
+                'arc-welding-machine',
+                'arc-welding-robots',
+                'batteries',
+                'drilling-and-lifting',
+                'gas-detectors',
+                'portable-ventilators',
+                'power-tools',
+                'protection',
+                'welding-accessories',
+                'welding-consumables'
+            ];
+            
+            // Find matching category in path
+            for(var i = 0; i < pathParts.length; i++) {
+                if(categoryList.indexOf(pathParts[i]) !== -1) {
+                    currentCategory = pathParts[i];
+                    break;
+                }
+            }
+
+            if(currentCategory){
+                var links = sidebar.querySelectorAll('.sidebar-list > li > a');
+                links.forEach(function(link){
+                    var href = link.getAttribute('href').toLowerCase();
+                    if(href.includes(currentCategory)){
+                        link.classList.add('active');
                     }
                 });
             }
-        });
+        })();
     </script>
 
     <script>
-        // ============================================
-        // ACTIVE SIDEBAR CATEGORY HIGHLIGHTING
+        // ACTIVE SIDEBAR CATEGORY HIGHLIGHTING WITH DELAY
         // ============================================
         setTimeout(function(){
             var currentPath = window.location.pathname.toLowerCase();
             var sidebar = document.getElementById('sidebar');
-            if(sidebar) {
-                var pathParts = currentPath.split('/').filter(function(p) { return p && p !== 'andison-1'; });
-                var currentCategory = null;
-                
-                var categoryList = [
-                    'arc-welding-machine',
-                    'arc-welding-robots',
-                    'batteries',
-                    'drilling-and-lifting',
-                    'gas-detectors',
-                    'portable-ventilators',
-                    'power-tools',
-                    'protection',
-                    'welding-accessories',
-                    'welding-consumables'
-                ];
-                
-                for(var i = 0; i < pathParts.length; i++) {
-                    if(categoryList.indexOf(pathParts[i]) !== -1) {
-                        currentCategory = pathParts[i];
-                        break;
-                    }
-                }
+            if(!sidebar) return;
 
-                if(currentCategory){
-                    var links = sidebar.querySelectorAll('.sidebar-list > li > a');
-                    links.forEach(function(link){
-                        var href = link.getAttribute('href').toLowerCase();
-                        if(href.includes(currentCategory)){
+            var pathParts = currentPath.split('/').filter(function(p) { return p && p !== 'andison-1'; });
+            var currentCategory = null;
+            
+            var categoryList = [
+                'arc-welding-machine',
+                'arc-welding-robots',
+                'batteries',
+                'drilling-and-lifting',
+                'gas-detectors',
+                'portable-ventilators',
+                'power-tools',
+                'protection',
+                'welding-accessories',
+                'welding-consumables'
+            ];
+            
+            for(var i = 0; i < pathParts.length; i++) {
+                if(categoryList.indexOf(pathParts[i]) !== -1) {
+                    currentCategory = pathParts[i];
+                    break;
+                }
+            }
+
+            if(currentCategory){
+                var links = sidebar.querySelectorAll('.sidebar-list > li > a');
+                links.forEach(function(link){
+                    var href = link.getAttribute('href');
+                    if(href){
+                        var hrefLower = href.toLowerCase();
+                        if(hrefLower.includes(currentCategory)){
                             link.classList.add('active');
                         }
-                    });
-                }
+                    }
+                });
             }
         }, 500);
     </script>
@@ -2069,11 +2143,11 @@ if (!$current_category) {
                     { label: 'Cutters', href: base + '/../drilling-and-lifting/cutters.php' }
                 ],
                 'gas-detectors': [
-                    { label: 'Single Gas Detector', href: base + '/single-gas-detector.php' },
-                    { label: 'Multi Gas Detector', href: base + '/multi-gas-detector.php' },
-                    { label: 'Portable Gas Detectors', href: base + '/portable-gas-detectors.php' },
-                    { label: 'Docking and Data Management', href: base + '/docking-data-management.php' },
-                    { label: 'Calibration Gas and Regulators', href: base + '/calibration-gas-regulators.php' }
+                    { label: 'Single Gas Detector', href: base + '/../gas-detectors/single-gas-detector.php' },
+                    { label: 'Multi Gas Detector', href: base + '/../gas-detectors/multi-gas-detector.php' },
+                    { label: 'Portable Gas Detectors', href: base + '/../gas-detectors/portable-gas-detectors.php' },
+                    { label: 'Docking and Data Management', href: base + '/../gas-detectors/docking-data-management.php' },
+                    { label: 'Calibration Gas and Regulators', href: base + '/../gas-detectors/calibration-gas-regulators.php' }
                 ],
                 'power-tools': [
                     { label: 'Grinder', href: base + '/../power-tools/grinder.php' },
@@ -2306,279 +2380,4 @@ if (!$current_category) {
             });
         });
     </script>
-
-
-    <script>
-        // ACTIVE SIDEBAR CATEGORY HIGHLIGHTING
-        // ============================================
-        (function(){
-            var currentPath = window.location.pathname.toLowerCase();
-            var sidebar = document.getElementById('sidebar');
-            if(!sidebar) return;
-
-            // Extract category - split path and find category directory
-            var pathParts = currentPath.split('/').filter(function(p) { return p && p !== 'andison-1'; });
-            var currentCategory = null;
-            
-            var categoryList = [
-                'arc-welding-machine',
-                'arc-welding-robots',
-                'batteries',
-                'drilling-and-lifting',
-                'gas-detectors',
-                'portable-ventilators',
-                'power-tools',
-                'protection',
-                'welding-accessories',
-                'welding-consumables'
-            ];
-            
-            // Find matching category in path
-            for(var i = 0; i < pathParts.length; i++) {
-                if(categoryList.indexOf(pathParts[i]) !== -1) {
-                    currentCategory = pathParts[i];
-                    break;
-                }
-            }
-
-            if(currentCategory){
-                var links = sidebar.querySelectorAll('.sidebar-list > li > a');
-                links.forEach(function(link){
-                    var href = link.getAttribute('href').toLowerCase();
-                    if(href.includes(currentCategory)){
-                        link.classList.add('active');
-                    }
-                });
-            }
-        })();
-    </script>
-
-    <script>
-        // ACTIVE SIDEBAR CATEGORY HIGHLIGHTING WITH DELAY
-        // ============================================
-        setTimeout(function(){
-            var currentPath = window.location.pathname.toLowerCase();
-            console.log('Delayed run - Pathname:', currentPath);
-            
-            var sidebar = document.getElementById('sidebar');
-            if(!sidebar) {
-                console.log('Sidebar NOT found even after delay');
-                return;
-            }
-
-            var pathParts = currentPath.split('/').filter(function(p) { return p && p !== 'andison-1'; });
-            var currentCategory = null;
-            
-            var categoryList = [
-                'arc-welding-machine',
-                'arc-welding-robots',
-                'batteries',
-                'drilling-and-lifting',
-                'gas-detectors',
-                'portable-ventilators',
-                'power-tools',
-                'protection',
-                'welding-accessories',
-                'welding-consumables'
-            ];
-            
-            for(var i = 0; i < pathParts.length; i++) {
-                if(categoryList.indexOf(pathParts[i]) !== -1) {
-                    currentCategory = pathParts[i];
-                    break;
-                }
-            }
-
-            if(currentCategory){
-                var links = sidebar.querySelectorAll('.sidebar-list > li > a');
-                console.log('Highlighting for category:', currentCategory, 'Links found:', links.length);
-                
-                links.forEach(function(link){
-                    var href = link.getAttribute('href');
-                    if(href){
-                        var hrefLower = href.toLowerCase();
-                        if(hrefLower.includes(currentCategory)){
-                            link.classList.add('active');
-                            console.log('Added active to:', href);
-                        }
-                    }
-                });
-            }
-        }, 500);
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Get DOM elements
-            var miniSidebar = document.getElementById('miniSidebar');
-            var mainSidebar = document.getElementById('sidebar');
-            var backdrop = document.getElementById('overlayBackdrop');
-            var expandBtn = document.getElementById('expandSidebar');
-            var menuBar = document.getElementById('miniSidebarMenuBar');
-            var miniIcons = document.querySelectorAll('.mini-sidebar-icon');
-            var miniPopover = document.getElementById('miniPopover');
-            var popoverTitle = miniPopover ? miniPopover.querySelector('.mini-popover-title') : null;
-            var popoverList = miniPopover ? miniPopover.querySelector('.mini-popover-list') : null;
-            var currentPopoverKey = null;
-
-            // Category data
-            var categoryData = {
-                'arc-welding-robots': {title: 'Arc Welding Robots', items: [{label: 'G3 Controller Series', href: '/../arc-welding-robots/g3-controller-series.php'},{label: 'G4 Controller Series', href: '/../arc-welding-robots/g4-controller-series.php'},{label: 'Featured Products and Solutions', href: '/../arc-welding-robots/featured-products-and-solution.php'},{label: 'Robot System Peripherals', href: '/../arc-welding-robots/robot-system-peripherals.php'}]},
-                'arc-welding-machine': {title: 'Arc Welding Machines', items: [{label: 'MIG Welding Machine', href: '/../arc-welding-machine/mig-welding-machine.php'},{label: 'CO1/MAG Welding Machine', href: '/../arc-welding-machine/co1-mag-welding-machine.php'},{label: 'STUD Welding Machine', href: '/../arc-welding-machine/stud-welding-machine.php'},{label: 'TIG Welding Machine', href: '/../arc-welding-machine/tig-welding-machine.php'},{label: 'Plasma Cutting Machine', href: '/../arc-welding-machine/plasma-cutting-machine.php'}]},
-                'batteries': {title: 'Batteries', items: [{label: 'Maintenance Free', href: '/../batteries/maintenance-free.php'},{label: 'Low Maintenance', href: '/../batteries/low-maintenance.php'},{label: 'Special Batteries', href: '/../batteries/special-batteries.php'}]},
-                'drilling-and-lifting': {title: 'Drilling and Lifting', items: [{label: 'Lifting', href: '/../drilling-and-lifting/lifting.php'},{label: 'Magnetic Drill', href: '/../drilling-and-lifting/magnetic-drill.php'},{label: 'Cutters', href: '/../drilling-and-lifting/cutters.php'}]},
-                'gas-detectors': {title: 'Gas Detectors', items: [{label: 'Single Gas Detector', href: '/../gas-detectors/single-gas-detector.php'},{label: 'Multi Gas Detector', href: '/../gas-detectors/multi-gas-detector.php'},{label: 'Portable Gas Detectors', href: '/../gas-detectors/portable-gas-detectors.php'},{label: 'Docking and Data Management', href: '/../gas-detectors/docking-data-management.php'},{label: 'Calibration Gas and Regulators', href: '/../gas-detectors/calibration-gas-regulators.php'}]},
-                'portable-ventilators': {title: 'Portable Ventilators', items: [{label: 'Electric Driven', href: '/../portable-ventilators/electric-driven.php'},{label: 'Pneumatic Driven', href: '/../portable-ventilators/pneumatic-driven.php'}]},
-                'power-tools': {title: 'Power Tools', items: [{label: 'Grinder', href: '/../power-tools/grinder.php'},{label: 'Saw', href: '/../power-tools/saw.php'},{label: 'Drill and Wrench', href: '/../power-tools/drill-and-wrench.php'},{label: 'Rotary and Demolition Hammer', href: '/../power-tools/rotary-and-demolition-hammer.php'},{label: 'Accessories', href: '/../power-tools/accessories.php'}]},
-                'protection': {title: 'Personal Protective Equipment', items: [{label: 'Eye Protection', href: '/../protection/eye-protection.php'},{label: 'Hand Protection', href: '/../protection/hand-protection.php'},{label: 'Hearing & Respiratory Protection', href: '/../protection/hearing-respiratory-protection.php'},{label: 'Welding Head and Face Protection', href: '/../protection/welding-head-and-face-protection.php'},{label: 'Body Protection', href: '/../protection/body-protection.php'}]},
-                'welding-accessories': {title: 'Welding Accessories', items: [{label: 'Welding Electrode Oven', href: '/../welding-accessories/welding-electrode-oven.php'},{label: 'Non-Destructive Crack Detection', href: '/../welding-accessories/non-destructive-crack-detection.php'},{label: 'Gas Saving Regulator', href: '/../welding-accessories/gas-saving-regulator.php'},{label: 'Gas Cutting Equipment', href: '/../welding-accessories/gas-cutting-equipment.php'},{label: 'Industrial Markers', href: '/../welding-accessories/industrial-markers.php'},{label: 'Measuring Gauge', href: '/../welding-accessories/measuring-gauge.php'},{label: 'Others', href: '/../welding-accessories/others.php'}]},
-                'welding-consumables': {title: 'Welding Consumables', items: [{label: 'Kobelco', href: '/../welding-consumables/kobelco.php'},{label: 'Metrode', href: '/../welding-consumables/metrode.php'}]}
-            };
-
-            // Helper: Extract category key from target
-            function getCategoryKey(dataTarget) {
-                if (!dataTarget) return null;
-                var keys = Object.keys(categoryData);
-                for (var i = 0; i < keys.length; i++) {
-                    if (dataTarget.indexOf(keys[i]) !== -1) return keys[i];
-                }
-                return null;
-            }
-
-            // Popover: Show for category
-            function showPopover(categoryKey, icon) {
-                if (!miniPopover || !categoryKey) return;
-                var data = categoryData[categoryKey];
-                if (!data) return;
-                
-                // Check if already open
-                if (currentPopoverKey === categoryKey && miniPopover.classList.contains('show')) {
-                    hidePopover();
-                    return;
-                }
-
-                // Render items
-                popoverList.innerHTML = '';
-                data.items.forEach(function(item) {
-                    var li = document.createElement('li');
-                    li.className = 'mini-popover-item';
-                    li.innerHTML = '<span class="square"></span><a href="' + item.href + '">' + item.label + '</a>';
-                    popoverList.appendChild(li);
-                });
-
-                // Update title
-                if (popoverTitle) popoverTitle.textContent = data.title;
-
-                // Position popover
-                var rect = icon.getBoundingClientRect();
-                var pw = miniPopover.offsetWidth;
-                var ph = miniPopover.offsetHeight;
-                var iconCenterY = rect.top + rect.height / 2;
-                var left = Math.round(rect.right + 14);
-                var top = Math.round(iconCenterY - ph / 2);
-
-                if (left + pw + 12 > window.innerWidth) {
-                    left = Math.round(rect.left - pw - 14);
-                }
-
-                top = Math.max(170, Math.min(top, window.innerHeight - ph - 12));
-                var arrowOffset = iconCenterY - top - 26;
-
-                miniPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
-                miniPopover.style.left = left + 'px';
-                miniPopover.style.top = top + 'px';
-                miniPopover.classList.add('show');
-                miniPopover.setAttribute('aria-hidden', 'false');
-                currentPopoverKey = categoryKey;
-            }
-
-            // Popover: Hide
-            function hidePopover() {
-                if (!miniPopover) return;
-                miniPopover.classList.remove('show');
-                miniPopover.setAttribute('aria-hidden', 'true');
-                currentPopoverKey = null;
-            }
-
-            // EXPAND/COLLAPSE button
-            if (expandBtn && miniSidebar) {
-                expandBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    miniSidebar.classList.toggle('expanded');
-                });
-            }
-
-            // MENU BAR toggle
-            if (menuBar && miniSidebar) {
-                menuBar.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    miniSidebar.classList.toggle('expanded');
-                });
-            }
-
-            // ARROW handlers - show popover
-            miniIcons.forEach(function(icon) {
-                var arrow = icon.querySelector('.sub-indicator');
-                if (arrow) {
-                    arrow.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        var categoryKey = getCategoryKey(icon.getAttribute('data-target'));
-                        if (categoryKey) showPopover(categoryKey, icon);
-                    });
-                }
-            });
-
-            // ICON click - navigate to category
-            miniIcons.forEach(function(icon) {
-                icon.addEventListener('click', function(e) {
-                    // Don't navigate if clicking arrow
-                    if (e.target.closest('.sub-indicator')) {
-                        e.stopPropagation();
-                        return;
-                    }
-                    var target = this.getAttribute('data-target');
-                    if (target) {
-                        window.location.href = target;
-                    }
-                });
-            });
-
-            // Close popover on outside click
-            document.addEventListener('click', function(e) {
-                if (!miniPopover || !miniPopover.classList.contains('show')) return;
-                if (e.target.closest('.mini-popover') || e.target.closest('.sub-indicator')) return;
-                hidePopover();
-            });
-
-            // Close popover on Escape
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') hidePopover();
-            });
-
-            // Main sidebar backdrop
-            if (backdrop && mainSidebar) {
-                backdrop.addEventListener('click', function() {
-                    if (mainSidebar.classList.contains('active')) {
-                        mainSidebar.classList.remove('active');
-                        backdrop.classList.remove('active');
-                    }
-                });
-            }
-
-            // Main sidebar close button
-            var closeSidebarBtn = document.getElementById('closeSidebar');
-            if (closeSidebarBtn && mainSidebar && backdrop) {
-                closeSidebarBtn.addEventListener('click', function() {
-                    if (mainSidebar.classList.contains('active')) {
-                        mainSidebar.classList.remove('active');
-                        backdrop.classList.remove('active');
-                    }
-                });
-            }
-        });
-    </script>
-</body>
 </html>
