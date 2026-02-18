@@ -64,8 +64,31 @@ $matches = array_slice($matches, 0, 80);
         .search-bar .search-field::before { content:'🔍'; position:absolute; left:12px; font-size:16px; pointer-events:none; color:#666; }
 
         .right-actions { margin-left:auto; display:flex; align-items:center; gap:10px; }
-        .back-btn { background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); color:#1a1a2e; border:none; padding:12px 28px; border-radius:25px; font-weight:700; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:8px; font-size:13px; line-height: 1.3; height: auto; min-height:40px; box-shadow:0 4px 14px rgba(0, 215, 179, 0.28); transition:all 0.35s ease; }
-        .back-btn:hover { background:linear-gradient(135deg, #00E6FF 0%, #00C8F7 100%); box-shadow:0 8px 24px rgba(0, 215, 179, 0.38); transform:translateY(-2px); }
+        .back-btn { 
+            background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); 
+            color: #333; 
+            border: none; 
+            padding: 10px 18px; 
+            border-radius: 6px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            text-decoration: none; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px; 
+            font-size: 15px; 
+            line-height: 1.3; 
+            height: auto; 
+            min-height: 40px; 
+            transition: all 0.3s ease; 
+        }
+        .back-btn:hover { 
+            background: linear-gradient(135deg, #00FFD1 0%, #00FFD1 100%); 
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 12px rgba(0, 255, 209, 0.4); 
+            color: #333; 
+        }
         .inquiry-btn,
         .cart-icon-wrapper { display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; text-decoration: none; color: #1a1a2e; font-weight: 700; padding: 12px 28px; border-radius: 25px; transition: all 0.35s ease; background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); line-height: 1.3; height: auto; min-height: 40px; }
         .inquiry-btn:hover,

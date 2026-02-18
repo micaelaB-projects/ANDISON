@@ -259,25 +259,15 @@ $ytLinks = andison_get_youtube_links();
             color: #333;
         }
 
-        .inquiry-btn {
-            position: relative;
-        }
-
         .cart-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
             background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
             color: white;
             font-size: 12px;
             font-weight: 700;
-            padding: 4px 8px;
+            padding: 2px 6px;
             border-radius: 50%;
-            min-width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            min-width: 20px;
+            text-align: center;
             box-shadow: 0 2px 8px rgba(255, 102, 102, 0.4);
         }
 
@@ -3518,9 +3508,6 @@ $ytLinks = andison_get_youtube_links();
             
             // Update on storage change (when items added from other pages)
             window.addEventListener('storage', updateCartBadge);
-            
-            // Update when items added on same page
-            window.addEventListener('inquiryItemsUpdated', updateCartBadge);
             
             // Update frequently to catch changes
             setInterval(updateCartBadge, 500);
