@@ -276,28 +276,27 @@ $category_id = "drilling-and-lifting";
             display: none;
         }
 
-        .inquiry-btn {
-            background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%);
-            color: #1a1a2e;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 25px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 217, 255, 0.3);
-            text-decoration: none;
+        .inquiry-btn,
+        .cart-icon-wrapper {
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 6px;
             transition: all 0.3s ease;
-            font-size: 14px;
-            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%);
         }
 
-        .inquiry-btn:hover { 
-            background: linear-gradient(135deg, #00E6FF 0%, #00C8F7 100%);
-            box-shadow: 0 6px 20px rgba(0, 217, 255, 0.5);
+        .inquiry-btn:hover,
+        .cart-icon-wrapper:hover {
+            background: linear-gradient(135deg, #00FFD1 0%, #00FFD1 100%);
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 255, 209, 0.4);
+            color: #333;
         }
 
         .right-actions {

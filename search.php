@@ -66,8 +66,10 @@ $matches = array_slice($matches, 0, 80);
         .right-actions { margin-left:auto; display:flex; align-items:center; gap:10px; }
         .back-btn { background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); color:#1a1a2e; border:none; padding:11px 26px; border-radius:10px; font-weight:800; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:8px; font-size:13px; letter-spacing:0.5px; box-shadow:0 4px 14px rgba(0, 215, 179, 0.28); transition:all 0.35s ease; text-transform: uppercase; }
         .back-btn:hover { background:linear-gradient(135deg, #00E6FF 0%, #00C8F7 100%); box-shadow:0 8px 24px rgba(0, 215, 179, 0.38); transform:translateY(-2px); }
-        .inquiry-btn { background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); color:#1a1a2e; border:none; padding:11px 26px; border-radius:10px; font-weight:800; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:8px; font-size:13px; letter-spacing:0.5px; box-shadow:0 4px 14px rgba(0, 215, 179, 0.28); transition:all 0.35s ease; text-transform: uppercase; }
-        .inquiry-btn:hover { background:linear-gradient(135deg, #00E6FF 0%, #00C8F7 100%); box-shadow:0 8px 24px rgba(0, 215, 179, 0.38); transform:translateY(-2px); }
+        .inquiry-btn,
+        .cart-icon-wrapper { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; text-decoration: none; color: #333; font-weight: 600; padding: 10px 18px; border-radius: 6px; transition: all 0.3s ease; background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); }
+        .inquiry-btn:hover,
+        .cart-icon-wrapper:hover { background: linear-gradient(135deg, #00FFD1 0%, #00FFD1 100%); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 255, 209, 0.4); color: #333; }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 32px 20px; }
         .results-header { display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 2px solid #f0f0f0; }

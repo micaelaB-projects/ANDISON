@@ -227,28 +227,27 @@
             display: none;
         }
 
-        .inquiry-btn {
-            background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%);
-            color: #1a1a2e;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 25px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 217, 255, 0.3);
-            text-decoration: none;
+        .inquiry-btn,
+        .cart-icon-wrapper {
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 6px;
             transition: all 0.3s ease;
-            font-size: 14px;
-            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%);
         }
 
-        .inquiry-btn:hover { 
-            background: linear-gradient(135deg, #00E6FF 0%, #00C8F7 100%);
-            box-shadow: 0 6px 20px rgba(0, 217, 255, 0.5);
+        .inquiry-btn:hover,
+        .cart-icon-wrapper:hover {
+            background: linear-gradient(135deg, #00FFD1 0%, #00FFD1 100%);
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 255, 209, 0.4);
+            color: #333;
         }
         
         .right-actions {
@@ -1240,12 +1239,20 @@
             flex-shrink: 0;
         }
 
+        .browse-label {
+            display: none;
+        }
+
         .mini-sidebar.expanded #miniSidebarMenuBar {
             justify-content: flex-start;
             width: 100%;
             height: auto;
             padding: 12px;
             margin-bottom: 8px;
+        }
+
+        .mini-sidebar.expanded .browse-label {
+            display: inline;
         }
 
         .mini-sidebar-toggle {
@@ -1643,7 +1650,6 @@
                         </ul>
                     </li>
                     <li><a href="protection/hearing-respiratory-protection.php">Hearing &amp; Respiratory Protection</a></li>
-                    <li><a href="protection/welding-head-and-face-protection.php">Welding Head and Face Protection</a></li>
                     <li class="has-nested-sub">
                         <a href="protection/body-protection.php">Body Protection</a>
                         <button class="nested-toggle" aria-expanded="false" aria-controls="nested-body-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
@@ -1683,7 +1689,7 @@
     <div class="mini-sidebar active" id="miniSidebar">
         <div id="miniSidebarMenuBar" style="background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); border-radius: 0; display: flex; align-items: center; gap: 8px; cursor: pointer;">
             <i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i>
-            <span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px; display: none;" class="browse-label">BROWSE CATEGORIES</span>
+            <span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px;" class="browse-label">BROWSE CATEGORIES</span>
         </div>
         <div class="mini-sidebar-icon has-sub" data-target="arc-welding-machine/arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="arc-welding-robots/arc-welding-robot.php" title="Arc Welding Robots"><i class="bi bi-robot"></i><span class="label">Arc Welding Robots</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
@@ -2535,6 +2541,5 @@
     </script>
 </body>
 </html>
-
 
 

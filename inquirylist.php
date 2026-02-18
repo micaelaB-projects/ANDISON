@@ -438,35 +438,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             display: none;
         }
 
-        .inquiry-btn {
-            background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%);
-            color: #1a1a2e;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 25px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 217, 255, 0.3);
-            text-decoration: none;
+        .inquiry-btn,
+        .cart-icon-wrapper {
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 6px;
             transition: all 0.3s ease;
-            font-size: 14px;
-            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%);
         }
 
-        .inquiry-btn:hover { 
-            background: linear-gradient(135deg, #00E6FF 0%, #00C8F7 100%);
-            box-shadow: 0 6px 20px rgba(0, 217, 255, 0.5);
+        .inquiry-btn:hover,
+        .cart-icon-wrapper:hover {
+            background: linear-gradient(135deg, #00FFD1 0%, #00FFD1 100%);
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 255, 209, 0.4);
+            color: #333;
         }
 
-        .right-actions {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .cart-badge {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 50%;
+            min-width: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(255, 102, 102, 0.4);
+        }
+
+        .cart-badge.hidden {
+            display: none;
         }
 
         /* Navigation */
@@ -895,18 +903,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .sub-toggle:focus { outline: none; }
         .sub-toggle .bi { transition: transform 200ms ease; font-size: 16px; }
         .sub-toggle[aria-expanded="true"] .bi { transform: rotate(90deg); }
-        .sidebar-sublist {
-            max-height: 1000px;
-            overflow: hidden;
-            transition: max-height 0.3s ease, opacity 0.3s ease;
-            opacity: 1;
-        }
-        
-        .sidebar-sublist.collapsed {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-        }
+        .sidebar-sublist.collapsed { display: none; }
+        .sidebar-sublist:not(.collapsed) { display: block; }
 
         .sidebar-close { 
             background: transparent; 
@@ -1269,6 +1267,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background: rgba(255,255,255,0.12);
             transform: translateX(2px);
         }
+
+        .sidebar-sublist {
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 1;
+        }
+        
+        .sidebar-sublist.collapsed {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
     </style>
 </head>
 <body>
@@ -1293,7 +1304,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="right-actions">
                 <a href="javascript:history.back()" class="inquiry-btn" style="margin-right: 12px;">BACK</a>
-                <a href="inquirylist.php" class="inquiry-btn">INQUIRY LIST</a>
+                <a href="inquirylist.php" class="cart-icon-wrapper" title="Inquiry List">
+                    <span>INQUIRY LIST</span>
+                    <span class="cart-badge hidden" id="cartBadge">0</span>
+                </a>
                 <div class="header-contact">
                         <div class="contact-dropdown" tabindex="0" aria-haspopup="true">
                             <a href="#contact" class="contact-link" aria-label="Contact Us">Contact Us ▾</a>
@@ -1314,7 +1328,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Navigation -->
         <nav>
             <div class="nav-inner">
-                <button id="browseToggle" class="browse-toggle"><span class="hamburger"><i class="bi bi-list"></i></span> BROWSE PRODUCTS</button>
+                <button id="browseToggle" class="browse-toggle"></button>
                 <ul class="nav-list">
                     <li>
                         <a href="home.php">Home</a>
@@ -1423,7 +1437,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <ul class="sidebar-list">
             <li class="has-sub">
                 <a href="../arc-welding-machine/arc-welding-machine.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span><span class="sidebar-label">Arc Welding Machines</span></a>
-                <button class="sub-toggle" aria-controls="sub-arc-welding" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
+                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-welding" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
                     <li><a href="../arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
@@ -1775,24 +1789,70 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 container.innerHTML = html;
             }
 
+            // Function to update cart badge
+            function triggerBadgeUpdate() {
+                var badge = document.getElementById('cartBadge');
+                if(badge) {
+                    var items = getItems();
+                    var count = items.length;
+                    if(count > 0) {
+                        badge.textContent = count > 99 ? '99+': count;
+                        badge.classList.remove('hidden');
+                    } else {
+                        badge.classList.add('hidden');
+                    }
+                }
+            }
+
             // events
             container.addEventListener('click', function(e){
                 var rem = e.target.closest('.item-remove');
-                if(rem){ var idx = parseInt(rem.dataset.idx,10); var items = getItems(); items.splice(idx,1); setItems(items); render(); }
+                if(rem){ var idx = parseInt(rem.dataset.idx,10); var items = getItems(); items.splice(idx,1); setItems(items); render(); triggerBadgeUpdate(); }
             });
             container.addEventListener('change', function(e){
                 var q = e.target.closest('.item-qty');
-                if(q){ var idx = parseInt(q.dataset.idx,10); var items = getItems(); var val = parseInt(q.value,10) || 1; items[idx].qty = val; setItems(items); render(); }
+                if(q){ var idx = parseInt(q.dataset.idx,10); var items = getItems(); var val = parseInt(q.value,10) || 1; items[idx].qty = val; setItems(items); render(); triggerBadgeUpdate(); }
             });
 
             // clear button also clears items
             var clearBtn = document.getElementById('clearBtn');
-            if(clearBtn){ clearBtn.addEventListener('click', function(){ localStorage.removeItem('inquiryItems'); render(); }); }
+            if(clearBtn){ clearBtn.addEventListener('click', function(){ localStorage.removeItem('inquiryItems'); render(); triggerBadgeUpdate(); }); }
 
             render();
         })();
     </script>
+    <script>
+        // Update cart badge count in real-time
+        (function(){
+            function updateCartBadge() {
+                var badge = document.getElementById('cartBadge');
+                if(!badge) return;
+                
+                try {
+                    var items = JSON.parse(localStorage.getItem('inquiryItems') || '[]');
+                    var count = items.length;
+                    
+                    if(count > 0) {
+                        badge.textContent = count > 99 ? '99+' : count;
+                        badge.classList.remove('hidden');
+                    } else {
+                        badge.classList.add('hidden');
+                    }
+                } catch(e) {
+                    badge.classList.add('hidden');
+                }
+            }
 
+            // Update on page load
+            updateCartBadge();
+
+            // Listen for storage changes from other pages
+            window.addEventListener('storage', updateCartBadge);
+            
+            // Also check periodically in case other tabs update
+            setInterval(updateCartBadge, 500);
+        })();
+    </script>
     <script>
         // ============================================
         // ACTIVE SIDEBAR CATEGORY HIGHLIGHTING
@@ -1856,9 +1916,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         function updateBrowseToggleVisibility() {
             if(!browseToggle) return;
             if(window.innerWidth <= 1024) {
-                browseToggle.style.display = 'inline-flex';
+                browseToggle.classList.add('active');
             } else {
-                browseToggle.style.display = 'none';
+                browseToggle.classList.remove('active');
             }
         }
 
@@ -2071,7 +2131,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         var arrowHandler = function(e) {
             e.stopPropagation();
             e.preventDefault();
-
             var arrow = (e.target && e.target.closest('.sub-indicator')) || e.currentTarget;
             var icon = arrow ? arrow.closest('.mini-sidebar-icon') : null;
             if (!icon) return;
@@ -2129,6 +2188,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </script>
 </body>
 </html>
-
 
 
