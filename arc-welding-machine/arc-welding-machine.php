@@ -277,6 +277,7 @@ if (!$current_category) {
             border-radius: 6px;
             transition: all 0.3s ease;
             background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%);
+            position: relative;
         }
 
         .inquiry-btn:hover,
@@ -285,6 +286,28 @@ if (!$current_category) {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 255, 209, 0.4);
             color: #333;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 50%;
+            min-width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(255, 102, 102, 0.4);
+        }
+
+        .cart-badge.hidden {
+            display: none;
         }
 
         .right-actions {
@@ -1495,7 +1518,7 @@ if (!$current_category) {
 
             <div class="right-actions">
                 <a href="javascript:history.back()" class="inquiry-btn" style="margin-right: 12px;">BACK</a>
-                <a href="../inquirylist.php" class="inquiry-btn">INQUIRY LIST</a>
+                <a href="../inquirylist.php" class="inquiry-btn">INQUIRY LIST <span class="cart-badge hidden" id="cartBadge">0</span></a>
                 <div class="header-contact">
                     <div class="contact-dropdown" tabindex="0" aria-haspopup="true">
                         <a href="#contact" class="contact-link" aria-label="Contact Us">Contact Us ▾</a>
@@ -2305,6 +2328,25 @@ if (!$current_category) {
                 }
             });
         }
+
+        // Cart badge update function
+        (function(){
+            function updateCartBadge() {
+                var badge = document.getElementById('cartBadge');
+                if(!badge) return;
+                var items = JSON.parse(localStorage.getItem('inquiryItems') || '[]');
+                var count = items.length;
+                if(count > 0) {
+                    badge.textContent = count;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            }
+            updateCartBadge();
+            window.addEventListener('storage', updateCartBadge);
+            setInterval(updateCartBadge, 500);
+        })();
     </script>
 </body>
 </html>

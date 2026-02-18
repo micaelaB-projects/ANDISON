@@ -253,6 +253,32 @@
             box-shadow: 0 6px 20px rgba(0, 217, 255, 0.5);
             transform: translateY(-2px);
         }
+
+        .inquiry-btn {
+            position: relative;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 50%;
+            min-width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(255, 102, 102, 0.4);
+        }
+
+        .cart-badge.hidden {
+            display: none;
+        }
         
         .right-actions {
             margin-left: auto;
@@ -1868,7 +1894,7 @@
               </div>
 
               <div class="right-actions">
-                  <a href="inquirylist.php" class="inquiry-btn">INQUIRY LIST</a>
+                  <a href="inquirylist.php" class="inquiry-btn">INQUIRY LIST <span class="cart-badge hidden" id="cartBadge">0</span></a>
                   <div class="header-contact">
                       <div class="contact-dropdown" tabindex="0" aria-haspopup="true">
                           <a href="#contact" class="contact-link" aria-label="Contact Us">Contact Us ▾</a>
@@ -2919,6 +2945,37 @@
                 }
             });
         }
+    </script>
+
+    <script>
+        // ============================================
+        // UPDATE CART BADGE COUNT IN REAL-TIME
+        // ============================================
+        (function(){
+            function updateCartBadge() {
+                var badge = document.getElementById('cartBadge');
+                if(!badge) return;
+                
+                var items = JSON.parse(localStorage.getItem('inquiryItems') || '[]');
+                var count = items.length;
+                
+                if(count > 0) {
+                    badge.textContent = count;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            }
+            
+            // Update on page load
+            updateCartBadge();
+            
+            // Update on storage change (when items added from other pages)
+            window.addEventListener('storage', updateCartBadge);
+            
+            // Update frequently to catch changes
+            setInterval(updateCartBadge, 500);
+        })();
     </script>
   </body>
   </html>
