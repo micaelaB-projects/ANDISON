@@ -231,40 +231,42 @@
         }
 
         .inquiry-btn {
-            background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%);
-            color: #1a1a2e;
+            background: linear-gradient(135deg, #00E5C8  0%, #347aec   100%);
+            color: #111;
             border: none;
-            padding: 10px 24px;
-            border-radius: 25px;
-            font-weight: 700;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 217, 255, 0.3);
+            box-shadow: 0 3px 10px rgba(0,215,179,0.35);
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            font-size: 14px;
-            letter-spacing: 0.5px;
+            gap: 10px;
+            transition: all 0.25s ease;
+            font-size: 15px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            white-space: nowrap;
         }
 
         .inquiry-btn:hover { 
-            background: linear-gradient(135deg, #00E6FF 0%, #00C8F7 100%);
-            box-shadow: 0 6px 20px rgba(0, 217, 255, 0.5);
+            background: linear-gradient(135deg, #00FFD9 0%, #00CCA8 100%);
+            box-shadow: 0 5px 16px rgba(0,215,179,0.45);
             transform: translateY(-2px);
         }
 
         .cart-badge {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
-            color: white;
-            font-size: 12px;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 50%;
-            min-width: 20px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(255, 102, 102, 0.4);
-        }
+        background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
+        color: white;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 50%;
+        min-width: 20px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(255, 102, 102, 0.4);
+    }
 
         .cart-badge.hidden {
             display: none;

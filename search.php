@@ -90,7 +90,7 @@ $matches = array_slice($matches, 0, 80);
             color: #333; 
         }
         .inquiry-btn,
-        .cart-icon-wrapper { display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; text-decoration: none; color: #1a1a2e; font-weight: 700; padding: 12px 28px; border-radius: 25px; transition: all 0.35s ease; background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); line-height: 1.3; height: auto; min-height: 40px; }
+        .cart-icon-wrapper { display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; text-decoration: none; color: #1a1a2e; font-weight: 700; padding: 12px 28px; border-radius: 25px; transition: all 0.35s ease; background: linear-gradient(135deg, #00E5C8  0%, #347aec   100%); line-height: 1.3; height: auto; min-height: 40px; }
         .inquiry-btn:hover,
         .cart-icon-wrapper:hover { background: linear-gradient(135deg, #00FFD1 0%, #00FFD1 100%); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 255, 209, 0.4); color: #1a1a2e; }
         

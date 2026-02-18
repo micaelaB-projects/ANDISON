@@ -239,7 +239,7 @@
             padding: 10px 18px;
             border-radius: 6px;
             transition: all 0.3s ease;
-            background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%);
+            background: linear-gradient(135deg, #00E5C8  0%, #347aec 100%);
         }
 
         .inquiry-btn:hover,

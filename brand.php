@@ -242,44 +242,47 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
             cursor: pointer;
             text-decoration: none;
-            color: #1a1a2e;
-            font-weight: 700;
-            padding: 12px 28px;
-            border-radius: 25px;
-            transition: all 0.35s ease;
-            background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%);
+            color: #111;
+            font-weight: 800;
+            padding: 10px 22px;
+            border-radius: 8px;
+            transition: all 0.25s ease;
+             background: linear-gradient(135deg, #00E5C8  0%, #347aec   100%);
+            color: #111;
             line-height: 1.3;
             height: auto;
             min-height: 40px;
+            font-size: 13px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            box-shadow: 0 3px 10px rgba(0,215,179,0.35);
         }
 
         .inquiry-btn:hover,
         .cart-icon-wrapper:hover {
-            background: linear-gradient(135deg, #00FFD1 0%, #00FFD1 100%);
+            background: linear-gradient(135deg, #1473b2 50%, #00CCA8 100%);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 255, 209, 0.4);
-            color: #1a1a2e;
+            box-shadow: 0 5px 16px rgba(0,215,179,0.45);
+            color: #111;
         }
 
         .cart-badge {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
+            background: #e53935;
             color: white;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 2px 6px;
+            font-size: 12px;
+            font-weight: 800;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
-            min-width: 20px;
-            height: 20px;
-            text-align: center;
-            line-height: 16px;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 8px rgba(255, 102, 102, 0.4);
             flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(229,57,53,0.5);
         }
 
         .cart-badge.hidden {
