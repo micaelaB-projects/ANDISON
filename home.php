@@ -272,7 +272,7 @@ $ytLinks = andison_get_youtube_links();
             padding: 8px 16px;
             border-radius: 8px;
             transition: all 0.3s ease;
-            background: linear-gradient(135deg, #00BCD4, #00897B);
+            background: linear-gradient(135deg,  #00E5C8  0%, #347aec 100%);
             position: relative;
             font-size: 14px;
             font-weight: 700;
