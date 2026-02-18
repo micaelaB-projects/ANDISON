@@ -280,12 +280,13 @@ if (!$current_category) {
         .cart-icon-wrapper {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             cursor: pointer;
             text-decoration: none;
             color: #333;
             font-weight: 600;
-            padding: 10px 18px;
+            padding: 11px 26px;
             border-radius: 6px;
             transition: all 0.3s ease;
             background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%);

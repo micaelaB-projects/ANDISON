@@ -3519,6 +3519,9 @@ $ytLinks = andison_get_youtube_links();
             // Update on storage change (when items added from other pages)
             window.addEventListener('storage', updateCartBadge);
             
+            // Update when items added on same page
+            window.addEventListener('inquiryItemsUpdated', updateCartBadge);
+            
             // Update frequently to catch changes
             setInterval(updateCartBadge, 500);
         })();

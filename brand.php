@@ -241,15 +241,19 @@
         .cart-icon-wrapper {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             cursor: pointer;
             text-decoration: none;
-            color: #333;
-            font-weight: 600;
-            padding: 10px 18px;
-            border-radius: 6px;
-            transition: all 0.3s ease;
+            color: #1a1a2e;
+            font-weight: 700;
+            padding: 12px 28px;
+            border-radius: 25px;
+            transition: all 0.35s ease;
             background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%);
+            line-height: 1.3;
+            height: auto;
+            min-height: 40px;
         }
 
         .inquiry-btn:hover,
@@ -257,8 +261,65 @@
             background: linear-gradient(135deg, #00FFD1 0%, #00FFD1 100%);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 255, 209, 0.4);
-            color: #333;
+            color: #1a1a2e;
         }
+
+        .cart-badge {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 50%;
+            min-width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(255, 102, 102, 0.4);
+            flex-shrink: 0;
+        }
+
+        .cart-badge.hidden {
+            display: none;
+        }
+
+        .add-to-inquiry {
+            background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%);
+            color: #1a1a2e;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            transition: all 0.35s ease;
+            height: auto;
+            min-height: 40px;
+            line-height: 1.3;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 215, 179, 0.3);
+        }
+
+        .add-to-inquiry:hover {
+            background: linear-gradient(135deg, #00FFD1 0%, #00FFD1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 215, 179, 0.4);
+        }
+
+        .add-to-inquiry:active {
+            transform: translateY(0);
+        }
+
+        .add-to-inquiry.already {
+            background: linear-gradient(135deg, #4caf50 0%, #45a344 100%);
+            color: white;
+        }
+
         .right-actions {
             margin-left: auto;
             display: flex;
@@ -1744,22 +1805,31 @@
             margin-bottom: 10px;
         }
 
-        .add-to-inquiry {
-            background: #00D7B3;
-            color: #2E2E2E;
-            padding: 10px 20px;
-            border-radius: 999px;
-            text-transform: uppercase;
-            font-weight: 700;
-            font-size: 13px;
-            border: none;
+        .inquiry-btn,
+        .cart-icon-wrapper {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             cursor: pointer;
-            display: inline-block;
-            box-shadow: 0 6px 18px rgba(43,17,219,0.18);
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%);
         }
 
-        .add-to-inquiry:active {
-            transform: translateY(1px);
+        .inquiry-btn:hover,
+        .cart-icon-wrapper:hover {
+            background: linear-gradient(135deg, #00FFD1 0%, #00FFD1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 255, 209, 0.4);
+            color: #333;
+        }
+
+        .inquiry-btn {
+            position: relative;
         }
 
         .brand-page .product-card > div:last-child {
@@ -2708,7 +2778,7 @@
 
             <div class="right-actions">
                 <a href="javascript:history.back()" class="inquiry-btn" style="margin-right: 12px;">BACK</a>
-                <a href="inquirylist.php" class="inquiry-btn">INQUIRY LIST</a>
+                <a href="inquirylist.php" class="inquiry-btn">INQUIRY LIST <span class="cart-badge hidden" id="cartBadge">0</span></a>
                 <div class="header-contact">
                         <div class="contact-dropdown" tabindex="0" aria-haspopup="true">
                             <a href="#contact" class="contact-link" aria-label="Contact Us">Contact Us ▾</a>
@@ -3138,7 +3208,11 @@
             function getItems(){
                 try{ return JSON.parse(localStorage.getItem('inquiryItems')||'[]'); }catch(e){ return []; }
             }
-            function setItems(items){ localStorage.setItem('inquiryItems', JSON.stringify(items)); }
+            function setItems(items){ 
+                localStorage.setItem('inquiryItems', JSON.stringify(items));
+                // Dispatch custom event to update badges on all pages
+                window.dispatchEvent(new Event('inquiryItemsUpdated'));
+            }
             function addItem(item){
                 var items = getItems();
                 var found = items.find(function(i){ return i.model === item.model && i.brand === item.brand; });
@@ -3709,6 +3783,39 @@
                 }
             });
         }
+    </script>
+
+    <script>
+        // UPDATE CART BADGE COUNT IN REAL-TIME
+        // ============================================
+        (function(){
+            function updateCartBadge() {
+                var badge = document.getElementById('cartBadge');
+                if(!badge) return;
+                
+                var items = JSON.parse(localStorage.getItem('inquiryItems') || '[]');
+                var count = items.length;
+                
+                if(count > 0) {
+                    badge.textContent = count > 99 ? '99+' : count;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            }
+
+            // Update on page load
+            updateCartBadge();
+
+            // Listen for storage changes from other pages
+            window.addEventListener('storage', updateCartBadge);
+            
+            // Listen for custom event when items are added on same page
+            window.addEventListener('inquiryItemsUpdated', updateCartBadge);
+            
+            // Also check periodically in case other tabs update
+            setInterval(updateCartBadge, 500);
+        })();
     </script>
 </body>
 

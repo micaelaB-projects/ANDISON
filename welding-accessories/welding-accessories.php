@@ -1886,7 +1886,11 @@ if (!$current_category) {
             function getItems(){
                 try{ return JSON.parse(localStorage.getItem('inquiryItems')||'[]'); }catch(e){ return []; }
             }
-            function setItems(items){ localStorage.setItem('inquiryItems', JSON.stringify(items)); }
+            function setItems(items){ 
+                localStorage.setItem('inquiryItems', JSON.stringify(items));
+                // Dispatch custom event to update badges on all pages
+                window.dispatchEvent(new Event('inquiryItemsUpdated'));
+            }
             function addItem(item){
                 var items = getItems();
                 var found = items.find(function(i){ return i.model === item.model && i.brand === item.brand; });
@@ -2479,6 +2483,8 @@ if (!$current_category) {
             }
             updateCartBadge();
             window.addEventListener('storage', updateCartBadge);
+            // Listen for custom event when items are added on same page
+            window.addEventListener('inquiryItemsUpdated', updateCartBadge);
             setInterval(updateCartBadge, 500);
         })();
     </script>

@@ -169,6 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             padding: 0 20px;
             gap: 20px;
             margin-bottom: 12px;
+            min-height: 50px;
         }
 
         .header-buttons {
@@ -176,6 +177,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             align-items: center;
             gap: 10px;
             margin-left: auto;
+        }
+
+        .right-actions {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .logo {
@@ -198,7 +206,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: #1f2937;
             border: none;
             padding: 12px 28px;
-            border-radius: 50px;
+            border-radius: 25px;
             text-decoration: none;
             font-weight: 700;
             display: inline-flex;
@@ -291,6 +299,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             gap: 14px;
             font-size: 13px;
             flex: 0 0 auto;
+            line-height: 1.4;
         }
 
         .contact-link {
@@ -300,7 +309,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             padding-bottom: 8px;
             white-space: nowrap;
             position: relative;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .contact-link::after {
@@ -461,16 +472,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: #333;
         }
 
+        .inquiry-btn {
+            position: relative;
+        }
+
         .cart-badge {
             background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
             color: white;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             padding: 2px 6px;
             border-radius: 50%;
             min-width: 20px;
+            height: 20px;
             text-align: center;
+            line-height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             box-shadow: 0 2px 8px rgba(255, 102, 102, 0.4);
+            flex-shrink: 0;
         }
 
         .cart-badge.hidden {
@@ -1436,113 +1457,113 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <ul class="sidebar-list">
             <li class="has-sub">
-                <a href="../arc-welding-machine/arc-welding-machine.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span><span class="sidebar-label">Arc Welding Machines</span></a>
+                <a href="/ANDISON/arc-welding-machine/arc-welding-machine.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span><span class="sidebar-label">Arc Welding Machines</span></a>
                 <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-welding" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
                 <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
-                    <li><a href="../arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
-                    <li><a href="../arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
-                    <li><a href="../arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
-                    <li><a href="../arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
-                    <li><a href="../arc-welding-machine/plasma-cutting-machine.php">Plasma Cutting Machine</a></li>
+                    <li><a href="/ANDISON/arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
+                    <li><a href="/ANDISON/arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
+                    <li><a href="/ANDISON/arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
+                    <li><a href="/ANDISON/arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
+                    <li><a href="/ANDISON/arc-welding-machine/plasma-cutting-machine.php">Plasma Cutting Machine</a></li>
                 </ul>
             </li>
             <li class="has-sub">
-                <a href="../arc-welding-robots/arc-welding-robot.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label">Arc Welding Robots</span></a>
+                <a href="/ANDISON/arc-welding-robots/arc-welding-robot.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label">Arc Welding Robots</span></a>
                 <button class="sub-toggle" aria-controls="sub-arc-robots" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-arc-robots" class="sidebar-sublist collapsed">
-                    <li><a href="../arc-welding-robots/g3-controller-series.php">G3 Controller Series</a></li>
-                    <li><a href="../arc-welding-robots/g4-controller-series.php">G4 Controller Series</a></li>
-                    <li><a href="../arc-welding-robots/featured-products-and-solution.php">Featured Products and Solutions</a></li>
-                    <li><a href="../arc-welding-robots/robot-system-peripherals.php">Robot System Peripherals</a></li>
+                    <li><a href="/ANDISON/arc-welding-robots/g3-controller-series.php">G3 Controller Series</a></li>
+                    <li><a href="/ANDISON/arc-welding-robots/g4-controller-series.php">G4 Controller Series</a></li>
+                    <li><a href="/ANDISON/arc-welding-robots/featured-products-and-solution.php">Featured Products and Solutions</a></li>
+                    <li><a href="/ANDISON/arc-welding-robots/robot-system-peripherals.php">Robot System Peripherals</a></li>
                 </ul>
             </li>
             <li class="has-sub">
-                <a href="../batteries/batteries.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-fill"></i></span><span class="sidebar-label">Batteries</span></a>
+                <a href="/ANDISON/batteries/batteries.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-fill"></i></span><span class="sidebar-label">Batteries</span></a>
                 <button class="sub-toggle" aria-controls="sub-batteries" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-batteries" class="sidebar-sublist collapsed">
-                    <li><a href="../batteries/maintenance-free.php">Maintenance Free</a></li>
-                    <li><a href="../batteries/low-maintenance.php">Low Maintenance</a></li>
-                    <li><a href="../batteries/special-batteries.php">Special Batteries</a></li>
+                    <li><a href="/ANDISON/batteries/maintenance-free.php">Maintenance Free</a></li>
+                    <li><a href="/ANDISON/batteries/low-maintenance.php">Low Maintenance</a></li>
+                    <li><a href="/ANDISON/batteries/special-batteries.php">Special Batteries</a></li>
                 </ul>
             </li>
             <li class="has-sub">
-                <a href="../drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling and Lifting</span></a>
+                <a href="/ANDISON/drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling and Lifting</span></a>
                 <button class="sub-toggle" aria-controls="sub-drilling-lifting" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
-                    <li><a href="../drilling-and-lifting/lifting.php">Lifting</a></li>
-                    <li><a href="../drilling-and-lifting/magnetic-drill.php">Magnetic Drill</a></li>
-                    <li><a href="../drilling-and-lifting/cutters.php">Cutters</a></li>
+                    <li><a href="/ANDISON/drilling-and-lifting/lifting.php">Lifting</a></li>
+                    <li><a href="/ANDISON/drilling-and-lifting/magnetic-drill.php">Magnetic Drill</a></li>
+                    <li><a href="/ANDISON/drilling-and-lifting/cutters.php">Cutters</a></li>
                 </ul>
             </li>
             <li class="has-sub">
-                <a href="../gas-detectors/gas-detectors.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></span><span class="sidebar-label">Gas Detectors</span></a>
+                <a href="/ANDISON/gas-detectors/gas-detectors.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></span><span class="sidebar-label">Gas Detectors</span></a>
                 <button class="sub-toggle" aria-controls="sub-gas-detectors" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-gas-detectors" class="sidebar-sublist collapsed">
-                    <li><a href="../gas-detectors/single-gas-detector.php">Single Gas Detector</a></li>
-                    <li><a href="../gas-detectors/multi-gas-detector.php">Multi Gas Detector</a></li>
-                    <li><a href="../gas-detectors/portable-gas-detectors.php">Portable Gas Detectors</a></li>
-                    <li><a href="../gas-detectors/docking-data-management.php">Docking and Data Management</a></li>
-                    <li><a href="../gas-detectors/calibration-gas-regulators.php">Calibration Gas and Regulators</a></li>
+                    <li><a href="/ANDISON/gas-detectors/single-gas-detector.php">Single Gas Detector</a></li>
+                    <li><a href="/ANDISON/gas-detectors/multi-gas-detector.php">Multi Gas Detector</a></li>
+                    <li><a href="/ANDISON/gas-detectors/portable-gas-detectors.php">Portable Gas Detectors</a></li>
+                    <li><a href="/ANDISON/gas-detectors/docking-data-management.php">Docking and Data Management</a></li>
+                    <li><a href="/ANDISON/gas-detectors/calibration-gas-regulators.php">Calibration Gas and Regulators</a></li>
                 </ul>
             </li>
             <li class="">
-                <a href="../portable-ventilators/portable-ventilators.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-fan"></i></span><span class="sidebar-label">Portable Ventilators</span></a>
+                <a href="/ANDISON/portable-ventilators/portable-ventilators.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-fan"></i></span><span class="sidebar-label">Portable Ventilators</span></a>
             </li>
             <li class="has-sub">
-                <a href="../power-tools/power-tools.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-tools"></i></span><span class="sidebar-label">Power Tools</span></a>
+                <a href="/ANDISON/power-tools/power-tools.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-tools"></i></span><span class="sidebar-label">Power Tools</span></a>
                 <button class="sub-toggle" aria-controls="sub-power-tool" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-power-tool" class="sidebar-sublist collapsed">
-                    <li><a href="../power-tools/grinder.php">Grinder</a></li>
-                    <li><a href="../power-tools/saw.php">Saw</a></li>
-                    <li><a href="../power-tools/drill-and-wrench.php">Drill and Wrench</a></li>
-                    <li><a href="../power-tools/rotary-and-demolition-hammer.php">Rotary and Demolition Hammer</a></li>
-                    <li><a href="../power-tools/accessories.php">Accessories</a></li>
+                    <li><a href="/ANDISON/power-tools/grinder.php">Grinder</a></li>
+                    <li><a href="/ANDISON/power-tools/saw.php">Saw</a></li>
+                    <li><a href="/ANDISON/power-tools/drill-and-wrench.php">Drill and Wrench</a></li>
+                    <li><a href="/ANDISON/power-tools/rotary-and-demolition-hammer.php">Rotary and Demolition Hammer</a></li>
+                    <li><a href="/ANDISON/power-tools/accessories.php">Accessories</a></li>
                 </ul>
             </li>
             <li class="has-sub">
-                <a href="../protection/protection.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-shield-check"></i></span><span class="sidebar-label">Personal Protective Equipment</span></a>
+                <a href="/ANDISON/protection/protection.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-shield-check"></i></span><span class="sidebar-label">Personal Protective Equipment</span></a>
                 <button class="sub-toggle" aria-controls="sub-protection-safety" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-protection-safety" class="sidebar-sublist collapsed">
-                    <li><a href="../protection/eye-protection.php">Eye Protection</a></li>
+                    <li><a href="/ANDISON/protection/eye-protection.php">Eye Protection</a></li>
                     <li class="has-nested-sub">
-                        <a href="../protection/hand-protection.php">Hand Protection</a>
+                        <a href="/ANDISON/protection/hand-protection.php">Hand Protection</a>
                         <ul id="nested-hand-protection" class="sidebar-nested-sublist collapsed">
-                            <li><a href="../protection/working-gloves.php">Working Gloves</a></li>
-                            <li><a href="../protection/chemical-liquid-protection-gloves.php">Chemical and Liquid Protection Gloves</a></li>
-                            <li><a href="../protection/disposable-gloves.php">Disposable Gloves</a></li>
-                            <li><a href="../protection/welding-gloves.php">Welding Gloves</a></li>
+                            <li><a href="/ANDISON/protection/working-gloves.php">Working Gloves</a></li>
+                            <li><a href="/ANDISON/protection/chemical-liquid-protection-gloves.php">Chemical and Liquid Protection Gloves</a></li>
+                            <li><a href="/ANDISON/protection/disposable-gloves.php">Disposable Gloves</a></li>
+                            <li><a href="/ANDISON/protection/welding-gloves.php">Welding Gloves</a></li>
                         </ul>
                     </li>
-                    <li><a href="../protection/hearing-respiratory-protection.php">Hearing &amp; Respiratory Protection</a></li>
+                    <li><a href="/ANDISON/protection/hearing-respiratory-protection.php">Hearing &amp; Respiratory Protection</a></li>
                     <li class="has-nested-sub">
-                        <a href="../protection/body-protection.php">Body Protection</a>
+                        <a href="/ANDISON/protection/body-protection.php">Body Protection</a>
                         <ul id="nested-body-protection" class="sidebar-nested-sublist collapsed">
-                            <li><a href="../protection/chemical-flame-retardant.php">Chemical and Flame Retardant</a></li>
-                            <li><a href="../protection/liquid-spray-splash.php">Liquid Spray and Splash</a></li>
-                            <li><a href="../protection/particulate-low-hazard.php">Particulate and Low Hazard</a></li>
+                            <li><a href="/ANDISON/protection/chemical-flame-retardant.php">Chemical and Flame Retardant</a></li>
+                            <li><a href="/ANDISON/protection/liquid-spray-splash.php">Liquid Spray and Splash</a></li>
+                            <li><a href="/ANDISON/protection/particulate-low-hazard.php">Particulate and Low Hazard</a></li>
                         </ul>
                     </li>
                 </ul>
             </li>
             <li class="has-sub">
-                <a href="../welding-accessories/welding-accessories.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-gear"></i></span><span class="sidebar-label">Welding Accessories</span></a>
+                <a href="/ANDISON/welding-accessories/welding-accessories.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-gear"></i></span><span class="sidebar-label">Welding Accessories</span></a>
                 <button class="sub-toggle" aria-controls="sub-welding-accessories" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-welding-accessories" class="sidebar-sublist collapsed">
-                    <li><a href="../welding-accessories/welding-electrode-oven.php">Welding Electrode Oven</a></li>
-                    <li><a href="../welding-accessories/non-destructive-crack-detection.php">Non-Destructive Crack Detection</a></li>
-                    <li><a href="../welding-accessories/gas-saving-regulator.php">Gas Saving Regulator</a></li>
-                    <li><a href="../welding-accessories/gas-cutting-equipment.php">Gas Cutting Equipment</a></li>
-                    <li><a href="../welding-accessories/industrial-markers.php">Industrial Markers</a></li>
-                    <li><a href="../welding-accessories/measuring-gauge.php">Measuring Gauge</a></li>
-                    <li><a href="../welding-accessories/others.php">Others</a></li>
+                    <li><a href="/ANDISON/welding-accessories/welding-electrode-oven.php">Welding Electrode Oven</a></li>
+                    <li><a href="/ANDISON/welding-accessories/non-destructive-crack-detection.php">Non-Destructive Crack Detection</a></li>
+                    <li><a href="/ANDISON/welding-accessories/gas-saving-regulator.php">Gas Saving Regulator</a></li>
+                    <li><a href="/ANDISON/welding-accessories/gas-cutting-equipment.php">Gas Cutting Equipment</a></li>
+                    <li><a href="/ANDISON/welding-accessories/industrial-markers.php">Industrial Markers</a></li>
+                    <li><a href="/ANDISON/welding-accessories/measuring-gauge.php">Measuring Gauge</a></li>
+                    <li><a href="/ANDISON/welding-accessories/others.php">Others</a></li>
                 </ul>
             </li>
             <li class="has-sub">
-                <a href="../welding-consumables/welding-consumables.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-box"></i></span><span class="sidebar-label">Welding Consumables</span></a>
+                <a href="/ANDISON/welding-consumables/welding-consumables.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-box"></i></span><span class="sidebar-label">Welding Consumables</span></a>
                 <button class="sub-toggle" aria-controls="sub-welding-consumables" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-welding-consumables" class="sidebar-sublist collapsed">
-                    <li><a href="../welding-consumables/kobelco.php">Kobelco</a></li>
-                    <li><a href="../welding-consumables/metrode.php">Metrode</a></li>
+                    <li><a href="/ANDISON/welding-consumables/kobelco.php">Kobelco</a></li>
+                    <li><a href="/ANDISON/welding-consumables/metrode.php">Metrode</a></li>
                 </ul>
             </li>
         </ul>
@@ -1554,16 +1575,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i>
             <span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px; display: none;" class="browse-label">BROWSE CATEGORIES</span>
         </div>
-        <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-machine/arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-robots/arc-welding-robot.php" title="Arc Welding Robots"><i class="bi bi-robot"></i><span class="label">Arc Welding Robots</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="../batteries/batteries.php" title="Batteries"><i class="bi bi-lightning-fill"></i><span class="label">Batteries</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="../drilling-and-lifting/drilling-and-lifting.php" title="Drilling and Lifting"><i class="bi bi-hammer"></i><span class="label">Drilling and Lifting</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="../gas-detectors/gas-detectors.php" title="Gas Detectors"><i class="bi bi-bullseye"></i><span class="label">Gas Detectors</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="../portable-ventilators/portable-ventilators.php" title="Portable Ventilators"><i class="bi bi-fan"></i><span class="label">Portable Ventilators</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="../power-tools/power-tools.php" title="Power Tools"><i class="bi bi-tools"></i><span class="label">Power Tools</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="../protection/protection.php" title="Personal Protective Equipment"><i class="bi bi-shield-check"></i><span class="label">PPE</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="../welding-accessories/welding-accessories.php" title="Welding Accessories"><i class="bi bi-gear"></i><span class="label">Welding Accessories</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="../welding-consumables/welding-consumables.php" title="Welding Consumables"><i class="bi bi-box"></i><span class="label">Welding Consumables</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="/ANDISON/arc-welding-machine/arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="/ANDISON/arc-welding-robots/arc-welding-robot.php" title="Arc Welding Robots"><i class="bi bi-robot"></i><span class="label">Arc Welding Robots</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="/ANDISON/batteries/batteries.php" title="Batteries"><i class="bi bi-lightning-fill"></i><span class="label">Batteries</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="/ANDISON/drilling-and-lifting/drilling-and-lifting.php" title="Drilling and Lifting"><i class="bi bi-hammer"></i><span class="label">Drilling and Lifting</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="/ANDISON/gas-detectors/gas-detectors.php" title="Gas Detectors"><i class="bi bi-bullseye"></i><span class="label">Gas Detectors</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="/ANDISON/portable-ventilators/portable-ventilators.php" title="Portable Ventilators"><i class="bi bi-fan"></i><span class="label">Portable Ventilators</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="/ANDISON/power-tools/power-tools.php" title="Power Tools"><i class="bi bi-tools"></i><span class="label">Power Tools</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="/ANDISON/protection/protection.php" title="Personal Protective Equipment"><i class="bi bi-shield-check"></i><span class="label">PPE</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="/ANDISON/welding-accessories/welding-accessories.php" title="Welding Accessories"><i class="bi bi-gear"></i><span class="label">Welding Accessories</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="/ANDISON/welding-consumables/welding-consumables.php" title="Welding Consumables"><i class="bi bi-box"></i><span class="label">Welding Consumables</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <button class="mini-sidebar-toggle" id="expandSidebar" title="Toggle Sidebar"><i class="bi bi-chevron-right"></i></button>
     </div>
 
@@ -1953,67 +1974,82 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             return map[key] || 'Categories';
         }
         function getPopoverItems(key) {
-            var base = '.';
+            var base = '/ANDISON';
             var maps = {
                 'arc-welding-robots': [
-                    { label: 'G3 Controller Series', href: base + '/../arc-welding-robots/g3-controller-series.php' },
-                    { label: 'G4 Controller Series', href: base + '/../arc-welding-robots/g4-controller-series.php' },
-                    { label: 'Featured Products and Solutions', href: base + '/../arc-welding-robots/featured-products-and-solution.php' },
-                    { label: 'Robot System Peripherals', href: base + '/../arc-welding-robots/robot-system-peripherals.php' }
+                    { label: 'G3 Controller Series', href: base + '/arc-welding-robots/G3-Controller-Series.php' },
+                    { label: 'G4 Controller Series', href: base + '/arc-welding-robots/G4-Controller-Series.php' },
+                    { label: 'Featured Products and Solutions', href: base + '/arc-welding-robots/featured-products-and-solution.php' },
+                    { label: 'Robot System Peripherals', href: base + '/arc-welding-robots/robot-system-peripherals.php' },
+                    { label: 'Arc Welding Robot', href: base + '/arc-welding-robots/arc-welding-robot.php' }
                 ],
                 'arc-welding-machine': [
-                    { label: 'MIG Welding Machine', href: base + '/../arc-welding-machine/mig-welding-machine.php' },
-                    { label: 'CO1/MAG Welding Machine', href: base + '/../arc-welding-machine/co1-mag-welding-machine.php' },
-                    { label: 'STUD Welding Machine', href: base + '/../arc-welding-machine/stud-welding-machine.php' },
-                    { label: 'TIG Welding Machine', href: base + '/../arc-welding-machine/tig-welding-machine.php' },
-                    { label: 'Plasma Cutting Machine', href: base + '/../arc-welding-machine/plasma-cutting-machine.php' }
+                    { label: 'MIG Welding Machine', href: base + '/arc-welding-machine/mig-welding-machine.php' },
+                    { label: 'CO1/MAG Welding Machine', href: base + '/arc-welding-machine/co1-mag-welding-machine.php' },
+                    { label: 'STUD Welding Machine', href: base + '/arc-welding-machine/stud-welding-machine.php' },
+                    { label: 'TIG Welding Machine', href: base + '/arc-welding-machine/tig-welding-machine.php' },
+                    { label: 'Plasma Cutting Machine', href: base + '/arc-welding-machine/plasma-cutting-machine.php' },
+                    { label: 'Accessories & Consumables', href: base + '/arc-welding-machine/accessories-and-consumables.php' }
                 ],
                 'batteries': [
-                    { label: 'Maintenance Free', href: base + '/../batteries/maintenance-free.php' },
-                    { label: 'Low Maintenance', href: base + '/../batteries/low-maintenance.php' },
-                    { label: 'Special Batteries', href: base + '/../batteries/special-batteries.php' }
+                    { label: 'Maintenance Free', href: base + '/batteries/maintenance-free.php' },
+                    { label: 'Low Maintenance', href: base + '/batteries/low-maintenance.php' },
+                    { label: 'Special Batteries', href: base + '/batteries/special-batteries.php' }
                 ],
                 'drilling-and-lifting': [
-                    { label: 'Lifting', href: base + '/../drilling-and-lifting/lifting.php' },
-                    { label: 'Magnetic Drill', href: base + '/../drilling-and-lifting/magnetic-drill.php' },
-                    { label: 'Cutters', href: base + '/../drilling-and-lifting/cutters.php' }
+                    { label: 'Lifting', href: base + '/drilling-and-lifting/lifting.php' },
+                    { label: 'Magnetic Drill', href: base + '/drilling-and-lifting/magnetic-drill.php' },
+                    { label: 'Cutters', href: base + '/drilling-and-lifting/cutters.php' },
+                    { label: 'B-Line Series', href: base + '/drilling-and-lifting/b-line-series.php' },
+                    { label: 'RBX Line Series', href: base + '/drilling-and-lifting/rbx-line-series.php' },
+                    { label: 'RL/E Line Series', href: base + '/drilling-and-lifting/rl-e-line-series.php' },
+                    { label: 'SP Line Series', href: base + '/drilling-and-lifting/sp-line-series.php' },
+                    { label: 'V Line Series', href: base + '/drilling-and-lifting/v-line-series.php' }
                 ],
                 'gas-detectors': [
-                    { label: 'Single Gas Detector', href: base + '/../gas-detectors/single-gas-detector.php' },
-                    { label: 'Multi Gas Detector', href: base + '/../gas-detectors/multi-gas-detector.php' },
-                    { label: 'Portable Gas Detectors', href: base + '/../gas-detectors/portable-gas-detectors.php' },
-                    { label: 'Docking and Data Management', href: base + '/../gas-detectors/docking-data-management.php' },
-                    { label: 'Calibration Gas and Regulators', href: base + '/../gas-detectors/calibration-gas-regulators.php' }
+                    { label: 'Single Gas Detector', href: base + '/gas-detectors/single-gas-detector.php' },
+                    { label: 'Multi Gas Detector', href: base + '/gas-detectors/multi-gas-detector.php' },
+                    { label: 'Portable Gas Detectors', href: base + '/gas-detectors/portable-gas-detectors.php' },
+                    { label: 'Docking and Data Management', href: base + '/gas-detectors/docking-data-management.php' },
+                    { label: 'Calibration Gas and Regulators', href: base + '/gas-detectors/calibration-gas-regulators.php' }
                 ],
                 'power-tools': [
-                    { label: 'Grinder', href: base + '/../power-tools/grinder.php' },
-                    { label: 'Saw', href: base + '/../power-tools/saw.php' },
-                    { label: 'Drill and Wrench', href: base + '/../power-tools/drill-and-wrench.php' },
-                    { label: 'Rotary and Demolition Hammer', href: base + '/../power-tools/rotary-and-demolition-hammer.php' },
-                    { label: 'Accessories', href: base + '/../power-tools/accessories.php' }
+                    { label: 'Grinder', href: base + '/power-tools/grinder.php' },
+                    { label: 'Saw', href: base + '/power-tools/saw.php' },
+                    { label: 'Drill and Wrench', href: base + '/power-tools/drill-and-wrench.php' },
+                    { label: 'Rotary and Demolition Hammer', href: base + '/power-tools/rotary-and-demolition-hammer.php' },
+                    { label: 'Accessories', href: base + '/power-tools/accessories.php' }
                 ],
                 'portable-ventilators': [
-                    { label: 'Electric Driven', href: base + '/../portable-ventilators/electric-driven.php' },
-                    { label: 'Pneumatic Driven', href: base + '/../portable-ventilators/pneumatic-driven.php' }
+                    { label: 'Electric Driven', href: base + '/portable-ventilators/electric-driven.php' },
+                    { label: 'Pneumatic Driven', href: base + '/portable-ventilators/pneumatic-driven.php' }
                 ],
                 'protection': [
-                    { label: 'Eye Protection', href: base + '/../protection/eye-protection.php' },
-                    { label: 'Hand Protection', href: base + '/../protection/hand-protection.php' },
-                    { label: 'Hearing & Respiratory Protection', href: base + '/../protection/hearing-respiratory-protection.php' },
-                    { label: 'Body Protection', href: base + '/../protection/body-protection.php' }
+                    { label: 'Eye Protection', href: base + '/protection/eye-protection.php' },
+                    { label: 'Hand Protection', href: base + '/protection/hand-protection.php' },
+                    { label: 'Working Gloves', href: base + '/protection/working-gloves.php' },
+                    { label: 'Welding Gloves', href: base + '/protection/welding-gloves.php' },
+                    { label: 'Disposable Gloves', href: base + '/protection/disposable-gloves.php' },
+                    { label: 'Chemical Liquid Protection Gloves', href: base + '/protection/chemical-liquid-protection-gloves.php' },
+                    { label: 'Hearing & Respiratory Protection', href: base + '/protection/hearing-respiratory-protection.php' },
+                    { label: 'Body Protection', href: base + '/protection/body-protection.php' },
+                    { label: 'Chemical Flame Retardant', href: base + '/protection/chemical-flame-retardant.php' },
+                    { label: 'Liquid Spray Splash Protection', href: base + '/protection/liquid-spray-splash.php' },
+                    { label: 'Particulate Low Hazard', href: base + '/protection/particulate-low-hazard.php' },
+                    { label: 'Welding Head & Face Protection', href: base + '/protection/welding-head-and-face-protection.php' }
                 ],
                 'welding-accessories': [
-                    { label: 'Welding Electrode Oven', href: base + '/../welding-accessories/welding-electrode-oven.php' },
-                    { label: 'Non-Destructive Crack Detection', href: base + '/../welding-accessories/non-destructive-crack-detection.php' },
-                    { label: 'Gas Saving Regulator', href: base + '/../welding-accessories/gas-saving-regulator.php' },
-                    { label: 'Gas Cutting Equipment', href: base + '/../welding-accessories/gas-cutting-equipment.php' },
-                    { label: 'Industrial Markers', href: base + '/../welding-accessories/industrial-markers.php' },
-                    { label: 'Measuring Gauge', href: base + '/../welding-accessories/measuring-gauge.php' },
-                    { label: 'Others', href: base + '/../welding-accessories/others.php' }
+                    { label: 'Welding Electrode Oven', href: base + '/welding-accessories/welding-electrode-oven.php' },
+                    { label: 'Non-Destructive Crack Detection', href: base + '/welding-accessories/non-destructive-crack-detection.php' },
+                    { label: 'Gas Saving Regulator', href: base + '/welding-accessories/gas-saving-regulator.php' },
+                    { label: 'Gas Cutting Equipment', href: base + '/welding-accessories/gas-cutting-equipment.php' },
+                    { label: 'Industrial Markers', href: base + '/welding-accessories/industrial-markers.php' },
+                    { label: 'Measuring Gauge', href: base + '/welding-accessories/measuring-gauge.php' },
+                    { label: 'Others', href: base + '/welding-accessories/others.php' }
                 ],
                 'welding-consumables': [
-                    { label: 'Kobelco', href: base + '/../welding-consumables/kobelco.php' },
-                    { label: 'Metrode', href: base + '/../welding-consumables/metrode.php' }
+                    { label: 'Kobelco', href: base + '/welding-consumables/kobelco.php' },
+                    { label: 'Metrode', href: base + '/welding-consumables/metrode.php' }
                 ]
             };
             return maps[key] || [];
@@ -2188,5 +2224,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </script>
 </body>
 </html>
+
 
 
