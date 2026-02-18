@@ -44,7 +44,7 @@ $ytLinks = andison_get_youtube_links();
             top: 0;
             left: 0;
             right: 0;
-            z-index: 1001;
+            z-index: 1200;
             width: 100%;
         }
 
@@ -365,7 +365,7 @@ $ytLinks = andison_get_youtube_links();
             list-style: none;
             display: flex;
             flex-wrap: nowrap;
-            gap: 0;
+            gap: 30px;
             margin: 0;
             padding: 0;
             width: 100%;
@@ -374,14 +374,8 @@ $ytLinks = andison_get_youtube_links();
         .nav-list li { position: relative; }
 
         .nav-list a {
-            color: white;
             text-decoration: none;
-            font-size: 13px;
-            padding: 12px 10px;
             display: block;
-            transition: color 0.2s;
-            position: relative;
-            white-space: nowrap;
         }
 
         .nav-list a:hover { color: rgba(255,255,255,0.8); }
@@ -389,10 +383,8 @@ $ytLinks = andison_get_youtube_links();
         /* Glowing underline + dark active background for top-level nav links */
         .nav-list > li > a {
             position: relative;
-            padding: 10px 8px;
+            padding: 10px 14px;
             color: white;
-            font-size: 13px;
-            white-space: nowrap;
             transition: color 180ms ease, background 180ms ease;
         }
 
@@ -564,7 +556,7 @@ $ytLinks = andison_get_youtube_links();
             color: white;
             text-align: center;
             padding: 60px 20px;
-            aspect-ratio: 16 / 9;
+            aspect-ratio: 16;
             min-height: 300px;
             max-height: 600px;
             display: flex;
@@ -756,13 +748,20 @@ $ytLinks = andison_get_youtube_links();
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         section {
+            width: 100%;
             padding: 60px 20px;
             position: relative;
             z-index: 10;
             background: white;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         section h2 {
@@ -770,6 +769,7 @@ $ytLinks = andison_get_youtube_links();
             font-size: 45px;
             margin-bottom: 20px;
             color: #2B11DB;
+            width: 100%;
         }
     
         .section-description {
@@ -778,6 +778,9 @@ $ytLinks = andison_get_youtube_links();
             margin: 0 auto 50px;
             color: #666;
             line-height: 1.8;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 0 20px;
         }
 
         /* Product Highlights */
@@ -786,6 +789,12 @@ $ytLinks = andison_get_youtube_links();
             grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
             gap: 30px;
             margin-bottom: 50px;
+            width: 100%;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            box-sizing: border-box;
+            padding: 0 20px;
         }
 
         .product-card {
@@ -855,6 +864,8 @@ $ytLinks = andison_get_youtube_links();
         .product-info {
             padding: 20px;
             background: white;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .product-info h3 {
@@ -881,6 +892,10 @@ $ytLinks = andison_get_youtube_links();
             box-shadow: 0 8px 32px rgba(0, 212, 170, 0.12);
             overflow: hidden;
             position: relative;
+            max-width: 1100px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .featured-section::before {
@@ -1216,7 +1231,7 @@ $ytLinks = andison_get_youtube_links();
             }
 
             .nav-list {
-                gap: 2px;
+                gap: 30px;
             }
 
             .nav-list a {
@@ -2105,30 +2120,64 @@ $ytLinks = andison_get_youtube_links();
         .mini-sidebar {
             position: fixed;
             left: 0;
-            top: calc(14px + 50px + 14px);
+            top: calc(14px + 50px + 14px + 52px);
             bottom: 0;
             width: 80px;
-            background: #2B11DB;
-            box-shadow: 2px 0 16px rgba(0,0,0,0.1);
+            background: linear-gradient(180deg, #2B11DB 0%, #1a0a7f 100%);
+            box-shadow: 2px 0 16px rgba(0,0,0,0.2);
             z-index: 65;
-            padding: 20px 12px;
-            overflow: hidden;
+            padding: 24px 12px;
+            overflow-y: auto;
+            overflow-x: hidden;
             transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
             align-items: center;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.1) transparent;
+        }
+
+        .mini-sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .mini-sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .mini-sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+        }
+
+        .mini-sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.2);
         }
 
         .mini-sidebar.expanded {
             width: 280px;
             overflow-y: auto;
-            padding: 20px 12px;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+            padding: 24px 16px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0,0,0,0.1) transparent;
+            align-items: stretch;
         }
 
         .mini-sidebar.expanded::-webkit-scrollbar {
-            display: none;
+            width: 6px;
+        }
+
+        .mini-sidebar.expanded::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .mini-sidebar.expanded::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.1);
+            border-radius: 3px;
+        }
+
+        .mini-sidebar.expanded::-webkit-scrollbar-thumb:hover {
+            background: rgba(0,0,0,0.2);
         }
 
         .mini-sidebar.active {
@@ -2152,7 +2201,7 @@ $ytLinks = andison_get_youtube_links();
             cursor: pointer;
             position: relative;
             border-radius: 8px;
-            margin-bottom: 8px;
+            margin-bottom: 16px;
             transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), justify-content 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease;
             gap: 12px;
             padding: 0;
@@ -2174,13 +2223,22 @@ $ytLinks = andison_get_youtube_links();
         .mini-sidebar.expanded .mini-sidebar-icon {
             width: 100%;
             justify-content: flex-start;
-            padding: 12px;
+            padding: 14px;
             min-width: auto;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.08);
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-icon:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateX(4px);
         }
 
         .mini-sidebar.expanded .mini-sidebar-icon .label {
             display: block;
             opacity: 1;
+            color: #ffffff;
         }
 
         #miniSidebarMenuBar {
@@ -2205,45 +2263,53 @@ $ytLinks = andison_get_youtube_links();
         }
 
         .mini-sidebar-icon:hover {
-            background: rgba(255,255,255,0.2);
-            transform: scale(1.05);
+            background: rgba(0, 215, 179, 0.15);
+            transform: scale(1.08);
         }
 
         .mini-sidebar.expanded .mini-sidebar-icon:hover {
-            transform: translateX(4px);
+            transform: translateX(6px);
+            background: rgba(0, 215, 179, 0.2);
         }
 
         .mini-sidebar-icon.active-icon {
             background: #00D7B3;
             color: #2B11DB;
+            font-weight: 600;
+        }
+
+        .mini-sidebar-icon.active-icon .label {
+            color: #2B11DB;
+            font-weight: 600;
         }
 
         .mini-sidebar-icon .sub-indicator {
             position: absolute;
-            bottom: -1px;
-            right: -1px;
-            background: rgba(255,255,255,0.1);
+            bottom: 2px;
+            right: 2px;
+            background: rgba(0, 215, 179, 0.9);
             color: #ffffff;
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 9px;
-            opacity: 0.95;
-            transition: background 0.15s ease, color 0.15s ease;
+            font-size: 8px;
+            opacity: 0.9;
+            transition: background 0.15s ease, color 0.15s ease, transform 0.2s ease;
             z-index: 999;
             cursor: pointer;
             pointer-events: auto;
-            border: 1px solid #ffffff;
-            box-shadow: none;
+            border: 1px solid #2B11DB;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .mini-sidebar-icon:hover .sub-indicator {
             opacity: 1;
             background: #00D7B3;
             color: #2B11DB;
+            transform: scale(1.15);
         }
 
         .mini-sidebar-icon .sub-indicator:active {
@@ -2252,18 +2318,18 @@ $ytLinks = andison_get_youtube_links();
 
         .mini-sidebar.expanded .mini-sidebar-icon .sub-indicator {
             position: static;
-            background: transparent;
+            background: #00D7B3;
             color: #2B11DB;
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             margin-left: auto;
-            opacity: 1;
-            border: 0;
+            opacity: 0.9;
+            border: 1px solid #2B11DB;
             cursor: pointer;
             pointer-events: auto;
             z-index: 100;
-            box-shadow: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .mini-sidebar-toggle {
@@ -2272,20 +2338,21 @@ $ytLinks = andison_get_youtube_links();
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255,255,255,0.15);
-            border: none;
-            color: #fff;
+            background: rgba(0, 215, 179, 0.2);
+            border: 1px solid rgba(0, 215, 179, 0.4);
+            color: #00D7B3;
             cursor: pointer;
             border-radius: 8px;
             font-size: 20px;
             margin-top: auto;
-            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease, border-color 0.3s ease;
             flex-shrink: 0;
         }
 
         .mini-sidebar-toggle:hover {
-            background: rgba(255,255,255,0.25);
-            transform: scale(1.05);
+            background: rgba(0, 215, 179, 0.3);
+            border-color: rgba(0, 215, 179, 0.6);
+            transform: scale(1.08);
         }
 
         .mini-sidebar-toggle:active {
@@ -2303,34 +2370,41 @@ $ytLinks = andison_get_youtube_links();
 
         .mini-sidebar.expanded .mini-sidebar-toggle {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             min-width: auto;
+            margin-bottom: 12px;
         }
 
-        /* Adjust main container for mini sidebar — starts expanded on desktop */
+        /* Adjust main container for mini sidebar — collapsed by default on desktop */
+        section,
+        footer,
         .page-content,
-        .main-content, .category-container {
-            margin-left: 280px;
+        .main-content, 
+        .category-container {
+            margin-left: 0px;
             transition: margin-left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* When collapsed (not expanded), reduce margin */
-        .mini-sidebar:not(.expanded) ~ .page-content,
-        .mini-sidebar:not(.expanded) ~ .main-content,
-        .mini-sidebar:not(.expanded) ~ .category-container {
-            margin-left: 80px;
-        }
-
+        /* When expanded, increase margin */
+        .mini-sidebar.expanded ~ section,
+        .mini-sidebar.expanded ~ footer,
         .mini-sidebar.expanded ~ .page-content,
         .mini-sidebar.expanded ~ .main-content,
         .mini-sidebar.expanded ~ .category-container {
             margin-left: 280px;
         }
 
-        @media (max-width: 768px) {
-            .page-content, section, footer,
-            .main-content, .category-container {
+        @media (max-width: 992px) {
+            section,
+            footer,
+            .page-content, 
+            .main-content, 
+            .category-container {
                 margin-left: 0 !important;
+            }
+
+            .mini-sidebar {
+                display: none !important;
             }
         }
 
@@ -2771,7 +2845,7 @@ $ytLinks = andison_get_youtube_links();
     </aside>
 
     <!-- Mini Sidebar (Icon Bar) -->
-    <div class="mini-sidebar active expanded" id="miniSidebar">
+    <div class="mini-sidebar active" id="miniSidebar">
         <div id="miniSidebarMenuBar" style="background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); border-radius: 0; display: flex; align-items: center; gap: 8px; cursor: pointer;">
             <i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i>
             <span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px; display: none;" class="browse-label">BROWSE CATEGORIES</span>

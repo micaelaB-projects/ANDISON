@@ -5,9 +5,9 @@ require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
 
-$page_title = "Welding Accessories";
-$category_id = "welding-accessories";
-$subcategory_id = "welding-accessories";
+$page_title = "Personal Protective Equipment";
+$category_id = "protection";
+$subcategory_id = "protection";
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";
@@ -27,10 +27,10 @@ if (!$current_category) {
     // Fallback: create a default category object
     $current_category = array(
         'id' => $category_id,
-        'name' => 'Welding Accessories',
-        'description' => 'Discover our selection of welding accessories, head and face protection, and related safety gear.',
+        'name' => 'Personal Protective Equipment',
+        'description' => 'Discover our comprehensive range of personal protective equipment and safety solutions for industrial work environments.',
         'subcategories' => array(
-            array('id' => 'welding-accessories', 'name' => 'Welding Accessories')
+            array('id' => 'protection', 'name' => 'Personal Protective Equipment')
         )
     );
 }
@@ -41,8 +41,8 @@ if (!$current_category) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = $current_category['name'] ?? 'Welding Accessories';
-    $category_description = $current_category['description'] ?? 'Discover our selection of welding accessories, head and face protection, and related safety gear.';
+    $category_name = $current_category['name'] ?? 'Personal Protective Equipment';
+    $category_description = $current_category['description'] ?? 'Discover our comprehensive range of personal protective equipment and safety solutions for industrial work environments.';
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -1004,14 +1004,11 @@ if (!$current_category) {
             display: flex;
         }
 
-        .sidebar-sublist {
-            max-height: 1000px;
-            overflow: hidden;
-            transition: max-height 0.3s ease, opacity 0.3s ease;
-            opacity: 1;
-            list-style: none;
-            margin: 0;
-            padding: 8px 0 8px 44px;
+        .sidebar-sublist { 
+            list-style: none; 
+            margin: 0; 
+            padding: 8px 0 8px 44px; 
+            display: none;
             background: #fafafa;
             margin-left: 12px;
             margin-right: 12px;
@@ -1019,12 +1016,6 @@ if (!$current_category) {
             border-left: 2px solid #e5e7eb;
             padding-top: 8px;
             padding-bottom: 8px;
-        }
-
-        .sidebar-sublist.collapsed {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
         }
         .sidebar-sublist li { 
             padding: 4px 0; 
@@ -1133,6 +1124,13 @@ if (!$current_category) {
         .sub-toggle:focus { outline: none; }
         .sub-toggle .bi { transition: transform 200ms ease; font-size: 16px; }
         .sub-toggle[aria-expanded="true"] .bi { transform: rotate(90deg); }
+        .sidebar-sublist {
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 1;
+        }
+        
         .sidebar-sublist.collapsed { display: none; }
         .sidebar-sublist:not(.collapsed) { display: block; }
 
@@ -1160,30 +1158,57 @@ if (!$current_category) {
         .mini-sidebar {
             position: fixed;
             left: 0;
-            top: calc(14px + 50px + 14px + 12px + 52px);
+            top: calc(14px + 50px + 14px + 52px);
             bottom: 0;
             width: 80px;
-            background: #2B11DB;
-            box-shadow: 2px 0 16px rgba(0,0,0,0.1);
+            background: linear-gradient(180deg, #2B11DB 0%, #1a0a7f 100%);
+            box-shadow: 2px 0 16px rgba(0,0,0,0.2);
             z-index: 65;
-            padding: 20px 12px;
-            overflow: hidden;
+            padding: 24px 12px;
+            overflow-y: auto;
+            overflow-x: hidden;
             transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
             align-items: center;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0,212,179,0.5) transparent;
+        }
+        .mini-sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .mini-sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .mini-sidebar::-webkit-scrollbar-thumb {
+            background: rgba(0,212,179,0.5);
+            border-radius: 3px;
+        }
+        .mini-sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(0,212,179,0.7);
         }
 
         .mini-sidebar.expanded {
             width: 280px;
             overflow-y: auto;
-            padding: 20px 12px;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+            padding: 24px 16px;
+            scrollbar-width: thin;
+            -ms-overflow-style: auto;
+            align-items: stretch;
         }
 
         .mini-sidebar.expanded::-webkit-scrollbar {
-            display: none;
+            width: 6px;
+        }
+        .mini-sidebar.expanded::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .mini-sidebar.expanded::-webkit-scrollbar-thumb {
+            background: rgba(0,212,179,0.5);
+            border-radius: 3px;
+        }
+        .mini-sidebar.expanded::-webkit-scrollbar-thumb:hover {
+            background: rgba(0,212,179,0.7);
         }
 
         .mini-sidebar.active {
@@ -1207,7 +1232,7 @@ if (!$current_category) {
             cursor: pointer;
             position: relative;
             border-radius: 8px;
-            margin-bottom: 8px;
+            margin-bottom: 16px;
             transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), justify-content 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease;
             gap: 12px;
             padding: 0;
@@ -1277,8 +1302,8 @@ if (!$current_category) {
             position: absolute;
             bottom: -1px;
             right: -1px;
-            background: rgba(255,255,255,0.1);
-            color: #ffffff;
+            background: rgba(0,212,179,0.2);
+            color: #00d7b3;
             width: 12px;
             height: 12px;
             border-radius: 50%;
@@ -1291,7 +1316,7 @@ if (!$current_category) {
             z-index: 999;
             cursor: pointer;
             pointer-events: auto;
-            border: 1px solid #ffffff;
+            border: 1px solid #00d7b3;
             box-shadow: none;
         }
 
@@ -1308,7 +1333,7 @@ if (!$current_category) {
         .mini-sidebar.expanded .mini-sidebar-icon .sub-indicator {
             position: static;
             background: transparent;
-            color: #2B11DB;
+            color: #00d7b3;
             width: 12px;
             height: 12px;
             border-radius: 50%;
@@ -1327,19 +1352,20 @@ if (!$current_category) {
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255,255,255,0.15);
-            border: none;
-            color: #fff;
+            background: rgba(0,212,179,0.1);
+            border: 1px solid rgba(0,212,179,0.3);
+            color: #00d7b3;
             cursor: pointer;
             border-radius: 8px;
             font-size: 20px;
             margin-top: auto;
-            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease, color 0.3s ease, border-color 0.3s ease;
             flex-shrink: 0;
         }
 
         .mini-sidebar-toggle:hover {
-            background: rgba(255,255,255,0.25);
+            background: rgba(0,212,179,0.2);
+            border-color: rgba(0,212,179,0.5);
             transform: scale(1.05);
         }
 
@@ -1640,8 +1666,8 @@ if (!$current_category) {
         <ul class="sidebar-list">
             <li class="has-sub">
                 <a href="../arc-welding-machine/arc-welding-machine.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span><span class="sidebar-label">Arc Welding Machines</span></a>
-                <button class="sub-toggle" aria-controls="sub-arc-robots" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
-                <ul id="sub-arc-robots" class="sidebar-sublist collapsed">
+                <button class="sub-toggle" aria-controls="sub-arc-welding" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
+                <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
                     <li><a href="../arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
@@ -1651,8 +1677,8 @@ if (!$current_category) {
             </li>
             <li class="has-sub">
                 <a href="../arc-welding-robots/arc-welding-robot.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label">Arc Welding Robots</span></a>
-                <button class="sub-toggle" aria-controls="sub-arc-robots2" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
-                <ul id="sub-arc-robots2" class="sidebar-sublist collapsed">
+                <button class="sub-toggle" aria-controls="sub-arc-robots" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
+                <ul id="sub-arc-robots" class="sidebar-sublist collapsed">
                     <li><a href="../arc-welding-robots/g3-controller-series.php">G3 Controller Series</a></li>
                     <li><a href="../arc-welding-robots/g4-controller-series.php">G4 Controller Series</a></li>
                     <li><a href="../arc-welding-robots/featured-products-and-solution.php">Featured Products and Solutions</a></li>
@@ -1783,19 +1809,16 @@ if (!$current_category) {
         </div>
     </div>
 
-        <div class="category-header">
-            <h1><?php echo $category_name; ?></h1>
-            <p><?php echo $category_description; ?></p>
-        </div>
+
 
         <div class="category-content">
-            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Welding Accessories'); ?></h2>
+            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Personal Protective Equipment'); ?></h2>
             <?php if (!empty($current_category['description'])): ?>
                 <p class="category-description"><?php echo htmlspecialchars($current_category['description']); ?></p>
             <?php endif; ?>
             <div class="product-grid">
                 <?php 
-                // Dynamically fetch all products from all welding-accessories subcategories
+                // Dynamically fetch all products from all gas-detector subcategories
                 $subcategories = array();
                 if (!empty($current_category['subcategories']) && is_array($current_category['subcategories'])) {
                     foreach ($current_category['subcategories'] as $subcat) {
@@ -1821,7 +1844,7 @@ if (!$current_category) {
                         }
                         $model = htmlspecialchars($product['model'] ?? '');
                         $name = htmlspecialchars($product['name'] ?? '');
-                        $type = htmlspecialchars($product['type'] ?? 'Welding Accessories');
+                        $type = htmlspecialchars($product['type'] ?? 'Protection Equipment');
                         $brand = htmlspecialchars($product['brand'] ?? 'Industrial');
                         $description = htmlspecialchars($product['description'] ?? '');
                         $badge = htmlspecialchars($product['badge'] ?? '');
@@ -1855,9 +1878,9 @@ if (!$current_category) {
                     <div class="product-image">
                         <i class="bi bi-hammer" style="font-size: 60px; color: #ccc;"></i>
                     </div>
-                    <h4>Welding Accessories</h4>
+                    <h4>Personal Protective Equipment</h4>
                     <p class="product-type">No products available</p>
-                    <button class="add-to-inquiry" type="button" data-model="Welding Accessories" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
+                    <button class="add-to-inquiry" type="button" data-model="Personal Protective Equipment" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
                 </div>
                     <?php
                 }
@@ -1886,11 +1909,7 @@ if (!$current_category) {
             function getItems(){
                 try{ return JSON.parse(localStorage.getItem('inquiryItems')||'[]'); }catch(e){ return []; }
             }
-            function setItems(items){ 
-                localStorage.setItem('inquiryItems', JSON.stringify(items));
-                // Dispatch custom event to update badges on all pages
-                window.dispatchEvent(new Event('inquiryItemsUpdated'));
-            }
+            function setItems(items){ localStorage.setItem('inquiryItems', JSON.stringify(items)); }
             function addItem(item){
                 var items = getItems();
                 var found = items.find(function(i){ return i.model === item.model && i.brand === item.brand; });
@@ -2128,50 +2147,6 @@ if (!$current_category) {
                         }
                     }
                 });
-            }
-        }, 500);
-    </script>
-
-    <script>
-        // ============================================
-        // ACTIVE SIDEBAR CATEGORY HIGHLIGHTING
-        // ============================================
-        setTimeout(function(){
-            var currentPath = window.location.pathname.toLowerCase();
-            var sidebar = document.getElementById('sidebar');
-            if(sidebar) {
-                var pathParts = currentPath.split('/').filter(function(p) { return p && p !== 'andison-1'; });
-                var currentCategory = null;
-                
-                var categoryList = [
-                    'arc-welding-machine',
-                    'arc-welding-robots',
-                    'batteries',
-                    'drilling-and-lifting',
-                    'gas-detectors',
-                    'portable-ventilators',
-                    'power-tools',
-                    'protection',
-                    'welding-accessories',
-                    'welding-consumables'
-                ];
-                
-                for(var i = 0; i < pathParts.length; i++) {
-                    if(categoryList.indexOf(pathParts[i]) !== -1) {
-                        currentCategory = pathParts[i];
-                        break;
-                    }
-                }
-
-                if(currentCategory){
-                    var links = sidebar.querySelectorAll('.sidebar-list > li > a');
-                    links.forEach(function(link){
-                        var href = link.getAttribute('href').toLowerCase();
-                        if(href.includes(currentCategory)){
-                            link.classList.add('active');
-                        }
-                    });
-                }
             }
         }, 500);
     </script>
@@ -2483,8 +2458,6 @@ if (!$current_category) {
             }
             updateCartBadge();
             window.addEventListener('storage', updateCartBadge);
-            // Listen for custom event when items are added on same page
-            window.addEventListener('inquiryItemsUpdated', updateCartBadge);
             setInterval(updateCartBadge, 500);
         })();
     </script>

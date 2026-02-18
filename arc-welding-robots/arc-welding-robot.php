@@ -5,8 +5,9 @@ require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
 
-$page_title = "Arc Welding Robots";
-$category_id = "arc-welding-robots";
+$page_title = "Personal Protective Equipment";
+$category_id = "protection";
+$subcategory_id = "protection";
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";
@@ -23,7 +24,15 @@ foreach ($categories as $cat) {
 }
 
 if (!$current_category) {
-    die("Category not found");
+    // Fallback: create a default category object
+    $current_category = array(
+        'id' => $category_id,
+        'name' => 'Personal Protective Equipment',
+        'description' => 'Discover our comprehensive range of personal protective equipment and safety solutions for industrial work environments.',
+        'subcategories' => array(
+            array('id' => 'protection', 'name' => 'Personal Protective Equipment')
+        )
+    );
 }
 ?>
 <!DOCTYPE html>
@@ -32,12 +41,8 @@ if (!$current_category) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = $current_category['name'] ?? 'Arc Welding Robots';
-    $category_description = $current_category['description'] ?? 'Explore our comprehensive range of arc welding robots and robotic welding systems from leading manufacturers.';
-    $phone = "+1(234) 567 8900";
-    $phone2 = "+1(234) 567 8900";
-    $phone3 = "+1(639) 977 803 7398";
-    $email = "info@andison-industrial.com";
+    $category_name = $current_category['name'] ?? 'Personal Protective Equipment';
+    $category_description = $current_category['description'] ?? 'Discover our comprehensive range of personal protective equipment and safety solutions for industrial work environments.';
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -337,25 +342,6 @@ if (!$current_category) {
             padding-left: 160px;
         }
 
-        /* Pin the browse toggle to the left side of the nav area */
-        .browse-toggle {
-            position: absolute;
-            left: 12px;
-            top: 20%;
-            z-index: 80;
-            background: transparent;
-            border: none;
-            color: white;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 14px;
-            cursor: pointer;
-            font-size: 15px;
-            line: height 6px;;
-        }
-
         .nav-list {
             list-style: none;
             display: flex;
@@ -538,11 +524,11 @@ if (!$current_category) {
         }
 
         .category-header {
-            background: linear-gradient(135deg, #f8f9fa 0%, #f0f0f0 100%);
+            background: linear-gradient(135deg, rgba(43, 17, 219, 0.05) 0%, rgba(0, 215, 179, 0.05) 100%);
             border-radius: 12px;
-            padding: 45px 40px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
-            margin-bottom: 35px;
+            padding: 50px 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
             text-align: center;
             display: none;
         }
@@ -612,7 +598,6 @@ if (!$current_category) {
             transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
-            cursor: pointer;
             border: 1px solid #f0f0f0;
             min-height: 100%;
         }
@@ -640,6 +625,11 @@ if (!$current_category) {
             height: 100%;
             object-fit: contain;
             padding: 15px;
+        }
+
+        .product-image i {
+            font-size: 48px;
+            color: #e0e0e0;
         }
 
         .product-badge {
@@ -724,14 +714,18 @@ if (!$current_category) {
             transform: translateY(-2px);
         }
 
+        .add-to-inquiry:active {
+            transform: translateY(0);
+        }
+
+        .add-to-inquiry:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         .add-to-inquiry.already {
             background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
             box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
-        }
-
-        .add-to-inquiry.already:hover {
-            background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%);
-            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.35);
         }
 
         .inquiry-toast {
@@ -788,6 +782,20 @@ if (!$current_category) {
             font-size: 13px;
         }
 
+        @media (max-width: 1400px) {
+            .product-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .product-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+            }
+        }
+
         @media (max-width: 768px) {
             body {
                 padding-top: 120px;
@@ -804,11 +812,17 @@ if (!$current_category) {
             }
 
             .category-header {
-                padding: 25px;
+                padding: 35px 25px;
+                margin-bottom: 30px;
             }
 
             .category-header h1 {
-                font-size: 24px;
+                font-size: 28px;
+                margin-bottom: 12px;
+            }
+
+            .category-header p {
+                font-size: 15px;
             }
 
             .category-content {
@@ -849,7 +863,6 @@ if (!$current_category) {
 
             .nav-inner { justify-content: space-between; padding-left: 20px; }
             .nav-list { position: static; transform: none; left: auto; margin: 8px auto 0; justify-content: center; flex-wrap: wrap; }
-            .browse-toggle { position: static; transform: none; left: auto; top: auto; padding: 6px 10px; }
         }
 
         @media (max-width: 480px) {
@@ -930,7 +943,7 @@ if (!$current_category) {
             letter-spacing: 0.5px;
         }
 
-        .sidebar-list { list-style: none; padding: 28px 20px 0 20px; margin: 0; }
+        .sidebar-list { list-style: none; padding: 0; margin: 0; }
         .sidebar-list li { border-bottom: 1px solid #e5e7eb; }
         .sidebar-list li:last-child { border-bottom: none; }
         .sidebar-list a { 
@@ -958,16 +971,6 @@ if (!$current_category) {
         }
 
         .sidebar-list a.active .sidebar-icon {
-            color: #2B11DB;
-        }
-        .sidebar-list li a.active {
-            background: #f3f4f6;
-            color: #2B11DB;
-            font-weight: 600;
-            border-left: 4px solid #2B11DB;
-            padding-left: 12px;
-        }
-        .sidebar-list li a.active .sidebar-icon {
             color: #2B11DB;
         }
         .sidebar-icon { 
@@ -1005,6 +1008,7 @@ if (!$current_category) {
             list-style: none; 
             margin: 0; 
             padding: 8px 0 8px 44px; 
+            display: none;
             background: #fafafa;
             margin-left: 12px;
             margin-right: 12px;
@@ -1012,16 +1016,6 @@ if (!$current_category) {
             border-left: 2px solid #e5e7eb;
             padding-top: 8px;
             padding-bottom: 8px;
-            max-height: 1000px;
-            overflow: hidden;
-            transition: max-height 0.3s ease, opacity 0.3s ease;
-            opacity: 1;
-        }
-        
-        .sidebar-sublist.collapsed {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
         }
         .sidebar-sublist li { 
             padding: 4px 0; 
@@ -1068,17 +1062,8 @@ if (!$current_category) {
         .sidebar-nested-sublist { 
             list-style: none; 
             margin: 10px 0 10px -12px; 
-            padding: 0;
-            max-height: 500px;
-            overflow: hidden;
-            transition: max-height 0.3s ease, opacity 0.3s ease;
-            opacity: 1;
-        }
-        
-        .sidebar-nested-sublist.collapsed {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
+            padding: 0; 
+            display: none;
         }
         .sidebar-nested-sublist li { 
             padding: 0;
@@ -1113,6 +1098,9 @@ if (!$current_category) {
             padding-left: 32px;
             transform: translateX(4px);
         }
+
+        .sidebar-nested-sublist.collapsed { display: none; }
+        .sidebar-nested-sublist:not(.collapsed) { display: block; }
         .sidebar-list li.has-sub { position: relative; }
         .has-sub > a { padding-right: 40px; }
         .sub-toggle {
@@ -1136,6 +1124,13 @@ if (!$current_category) {
         .sub-toggle:focus { outline: none; }
         .sub-toggle .bi { transition: transform 200ms ease; font-size: 16px; }
         .sub-toggle[aria-expanded="true"] .bi { transform: rotate(90deg); }
+        .sidebar-sublist {
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 1;
+        }
+        
         .sidebar-sublist.collapsed { display: none; }
         .sidebar-sublist:not(.collapsed) { display: block; }
 
@@ -1163,30 +1158,57 @@ if (!$current_category) {
         .mini-sidebar {
             position: fixed;
             left: 0;
-            top: calc(14px + 50px + 14px + 12px + 52px);
+            top: calc(14px + 50px + 14px + 52px);
             bottom: 0;
             width: 80px;
-            background: #2B11DB;
-            box-shadow: 2px 0 16px rgba(0,0,0,0.1);
+            background: linear-gradient(180deg, #2B11DB 0%, #1a0a7f 100%);
+            box-shadow: 2px 0 16px rgba(0,0,0,0.2);
             z-index: 65;
-            padding: 20px 12px;
-            overflow: hidden;
+            padding: 24px 12px;
+            overflow-y: auto;
+            overflow-x: hidden;
             transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
             align-items: center;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0,212,179,0.5) transparent;
+        }
+        .mini-sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .mini-sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .mini-sidebar::-webkit-scrollbar-thumb {
+            background: rgba(0,212,179,0.5);
+            border-radius: 3px;
+        }
+        .mini-sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(0,212,179,0.7);
         }
 
         .mini-sidebar.expanded {
             width: 280px;
             overflow-y: auto;
-            padding: 20px 12px;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+            padding: 24px 16px;
+            scrollbar-width: thin;
+            -ms-overflow-style: auto;
+            align-items: stretch;
         }
 
         .mini-sidebar.expanded::-webkit-scrollbar {
-            display: none;
+            width: 6px;
+        }
+        .mini-sidebar.expanded::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .mini-sidebar.expanded::-webkit-scrollbar-thumb {
+            background: rgba(0,212,179,0.5);
+            border-radius: 3px;
+        }
+        .mini-sidebar.expanded::-webkit-scrollbar-thumb:hover {
+            background: rgba(0,212,179,0.7);
         }
 
         .mini-sidebar.active {
@@ -1210,7 +1232,7 @@ if (!$current_category) {
             cursor: pointer;
             position: relative;
             border-radius: 8px;
-            margin-bottom: 8px;
+            margin-bottom: 16px;
             transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), justify-content 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease;
             gap: 12px;
             padding: 0;
@@ -1280,8 +1302,8 @@ if (!$current_category) {
             position: absolute;
             bottom: -1px;
             right: -1px;
-            background: rgba(255,255,255,0.1);
-            color: #ffffff;
+            background: rgba(0,212,179,0.2);
+            color: #00d7b3;
             width: 12px;
             height: 12px;
             border-radius: 50%;
@@ -1294,7 +1316,7 @@ if (!$current_category) {
             z-index: 999;
             cursor: pointer;
             pointer-events: auto;
-            border: 1px solid #ffffff;
+            border: 1px solid #00d7b3;
             box-shadow: none;
         }
 
@@ -1311,7 +1333,7 @@ if (!$current_category) {
         .mini-sidebar.expanded .mini-sidebar-icon .sub-indicator {
             position: static;
             background: transparent;
-            color: #2B11DB;
+            color: #00d7b3;
             width: 12px;
             height: 12px;
             border-radius: 50%;
@@ -1330,19 +1352,20 @@ if (!$current_category) {
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255,255,255,0.15);
-            border: none;
-            color: #fff;
+            background: rgba(0,212,179,0.1);
+            border: 1px solid rgba(0,212,179,0.3);
+            color: #00d7b3;
             cursor: pointer;
             border-radius: 8px;
             font-size: 20px;
             margin-top: auto;
-            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease, color 0.3s ease, border-color 0.3s ease;
             flex-shrink: 0;
         }
 
         .mini-sidebar-toggle:hover {
-            background: rgba(255,255,255,0.25);
+            background: rgba(0,212,179,0.2);
+            border-color: rgba(0,212,179,0.5);
             transform: scale(1.05);
         }
 
@@ -1388,12 +1411,6 @@ if (!$current_category) {
         @media (max-width: 1024px) {
             .mini-sidebar {
                 display: none !important;
-            }
-            .browse-toggle {
-                display: inline-flex !important;
-            }
-            .browse-toggle .browse-text {
-                display: inline !important;
             }
             .main-content, .category-container {
                 margin-left: 0 !important;
@@ -1656,7 +1673,6 @@ if (!$current_category) {
                     <li><a href="../arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/plasma-cutting-machine.php">Plasma Cutting Machine</a></li>
-                    <li><a href="../arc-welding-machine/accessories-and-consumables.php">Accessories & Consumables</a></li>
                 </ul>
             </li>
             <li class="has-sub">
@@ -1719,6 +1735,7 @@ if (!$current_category) {
                     <li><a href="../protection/eye-protection.php">Eye Protection</a></li>
                     <li class="has-nested-sub">
                         <a href="../protection/hand-protection.php">Hand Protection</a>
+                        <button class="nested-toggle" aria-controls="nested-hand-protection" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>
                         <ul id="nested-hand-protection" class="sidebar-nested-sublist collapsed">
                             <li><a href="../protection/working-gloves.php">Working Gloves</a></li>
                             <li><a href="../protection/chemical-liquid-protection-gloves.php">Chemical and Liquid Protection Gloves</a></li>
@@ -1730,6 +1747,7 @@ if (!$current_category) {
                     <li><a href="../protection/welding-head-and-face-protection.php">Welding Head and Face Protection</a></li>
                     <li class="has-nested-sub">
                         <a href="../protection/body-protection.php">Body Protection</a>
+                        <button class="nested-toggle" aria-controls="nested-body-protection" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>
                         <ul id="nested-body-protection" class="sidebar-nested-sublist collapsed">
                             <li><a href="../protection/chemical-flame-retardant.php">Chemical and Flame Retardant</a></li>
                             <li><a href="../protection/liquid-spray-splash.php">Liquid Spray and Splash</a></li>
@@ -1791,19 +1809,16 @@ if (!$current_category) {
         </div>
     </div>
 
-        <div class="category-header">
-            <h1><?php echo $category_name; ?></h1>
-            <p><?php echo $category_description; ?></p>
-        </div>
+
 
         <div class="category-content">
-            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Arc Welding Robots'); ?></h2>
+            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Personal Protective Equipment'); ?></h2>
             <?php if (!empty($current_category['description'])): ?>
                 <p class="category-description"><?php echo htmlspecialchars($current_category['description']); ?></p>
             <?php endif; ?>
             <div class="product-grid">
                 <?php 
-                // Dynamically fetch all products from all arc-welding-robots subcategories
+                // Dynamically fetch all products from all gas-detector subcategories
                 $subcategories = array();
                 if (!empty($current_category['subcategories']) && is_array($current_category['subcategories'])) {
                     foreach ($current_category['subcategories'] as $subcat) {
@@ -1813,7 +1828,7 @@ if (!$current_category) {
                 
                 $all_products = array();
                 foreach ($subcategories as $subcat) {
-                    $products = andison_get_products_for_subcategory('arc-welding-robots', $subcat);
+                    $products = andison_get_products_for_subcategory($category_id, $subcat);
                     if ($products) {
                         $all_products = array_merge($all_products, $products);
                     }
@@ -1824,13 +1839,12 @@ if (!$current_category) {
                     foreach ($all_products as $product) {
                         $image_src = htmlspecialchars($product['image'] ?? '');
                         // Adjust image path for subdirectory context
-                        if ($image_src && strpos($image_src, '../') !== 0 && strpos($image_src, 'assets/') === 0) {
-                            // For product pages in subdirectories, add ../ prefix to assets
+                        if ($image_src && strpos($image_src, 'andison/') === 0) {
                             $image_src = '../' . $image_src;
                         }
                         $model = htmlspecialchars($product['model'] ?? '');
                         $name = htmlspecialchars($product['name'] ?? '');
-                        $type = htmlspecialchars($product['type'] ?? 'Premium Arc Welding Equipment');
+                        $type = htmlspecialchars($product['type'] ?? 'Protection Equipment');
                         $brand = htmlspecialchars($product['brand'] ?? 'Industrial');
                         $description = htmlspecialchars($product['description'] ?? '');
                         $badge = htmlspecialchars($product['badge'] ?? '');
@@ -1838,9 +1852,9 @@ if (!$current_category) {
                 <div class="product-card">
                     <div class="product-image">
                         <?php if (!empty($image_src)): ?>
-                            <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=\"bi bi-lightning-fill\" style=\"font-size: 60px; color: #ccc;\"></i>
+                            <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=&quot;bi bi-hammer&quot; style=&quot;font-size: 60px; color: #ccc;&quot;></i>'">
                         <?php else: ?>
-                            <i class="bi bi-lightning-fill" style="font-size: 60px; color: #ccc;\"></i>
+                            <i class="bi bi-hammer" style="font-size: 60px; color: #ccc;"></i>
                         <?php endif; ?>
                         <?php if (!empty($badge)): ?>
                             <div class="product-badge"><?php echo $badge; ?></div>
@@ -1862,11 +1876,11 @@ if (!$current_category) {
                     ?>
                 <div class="product-card">
                     <div class="product-image">
-                        <i class="bi bi-lightning-fill" style="font-size: 60px; color: #ccc;"></i>
+                        <i class="bi bi-hammer" style="font-size: 60px; color: #ccc;"></i>
                     </div>
-                    <h4>Arc Welding Robots</h4>
+                    <h4>Personal Protective Equipment</h4>
                     <p class="product-type">No products available</p>
-                    <button class="add-to-inquiry" type="button" data-model="Arc Welding Robot" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
+                    <button class="add-to-inquiry" type="button" data-model="Personal Protective Equipment" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
                 </div>
                     <?php
                 }
@@ -1992,48 +2006,147 @@ if (!$current_category) {
             });
         })();
     </script>
+    
+    <script>
+        // ACTIVE SIDEBAR CATEGORY HIGHLIGHTING
+        // ============================================
+        (function(){
+            var currentPath = window.location.pathname.toLowerCase();
+            var sidebar = document.getElementById('sidebar');
+            if(!sidebar) return;
 
+            // Extract category - split path and find category directory
+            var pathParts = currentPath.split('/').filter(function(p) { return p && p !== 'andison-1'; });
+            var currentCategory = null;
+            
+            var categoryList = [
+                'arc-welding-machine',
+                'arc-welding-robots',
+                'batteries',
+                'drilling-and-lifting',
+                'gas-detectors',
+                'portable-ventilators',
+                'power-tools',
+                'protection',
+                'welding-accessories',
+                'welding-consumables'
+            ];
+            
+            // Find matching category in path
+            for(var i = 0; i < pathParts.length; i++) {
+                if(categoryList.indexOf(pathParts[i]) !== -1) {
+                    currentCategory = pathParts[i];
+                    break;
+                }
+            }
+
+            if(currentCategory){
+                var links = sidebar.querySelectorAll('.sidebar-list > li > a');
+                links.forEach(function(link){
+                    var href = link.getAttribute('href').toLowerCase();
+                    if(href.includes(currentCategory)){
+                        link.classList.add('active');
+                    }
+                });
+            }
+        })();
+    </script>
 
     <script>
-        // ============================================
         // ACTIVE SIDEBAR CATEGORY HIGHLIGHTING
+        // ============================================
+        (function(){
+            var currentPath = window.location.pathname.toLowerCase();
+            var sidebar = document.getElementById('sidebar');
+            if(!sidebar) return;
+
+            // Extract category - split path and find category directory
+            var pathParts = currentPath.split('/').filter(function(p) { return p && p !== 'andison-1'; });
+            var currentCategory = null;
+            
+            var categoryList = [
+                'arc-welding-machine',
+                'arc-welding-robots',
+                'batteries',
+                'drilling-and-lifting',
+                'gas-detectors',
+                'portable-ventilators',
+                'power-tools',
+                'protection',
+                'welding-accessories',
+                'welding-consumables'
+            ];
+            
+            // Find matching category in path
+            for(var i = 0; i < pathParts.length; i++) {
+                if(categoryList.indexOf(pathParts[i]) !== -1) {
+                    currentCategory = pathParts[i];
+                    break;
+                }
+            }
+
+            if(currentCategory){
+                var links = sidebar.querySelectorAll('.sidebar-list > li > a');
+                links.forEach(function(link){
+                    var href = link.getAttribute('href').toLowerCase();
+                    if(href.includes(currentCategory)){
+                        link.classList.add('active');
+                    }
+                });
+            }
+        })();
+    </script>
+
+    <script>
+        // ACTIVE SIDEBAR CATEGORY HIGHLIGHTING WITH DELAY
         // ============================================
         setTimeout(function(){
             var currentPath = window.location.pathname.toLowerCase();
+            console.log('Delayed run - Pathname:', currentPath);
+            
             var sidebar = document.getElementById('sidebar');
-            if(sidebar) {
-                var pathParts = currentPath.split('/').filter(function(p) { return p && p !== 'andison-1'; });
-                var currentCategory = null;
-                
-                var categoryList = [
-                    'arc-welding-machine',
-                    'arc-welding-robots',
-                    'batteries',
-                    'drilling-and-lifting',
-                    'gas-detectors',
-                    'portable-ventilators',
-                    'power-tools',
-                    'protection',
-                    'welding-accessories',
-                    'welding-consumables'
-                ];
-                
-                for(var i = 0; i < pathParts.length; i++) {
-                    if(categoryList.indexOf(pathParts[i]) !== -1) {
-                        currentCategory = pathParts[i];
-                        break;
-                    }
-                }
+            if(!sidebar) {
+                console.log('Sidebar NOT found even after delay');
+                return;
+            }
 
-                if(currentCategory){
-                    var links = sidebar.querySelectorAll('.sidebar-list > li > a');
-                    links.forEach(function(link){
-                        var href = link.getAttribute('href').toLowerCase();
-                        if(href.includes(currentCategory)){
-                            link.classList.add('active');
-                        }
-                    });
+            var pathParts = currentPath.split('/').filter(function(p) { return p && p !== 'andison-1'; });
+            var currentCategory = null;
+            
+            var categoryList = [
+                'arc-welding-machine',
+                'arc-welding-robots',
+                'batteries',
+                'drilling-and-lifting',
+                'gas-detectors',
+                'portable-ventilators',
+                'power-tools',
+                'protection',
+                'welding-accessories',
+                'welding-consumables'
+            ];
+            
+            for(var i = 0; i < pathParts.length; i++) {
+                if(categoryList.indexOf(pathParts[i]) !== -1) {
+                    currentCategory = pathParts[i];
+                    break;
                 }
+            }
+
+            if(currentCategory){
+                var links = sidebar.querySelectorAll('.sidebar-list > li > a');
+                console.log('Highlighting for category:', currentCategory, 'Links found:', links.length);
+                
+                links.forEach(function(link){
+                    var href = link.getAttribute('href');
+                    if(href){
+                        var hrefLower = href.toLowerCase();
+                        if(hrefLower.includes(currentCategory)){
+                            link.classList.add('active');
+                            console.log('Added active to:', href);
+                        }
+                    }
+                });
             }
         }, 500);
     </script>

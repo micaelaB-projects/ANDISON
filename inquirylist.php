@@ -423,7 +423,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         .search-bar input {
             width: 100%;
-            height: 40px;
+            height: 46px;
             padding: 10px 16px 10px 40px;
             border: 2px solid rgba(255,255,255,0.3);
             border-radius: 6px;
@@ -515,7 +515,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             min-height: 52px;
             gap: 18px;
             justify-content: flex-start;
-            padding-left: 160px;
+            padding-left: 100px;
         }
 
         .browse-toggle {

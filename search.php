@@ -58,7 +58,7 @@ $matches = array_slice($matches, 0, 80);
 
         .search-bar { flex: 1 1 auto; display:flex; justify-content:center; max-width: 720px; margin:0 auto; }
         .search-bar .search-field { width:100%; display:flex; align-items:center; gap:8px; position:relative; margin:0; }
-        .search-bar input { width:100%; height:40px; padding:10px 16px 10px 40px; border:2px solid rgba(255,255,255,0.3); border-radius:6px; font-size:15px; background: rgba(255,255,255,0.95); color:#333; transition: all 0.3s ease; }
+        .search-bar input { width:100%; height:46px; padding:10px 16px 10px 40px; border:2px solid rgba(255,255,255,0.3); border-radius:6px; font-size:15px; background: rgba(255,255,255,0.95); color:#333; transition: all 0.3s ease; }
         .search-bar input:focus { outline: none; background: #fff; border-color: rgba(255,255,255,0.8); box-shadow: 0 0 0 3px rgba(43, 17, 219, 0.1); }
         .search-bar input::placeholder { color:#999; }
         .search-bar .search-field::before { content:'🔍'; position:absolute; left:12px; font-size:16px; pointer-events:none; color:#666; }

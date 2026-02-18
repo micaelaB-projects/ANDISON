@@ -5,8 +5,9 @@ require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
 
-$page_title = "G4 Controller Series";
-$subcategory_id = "g4-controller-series";
+$page_title = "Personal Protective Equipment";
+$category_id = "protection";
+$subcategory_id = "protection";
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";
@@ -14,25 +15,24 @@ $email = "info@andison-industrial.com";
 
 $categories = andison_get_categories();
 $current_category = null;
-$parent_category = null;
 
 foreach ($categories as $cat) {
-    if ($cat['id'] === 'arc-welding-robots') {
-        $parent_category = $cat;
-        if (!empty($cat['subcategories']) && is_array($cat['subcategories'])) {
-            foreach ($cat['subcategories'] as $subcat) {
-                if ($subcat['id'] === $subcategory_id) {
-                    $current_category = $subcat;
-                    break;
-                }
-            }
-        }
+    if ($cat['id'] === $category_id) {
+        $current_category = $cat;
         break;
     }
 }
 
 if (!$current_category) {
-    die("Subcategory not found");
+    // Fallback: create a default category object
+    $current_category = array(
+        'id' => $category_id,
+        'name' => 'Personal Protective Equipment',
+        'description' => 'Discover our comprehensive range of personal protective equipment and safety solutions for industrial work environments.',
+        'subcategories' => array(
+            array('id' => 'protection', 'name' => 'Personal Protective Equipment')
+        )
+    );
 }
 ?>
 <!DOCTYPE html>
@@ -41,12 +41,8 @@ if (!$current_category) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = $current_category['name'] ?? 'G4 Controller Series';
-    $category_description = $current_category['description'] ?? 'Explore our G4 Controller Series welding robots for advanced robotic welding applications.';
-    $phone = "+1(234) 567 8900";
-    $phone2 = "+1(234) 567 8900";
-    $phone3 = "+1(639) 977 803 7398";
-    $email = "info@andison-industrial.com";
+    $category_name = $current_category['name'] ?? 'Personal Protective Equipment';
+    $category_description = $current_category['description'] ?? 'Discover our comprehensive range of personal protective equipment and safety solutions for industrial work environments.';
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -286,6 +282,7 @@ if (!$current_category) {
             border-radius: 6px;
             transition: all 0.3s ease;
             background: linear-gradient(135deg, #00E5C8  0%, #347aec 100%);
+            position: relative;
         }
 
         .inquiry-btn:hover,
@@ -294,6 +291,28 @@ if (!$current_category) {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 255, 209, 0.4);
             color: #333;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 50%;
+            min-width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(255, 102, 102, 0.4);
+        }
+
+        .cart-badge.hidden {
+            display: none;
         }
 
         .right-actions {
@@ -321,25 +340,6 @@ if (!$current_category) {
             gap: 18px;
             justify-content: flex-start;
             padding-left: 160px;
-        }
-
-        /* Pin the browse toggle to the left side of the nav area */
-        .browse-toggle {
-            position: absolute;
-            left: 12px;
-            top: 20%;
-            z-index: 80;
-            background: transparent;
-            border: none;
-            color: white;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 14px;
-            cursor: pointer;
-            font-size: 15px;
-            line: height 6px;;
         }
 
         .nav-list {
@@ -524,11 +524,11 @@ if (!$current_category) {
         }
 
         .category-header {
-            background: linear-gradient(135deg, #f8f9fa 0%, #f0f0f0 100%);
+            background: linear-gradient(135deg, rgba(43, 17, 219, 0.05) 0%, rgba(0, 215, 179, 0.05) 100%);
             border-radius: 12px;
-            padding: 45px 40px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
-            margin-bottom: 35px;
+            padding: 50px 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
             text-align: center;
             display: none;
         }
@@ -598,7 +598,6 @@ if (!$current_category) {
             transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
-            cursor: pointer;
             border: 1px solid #f0f0f0;
             min-height: 100%;
         }
@@ -626,6 +625,11 @@ if (!$current_category) {
             height: 100%;
             object-fit: contain;
             padding: 15px;
+        }
+
+        .product-image i {
+            font-size: 48px;
+            color: #e0e0e0;
         }
 
         .product-badge {
@@ -710,14 +714,18 @@ if (!$current_category) {
             transform: translateY(-2px);
         }
 
+        .add-to-inquiry:active {
+            transform: translateY(0);
+        }
+
+        .add-to-inquiry:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         .add-to-inquiry.already {
             background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
             box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
-        }
-
-        .add-to-inquiry.already:hover {
-            background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%);
-            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.35);
         }
 
         .inquiry-toast {
@@ -774,6 +782,20 @@ if (!$current_category) {
             font-size: 13px;
         }
 
+        @media (max-width: 1400px) {
+            .product-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .product-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+            }
+        }
+
         @media (max-width: 768px) {
             body {
                 padding-top: 120px;
@@ -790,11 +812,17 @@ if (!$current_category) {
             }
 
             .category-header {
-                padding: 25px;
+                padding: 35px 25px;
+                margin-bottom: 30px;
             }
 
             .category-header h1 {
-                font-size: 24px;
+                font-size: 28px;
+                margin-bottom: 12px;
+            }
+
+            .category-header p {
+                font-size: 15px;
             }
 
             .category-content {
@@ -835,7 +863,6 @@ if (!$current_category) {
 
             .nav-inner { justify-content: space-between; padding-left: 20px; }
             .nav-list { position: static; transform: none; left: auto; margin: 8px auto 0; justify-content: center; flex-wrap: wrap; }
-            .browse-toggle { position: static; transform: none; left: auto; top: auto; padding: 6px 10px; }
         }
 
         @media (max-width: 480px) {
@@ -935,14 +962,15 @@ if (!$current_category) {
             color: #2B11DB;
             padding-left: 16px;
         }
-        .sidebar-list li a.active {
-            background: #f3f4f6;
+
+        .sidebar-list a.active {
+            background: #f0e6ff;
             color: #2B11DB;
-            font-weight: 600;
-            border-left: 4px solid #2B11DB;
-            padding-left: 12px;
+            border-left: 5px solid #2B11DB;
+            padding-left: 11px;
         }
-        .sidebar-list li a.active .sidebar-icon {
+
+        .sidebar-list a.active .sidebar-icon {
             color: #2B11DB;
         }
         .sidebar-icon { 
@@ -1096,6 +1124,13 @@ if (!$current_category) {
         .sub-toggle:focus { outline: none; }
         .sub-toggle .bi { transition: transform 200ms ease; font-size: 16px; }
         .sub-toggle[aria-expanded="true"] .bi { transform: rotate(90deg); }
+        .sidebar-sublist {
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 1;
+        }
+        
         .sidebar-sublist.collapsed { display: none; }
         .sidebar-sublist:not(.collapsed) { display: block; }
 
@@ -1118,34 +1153,62 @@ if (!$current_category) {
         .sidebar-close:hover {
             color: #374151;
         }
+
         /* Mini Sidebar (always visible icon bar) */
         .mini-sidebar {
             position: fixed;
             left: 0;
-            top: calc(14px + 50px + 14px + 12px + 52px);
+            top: calc(14px + 50px + 14px + 52px);
             bottom: 0;
             width: 80px;
-            background: #2B11DB;
-            box-shadow: 2px 0 16px rgba(0,0,0,0.1);
+            background: linear-gradient(180deg, #2B11DB 0%, #1a0a7f 100%);
+            box-shadow: 2px 0 16px rgba(0,0,0,0.2);
             z-index: 65;
-            padding: 20px 12px;
-            overflow: hidden;
+            padding: 24px 12px;
+            overflow-y: auto;
+            overflow-x: hidden;
             transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
             align-items: center;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0,212,179,0.5) transparent;
+        }
+        .mini-sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .mini-sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .mini-sidebar::-webkit-scrollbar-thumb {
+            background: rgba(0,212,179,0.5);
+            border-radius: 3px;
+        }
+        .mini-sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(0,212,179,0.7);
         }
 
         .mini-sidebar.expanded {
             width: 280px;
             overflow-y: auto;
-            padding: 20px 12px;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+            padding: 24px 16px;
+            scrollbar-width: thin;
+            -ms-overflow-style: auto;
+            align-items: stretch;
         }
 
         .mini-sidebar.expanded::-webkit-scrollbar {
-            display: none;
+            width: 6px;
+        }
+        .mini-sidebar.expanded::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .mini-sidebar.expanded::-webkit-scrollbar-thumb {
+            background: rgba(0,212,179,0.5);
+            border-radius: 3px;
+        }
+        .mini-sidebar.expanded::-webkit-scrollbar-thumb:hover {
+            background: rgba(0,212,179,0.7);
         }
 
         .mini-sidebar.active {
@@ -1169,7 +1232,7 @@ if (!$current_category) {
             cursor: pointer;
             position: relative;
             border-radius: 8px;
-            margin-bottom: 8px;
+            margin-bottom: 16px;
             transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), justify-content 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease;
             gap: 12px;
             padding: 0;
@@ -1239,8 +1302,8 @@ if (!$current_category) {
             position: absolute;
             bottom: -1px;
             right: -1px;
-            background: rgba(255,255,255,0.1);
-            color: #ffffff;
+            background: rgba(0,212,179,0.2);
+            color: #00d7b3;
             width: 12px;
             height: 12px;
             border-radius: 50%;
@@ -1253,7 +1316,7 @@ if (!$current_category) {
             z-index: 999;
             cursor: pointer;
             pointer-events: auto;
-            border: 1px solid #ffffff;
+            border: 1px solid #00d7b3;
             box-shadow: none;
         }
 
@@ -1270,7 +1333,7 @@ if (!$current_category) {
         .mini-sidebar.expanded .mini-sidebar-icon .sub-indicator {
             position: static;
             background: transparent;
-            color: #2B11DB;
+            color: #00d7b3;
             width: 12px;
             height: 12px;
             border-radius: 50%;
@@ -1289,19 +1352,20 @@ if (!$current_category) {
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255,255,255,0.15);
-            border: none;
-            color: #fff;
+            background: rgba(0,212,179,0.1);
+            border: 1px solid rgba(0,212,179,0.3);
+            color: #00d7b3;
             cursor: pointer;
             border-radius: 8px;
             font-size: 20px;
             margin-top: auto;
-            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease, color 0.3s ease, border-color 0.3s ease;
             flex-shrink: 0;
         }
 
         .mini-sidebar-toggle:hover {
-            background: rgba(255,255,255,0.25);
+            background: rgba(0,212,179,0.2);
+            border-color: rgba(0,212,179,0.5);
             transform: scale(1.05);
         }
 
@@ -1348,16 +1412,11 @@ if (!$current_category) {
             .mini-sidebar {
                 display: none !important;
             }
-            .browse-toggle {
-                display: inline-flex !important;
-            }
-            .browse-toggle .browse-text {
-                display: inline !important;
-            }
             .main-content, .category-container {
                 margin-left: 0 !important;
             }
         }
+
         /* Mini popover styles for subcategories */
         .mini-popover {
             position: fixed;
@@ -1476,7 +1535,7 @@ if (!$current_category) {
 
             <div class="right-actions">
                 <a href="javascript:history.back()" class="inquiry-btn" style="margin-right: 12px;">BACK</a>
-                <a href="../inquirylist.php" class="inquiry-btn">INQUIRY LIST</a>
+                <a href="../inquirylist.php" class="inquiry-btn">INQUIRY LIST <span class="cart-badge hidden" id="cartBadge">0</span></a>
                 <div class="header-contact">
                     <div class="contact-dropdown" tabindex="0" aria-haspopup="true">
                         <a href="#contact" class="contact-link" aria-label="Contact Us">Contact Us ▾</a>
@@ -1597,14 +1656,17 @@ if (!$current_category) {
 
     <!-- Sidebar Navigation -->
     <aside id="sidebar" class="sidebar-overlay" aria-hidden="true">
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 12px; border-bottom: 1px solid #e5e7eb;">
-            <h3 style="margin: 0; font-size: 18px; color: #1f2937;">Categories</h3>
-            <button class="sidebar-close" id="closeSidebar"><i class="bi bi-x-lg"></i></button>
+        <div style="padding: 14px 20px; background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 8px; color: white; flex: 1;">
+                <i class="bi bi-list" style="font-size: 20px; font-weight: 700;"></i>
+                <span style="font-size: 14px; font-weight: 700; letter-spacing: 0.5px;">BROWSE</span>
+            </div>
+            <button id="closeSidebar" style="background: transparent; border: none; color: white; cursor: pointer; font-size: 24px; padding: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; line-height: 1;">×</button>
         </div>
         <ul class="sidebar-list">
             <li class="has-sub">
                 <a href="../arc-welding-machine/arc-welding-machine.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span><span class="sidebar-label">Arc Welding Machines</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-welding" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <button class="sub-toggle" aria-controls="sub-arc-welding" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
                     <li><a href="../arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
                     <li><a href="../arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
@@ -1615,7 +1677,7 @@ if (!$current_category) {
             </li>
             <li class="has-sub">
                 <a href="../arc-welding-robots/arc-welding-robot.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label">Arc Welding Robots</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-robots" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <button class="sub-toggle" aria-controls="sub-arc-robots" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-arc-robots" class="sidebar-sublist collapsed">
                     <li><a href="../arc-welding-robots/g3-controller-series.php">G3 Controller Series</a></li>
                     <li><a href="../arc-welding-robots/g4-controller-series.php">G4 Controller Series</a></li>
@@ -1625,7 +1687,7 @@ if (!$current_category) {
             </li>
             <li class="has-sub">
                 <a href="../batteries/batteries.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-fill"></i></span><span class="sidebar-label">Batteries</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-batteries" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <button class="sub-toggle" aria-controls="sub-batteries" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-batteries" class="sidebar-sublist collapsed">
                     <li><a href="../batteries/maintenance-free.php">Maintenance Free</a></li>
                     <li><a href="../batteries/low-maintenance.php">Low Maintenance</a></li>
@@ -1634,7 +1696,7 @@ if (!$current_category) {
             </li>
             <li class="has-sub">
                 <a href="../drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling and Lifting</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-drilling-lifting" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <button class="sub-toggle" aria-controls="sub-drilling-lifting" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
                     <li><a href="../drilling-and-lifting/lifting.php">Lifting</a></li>
                     <li><a href="../drilling-and-lifting/magnetic-drill.php">Magnetic Drill</a></li>
@@ -1643,7 +1705,7 @@ if (!$current_category) {
             </li>
             <li class="has-sub">
                 <a href="../gas-detectors/gas-detectors.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></span><span class="sidebar-label">Gas Detectors</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-gas-detectors" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <button class="sub-toggle" aria-controls="sub-gas-detectors" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-gas-detectors" class="sidebar-sublist collapsed">
                     <li><a href="../gas-detectors/single-gas-detector.php">Single Gas Detector</a></li>
                     <li><a href="../gas-detectors/multi-gas-detector.php">Multi Gas Detector</a></li>
@@ -1652,12 +1714,12 @@ if (!$current_category) {
                     <li><a href="../gas-detectors/calibration-gas-regulators.php">Calibration Gas and Regulators</a></li>
                 </ul>
             </li>
-            <li>
+            <li class="">
                 <a href="../portable-ventilators/portable-ventilators.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-fan"></i></span><span class="sidebar-label">Portable Ventilators</span></a>
             </li>
             <li class="has-sub">
                 <a href="../power-tools/power-tools.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-tools"></i></span><span class="sidebar-label">Power Tools</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-power-tool" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <button class="sub-toggle" aria-controls="sub-power-tool" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-power-tool" class="sidebar-sublist collapsed">
                     <li><a href="../power-tools/grinder.php">Grinder</a></li>
                     <li><a href="../power-tools/saw.php">Saw</a></li>
@@ -1668,12 +1730,12 @@ if (!$current_category) {
             </li>
             <li class="has-sub">
                 <a href="../protection/protection.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-shield-check"></i></span><span class="sidebar-label">Personal Protective Equipment</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-protection-safety" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <button class="sub-toggle" aria-controls="sub-protection-safety" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-protection-safety" class="sidebar-sublist collapsed">
                     <li><a href="../protection/eye-protection.php">Eye Protection</a></li>
                     <li class="has-nested-sub">
                         <a href="../protection/hand-protection.php">Hand Protection</a>
-                        <button class="nested-toggle" aria-expanded="false" aria-controls="nested-hand-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                        <button class="nested-toggle" aria-controls="nested-hand-protection" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>
                         <ul id="nested-hand-protection" class="sidebar-nested-sublist collapsed">
                             <li><a href="../protection/working-gloves.php">Working Gloves</a></li>
                             <li><a href="../protection/chemical-liquid-protection-gloves.php">Chemical and Liquid Protection Gloves</a></li>
@@ -1682,9 +1744,10 @@ if (!$current_category) {
                         </ul>
                     </li>
                     <li><a href="../protection/hearing-respiratory-protection.php">Hearing &amp; Respiratory Protection</a></li>
+                    <li><a href="../protection/welding-head-and-face-protection.php">Welding Head and Face Protection</a></li>
                     <li class="has-nested-sub">
                         <a href="../protection/body-protection.php">Body Protection</a>
-                        <button class="nested-toggle" aria-expanded="false" aria-controls="nested-body-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                        <button class="nested-toggle" aria-controls="nested-body-protection" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>
                         <ul id="nested-body-protection" class="sidebar-nested-sublist collapsed">
                             <li><a href="../protection/chemical-flame-retardant.php">Chemical and Flame Retardant</a></li>
                             <li><a href="../protection/liquid-spray-splash.php">Liquid Spray and Splash</a></li>
@@ -1695,7 +1758,7 @@ if (!$current_category) {
             </li>
             <li class="has-sub">
                 <a href="../welding-accessories/welding-accessories.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-gear"></i></span><span class="sidebar-label">Welding Accessories</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-accessories" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <button class="sub-toggle" aria-controls="sub-welding-accessories" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-welding-accessories" class="sidebar-sublist collapsed">
                     <li><a href="../welding-accessories/welding-electrode-oven.php">Welding Electrode Oven</a></li>
                     <li><a href="../welding-accessories/non-destructive-crack-detection.php">Non-Destructive Crack Detection</a></li>
@@ -1708,7 +1771,7 @@ if (!$current_category) {
             </li>
             <li class="has-sub">
                 <a href="../welding-consumables/welding-consumables.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-box"></i></span><span class="sidebar-label">Welding Consumables</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-consumables" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <button class="sub-toggle" aria-controls="sub-welding-consumables" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-welding-consumables" class="sidebar-sublist collapsed">
                     <li><a href="../welding-consumables/kobelco.php">Kobelco</a></li>
                     <li><a href="../welding-consumables/metrode.php">Metrode</a></li>
@@ -1746,34 +1809,42 @@ if (!$current_category) {
         </div>
     </div>
 
-    <div class="category-container">
-        <div class="category-header">
-            <h1><?php echo $category_name; ?></h1>
-            <p><?php echo $category_description; ?></p>
-        </div>
+
 
         <div class="category-content">
-            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'G4 Controller Series'); ?></h2>
+            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Personal Protective Equipment'); ?></h2>
             <?php if (!empty($current_category['description'])): ?>
                 <p class="category-description"><?php echo htmlspecialchars($current_category['description']); ?></p>
             <?php endif; ?>
             <div class="product-grid">
                 <?php 
-                // Fetch products for this specific subcategory
-                $products = andison_get_products_for_subcategory('arc-welding-robots', 'g4-controller-series');
+                // Dynamically fetch all products from all gas-detector subcategories
+                $subcategories = array();
+                if (!empty($current_category['subcategories']) && is_array($current_category['subcategories'])) {
+                    foreach ($current_category['subcategories'] as $subcat) {
+                        $subcategories[] = $subcat['id'];
+                    }
+                }
+                
+                $all_products = array();
+                foreach ($subcategories as $subcat) {
+                    $products = andison_get_products_for_subcategory($category_id, $subcat);
+                    if ($products) {
+                        $all_products = array_merge($all_products, $products);
+                    }
+                }
                 
                 // Display products
-                if (!empty($products)) {
-                    foreach ($products as $product) {
+                if (!empty($all_products)) {
+                    foreach ($all_products as $product) {
                         $image_src = htmlspecialchars($product['image'] ?? '');
                         // Adjust image path for subdirectory context
-                        if ($image_src && strpos($image_src, '../') !== 0 && strpos($image_src, 'assets/') === 0) {
-                            // For product pages in subdirectories, add ../ prefix to assets
+                        if ($image_src && strpos($image_src, 'andison/') === 0) {
                             $image_src = '../' . $image_src;
                         }
                         $model = htmlspecialchars($product['model'] ?? '');
                         $name = htmlspecialchars($product['name'] ?? '');
-                        $type = htmlspecialchars($product['type'] ?? 'G4 Controller Series');
+                        $type = htmlspecialchars($product['type'] ?? 'Protection Equipment');
                         $brand = htmlspecialchars($product['brand'] ?? 'Industrial');
                         $description = htmlspecialchars($product['description'] ?? '');
                         $badge = htmlspecialchars($product['badge'] ?? '');
@@ -1781,9 +1852,9 @@ if (!$current_category) {
                 <div class="product-card">
                     <div class="product-image">
                         <?php if (!empty($image_src)): ?>
-                            <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=\"bi bi-robot\" style=\"font-size: 60px; color: #ccc;\"></i>'">
+                            <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=&quot;bi bi-hammer&quot; style=&quot;font-size: 60px; color: #ccc;&quot;></i>'">
                         <?php else: ?>
-                            <i class="bi bi-robot" style="font-size: 60px; color: #ccc;"></i>
+                            <i class="bi bi-hammer" style="font-size: 60px; color: #ccc;"></i>
                         <?php endif; ?>
                         <?php if (!empty($badge)): ?>
                             <div class="product-badge"><?php echo $badge; ?></div>
@@ -1805,11 +1876,11 @@ if (!$current_category) {
                     ?>
                 <div class="product-card">
                     <div class="product-image">
-                        <i class="bi bi-robot" style="font-size: 60px; color: #ccc;"></i>
+                        <i class="bi bi-hammer" style="font-size: 60px; color: #ccc;"></i>
                     </div>
-                    <h4><?php echo $category_name; ?></h4>
+                    <h4>Personal Protective Equipment</h4>
                     <p class="product-type">No products available</p>
-                    <button class="add-to-inquiry" type="button" data-model="<?php echo $category_name; ?>" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
+                    <button class="add-to-inquiry" type="button" data-model="Personal Protective Equipment" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
                 </div>
                     <?php
                 }
@@ -1935,15 +2006,110 @@ if (!$current_category) {
             });
         })();
     </script>
-
-
+    
     <script>
-        // ============================================
         // ACTIVE SIDEBAR CATEGORY HIGHLIGHTING
         // ============================================
-        var currentPath = window.location.pathname.toLowerCase();
-        var sidebar = document.getElementById('sidebar');
-        if(sidebar) {
+        (function(){
+            var currentPath = window.location.pathname.toLowerCase();
+            var sidebar = document.getElementById('sidebar');
+            if(!sidebar) return;
+
+            // Extract category - split path and find category directory
+            var pathParts = currentPath.split('/').filter(function(p) { return p && p !== 'andison-1'; });
+            var currentCategory = null;
+            
+            var categoryList = [
+                'arc-welding-machine',
+                'arc-welding-robots',
+                'batteries',
+                'drilling-and-lifting',
+                'gas-detectors',
+                'portable-ventilators',
+                'power-tools',
+                'protection',
+                'welding-accessories',
+                'welding-consumables'
+            ];
+            
+            // Find matching category in path
+            for(var i = 0; i < pathParts.length; i++) {
+                if(categoryList.indexOf(pathParts[i]) !== -1) {
+                    currentCategory = pathParts[i];
+                    break;
+                }
+            }
+
+            if(currentCategory){
+                var links = sidebar.querySelectorAll('.sidebar-list > li > a');
+                links.forEach(function(link){
+                    var href = link.getAttribute('href').toLowerCase();
+                    if(href.includes(currentCategory)){
+                        link.classList.add('active');
+                    }
+                });
+            }
+        })();
+    </script>
+
+    <script>
+        // ACTIVE SIDEBAR CATEGORY HIGHLIGHTING
+        // ============================================
+        (function(){
+            var currentPath = window.location.pathname.toLowerCase();
+            var sidebar = document.getElementById('sidebar');
+            if(!sidebar) return;
+
+            // Extract category - split path and find category directory
+            var pathParts = currentPath.split('/').filter(function(p) { return p && p !== 'andison-1'; });
+            var currentCategory = null;
+            
+            var categoryList = [
+                'arc-welding-machine',
+                'arc-welding-robots',
+                'batteries',
+                'drilling-and-lifting',
+                'gas-detectors',
+                'portable-ventilators',
+                'power-tools',
+                'protection',
+                'welding-accessories',
+                'welding-consumables'
+            ];
+            
+            // Find matching category in path
+            for(var i = 0; i < pathParts.length; i++) {
+                if(categoryList.indexOf(pathParts[i]) !== -1) {
+                    currentCategory = pathParts[i];
+                    break;
+                }
+            }
+
+            if(currentCategory){
+                var links = sidebar.querySelectorAll('.sidebar-list > li > a');
+                links.forEach(function(link){
+                    var href = link.getAttribute('href').toLowerCase();
+                    if(href.includes(currentCategory)){
+                        link.classList.add('active');
+                    }
+                });
+            }
+        })();
+    </script>
+
+    <script>
+        // ACTIVE SIDEBAR CATEGORY HIGHLIGHTING WITH DELAY
+        // ============================================
+        setTimeout(function(){
+            var currentPath = window.location.pathname.toLowerCase();
+            console.log('Delayed run - Pathname:', currentPath);
+            
+            var sidebar = document.getElementById('sidebar');
+            if(!sidebar) {
+                console.log('Sidebar NOT found even after delay');
+                return;
+            }
+
             var pathParts = currentPath.split('/').filter(function(p) { return p && p !== 'andison-1'; });
             var currentCategory = null;
             
@@ -1969,14 +2135,20 @@ if (!$current_category) {
 
             if(currentCategory){
                 var links = sidebar.querySelectorAll('.sidebar-list > li > a');
+                console.log('Highlighting for category:', currentCategory, 'Links found:', links.length);
+                
                 links.forEach(function(link){
-                    var href = link.getAttribute('href').toLowerCase();
-                    if(href.includes(currentCategory)){
-                        link.classList.add('active');
+                    var href = link.getAttribute('href');
+                    if(href){
+                        var hrefLower = href.toLowerCase();
+                        if(hrefLower.includes(currentCategory)){
+                            link.classList.add('active');
+                            console.log('Added active to:', href);
+                        }
                     }
                 });
             }
-        }
+        }, 500);
     </script>
 
     <script>
@@ -2214,6 +2386,7 @@ if (!$current_category) {
         var arrowHandler = function(e) {
             e.stopPropagation();
             e.preventDefault();
+
             var arrow = (e.target && e.target.closest('.sub-indicator')) || e.currentTarget;
             var icon = arrow ? arrow.closest('.mini-sidebar-icon') : null;
             if (!icon) return;
@@ -2268,9 +2441,25 @@ if (!$current_category) {
                 }
             });
         }
+
+        // Cart badge update function
+        (function(){
+            function updateCartBadge() {
+                var badge = document.getElementById('cartBadge');
+                if(!badge) return;
+                var items = JSON.parse(localStorage.getItem('inquiryItems') || '[]');
+                var count = items.length;
+                if(count > 0) {
+                    badge.textContent = count;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            }
+            updateCartBadge();
+            window.addEventListener('storage', updateCartBadge);
+            setInterval(updateCartBadge, 500);
+        })();
     </script>
 </body>
 </html>
-
-
-

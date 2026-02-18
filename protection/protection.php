@@ -1158,30 +1158,57 @@ if (!$current_category) {
         .mini-sidebar {
             position: fixed;
             left: 0;
-            top: calc(14px + 50px + 14px + 12px + 52px);
+            top: calc(14px + 50px + 14px + 52px);
             bottom: 0;
             width: 80px;
-            background: #2B11DB;
-            box-shadow: 2px 0 16px rgba(0,0,0,0.1);
+            background: linear-gradient(180deg, #2B11DB 0%, #1a0a7f 100%);
+            box-shadow: 2px 0 16px rgba(0,0,0,0.2);
             z-index: 65;
-            padding: 20px 12px;
-            overflow: hidden;
+            padding: 24px 12px;
+            overflow-y: auto;
+            overflow-x: hidden;
             transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
             align-items: center;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0,212,179,0.5) transparent;
+        }
+        .mini-sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .mini-sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .mini-sidebar::-webkit-scrollbar-thumb {
+            background: rgba(0,212,179,0.5);
+            border-radius: 3px;
+        }
+        .mini-sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(0,212,179,0.7);
         }
 
         .mini-sidebar.expanded {
             width: 280px;
             overflow-y: auto;
-            padding: 20px 12px;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+            padding: 24px 16px;
+            scrollbar-width: thin;
+            -ms-overflow-style: auto;
+            align-items: stretch;
         }
 
         .mini-sidebar.expanded::-webkit-scrollbar {
-            display: none;
+            width: 6px;
+        }
+        .mini-sidebar.expanded::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .mini-sidebar.expanded::-webkit-scrollbar-thumb {
+            background: rgba(0,212,179,0.5);
+            border-radius: 3px;
+        }
+        .mini-sidebar.expanded::-webkit-scrollbar-thumb:hover {
+            background: rgba(0,212,179,0.7);
         }
 
         .mini-sidebar.active {
@@ -1205,7 +1232,7 @@ if (!$current_category) {
             cursor: pointer;
             position: relative;
             border-radius: 8px;
-            margin-bottom: 8px;
+            margin-bottom: 16px;
             transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), justify-content 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease;
             gap: 12px;
             padding: 0;
@@ -1275,8 +1302,8 @@ if (!$current_category) {
             position: absolute;
             bottom: -1px;
             right: -1px;
-            background: rgba(255,255,255,0.1);
-            color: #ffffff;
+            background: rgba(0,212,179,0.2);
+            color: #00d7b3;
             width: 12px;
             height: 12px;
             border-radius: 50%;
@@ -1289,7 +1316,7 @@ if (!$current_category) {
             z-index: 999;
             cursor: pointer;
             pointer-events: auto;
-            border: 1px solid #ffffff;
+            border: 1px solid #00d7b3;
             box-shadow: none;
         }
 
@@ -1306,7 +1333,7 @@ if (!$current_category) {
         .mini-sidebar.expanded .mini-sidebar-icon .sub-indicator {
             position: static;
             background: transparent;
-            color: #2B11DB;
+            color: #00d7b3;
             width: 12px;
             height: 12px;
             border-radius: 50%;
@@ -1325,19 +1352,20 @@ if (!$current_category) {
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255,255,255,0.15);
-            border: none;
-            color: #fff;
+            background: rgba(0,212,179,0.1);
+            border: 1px solid rgba(0,212,179,0.3);
+            color: #00d7b3;
             cursor: pointer;
             border-radius: 8px;
             font-size: 20px;
             margin-top: auto;
-            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease, color 0.3s ease, border-color 0.3s ease;
             flex-shrink: 0;
         }
 
         .mini-sidebar-toggle:hover {
-            background: rgba(255,255,255,0.25);
+            background: rgba(0,212,179,0.2);
+            border-color: rgba(0,212,179,0.5);
             transform: scale(1.05);
         }
 
