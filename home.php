@@ -94,6 +94,7 @@ $ytLinks = andison_get_youtube_links();
             color: rgba(255,255,255,0.95);
             text-decoration: none;
             font-weight: 600;
+            font-size: 15px;
             padding-bottom: 8px;
             white-space: nowrap;
             position: relative;
@@ -162,6 +163,21 @@ $ytLinks = andison_get_youtube_links();
             transform: translateX(-50%) translateY(0) scale(1);
         }
 
+        /* mobile: click-to-open; .open class used instead of hover */
+        @media (max-width: 768px) {
+            .contact-dropdown:hover:not(.closed) .contact-popover,
+            .contact-dropdown:focus-within:not(.closed) .contact-popover {
+                opacity: 0;
+                visibility: hidden;
+                transform: translateX(-50%) translateY(-6px) scale(0.98);
+            }
+            .contact-dropdown.open .contact-popover {
+                opacity: 1;
+                visibility: visible;
+                transform: translateX(-50%) translateY(0) scale(1);
+            }
+        }
+
         .contact-close {
             position: absolute;
             top: 8px;
@@ -192,12 +208,21 @@ $ytLinks = andison_get_youtube_links();
         .contact-list a { color: #111; text-decoration:none; font-weight:600; }
         .contact-list a:hover { text-decoration:underline; }
 
+        /* compact on mobile */
+        @media (max-width: 768px) {
+            .contact-popover { width: 240px; padding: 8px 10px; }
+            .contact-list { padding: 2px 0; }
+            .contact-list li { gap: 8px; padding: 6px 4px; }
+            .contact-list .icon { font-size: 14px; width: 20px; }
+            .contact-list a { font-size: 12px; }
+        }
+
         .search-bar {
             flex: 1 1 auto;
             display: flex;
-            justify-content: center;
-            max-width: 600px;
-            margin: 0 auto;
+            justify-content: flex-start;
+            max-width: 500px;
+            margin: 0;
         }
 
         .search-bar .search-field {
@@ -210,11 +235,11 @@ $ytLinks = andison_get_youtube_links();
 
         .search-bar input {
             width: 100%;
-            height: 40px;
-            padding: 10px 16px 10px 40px;
+            height: 46px;
+            padding: 10px 20px 10px 46px;
             border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 6px;
-            font-size: 15px;
+            border-radius: 8px;
+            font-size: 16px;
             background: rgba(255,255,255,0.95);
             color: #333;
         }
@@ -240,35 +265,47 @@ $ytLinks = andison_get_youtube_links();
         .cart-icon-wrapper {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
             cursor: pointer;
             text-decoration: none;
-            color: #333;
-            font-weight: 600;
-            padding: 10px 18px;
-            border-radius: 6px;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
             transition: all 0.3s ease;
-            background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%);
+            background: linear-gradient(135deg, #00BCD4, #00897B);
+            position: relative;
+            font-size: 14px;
+            font-weight: 700;
+            white-space: nowrap;
+            box-shadow: 0 4px 15px rgba(0,188,212,0.4);
+            gap: 8px;
         }
 
         .inquiry-btn:hover,
         .cart-icon-wrapper:hover {
-            background: linear-gradient(135deg, #00FFD1 0%, #00FFD1 100%);
+            background: linear-gradient(135deg, #00ACC1, #00796B);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 255, 209, 0.4);
-            color: #333;
+            box-shadow: 0 6px 20px rgba(0,188,212,0.5);
+            color: white;
         }
 
+        .inquiry-btn .btn-icon { display: inline; }
+        .inquiry-btn .btn-text { display: inline; }
+
         .cart-badge {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
+            background: #c70d0d;
             color: white;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
-            padding: 2px 6px;
             border-radius: 50%;
-            min-width: 20px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(255, 102, 102, 0.4);
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(199,13,13,0.5);
+            position: static;
+            margin-left: 2px;
         }
 
         .cart-badge.hidden {
@@ -280,6 +317,7 @@ $ytLinks = andison_get_youtube_links();
             display: flex;
             align-items: center;
             gap: 12px;
+            flex: 0 0 auto;
         }
 
         /* Navigation */
@@ -287,19 +325,20 @@ $ytLinks = andison_get_youtube_links();
             position: relative;
             background: rgba(0, 215, 179, 0.85);
             backdrop-filter: blur(10px);
-            overflow: visible;
+            overflow: hidden;
         }
 
         .nav-inner {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 8px 0 120px; /* space for the left Browse toggle */
             display: flex;
+            flex-wrap: nowrap;
             align-items: center;
             min-height: 52px;
-            gap: 18px;
-            justify-content: flex-start;
-            padding-left: 160px; /* space for the left Browse toggle */
+            gap: 0;
+            justify-content: center;
+            overflow: hidden;
         }
 
         /* Pin the browse toggle to the left side of the nav area */
@@ -325,9 +364,11 @@ $ytLinks = andison_get_youtube_links();
         .nav-list {
             list-style: none;
             display: flex;
-            gap: 28px;
+            flex-wrap: nowrap;
+            gap: 0;
             margin: 0;
             padding: 0;
+            width: 100%;
         }
 
         .nav-list li { position: relative; }
@@ -335,11 +376,12 @@ $ytLinks = andison_get_youtube_links();
         .nav-list a {
             color: white;
             text-decoration: none;
-            font-size: 15px;
-            padding: 12px 6px;
+            font-size: 13px;
+            padding: 12px 10px;
             display: block;
             transition: color 0.2s;
             position: relative;
+            white-space: nowrap;
         }
 
         .nav-list a:hover { color: rgba(255,255,255,0.8); }
@@ -347,8 +389,10 @@ $ytLinks = andison_get_youtube_links();
         /* Glowing underline + dark active background for top-level nav links */
         .nav-list > li > a {
             position: relative;
-            padding: 10px 14px;
+            padding: 10px 8px;
             color: white;
+            font-size: 13px;
+            white-space: nowrap;
             transition: color 180ms ease, background 180ms ease;
         }
 
@@ -1071,17 +1115,119 @@ $ytLinks = andison_get_youtube_links();
 
         /* Responsive */
         @media (max-width: 768px) {
+            /* Single row: logo | search | inquiry | contact */
             .header-top {
-                flex-direction: column;
-                gap: 15px;
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                align-items: center;
+                gap: 8px;
+                padding: 0 10px;
+                margin-bottom: 8px;
+            }
+
+            .logo {
+                flex: 0 0 auto;
+            }
+
+            .logo-box img {
+                height: 36px;
+            }
+
+            .search-bar {
+                position: static;
+                transform: none;
+                flex: 1 1 0;
+                min-width: 0;
+                width: auto;
+                max-width: none;
+                margin: 0;
+            }
+
+            .search-bar .search-field {
+                width: 100%;
+            }
+
+            .search-bar input {
+                width: 100%;
+                height: 36px;
+                font-size: 12px;
+                padding: 6px 8px 6px 30px;
+            }
+
+            .search-bar .search-field::before {
+                font-size: 13px;
+                left: 8px;
+            }
+
+            .right-actions {
+                flex: 0 0 auto;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: 6px;
+                margin-left: 0;
+            }
+
+            .inquiry-btn,
+            .cart-icon-wrapper {
+                background: transparent !important;
+                box-shadow: none !important;
+                padding: 6px !important;
+                font-size: 28px !important;
+                position: relative;
+            }
+
+            .inquiry-btn .btn-text { display: none; }
+            .inquiry-btn .btn-icon { font-size: 28px; }
+
+            .cart-badge {
+                background: #2196F3 !important;
+                box-shadow: 0 2px 8px rgba(33,150,243,0.5) !important;
+                width: 26px !important;
+                height: 26px !important;
+                font-size: 13px !important;
+                position: absolute !important;
+                top: -4px !important;
+                right: -8px !important;
+                margin-left: 0 !important;
+            }
+
+            .cart-badge.hidden { display: inline-flex !important; }
+
+            .header-contact {
+                flex: 0 0 auto;
             }
 
             nav ul {
-                flex-wrap: wrap;
+                flex-wrap: nowrap;
+                gap: 0;
             }
 
             nav li {
-                margin-right: 20px;
+                margin-right: 0;
+            }
+
+            .nav-inner {
+                padding-left: 50px;
+                padding-right: 6px;
+                gap: 2px;
+                min-height: 40px;
+            }
+
+            .nav-list {
+                gap: 2px;
+            }
+
+            .nav-list a {
+                font-size: 11px;
+                padding: 8px 6px;
+            }
+
+            .browse-toggle {
+                font-size: 12px;
+                padding: 6px 8px;
+                gap: 4px;
             }
 
             .hero h1 {
@@ -1128,6 +1274,32 @@ $ytLinks = andison_get_youtube_links();
             .footer-links {
                 flex-direction: column;
                 gap: 10px;
+            }
+
+            section {
+                padding: 40px 16px;
+                text-align: center;
+            }
+
+            .container {
+                padding: 0 12px;
+                margin: 0 auto;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .highlights-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            section h2 {
+                font-size: 28px;
+            }
+
+            .section-description {
+                font-size: 14px;
+                margin-bottom: 28px;
             }
 
             .sidebar-overlay {
@@ -1933,7 +2105,7 @@ $ytLinks = andison_get_youtube_links();
         .mini-sidebar {
             position: fixed;
             left: 0;
-            top: calc(14px + 50px + 14px + 12px + 52px);
+            top: calc(14px + 50px + 14px);
             bottom: 0;
             width: 80px;
             background: #2B11DB;
@@ -2135,15 +2307,31 @@ $ytLinks = andison_get_youtube_links();
             min-width: auto;
         }
 
-        /* Adjust main container for mini sidebar */
+        /* Adjust main container for mini sidebar — starts expanded on desktop */
+        .page-content,
         .main-content, .category-container {
-            margin-left: 80px;
+            margin-left: 280px;
             transition: margin-left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* When collapsed (not expanded), reduce margin */
+        .mini-sidebar:not(.expanded) ~ .page-content,
+        .mini-sidebar:not(.expanded) ~ .main-content,
+        .mini-sidebar:not(.expanded) ~ .category-container {
+            margin-left: 80px;
+        }
+
+        .mini-sidebar.expanded ~ .page-content,
         .mini-sidebar.expanded ~ .main-content,
         .mini-sidebar.expanded ~ .category-container {
             margin-left: 280px;
+        }
+
+        @media (max-width: 768px) {
+            .page-content, section, footer,
+            .main-content, .category-container {
+                margin-left: 0 !important;
+            }
         }
 
         /* When sidebar is expanded (collapsed mini) */
@@ -2155,9 +2343,18 @@ $ytLinks = andison_get_youtube_links();
             display: none !important;
         }
 
-        @media (max-width: 1024px) {
+        @media (max-width: 768px) {
             .mini-sidebar {
-                display: none !important;
+                top: calc(14px + 36px + 14px + 40px);
+                width: 56px !important;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease, width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .mini-sidebar.mobile-visible {
+                transform: translateX(0);
+            }
+            .mini-sidebar.expanded {
+                width: 240px !important;
             }
             .browse-toggle {
                 display: inline-flex !important;
@@ -2168,7 +2365,36 @@ $ytLinks = andison_get_youtube_links();
             .main-content, .category-container {
                 margin-left: 0 !important;
             }
+            /* Floating toggle button to show/hide mini sidebar on mobile */
+            .mobile-sidebar-fab {
+                display: flex !important;
+            }
         }
+
+        /* FAB button to toggle mini sidebar on mobile */
+        .mobile-sidebar-fab {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%) translateX(0);
+            z-index: 70;
+            width: 16px;
+            height: 36px;
+            background: #2B11DB;
+            color: #fff;
+            border: none;
+            border-radius: 0 6px 6px 0;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.25);
+            transition: transform 0.3s ease, background 0.2s;
+        }
+        .mobile-sidebar-fab:hover { background: #1a0aa8; }
+        .mobile-sidebar-fab.open { transform: translateY(-50%) translateX(56px); }
+        .mobile-sidebar-fab.open.wide { transform: translateY(-50%) translateX(240px); }
 
         /* Mini popover styles for subcategories */
         .mini-popover {
@@ -2299,7 +2525,7 @@ $ytLinks = andison_get_youtube_links();
             </div>
 
             <div class="right-actions">
-                <a href="inquirylist.php" class="inquiry-btn">INQUIRY LIST <span class="cart-badge hidden" id="cartBadge">0</span></a>
+                <a href="inquirylist.php" class="inquiry-btn"><i class="bi bi-card-checklist btn-icon"></i> <span class="btn-text">INQUIRY LIST</span> <span class="cart-badge hidden" id="cartBadge">0</span></a>
                 <div class="header-contact">
                         <div class="contact-dropdown" tabindex="0" aria-haspopup="true">
                             <a href="#contact" class="contact-link" aria-label="Contact Us">Contact Us ▾</a>
@@ -2545,7 +2771,7 @@ $ytLinks = andison_get_youtube_links();
     </aside>
 
     <!-- Mini Sidebar (Icon Bar) -->
-    <div class="mini-sidebar active" id="miniSidebar">
+    <div class="mini-sidebar active expanded" id="miniSidebar">
         <div id="miniSidebarMenuBar" style="background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); border-radius: 0; display: flex; align-items: center; gap: 8px; cursor: pointer;">
             <i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i>
             <span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px; display: none;" class="browse-label">BROWSE CATEGORIES</span>
@@ -2563,6 +2789,9 @@ $ytLinks = andison_get_youtube_links();
         <button class="mini-sidebar-toggle" id="expandSidebar" title="Toggle Sidebar"><i class="bi bi-chevron-right"></i></button>
     </div>
 
+    <!-- Mobile FAB to show/hide mini sidebar -->
+    <button class="mobile-sidebar-fab" id="mobileSidebarFab"><i class="bi bi-chevron-right" id="mobileFabIcon"></i></button>
+
     <!-- Floating popover for mini sidebar subcategories -->
     <div id="miniPopover" class="mini-popover" aria-hidden="true">
         <div class="mini-popover-header">
@@ -2574,6 +2803,7 @@ $ytLinks = andison_get_youtube_links();
     </div>
 
     <!-- Hero Section -->
+    <div class="page-content">
     <section class="hero" id="heroSlider">
         <?php for ($i = 0; $i < 4; $i++): ?>
             <?php 
@@ -2730,6 +2960,7 @@ $ytLinks = andison_get_youtube_links();
             </div>
         </div>
     </footer>
+    </div><!-- /.page-content -->
     <script>
         (function(){
             var browseToggle = document.getElementById('browseToggle');
@@ -2846,13 +3077,21 @@ $ytLinks = andison_get_youtube_links();
                 dd.addEventListener('focusin', function(){ pop.setAttribute('aria-hidden','false'); dd.setAttribute('aria-expanded','true'); });
                 dd.addEventListener('focusout', function(){ setTimeout(function(){ if(!dd.contains(document.activeElement)){ pop.setAttribute('aria-hidden','true'); dd.setAttribute('aria-expanded','false'); } }, 10); });
                 dd.addEventListener('mouseenter', function(){ 
-                    // ignore hover if user explicitly closed; mouseleave will clear
                     if(dd.classList.contains('closed')) return;
                     pop.setAttribute('aria-hidden','false'); dd.setAttribute('aria-expanded','true'); 
                 });
                 dd.addEventListener('mouseleave', function(){ pop.setAttribute('aria-hidden','true'); dd.setAttribute('aria-expanded','false'); dd.classList.remove('closed'); });
 
-                // close button behavior
+                // Mobile: click to toggle
+                dd.addEventListener('click', function(e){
+                    if(window.innerWidth > 768) return;
+                    e.stopPropagation();
+                    var isOpen = dd.classList.contains('open');
+                    document.querySelectorAll('.contact-dropdown').forEach(function(d){ d.classList.remove('open'); });
+                    if(!isOpen) dd.classList.add('open');
+                });
+
+                // Close button
                 var closeBtn = dd.querySelector('.contact-close');
                 if(closeBtn){
                     closeBtn.addEventListener('click', function(e){
@@ -2861,10 +3100,16 @@ $ytLinks = andison_get_youtube_links();
                         pop.setAttribute('aria-hidden','true');
                         dd.setAttribute('aria-expanded','false');
                         dd.classList.add('closed');
-                        // blur everything in the dropdown to remove :focus-within
+                        dd.classList.remove('open');
                         document.activeElement.blur();
                     });
                 }
+            });
+
+            // Mobile: click outside closes all
+            document.addEventListener('click', function(){
+                if(window.innerWidth > 768) return;
+                document.querySelectorAll('.contact-dropdown').forEach(function(d){ d.classList.remove('open'); });
             });
         })();
     </script>
@@ -3413,6 +3658,12 @@ $ytLinks = andison_get_youtube_links();
             if(browseToggle) browseToggle.classList.toggle('expanded');
         });
 
+        // On mobile, collapse by default
+        if(window.innerWidth <= 768) {
+            miniSidebar.classList.remove('expanded');
+            if(browseToggle) browseToggle.classList.remove('expanded');
+        }
+
         // Menu bar click handler
         var menuBar = document.getElementById('miniSidebarMenuBar');
         if(menuBar) {
@@ -3511,6 +3762,40 @@ $ytLinks = andison_get_youtube_links();
             
             // Update frequently to catch changes
             setInterval(updateCartBadge, 500);
+        })();
+    </script>
+
+    <script>
+        // Mobile FAB toggle for mini sidebar
+        (function() {
+            var fab = document.getElementById('mobileSidebarFab');
+            var sidebar = document.getElementById('miniSidebar');
+            var fabIcon = document.getElementById('mobileFabIcon');
+            if (!fab || !sidebar) return;
+
+            function isMobile() { return window.innerWidth <= 768; }
+
+            function syncFab() {
+                if (!isMobile()) { fab.classList.remove('open', 'wide'); return; }
+                var isOpen = sidebar.classList.contains('mobile-visible');
+                var isExpanded = sidebar.classList.contains('expanded');
+                fab.classList.toggle('open', isOpen);
+                fab.classList.toggle('wide', isOpen && isExpanded);
+                fabIcon.className = isOpen ? 'bi bi-chevron-left' : 'bi bi-chevron-right';
+            }
+
+            fab.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (!isMobile()) return;
+                sidebar.classList.toggle('mobile-visible');
+                syncFab();
+            });
+
+            // Keep FAB in sync when sidebar expand/collapse changes its width
+            var observer = new MutationObserver(function() { syncFab(); });
+            observer.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
+
+            window.addEventListener('resize', syncFab);
         })();
     </script>
 </body>
