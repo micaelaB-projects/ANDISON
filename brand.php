@@ -1593,8 +1593,9 @@
             .sidebar {
                 position: static;
             }
-            .nav-inner { justify-content: space-between; padding-left: 20px; }
-            .nav-list { position: static; transform: none; left: auto; margin: 8px auto 0; justify-content: center; flex-wrap: wrap; }
+            .nav-inner { padding-left: 50px; padding-right: 6px; min-height: 40px; overflow-x: auto; overflow-y: visible; justify-content: flex-start; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+            .nav-inner::-webkit-scrollbar { display: none; }
+            .nav-list { position: static; transform: none; left: auto; flex-wrap: nowrap; flex-shrink: 0; gap: 0; }
             .browse-toggle { position: static; transform: none; left: auto; top: auto; padding: 6px 10px; }
         }
 

@@ -341,6 +341,32 @@
             transition: color 180ms ease, background 180ms ease;
         }
 
+        .nav-list > li > a::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 2px;
+            transform: translateX(-50%) scaleX(0);
+            transform-origin: center;
+            width: 44px;
+            height: 5px;
+            border-radius: 6px;
+            background: linear-gradient(90deg, #00ffd1 0%, #00d4aa 50%, #2B11DB 100%);
+            box-shadow: 0 2px 10px rgba(0,212,170,0.35);
+            pointer-events: none;
+            transition: transform 180ms ease, width 180ms ease;
+        }
+
+        .nav-list > li > a:hover {
+            background: rgba(0,0,0,0.10);
+            border-radius: 6px;
+        }
+
+        .nav-list > li > a:hover::after {
+            transform: translateX(-50%) scaleX(1);
+            width: 44px;
+        }
+
         .nav-list > li > a.active {
             background: rgba(0,0,0,0.14);
             color: #fff;
@@ -350,21 +376,8 @@
         }
 
         .nav-list > li > a.active::after {
-            content: '';
-            position: absolute;
-            left: 50%;
-            bottom: -8px;
-            transform: translateX(-50%);
+            transform: translateX(-50%) scaleX(1);
             width: 44px;
-            height: 6px;
-            border-radius: 6px;
-            background: linear-gradient(90deg, #00ffd1 0%, #00d4aa 50%, #2B11DB 100%);
-            box-shadow: 0 8px 28px rgba(0,212,170,0.18), 0 0 40px rgba(43,17,219,0.08);
-            pointer-events: none;
-        }
-
-        .nav-list > li > a:hover::after {
-            width: 56px;
         }
 
         .nav-dropdown {
@@ -1013,8 +1026,9 @@
         }
 
         @media (max-width: 768px) {
-            .nav-inner { justify-content: space-between; padding-left: 20px; }
-            .nav-list { position: static; transform: none; left: auto; margin: 8px auto 0; justify-content: center; flex-wrap: wrap; gap: 15px; }
+            .nav-inner { padding-left: 50px; padding-right: 6px; min-height: 40px; overflow-x: auto; overflow-y: visible; justify-content: flex-start; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+            .nav-inner::-webkit-scrollbar { display: none; }
+            .nav-list { position: static; transform: none; left: auto; flex-wrap: nowrap; flex-shrink: 0; gap: 0; }
             .browse-toggle { position: static; transform: none; left: auto; top: auto; padding: 6px 10px; }
             
             .page-subtitle {

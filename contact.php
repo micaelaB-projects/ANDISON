@@ -894,8 +894,18 @@
             }
 
             .nav-inner {
-                padding-left: 20px;
+                padding-left: 50px;
+                padding-right: 6px;
+                min-height: 40px;
+                overflow-x: auto;
+                overflow-y: visible;
+                justify-content: flex-start;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
             }
+            .nav-inner::-webkit-scrollbar { display: none; }
+            .nav-list { position: static; transform: none; left: auto; flex-wrap: nowrap; flex-shrink: 0; gap: 0; }
+            .nav-list > li > a { white-space: nowrap; font-size: 12px; padding: 8px 10px; }
         }
         /* Shared animations and utilities (standardized) */
         @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }

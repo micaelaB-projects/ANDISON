@@ -220,9 +220,9 @@ $ytLinks = andison_get_youtube_links();
         .search-bar {
             flex: 1 1 auto;
             display: flex;
-            justify-content: flex-start;
-            max-width: 500px;
-            margin: 0;
+            justify-content: center;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         .search-bar .search-field {
@@ -236,10 +236,10 @@ $ytLinks = andison_get_youtube_links();
         .search-bar input {
             width: 100%;
             height: 46px;
-            padding: 10px 20px 10px 46px;
+            padding: 10px 16px 10px 40px;
             border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 6px;
+            font-size: 15px;
             background: rgba(255,255,255,0.95);
             color: #333;
         }
@@ -325,7 +325,7 @@ $ytLinks = andison_get_youtube_links();
             position: relative;
             background: rgba(0, 215, 179, 0.85);
             backdrop-filter: blur(10px);
-            overflow: hidden;
+            overflow: visible;
         }
 
         .nav-inner {
@@ -338,7 +338,6 @@ $ytLinks = andison_get_youtube_links();
             min-height: 52px;
             gap: 0;
             justify-content: center;
-            overflow: hidden;
         }
 
         /* Pin the browse toggle to the left side of the nav area */
@@ -388,6 +387,32 @@ $ytLinks = andison_get_youtube_links();
             transition: color 180ms ease, background 180ms ease;
         }
 
+        .nav-list > li > a::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 2px;
+            transform: translateX(-50%) scaleX(0);
+            transform-origin: center;
+            width: 44px;
+            height: 5px;
+            border-radius: 6px;
+            background: linear-gradient(90deg, #00ffd1 0%, #00d4aa 50%, #2B11DB 100%);
+            box-shadow: 0 2px 10px rgba(0,212,170,0.35);
+            pointer-events: none;
+            transition: transform 180ms ease, width 180ms ease;
+        }
+
+        .nav-list > li > a:hover {
+            background: rgba(0,0,0,0.10);
+            border-radius: 6px;
+        }
+
+        .nav-list > li > a:hover::after {
+            transform: translateX(-50%) scaleX(1);
+            width: 44px;
+        }
+
         .nav-list > li > a.active {
             background: rgba(0,0,0,0.14);
             color: #fff;
@@ -397,21 +422,8 @@ $ytLinks = andison_get_youtube_links();
         }
 
         .nav-list > li > a.active::after {
-            content: '';
-            position: absolute;
-            left: 50%;
-            bottom: -8px;
-            transform: translateX(-50%);
+            transform: translateX(-50%) scaleX(1);
             width: 44px;
-            height: 6px;
-            border-radius: 6px;
-            background: linear-gradient(90deg, #00ffd1 0%, #00d4aa 50%, #2B11DB 100%);
-            box-shadow: 0 8px 28px rgba(0,212,170,0.18), 0 0 40px rgba(43,17,219,0.08);
-            pointer-events: none;
-        }
-
-        .nav-list > li > a:hover::after {
-            width: 56px;
         }
 
         .nav-dropdown {
@@ -786,8 +798,8 @@ $ytLinks = andison_get_youtube_links();
         /* Product Highlights */
         .highlights-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 28px;
             margin-bottom: 50px;
             width: 100%;
             max-width: 1200px;
@@ -798,15 +810,17 @@ $ytLinks = andison_get_youtube_links();
         }
 
         .product-card {
-            background: #f5f5f5;
-            border-radius: 5px;
+            background: #ffffff;
+            border-radius: 12px;
             overflow: hidden;
-            transition: transform 0.1s, box-shadow 0.1s;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            transition: transform 0.18s, box-shadow 0.18s;
         }
 
         .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.13);
         }
 
         .product-image {
@@ -862,22 +876,25 @@ $ytLinks = andison_get_youtube_links();
         }
 
         .product-info {
-            padding: 20px;
+            padding: 18px 20px 20px;
             background: white;
             width: 100%;
             box-sizing: border-box;
+            border-top: 1px solid #f0f0f0;
         }
 
         .product-info h3 {
-            font-size: 16px;
-            margin-bottom: 10px;
-            color: #333;
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #1a1a1a;
         }
 
         .product-info p {
             font-size: 13px;
-            color: #666;
+            color: #6b7280;
             line-height: 1.6;
+            margin: 0;
         }
 
         /* Featured Section */
@@ -1228,15 +1245,25 @@ $ytLinks = andison_get_youtube_links();
                 padding-right: 6px;
                 gap: 2px;
                 min-height: 40px;
+                overflow-x: auto;
+                overflow-y: visible;
+                justify-content: flex-start;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
             }
+
+            .nav-inner::-webkit-scrollbar { display: none; }
 
             .nav-list {
-                gap: 30px;
+                gap: 0;
+                flex-wrap: nowrap;
+                flex-shrink: 0;
             }
 
-            .nav-list a {
-                font-size: 11px;
-                padding: 8px 6px;
+            .nav-list > li > a {
+                white-space: nowrap;
+                font-size: 12px;
+                padding: 8px 10px;
             }
 
             .browse-toggle {
@@ -1807,8 +1834,9 @@ $ytLinks = andison_get_youtube_links();
             .sidebar {
                 position: static;
             }
-            .nav-inner { justify-content: space-between; padding-left: 20px; }
-            .nav-list { position: static; transform: none; left: auto; margin: 8px auto 0; justify-content: center; flex-wrap: wrap; }
+            .nav-inner { padding-left: 50px; padding-right: 6px; min-height: 40px; overflow-x: auto; overflow-y: visible; justify-content: flex-start; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+            .nav-inner::-webkit-scrollbar { display: none; }
+            .nav-list { position: static; transform: none; left: auto; flex-wrap: nowrap; flex-shrink: 0; gap: 0; }
             .browse-toggle { position: static; transform: none; left: auto; top: auto; padding: 6px 10px; }
         }
 
