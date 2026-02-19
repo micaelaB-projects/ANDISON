@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
     "total_pageviews": 4,
     "unique_sessions": 4,
     "today_pageviews": 4,
@@ -22,6 +23,37 @@
         "Microgard": 1,
         "Uvex": 1,
         "TANAKA": 1
+=======
+    "total_pageviews": 189,
+    "unique_sessions": 13,
+    "today_pageviews": 189,
+    "today_unique": 13,
+    "today_date": "2026-02-19",
+    "week_pageviews": 189,
+    "week_unique": 13,
+    "week_start": "2026-02-16",
+    "month_pageviews": 189,
+    "month_unique": 13,
+    "month_key": "2026-02",
+    "daily": {
+        "2026-02-19": 189
+    },
+    "pages": {
+        "home": 41,
+        "brands": 27,
+        "brand": 18,
+        "services": 33,
+        "industries": 21,
+        "category": 2,
+        "contact": 16,
+        "about": 31
+    },
+    "brands": {
+        "Kobelco": 2,
+        "Panasonic Connect": 10,
+        "Uvex": 2,
+        "Aces": 1
+>>>>>>> 514d6653b15fbc5c877bad0870b49166c8d0a5c8
     },
     "categories": {
         "Arc Welding Robots": 1,

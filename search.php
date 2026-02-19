@@ -200,7 +200,7 @@ $matches = array_slice($matches, 0, 80);
             body { padding-top: 140px; }
             .header-top { flex-direction: column; align-items: stretch; gap: 12px; }
             .logo-box { text-align: center; }
-            .right-actions { margin-left: 0; justify-content: center; gap: 8px; }
+            .right-actions { margin-left: 8px; margin-right: 8px; padding-right: 8px; justify-content: flex-end; gap: 8px; }
             .container { padding: 28px 16px; }
             .results-header { flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: 32px; }
             .results-header h1 { font-size: 28px; }

@@ -1237,8 +1237,10 @@ $ytLinks = andison_get_youtube_links();
                 display: flex;
                 flex-direction: row;
                 align-items: center;
-                gap: 6px;
-                margin-left: 0;
+                gap: 8px;
+                margin-left: 8px;
+                margin-right: 8px;
+                padding-right: 8px;
             }
 
             .inquiry-btn,
@@ -1268,7 +1270,7 @@ $ytLinks = andison_get_youtube_links();
             .cart-badge.hidden { display: inline-flex !important; }
 
             .header-contact {
-                flex: 0 0 auto;
+                display: none;
             }
 
             nav ul {

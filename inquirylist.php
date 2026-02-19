@@ -1364,8 +1364,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 display: flex;
                 flex-direction: row;
                 align-items: center;
-                gap: 6px;
-                margin-left: 0;
+                gap: 8px;
+                margin-left: 8px;
+                margin-right: 8px;
+                padding-right: 8px;
             }
 
             .inquiry-btn,
@@ -1407,7 +1409,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             .cart-badge.hidden { display: inline-flex !important; }
 
             .header-contact {
-                flex: 0 0 auto;
+                display: none;
             }
 
             nav ul {
