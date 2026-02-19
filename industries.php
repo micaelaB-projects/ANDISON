@@ -1,9 +1,18 @@
+<?php
+require_once __DIR__ . '/andison/includes/home_featured.php';
+require_once __DIR__ . '/andison/includes/home_slider.php';
+require_once __DIR__ . '/andison/includes/youtube_links.php';
+
+$featured = andison_get_home_featured();
+$slides = andison_get_home_slider();
+$ytLinks = andison_get_youtube_links();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Industries - ANDISON INDUSTRIAL</title>
+    <title>Industrial Solutions Inc. - Homepage Redesign</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
         * {
@@ -35,7 +44,7 @@
             top: 0;
             left: 0;
             right: 0;
-            z-index: 1001;
+            z-index: 1200;
             width: 100%;
         }
 
@@ -85,6 +94,7 @@
             color: rgba(255,255,255,0.95);
             text-decoration: none;
             font-weight: 600;
+            font-size: 15px;
             padding-bottom: 8px;
             white-space: nowrap;
             position: relative;
@@ -109,7 +119,7 @@
         .contact-link:focus-visible::after {
             transform: translateX(-50%) scaleX(1);
         }
-
+        /* Contact popover */
         .contact-dropdown {
             position: relative;
             display: inline-block;
@@ -153,6 +163,21 @@
             transform: translateX(-50%) translateY(0) scale(1);
         }
 
+        /* mobile: click-to-open; .open class used instead of hover */
+        @media (max-width: 768px) {
+            .contact-dropdown:hover:not(.closed) .contact-popover,
+            .contact-dropdown:focus-within:not(.closed) .contact-popover {
+                opacity: 0;
+                visibility: hidden;
+                transform: translateX(-50%) translateY(-6px) scale(0.98);
+            }
+            .contact-dropdown.open .contact-popover {
+                opacity: 1;
+                visibility: visible;
+                transform: translateX(-50%) translateY(0) scale(1);
+            }
+        }
+
         .contact-close {
             position: absolute;
             top: 8px;
@@ -170,6 +195,7 @@
 
         .contact-close:hover { background: rgba(0,0,0,0.06); color: #333; }
 
+        /* when user explicitly closes, keep hidden until they move away */
         .contact-dropdown.closed .contact-popover {
             opacity: 0 !important;
             visibility: hidden !important;
@@ -181,6 +207,15 @@
         .contact-list .icon { font-size:18px; width:28px; text-align:center; color:#2B11DB; }
         .contact-list a { color: #111; text-decoration:none; font-weight:600; }
         .contact-list a:hover { text-decoration:underline; }
+
+        /* compact on mobile */
+        @media (max-width: 768px) {
+            .contact-popover { width: 240px; padding: 8px 10px; }
+            .contact-list { padding: 2px 0; }
+            .contact-list li { gap: 8px; padding: 6px 4px; }
+            .contact-list .icon { font-size: 14px; width: 20px; }
+            .contact-list a { font-size: 12px; }
+        }
 
         .search-bar {
             flex: 1 1 auto;
@@ -226,40 +261,51 @@
             display: none;
         }
 
-        
         .inquiry-btn,
         .cart-icon-wrapper {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
             cursor: pointer;
             text-decoration: none;
-            color: #333;
-            font-weight: 600;
-            padding: 10px 18px;
-            border-radius: 6px;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
             transition: all 0.3s ease;
-            background: linear-gradient(135deg, #00E5C8  0%, #347aec 100%);
+            background: linear-gradient(135deg,  #00E5C8  0%, #347aec 100%);
+            position: relative;
+            font-size: 14px;
+            font-weight: 700;
+            white-space: nowrap;
+            box-shadow: 0 4px 15px rgba(0,188,212,0.4);
+            gap: 8px;
         }
 
         .inquiry-btn:hover,
         .cart-icon-wrapper:hover {
-            background: linear-gradient(135deg, #00FFD1 0%, #00FFD1 100%);
+            background: linear-gradient(135deg, #00ACC1, #00796B);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 255, 209, 0.4);
-            color: #333;
+            box-shadow: 0 6px 20px rgba(0,188,212,0.5);
+            color: white;
         }
 
+        .inquiry-btn .btn-icon { display: inline; }
+        .inquiry-btn .btn-text { display: inline; }
+
         .cart-badge {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
+            background: #c70d0d;
             color: white;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
-            padding: 2px 6px;
             border-radius: 50%;
-            min-width: 20px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(255, 102, 102, 0.4);
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(199,13,13,0.5);
+            position: static;
+            margin-left: 2px;
         }
 
         .cart-badge.hidden {
@@ -271,6 +317,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            flex: 0 0 auto;
         }
 
         /* Navigation */
@@ -284,13 +331,13 @@
         .nav-inner {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 8px 0 120px; /* space for the left Browse toggle */
             display: flex;
+            flex-wrap: nowrap;
             align-items: center;
             min-height: 52px;
-            gap: 18px;
-            justify-content: flex-start;
-            padding-left: 100px; /* space for the left Browse toggle */
+            gap: 0;
+            justify-content: center;
         }
 
         /* Pin the browse toggle to the left side of the nav area */
@@ -310,27 +357,27 @@
             padding: 8px 14px;
             cursor: pointer;
             font-size: 15px;
+            line: height 6px;;
         }
 
         .nav-list {
             list-style: none;
             display: flex;
-            gap: 28px;
+            flex-wrap: nowrap;
+            gap: 30px;
             margin: 0;
             padding: 0;
+            width: 100%;
         }
 
         .nav-list li { position: relative; }
 
         .nav-list a {
-            color: white;
             text-decoration: none;
-            font-size: 15px;
-            padding: 12px 6px;
             display: block;
-            transition: color 0.2s;
-            position: relative;
         }
+
+        .nav-list a:hover { color: rgba(255,255,255,0.8); }
 
         /* Glowing underline + dark active background for top-level nav links */
         .nav-list > li > a {
@@ -338,6 +385,32 @@
             padding: 10px 14px;
             color: white;
             transition: color 180ms ease, background 180ms ease;
+        }
+
+        .nav-list > li > a::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 2px;
+            transform: translateX(-50%) scaleX(0);
+            transform-origin: center;
+            width: 44px;
+            height: 5px;
+            border-radius: 6px;
+            background: linear-gradient(90deg, #00ffd1 0%, #00d4aa 50%, #2B11DB 100%);
+            box-shadow: 0 2px 10px rgba(0,212,170,0.35);
+            pointer-events: none;
+            transition: transform 180ms ease, width 180ms ease;
+        }
+
+        .nav-list > li > a:hover {
+            background: rgba(0,0,0,0.10);
+            border-radius: 6px;
+        }
+
+        .nav-list > li > a:hover::after {
+            transform: translateX(-50%) scaleX(1);
+            width: 44px;
         }
 
         .nav-list > li > a.active {
@@ -349,41 +422,9 @@
         }
 
         .nav-list > li > a.active::after {
-            content: '';
-            position: absolute;
-            left: 50%;
-            bottom: -8px;
-            transform: translateX(-50%);
+            transform: translateX(-50%) scaleX(1);
             width: 44px;
-            height: 6px;
-            border-radius: 6px;
-            background: linear-gradient(90deg, #00ffd1 0%, #00d4aa 50%, #2B11DB 100%);
-            box-shadow: 0 8px 28px rgba(0,212,170,0.18), 0 0 40px rgba(43,17,219,0.08);
-            pointer-events: none;
         }
-
-        .nav-list > li > a:hover::after {
-            width: 56px;
-        }
-
-        .nav-list a:hover { color: rgba(255,255,255,0.8); }
-
-        .nav-list a:hover { color: #00d4aa; }
-
-        /* Reveal helpers (use existing fadeUp keyframes) */
-        .reveal-hidden { opacity: 0; transform: translateY(18px); transition: opacity 0s ease, transform 0s ease; }
-        .reveal { opacity: 1; transform: none; }
-        .reveal-stagger > * { opacity: 0; transform: translateY(18px); }
-        .reveal-stagger.revealed > * { opacity: 1; transform: none; transition: all .48s ease; }
-
-        h1, .page-title { opacity: 1; }
-        h1 + p, .page-subtitle { opacity: 1; }
-        img:not(.no-anim) { opacity: 1; }
-
-        @media (prefers-reduced-motion: reduce) {
-            .reveal, .reveal-hidden, img { animation: none !important; transition: none !important; }
-        }
-
 
         .nav-dropdown {
             position: absolute;
@@ -392,10 +433,11 @@
             transform: translateX(-50%) translateY(8px);
             background: white;
             min-width: 280px;
-            border-radius: 8px;
+            border-radius: 16px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.15);
             opacity: 0;
             visibility: hidden;
+            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
             z-index: 110;
             padding: 16px;
             margin-top: 8px;
@@ -450,13 +492,12 @@
             padding: 8px 12px;
             display: block;
             border-radius: 4px;
-            border-bottom: none;
+            transition: background 0.2s ease, color 0.2s ease;
         }
 
         .nav-dropdown ul a:hover {
             background: #f0f5ff;
-            color: #2b00d9;
-            border-bottom: none;
+            color: #2B11DB;
         }
 
         .nav-dropdown p {
@@ -518,42 +559,861 @@
             cursor: pointer;
         }
 
-        /* Shared Animation Keyframes (standardized) - DISABLED */
-
-        /* Page transition keyframes - DISABLED */
-
-        /* Overlay sidebar */
-        .overlay-backdrop {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.08);
-            opacity: 0;
-            visibility: hidden;
-            z-index: 60;
+        /* Hero Section */
+        .hero {
+            position: relative;
+            background: linear-gradient(135deg, rgba(43, 17, 219, 0.8) 0%, rgba(0, 215, 179, 0.8) 100%), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23888888" width="1200" height="600"/></svg>');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+            aspect-ratio: 16;
+            min-height: 400px;
+            max-height: 700px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: 80px;
+            z-index: 1;
+            box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.1);
         }
 
-        .overlay-backdrop.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .sidebar-overlay {
-            position: fixed;
+        .hero-slider {
+            position: absolute;
+            top: 0;
             left: 0;
-            top: calc(14px + 50px + 14px + 12px + 52px);
-            bottom: 0;
-            width: 300px;
-            max-width: 88%;
-            background: #fff;
-            box-shadow: 6px 0 30px rgba(2,6,23,0.08);
-            transform: translateX(-100%);
-            z-index: 70;
-            padding: 28px 20px;
-            overflow-y: auto;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1000px;
+            overflow: hidden;
         }
 
-        .sidebar-overlay.active {
-            transform: translateX(0);
+        .hero-slide {
+            position: absolute;
+            width: 40%;
+            aspect-ratio: 16 / 9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.3;
+            transition: all 0.1s ease;
+            transform: translateX(0) scale(0.85);
+            filter: blur(4px);
+            overflow: hidden;
+        }
+
+        .hero-slide.prev {
+            left: 8%;
+            opacity: 0.35;
+            transform: translateX(-50px) scale(0.8);
+            filter: blur(5px);
+        }
+
+        .hero-slide.active {
+            left: 30%;
+            opacity: 1;
+            transform: translateX(0) scale(1);
+            filter: blur(0);
+            z-index: 10;
+        }
+
+        .hero-slide.next {
+            right: 8%;
+            opacity: 0.35;
+            transform: translateX(50px) scale(0.8);
+            filter: blur(5px);
+        }
+
+        /* blurred full-bleed background taken from the slide's background-image */
+        .hero-slide::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: inherit;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(15px) brightness(0.7) saturate(1.3);
+            z-index: 0;
+        }
+
+        /* subtle dark overlay above the blur to improve text contrast */
+        .hero-slide::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        /* centered clear image card on top of the blurred background */
+        .hero-content {
+            max-width: 900px;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .hero-content h1,
+        .hero-content p,
+        .hero-content .cta-button {
+            display: none;
+        }
+
+        .hero-thumb {
+            width: 100%;
+            height: 100%;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            border-radius: 12px;
+            box-shadow: 0 18px 40px rgba(2,6,23,0.45);
+            overflow: hidden;
+            background-color: rgba(255,255,255,0.05);
+            aspect-ratio: 16 / 9;
+        }
+
+        .hero-content {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-content h1,
+        .hero-content p,
+        .hero-content .cta-button {
+            display: none;
+        }
+
+        .hero-indicators {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 20;
+        }
+
+        .hero-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+
+        .hero-dot.active {
+            background: rgba(255,255,255,0.9);
+        }
+
+        .hero-dot:hover {
+            background: rgba(255,255,255,0.7);
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #00D7B3 0%, #00C99A 100%);
+            color: white;
+            padding: 14px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(0, 215, 179, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 215, 179, 0.4);
+        }
+
+        /* Section */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        section {
+            width: 100%;
+            padding: 100px 20px;
+            position: relative;
+            z-index: 10;
+            background: white;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-top: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        section h2 {
+            text-align: center;
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: #2B11DB;
+            width: 100%;
+            background: linear-gradient(135deg, #2B11DB 0%, #00D7B3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+    
+        .section-description {
+            text-align: center;
+            max-width: 750px;
+            margin: 0 auto 60px;
+            color: #555;
+            line-height: 1.9;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 0 20px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        /* Product Highlights */
+        .highlights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+            width: 100%;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            box-sizing: border-box;
+            padding: 0 20px;
+        }
+
+        .product-card {
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #e8eef7;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.4s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 40px rgba(43, 17, 219, 0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            min-height: 320px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: none;
+        }
+
+        .product-image iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .product-image video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: none;
+        }
+
+        .play-btn {
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+
+        .play-btn:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .product-info {
+            padding: 28px 24px;
+            background: white;
+            width: 100%;
+            box-sizing: border-box;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .product-info h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #2B11DB;
+            line-height: 1.4;
+        }
+
+        .product-info p {
+            font-size: 15px;
+            color: #666;
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        /* Featured Section */
+        .featured-section {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            padding: 70px 60px;
+            border-radius: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 70px;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(43, 17, 219, 0.08);
+            overflow: hidden;
+            position: relative;
+            max-width: 1100px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #e8eef7;
+        }
+
+        .featured-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 100% 0%, rgba(255,255,255,0.4) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .featured-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .featured-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #00D7B3 0%, #00C99A 100%);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 12px rgba(0, 215, 179, 0.3);
+        }
+
+        .featured-content h3 {
+            font-size: 40px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: #2B11DB;
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+
+        .featured-content h3::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #2B11DB 0%, #00d4aa 100%);
+            margin-top: 16px;
+            margin-bottom: 24px;
+            border-radius: 2px;
+        }
+
+        .featured-meta {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            flex-wrap: wrap;
+        }
+
+        .featured-discount {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .featured-discount-badge {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+        }
+
+        .featured-offer-text {
+            color: #ff6b6b;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .featured-event-info {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .featured-event-detail {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .featured-event-detail strong {
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .featured-event-detail i {
+            color: #2B11DB;
+            font-size: 16px;
+        }
+
+        .featured-content p {
+            color: #555;
+            margin-bottom: 32px;
+            line-height: 1.9;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .featured-btn {
+            background: linear-gradient(135deg, #2B11DB 0%, #1e0aa3 100%);
+            color: white;
+            padding: 14px 42px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(43, 17, 219, 0.3);
+            letter-spacing: 0.5px;
+        }
+
+        .featured-btn:hover {
+            background: linear-gradient(135deg, #3d1ffa 0%, #2B11DB 100%);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(43, 17, 219, 0.4);
+        }
+
+        .featured-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .featured-image {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            min-height: 400px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 60px;
+            box-shadow: 0 20px 40px rgba(43, 17, 219, 0.15);
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 1px solid #e8eef7;
+        }
+
+        .featured-image img {
+            display: block !important;
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            object-position: center !important;
+            border-radius: 12px;
+        }
+
+        .featured-image video {
+            display: block !important;
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            border-radius: 12px;
+        }
+
+        .featured-image iframe {
+            display: block !important;
+            width: 100% !important;
+            height: 100% !important;
+            border: none !important;
+            border-radius: 12px;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #1a0d7a 0%, #2B11DB 100%);
+            color: white;
+            padding: 60px 0 40px;
+            text-align: center;
+            margin-top: auto;
+            width: 100vw;
+            position: relative;
+            left: 0;
+            right: 0;
+            margin-left: 0;
+            margin-right: 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            width: 100%;
+            margin: 0;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.95);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            padding-bottom: 4px;
+        }
+
+        .footer-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00D7B3;
+            transition: width 0.3s ease;
+        }
+
+        .footer-links a:hover::after {
+            width: 100%;
+        }
+
+        .footer-copyright {
+            font-size: 14px;
+            opacity: 0.85;
+            font-weight: 500;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            padding-top: 24px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            /* Single row: logo | search | inquiry | contact */
+            .header-top {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                align-items: center;
+                gap: 8px;
+                padding: 0 10px;
+                margin-bottom: 8px;
+            }
+
+            .logo {
+                flex: 0 0 auto;
+            }
+
+            .logo-box img {
+                height: 36px;
+            }
+
+            .search-bar {
+                position: static;
+                transform: none;
+                flex: 1 1 0;
+                min-width: 0;
+                width: auto;
+                max-width: none;
+                margin: 0;
+            }
+
+            .search-bar .search-field {
+                width: 100%;
+            }
+
+            .search-bar input {
+                width: 100%;
+                height: 36px;
+                font-size: 12px;
+                padding: 6px 8px 6px 30px;
+            }
+
+            .search-bar .search-field::before {
+                font-size: 13px;
+                left: 8px;
+            }
+
+            .right-actions {
+                flex: 0 0 auto;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: 6px;
+                margin-left: 0;
+            }
+
+            .inquiry-btn,
+            .cart-icon-wrapper {
+                background: transparent !important;
+                box-shadow: none !important;
+                padding: 6px !important;
+                font-size: 28px !important;
+                position: relative;
+            }
+
+            .inquiry-btn .btn-text { display: none; }
+            .inquiry-btn .btn-icon { font-size: 28px; }
+
+            .cart-badge {
+                background: #2196F3 !important;
+                box-shadow: 0 2px 8px rgba(33,150,243,0.5) !important;
+                width: 26px !important;
+                height: 26px !important;
+                font-size: 13px !important;
+                position: absolute !important;
+                top: -4px !important;
+                right: -8px !important;
+                margin-left: 0 !important;
+            }
+
+            .cart-badge.hidden { display: inline-flex !important; }
+
+            .header-contact {
+                flex: 0 0 auto;
+            }
+
+            nav ul {
+                flex-wrap: nowrap;
+                gap: 0;
+            }
+
+            nav li {
+                margin-right: 0;
+            }
+
+            .nav-inner {
+                padding-left: 0;
+                padding-right: 0;
+                gap: 0;
+                min-height: auto;
+                overflow-x: hidden;
+                overflow-y: visible;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .nav-inner::-webkit-scrollbar { display: none; }
+
+            .nav-list {
+                gap: 0;
+                flex-wrap: wrap;
+                flex-shrink: 1;
+                justify-content: center;
+            }
+
+            .nav-list > li > a {
+                white-space: normal;
+                font-size: 11px;
+                padding: 10px 8px;
+            }
+
+            .browse-toggle {
+                font-size: 12px;
+                padding: 6px 8px;
+                gap: 4px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+            
+            .hero {
+                aspect-ratio: auto;
+                min-height: 420px;
+                padding: 20px 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .hero-content {
+                max-width: 100%;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .hero-thumb {
+                width: 85%;
+                height: auto;
+                max-width: 95%;
+                aspect-ratio: 16 / 9 !important;
+            }
+            
+            .product-image {
+                aspect-ratio: 4 / 3;
+                min-height: 240px;
+            }
+            
+            .featured-image {
+                aspect-ratio: 4 / 3;
+                min-height: 260px;
+            }
+
+            .featured-section {
+                grid-template-columns: 1fr;
+                padding: 40px 28px;
+                gap: 40px;
+                border-radius: 16px;
+            }
+
+            .featured-content h3 {
+                font-size: 28px;
+                font-weight: 800;
+            }
+
+            .featured-meta {
+                gap: 12px;
+                padding-bottom: 12px;
+            }
+
+            .featured-event-info {
+                gap: 12px;
+            }
+
+            .featured-event-detail {
+                font-size: 13px;
+            }
+
+            .featured-btn {
+                padding: 12px 32px;
+                font-size: 14px;
+            }
+
+            .highlights-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            section h2 {
+                font-size: 28px;
+            }
+
+            .section-description {
+                font-size: 14px;
+                margin-bottom: 28px;
+            }
+
+            .sidebar-overlay {
+                width: 95%;
+                max-width: 100%;
+                max-height: 95vh;
+                padding: 28px 20px;
+            }
+
+            .sidebar-overlay h3 {
+                font-size: 16px;
+                margin-bottom: 20px;
+            }
+
+            .sidebar-list a {
+                font-size: 14px;
+                padding: 14px 10px;
+            }
+
+            .sidebar-sublist a {
+                font-size: 13px;
+            }
         }
 
         .sidebar-overlay h3 {
@@ -562,6 +1422,418 @@
             color: #222;
             font-weight: 700;
             letter-spacing: 0.5px;
+        }
+
+        /* Industries Section Styles */
+        .industries-section {
+            padding: 80px 20px;
+            background: linear-gradient(180deg, #ffffff 0%, #f5f9ff 50%, #f0f7ff 100%);
+            border-radius: 0;
+            margin: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .industries-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 500px;
+            background: linear-gradient(135deg, rgba(0, 215, 179, 0.08) 0%, rgba(0, 102, 255, 0.08) 50%, rgba(0, 212, 170, 0.06) 100%);
+            pointer-events: none;
+            filter: blur(40px);
+        }
+
+        .industries-section::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 215, 179, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(60px);
+        }
+
+        .industries-header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+            z-index: 2;
+            padding: 0;
+            background: transparent;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        .industries-header h1 {
+            font-size: 56px;
+            font-weight: 950;
+            margin-bottom: 18px;
+            letter-spacing: -2px;
+            line-height: 1.2;
+            white-space: normal;
+            text-shadow: 0 4px 20px rgba(0, 102, 255, 0.15);
+        }
+
+        .industries-header h1 .blue-part {
+            color: #0052cc;
+            text-shadow: 0 0 20px rgba(0, 102, 255, 0.3);
+        }
+
+        .industries-header h1 .teal-part {
+            color: #00a8a8;
+            text-shadow: 0 0 20px rgba(0, 168, 168, 0.3);
+        }
+
+        .industries-header p {
+            font-size: 17px;
+            color: #555;
+            max-width: 950px;
+            margin: 0 auto;
+            line-height: 1.85;
+            font-weight: 500;
+            animation: fadeInUp 0.9s ease 0.25s both;
+            letter-spacing: 0.3px;
+        }
+
+        .industries-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            position: relative;
+            z-index: 2;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .industry-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fbfe 50%, #f0f6ff 100%);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 102, 255, 0.15), 0 0 40px rgba(0, 168, 168, 0.1);
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            will-change: transform, box-shadow;
+            position: relative;
+            border: 2px solid rgba(0, 168, 168, 0.15);
+            min-height: 380px;
+            backdrop-filter: blur(10px);
+        }
+
+        .industry-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #00a8a8 0%, #0052cc 50%, #0066ff 100%);
+            z-index: 1;
+            box-shadow: 0 0 20px rgba(0, 102, 255, 0.4);
+        }
+
+        .industry-card:nth-child(1)::before { background: linear-gradient(90deg, #2B11DB 0%, #1a0099 100%); }
+        .industry-card:nth-child(2)::before { background: linear-gradient(90deg, #00d7b3 0%, #00a889 100%); }
+        .industry-card:nth-child(3)::before { background: linear-gradient(90deg, #2B11DB 0%, #00d7b3 100%); }
+        .industry-card:nth-child(4)::before { background: linear-gradient(90deg, #00ACC1 0%, #00796B 100%); }
+        .industry-card:nth-child(5)::before { background: linear-gradient(90deg, #1a0099 0%, #2B11DB 100%); }
+        .industry-card:nth-child(6)::before { background: linear-gradient(90deg, #00d7b3 0%, #2B11DB 100%); }
+
+        .industry-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 40px 100px rgba(0, 102, 255, 0.2), 0 0 60px rgba(0, 168, 168, 0.15);
+            border-color: rgba(0, 168, 168, 0.3);
+        }
+
+        .industry-card.reverse {
+            direction: ltr;
+        }
+
+        .industry-card.reverse {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .industry-card.reverse .industry-image {
+            order: 2;
+        }
+
+        .industry-card.reverse .industry-content {
+            order: 1;
+        }
+
+        .industry-card.reverse > * {
+            direction: ltr;
+        }
+
+        .industry-content {
+            padding: 48px;
+            background: transparent;
+            border-radius: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            flex: 1;
+        }
+
+        .industry-content h2 {
+            font-size: 32px;
+            font-weight: 950;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #0052cc 0%, #00a8a8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.8px;
+            line-height: 1.2;
+            text-shadow: 0 4px 20px rgba(0, 102, 255, 0.1);
+        }
+
+        .industry-content p {
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.75;
+            font-size: 15px;
+            font-weight: 500;
+            flex-grow: 1;
+            letter-spacing: 0.3px;
+        }
+
+        .read-more-btn {
+            background: linear-gradient(135deg, #0052cc 0%, #00a8a8 100%);
+            color: #ffffff;
+            border: 2px solid rgba(0, 168, 168, 0.4);
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            padding: 13px 28px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 8px;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 12px 30px rgba(0, 102, 255, 0.3), 0 0 20px rgba(0, 168, 168, 0.15);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0;
+            position: relative;
+            overflow: hidden;
+            align-self: flex-start;
+        }
+
+        .read-more-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+            z-index: 0;
+        }
+
+        .read-more-btn:hover::before {
+            width: 200px;
+            height: 200px;
+        }
+
+        .read-more-btn:hover {
+            gap: 12px;
+            transform: translateY(-3px);
+            box-shadow: 0 18px 50px rgba(0, 102, 255, 0.4), 0 0 30px rgba(0, 168, 168, 0.3);
+            border-color: rgba(0, 168, 168, 0.7);
+        }
+
+        .read-more-btn::after {
+            content: '▼';
+            font-size: 9px;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .read-more-btn.active::after {
+            transform: rotate(180deg);
+        }
+
+        .expanded-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .expanded-content.show {
+            max-height: 1200px;
+        }
+
+        .expanded-content-inner {
+            padding: 0 48px 48px 48px;
+            border-top: 1px solid rgba(0, 168, 168, 0.15);
+            margin-top: 0;
+            animation: fadeInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .expanded-content p {
+            color: #555;
+            margin-bottom: 14px;
+            margin-top: 16px;
+            line-height: 1.75;
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .expanded-content strong {
+            color: #0052cc;
+            font-weight: 950;
+        }
+
+        .products-list {
+            margin: 12px 0 0 0;
+            padding: 16px 18px;
+            background: linear-gradient(135deg, rgba(0, 168, 168, 0.08) 0%, rgba(0, 102, 255, 0.08) 100%);
+            border-left: 4px solid #0052cc;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 102, 255, 0.1), inset 0 1px 0 rgba(0, 168, 168, 0.1);
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .products-list li {
+            color: #333;
+            margin-bottom: 7px;
+            list-style-type: disc;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .products-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        .industry-image {
+            border-radius: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f5f9ff 0%, #eef5ff 100%);
+            height: 100%;
+            min-height: 380px;
+            position: relative;
+        }
+
+        .industry-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(0, 168, 168, 0.05) 0%, transparent 50%), radial-gradient(circle at 70% 70%, rgba(0, 102, 255, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .industry-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0;
+            box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.4);
+            transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.7s ease;
+            border: none;
+            filter: brightness(0.95) contrast(1.05);
+        }
+
+        .industry-card:hover .industry-image img {
+            transform: scale(1.1);
+            filter: brightness(1.15) contrast(1.1) saturate(1.2);
+        }
+
+        @media (max-width: 1024px) {
+            .industries-grid {
+                gap: 32px;
+            }
+
+            .industry-card {
+                grid-template-columns: 1fr;
+                min-height: auto;
+            }
+
+            .industry-card.reverse {
+                grid-template-columns: 1fr;
+            }
+
+            .industry-card.reverse .industry-image {
+                order: 1;
+            }
+
+            .industry-card.reverse .industry-content {
+                order: 2;
+            }
+
+            .industry-image {
+                height: 280px;
+                min-height: 280px;
+            }
+
+            .industry-content {
+                padding: 40px;
+            }
+
+            .industry-content h2 {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .industries-section {
+                padding: 60px 15px;
+            }
+
+            .industries-header h1 {
+                font-size: 36px;
+                letter-spacing: -1px;
+            }
+
+            .industries-header p {
+                font-size: 15px;
+            }
+
+            .industries-grid {
+                gap: 24px;
+            }
+
+            .industry-content {
+                padding: 32px;
+            }
+
+            .industry-content h2 {
+                font-size: 22px;
+            }
+
+            .industry-content p {
+                font-size: 14px;
+            }
+
+            .read-more-btn {
+                padding: 11px 22px;
+                font-size: 12px;
+            }
+
+            .industry-image {
+                height: 220px;
+                min-height: 220px;
+            }
+
+            .expanded-content-inner {
+                padding: 0 32px 32px 32px;
+            }
         }
 
         .sidebar-list { list-style: none; padding: 0; margin: 0; }
@@ -582,6 +1854,518 @@
             background: #f3f4f6; 
             color: #2B11DB;
             padding-left: 16px;
+        }
+        .sidebar-list li a.active {
+            background: #f3f4f6;
+            color: #2B11DB;
+            font-weight: 600;
+            border-left: 4px solid #2B11DB;
+            padding-left: 12px;
+        }
+        .sidebar-list li a.active .sidebar-icon {
+            color: #2B11DB;
+        }
+        .sidebar-icon { 
+            color: #5b21b6; 
+            width: 24px; 
+            height: 24px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-list a .sidebar-label {
+            flex: 1;
+        }
+
+        .sidebar-list a .sidebar-arrow {
+            width: 20px;
+            height: 20px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+            font-size: 14px;
+            flex-shrink: 0;
+            margin-left: 8px;
+        }
+
+        .sidebar-list li.has-sub a .sidebar-arrow {
+            display: flex;
+        }
+
+
+        .sidebar-sublist li { 
+            padding: 4px 0; 
+            border: none;
+        }
+        .sidebar-sublist a { 
+            color: #4b5563; 
+            font-size: 14px; 
+            padding: 6px 8px; 
+            display: block; 
+            text-decoration: none;
+            justify-content: flex-start;
+        }
+        .sidebar-sublist a:hover { 
+            color: #2B11DB; 
+            background: transparent;
+            padding-left: 12px;
+        }
+
+        /* Nested sublists */
+        .sidebar-sublist li.has-nested-sub { position: relative; }
+        .sidebar-sublist li.has-nested-sub > a { padding-right: 24px; }
+        
+        .nested-toggle {
+            position: absolute;
+            right: 0;
+            top: 6px;
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        .nested-toggle:focus { outline: none; }
+        .nested-toggle .bi { transition: transform 200ms ease; }
+        .nested-toggle[aria-expanded="true"] .bi { transform: rotate(90deg); }
+
+
+        .sidebar-nested-sublist li { 
+            padding: 0;
+            border: none;
+        }
+        .sidebar-nested-sublist a { 
+            color: #5a6b7d; 
+            font-size: 13px; 
+            padding: 10px 12px 10px 28px; 
+            display: block; 
+            text-decoration: none;
+            position: relative;
+            transition: all 0.25s ease;
+            border-radius: 6px;
+            margin: 2px 0;
+        }
+
+        .sidebar-list li.has-sub { position: relative; }
+        .has-sub > a { padding-right: 40px; }
+
+
+        .sidebar-close { 
+            background: transparent; 
+            border: none; 
+            color: #9ca3af; 
+            font-weight: 700; 
+            cursor: pointer; 
+            position: static;
+            font-size: 16px;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s ease;
+            flex-shrink: 0;
+        }
+        .sidebar-close:hover {
+            color: #374151;
+        }
+
+        /* ============================================
+           ANIMATIONS
+           ============================================ */
+
+        /* 1. HOVER EFFECTS */
+        @keyframes hoverGlow {
+            0% { box-shadow: 0 0 0px rgba(0, 212, 170, 0); }
+            100% { box-shadow: 0 0 20px rgba(0, 212, 170, 0.4); }
+        }
+
+        @keyframes hoverScale {
+            from { transform: scale(1); }
+            to { transform: scale(1.05); }
+        }
+
+        @keyframes buttonBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        .product-card {
+            transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 1;
+            transform: translateY(0);
+            will-change: transform, opacity, box-shadow;
+        }
+
+        .product-card:hover {
+            transform: translateY(-12px) scale(1.03);
+            box-shadow: 0 25px 50px rgba(43,17,219,0.2);
+            z-index: 1000;
+        }
+
+        .featured-btn:hover,
+        .cta-button:hover {
+            animation: buttonBounce 0.6s ease;
+        }
+
+        .nav-list a:hover {
+            animation: hoverScale 0.3s ease;
+        }
+
+        .inquiry-btn:hover {
+            animation: hoverGlow 0.4s ease forwards;
+        }
+
+        /* 2. SCROLLING ANIMATIONS */
+        /* Use shared fadeUp keyframe for consistent reveals */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .scroll-animate { opacity: 0; transform: translateY(40px); transition: opacity 0s ease, transform 0s ease; }
+        .scroll-animate.visible { }
+
+        /* Match brands.php staggered reveal timings (faster) */
+        .product-card { opacity: 1; transform: translateY(0); will-change: transform,opacity; }
+        .product-card:nth-of-type(1){ --i:1; }
+        .product-card:nth-of-type(2){ --i:2; }
+
+        section h2 { opacity: 1; }
+        .section-description { opacity: 1; }
+        .featured-section { opacity: 1; }
+
+        /* 3. PAGE TRANSITIONS */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pageExit {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+        }
+
+        body {
+            opacity: 1;
+        }
+
+        section {
+            opacity: 1;
+        }
+
+        section:nth-of-type(1) { animation-delay: 0s; }
+        section:nth-of-type(2) { animation-delay: 0.1s; }
+        section:nth-of-type(3) { animation-delay: 0.2s; }
+        section:nth-of-type(4) { animation-delay: 0.3s; }
+
+        /* 4. SELF-DRAWING ANIMATIONS */
+        @keyframes drawBorder {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(0, 212, 170, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(0, 212, 170, 0);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+
+        .featured-badge {
+            animation: pulseGlow 2s infinite;
+        }
+
+        .product-image {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        /* 5. TEXT ANIMATIONS */
+        @keyframes typeWriter {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%;
+            }
+        }
+
+        @keyframes blinkCursor {
+            0%, 49% {
+                border-right-color: transparent;
+            }
+            50%, 100% {
+                border-right-color: #00d4aa;
+            }
+        }
+
+        @keyframes textGradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes textFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            animation: textFadeIn 0.8s ease;
+        }
+
+        .hero p {
+            animation: textFadeIn 0.8s ease 0.2s both;
+        }
+
+        .product-info h3,
+        .featured-content h3 {
+            animation: textFadeIn 0.6s ease;
+            position: relative;
+        }
+
+        
+        .footer-links a {
+            position: relative;
+            animation: textFadeIn 0.6s ease;
+        }
+
+        .footer-links a::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00d4aa;
+            transition: width 0.3s ease;
+        }
+
+        .footer-links a:hover::before {
+            width: 100%;
+        }
+
+        /* Stagger text animations */
+        .nav-list li { opacity: 1; }
+
+        .nav-list li:nth-child(1) { animation-delay: 0.1s; }
+        .nav-list li:nth-child(2) { animation-delay: 0.2s; }
+        .nav-list li:nth-child(3) { animation-delay: 0.3s; }
+        .nav-list li:nth-child(4) { animation-delay: 0.4s; }
+        .nav-list li:nth-child(5) { animation-delay: 0.5s; }
+        .nav-list li:nth-child(6) { animation-delay: 0.6s; }
+
+        /* Smooth transitions for all interactive elements */
+        a, button, input, [role="button"] {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @media (max-width: 768px) {
+            .main-wrapper {
+                grid-template-columns: 1fr;
+                padding: 0 12px;
+            }
+
+            .sidebar {
+                position: static;
+            }
+            .nav-inner { padding-left: 50px; padding-right: 6px; min-height: 40px; overflow-x: auto; overflow-y: visible; justify-content: flex-start; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+            .nav-inner::-webkit-scrollbar { display: none; }
+            .nav-list { position: static; transform: none; left: auto; flex-wrap: nowrap; flex-shrink: 0; gap: 0; }
+            .browse-toggle { position: static; transform: none; left: auto; top: auto; padding: 6px 10px; }
+        }
+
+        /* Global animation utilities (shared) */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+        .reveal-hidden { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+        .reveal { opacity: 1; transform: none; }
+        .reveal-stagger > * { opacity: 0; transform: translateY(18px); }
+        .reveal-stagger.revealed > * { opacity: 1; transform: none; transition: all .48s ease; }
+
+        h1, .page-title { opacity: 1; }
+        h1 + p, .page-subtitle { opacity: 1; }
+        img:not(.no-anim) { opacity: 1; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .reveal, .reveal-hidden, img { animation: none !important; transition: none !important; }
+        }
+        /* Ensure header/navigation/footer do not animate or move */
+        header, nav, footer, .header-top, .nav-inner, .browse-toggle, .nav-list, .right-actions, .footer-content {
+            animation: none !important;
+            transition: none !important;
+            transform: none !important;
+            opacity: 1 !important;
+        }
+
+        /* Prevent individual nav items from receiving reveal animations */
+        .nav-list li { animation: none !important; opacity: 1 !important; transform: none !important; }
+
+        /* Overlay sidebar (full-height left panel) */
+        .overlay-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s;
+            z-index: 60;
+        }
+
+        .overlay-backdrop.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            left: 0;
+            top: calc(14px + 50px + 14px + 12px + 52px);
+            bottom: 0;
+            right: auto;
+            width: 380px;
+            max-width: 90%;
+            background: #fff;
+            box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 70;
+            padding: 28px 20px;
+            overflow-y: auto;
+        }
+
+        .sidebar-overlay.active {
+            transform: translateX(0);
+        }
+
+        .sidebar-overlay h3 {
+            font-size: 18px;
+            margin-bottom: 24px;
+            color: #222;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-list { list-style: none; padding: 28px 20px 0 20px; margin: 0; }
+        .sidebar-list li { border-bottom: 1px solid #e5e7eb; }
+        .sidebar-list li:last-child { border-bottom: none; }
+        .sidebar-list a { 
+            display: flex; 
+            gap: 12px; 
+            padding: 16px 12px; 
+            color: #1f2937; 
+            text-decoration: none; 
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+            font-size: 15px;
+        }
+        .sidebar-list a:hover { 
+            background: #f3f4f6; 
+            color: #2B11DB;
+            padding-left: 16px;
+        }
+        .sidebar-list li a.active {
+            background: #f3f4f6;
+            color: #2B11DB;
+            font-weight: 600;
+            border-left: 4px solid #2B11DB;
+            padding-left: 12px;
+        }
+        .sidebar-list li a.active .sidebar-icon {
+            color: #2B11DB;
         }
         .sidebar-icon { 
             color: #5b21b6; 
@@ -618,7 +2402,6 @@
             list-style: none; 
             margin: 0; 
             padding: 8px 0 8px 44px; 
-            display: none;
             background: #fafafa;
             margin-left: 12px;
             margin-right: 12px;
@@ -626,6 +2409,16 @@
             border-left: 2px solid #e5e7eb;
             padding-top: 8px;
             padding-bottom: 8px;
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 1;
+        }
+        
+        .sidebar-sublist.collapsed {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
         }
         .sidebar-sublist li { 
             padding: 4px 0; 
@@ -672,8 +2465,17 @@
         .sidebar-nested-sublist { 
             list-style: none; 
             margin: 10px 0 10px -12px; 
-            padding: 0; 
-            display: none;
+            padding: 0;
+            max-height: 500px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 1;
+        }
+        
+        .sidebar-nested-sublist.collapsed {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
         }
         .sidebar-nested-sublist li { 
             padding: 0;
@@ -709,33 +2511,44 @@
             transform: translateX(4px);
         }
 
-        .sidebar-nested-sublist.collapsed { display: none; }
-        .sidebar-nested-sublist:not(.collapsed) { display: block; }
         .sidebar-list li.has-sub { position: relative; }
         .has-sub > a { padding-right: 40px; }
         .sub-toggle {
             position: absolute;
-            right: 12px;
-            top: 16px;
+            right: 8px;
+            top: 12px;
             transform: none;
             background: transparent;
-            border: none;
-            color: #9ca3af;
+            border: 2px solid #d1d5db;
+            color: #2B11DB;
             cursor: pointer;
-            padding: 0;
-            width: 24px;
-            height: 24px;
+            padding: 4px;
+            width: 28px;
+            height: 28px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border-radius: 0;
+            border-radius: 4px;
             box-shadow: none;
+            transition: all 0.2s ease;
+            font-size: 0;
+            z-index: 10;
+        }
+        .sub-toggle:hover {
+            background: rgba(43, 17, 219, 0.1);
+            border-color: #2B11DB;
+            transform: scale(1.1);
+        }
+        .sub-toggle:active {
+            transform: scale(0.95);
         }
         .sub-toggle:focus { outline: none; }
-        .sub-toggle .bi { transition: transform 200ms ease; font-size: 16px; }
-        .sub-toggle[aria-expanded="true"] .bi { transform: rotate(90deg); }
-        .sidebar-sublist.collapsed { display: none; }
-        .sidebar-sublist:not(.collapsed) { display: block; }
+        .sub-toggle .bi { 
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            font-size: 14px;
+            display: inline-flex;
+        }
+        .sub-toggle[aria-expanded="true"] .bi { transform: rotate(180deg); }
 
         .sidebar-close { 
             background: transparent; 
@@ -753,305 +2566,84 @@
             transition: color 0.2s ease;
             flex-shrink: 0;
         }
-
-        .sidebar-close:hover { color: #333; }
-
-        /* Main Content */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        .sidebar-close:hover {
+            color: #374151;
         }
-
-        .industries-section {
-            padding: 60px 0;
-        }
-
-        .industries-header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        .industries-header h1 {
-            font-size: 42px;
-            font-weight: 800;
-            margin-bottom: 15px;
-            color: #2b00d9;
-        }
-
-        .industries-header p {
-            font-size: 16px;
-            color: #666;
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.8;
-        }
-
-        .industries-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 40px;
-        }
-
-        .industry-card {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            align-items: center;
-            padding: 40px;
-            background: #f8f9fa;
-            border-radius: 12px;
-            border: 1px solid #e9ecef;
-            opacity: 1;
-            transform: translateY(0);
-            transition: box-shadow 0.3s, transform 0.3s;
-            will-change: transform, opacity, box-shadow;
-        }
-        .industry-card:nth-of-type(1){ --i:1; }
-        .industry-card:nth-of-type(2){ --i:2; }
-        .industry-card:nth-of-type(3){ --i:3; }
-
-        .industry-card:hover {
-            box-shadow: 0 25px 50px rgba(43, 17, 219, 0.12);
-            transform: translateY(-12px) scale(1.03);
-            z-index: 1000;
-        }
-
-        .industry-card.reverse {
-            direction: rtl;
-        }
-
-        .industry-card.reverse > * {
-            direction: ltr;
-        }
-
-        .industry-content h2 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: #2b00d9;
-        }
-
-        .industry-content p {
-            color: #555;
-            margin-bottom: 15px;
-            line-height: 1.8;
-        }
-
-        .read-more-btn {
-            background: transparent;
-            color: #2b00d9;
-            border: none;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            padding: 10px 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .read-more-btn:hover {
-            gap: 12px;
-        }
-
-        .read-more-btn::after {
-            content: '▼';
-            font-size: 12px;
-            transition: transform 0.3s ease;
-        }
-
-        .read-more-btn.active::after {
-            transform: rotate(180deg);
-        }
-
-        .expanded-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-
-        .expanded-content.show {
-            max-height: 1000px;
-        }
-
-        .expanded-content-inner {
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
-            margin-top: 20px;
-        }
-
-        .expanded-content p {
-            color: #555;
-            margin-bottom: 15px;
-            line-height: 1.8;
-        }
-
-        .products-list {
-            margin-top: 15px;
-            padding-left: 20px;
-        }
-
-        .products-list li {
-            color: #555;
-            margin-bottom: 8px;
-            list-style-type: disc;
-        }
-
-        .industry-image img {
-            width: 100%;
-            height: auto;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        }
-
-        @media (max-width: 768px) {
-            .industry-card {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-
-            .industry-card.reverse {
-                direction: ltr;
-            }
-
-            .industries-header h1 {
-                font-size: 32px;
-            }
-
-            .header-top {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            nav ul {
-                flex-wrap: wrap;
-            }
-
-            .nav-inner { padding-left: 50px; padding-right: 6px; min-height: 40px; overflow-x: auto; overflow-y: visible; justify-content: flex-start; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-            .nav-inner::-webkit-scrollbar { display: none; }
-            .nav-list { position: static; transform: none; left: auto; flex-wrap: nowrap; flex-shrink: 0; gap: 0; }
-            .browse-toggle { position: static; transform: none; left: auto; top: auto; padding: 6px 10px; }
-        }
-
-        /* Footer */
-        footer {
-            background: #2B11DB;
-            color: white;
-            padding: 40px 0;
-            text-align: center;
-            margin-top: auto;
-            width: 100vw;
-            position: relative;
-            left: 0;
-            right: 0;
-            margin-left: 0;
-            margin-right: 0;
-        }
-
-        .footer-content {
-            width: 100%;
-            margin: 0;
-            padding: 0 20px;
-        }
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .footer-links a {
-            color: white;
-            text-decoration: none;
-            font-size: 13px;
-            transition: color 0.3s;
-        }
-
-        .footer-links a:hover {
-            color: #00d4aa;
-        }
-
-        .footer-copyright {
-            font-size: 12px;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            padding-top: 20px;
-        }
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .footer-links a {
-            color: white;
-            text-decoration: none;
-            font-size: 13px;
-            transition: color 0.3s;
-        }
-
-        
-        /* Shared animations and utilities */
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes contentSlide { from { opacity:0; transform: translateX(-28px);} to { opacity:1; transform: translateX(0);} }
-        @keyframes imageSlide { from { opacity:0; transform: translateX(18px) scale(1.04);} to { opacity:1; transform: translateX(0) scale(1);} }
-
-        .industry-card { opacity:1; transform: translateY(0); }
-        .industry-card:nth-child(1){ animation-delay: 0ms; } .industry-card:nth-child(2){ animation-delay:0ms; }
-        .industry-card .industry-content { opacity: 1; transform: translateX(0); }
-        .industry-card .industry-image { opacity: 1; transform: translateX(0); }
-
-        .read-more-btn .arrow { transition: transform .32s ease; }
-        .read-more-btn[aria-expanded="true"] .arrow { transform: rotate(90deg); }
-
-        .industry-image img { opacity: 1; transform: scale(1); }
-
-        /* Ensure header/navigation/footer do not animate or move */
-        header, nav, footer, .header-top, .nav-inner, .browse-toggle, .nav-list, .right-actions, .footer-content {
-            animation: none !important;
-            transition: none !important;
-            transform: none !important;
-            opacity: 1 !important;
-        }
-
-        /* Prevent individual nav items from receiving reveal animations */
-        .nav-list li { animation: none !important; opacity: 1 !important; transform: none !important; }
 
         /* Mini Sidebar (always visible icon bar) */
         .mini-sidebar {
             position: fixed;
             left: 0;
-            top: calc(14px + 50px + 14px + 12px + 52px);
+            top: calc(14px + 50px + 14px + 52px);
             bottom: 0;
             width: 80px;
-            background: #2B11DB;
-            box-shadow: 2px 0 16px rgba(0,0,0,0.1);
+            background: linear-gradient(180deg, #2B11DB 0%, #1a0a7f 100%);
+            box-shadow: 2px 0 16px rgba(0,0,0,0.2);
             z-index: 65;
-            padding: 20px 12px;
-            overflow: hidden;
+            padding: 24px 12px;
+            overflow-y: auto;
+            overflow-x: hidden;
             transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
             align-items: center;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.1) transparent;
         }
+
+        .mini-sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .mini-sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .mini-sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+        }
+
+        .mini-sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
         .mini-sidebar.expanded {
             width: 280px;
             overflow-y: auto;
-            padding: 20px 12px;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+            padding: 24px 16px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0,0,0,0.1) transparent;
+            align-items: stretch;
         }
-        .mini-sidebar.expanded::-webkit-scrollbar { display: none; }
+
+        .mini-sidebar.expanded::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .mini-sidebar.expanded::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .mini-sidebar.expanded::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.1);
+            border-radius: 3px;
+        }
+
+        .mini-sidebar.expanded::-webkit-scrollbar-thumb:hover {
+            background: rgba(0,0,0,0.2);
+        }
+
         .mini-sidebar.active {
             display: flex !important;
             flex-direction: column;
             align-items: center;
         }
-        .mini-sidebar.active.expanded { align-items: stretch; }
+
+        .mini-sidebar.active.expanded {
+            align-items: stretch;
+        }
+
         .mini-sidebar-icon {
             width: 56px;
             height: 56px;
@@ -1063,13 +2655,14 @@
             cursor: pointer;
             position: relative;
             border-radius: 8px;
-            margin-bottom: 8px;
+            margin-bottom: 16px;
             transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), justify-content 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease;
             gap: 12px;
             padding: 0;
             flex-shrink: 0;
             min-width: 56px;
         }
+
         .mini-sidebar-icon .label {
             display: none;
             font-size: 13px;
@@ -1080,16 +2673,28 @@
             opacity: 0;
             transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
         }
+
         .mini-sidebar.expanded .mini-sidebar-icon {
             width: 100%;
             justify-content: flex-start;
-            padding: 12px;
+            padding: 14px;
             min-width: auto;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.08);
         }
+
+        .mini-sidebar.expanded .mini-sidebar-icon:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateX(4px);
+        }
+
         .mini-sidebar.expanded .mini-sidebar-icon .label {
             display: block;
             opacity: 1;
+            color: #ffffff;
         }
+
         #miniSidebarMenuBar {
             justify-content: center;
             width: 56px;
@@ -1098,6 +2703,7 @@
             margin-top: 0;
             flex-shrink: 0;
         }
+
         .mini-sidebar.expanded #miniSidebarMenuBar {
             justify-content: flex-start;
             width: 100%;
@@ -1105,91 +2711,219 @@
             padding: 12px;
             margin-bottom: 8px;
         }
-        .browse-label { display: none; }
-        .mini-sidebar.expanded .browse-label { display: inline-block !important; }
-        .mini-sidebar-icon:hover {
-            background: rgba(255,255,255,0.2);
-            transform: scale(1.05);
+
+        .mini-sidebar.expanded .browse-label {
+            display: inline-block !important;
         }
-        .mini-sidebar.expanded .mini-sidebar-icon:hover { transform: translateX(4px); }
+
+        .mini-sidebar-icon:hover {
+            background: rgba(0, 215, 179, 0.15);
+            transform: scale(1.08);
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-icon:hover {
+            transform: translateX(6px);
+            background: rgba(0, 215, 179, 0.2);
+        }
+
         .mini-sidebar-icon.active-icon {
             background: #00D7B3;
             color: #2B11DB;
+            font-weight: 600;
         }
+
+        .mini-sidebar-icon.active-icon .label {
+            color: #2B11DB;
+            font-weight: 600;
+        }
+
         .mini-sidebar-icon .sub-indicator {
             position: absolute;
-            bottom: -1px;
-            right: -1px;
-            background: rgba(255,255,255,0.1);
+            bottom: 2px;
+            right: 2px;
+            background: rgba(0, 215, 179, 0.9);
             color: #ffffff;
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 9px;
-            opacity: 0.95;
-            transition: background 0.15s ease, color 0.15s ease;
+            font-size: 8px;
+            opacity: 0.9;
+            transition: background 0.15s ease, color 0.15s ease, transform 0.2s ease;
             z-index: 999;
             cursor: pointer;
             pointer-events: auto;
-            border: 1px solid #ffffff;
-            box-shadow: none;
+            border: 1px solid #2B11DB;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
+
         .mini-sidebar-icon:hover .sub-indicator {
             opacity: 1;
             background: #00D7B3;
             color: #2B11DB;
+            transform: scale(1.15);
         }
-        .mini-sidebar-icon .sub-indicator:active { transform: translateY(0); }
+
+        .mini-sidebar-icon .sub-indicator:active {
+            transform: translateY(0);
+        }
+
         .mini-sidebar.expanded .mini-sidebar-icon .sub-indicator {
             position: static;
-            background: transparent;
+            background: #00D7B3;
             color: #2B11DB;
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             margin-left: auto;
-            opacity: 1;
-            border: 0;
+            opacity: 0.9;
+            border: 1px solid #2B11DB;
             cursor: pointer;
             pointer-events: auto;
             z-index: 100;
-            box-shadow: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
+
         .mini-sidebar-toggle {
             width: 56px;
             height: 56px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255,255,255,0.15);
-            border: none;
-            color: #fff;
+            background: rgba(0, 215, 179, 0.2);
+            border: 1px solid rgba(0, 215, 179, 0.4);
+            color: #00D7B3;
             cursor: pointer;
             border-radius: 8px;
             font-size: 20px;
             margin-top: auto;
-            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease, border-color 0.3s ease;
             flex-shrink: 0;
-            min-width: 56px;
         }
+
         .mini-sidebar-toggle:hover {
-            background: rgba(255,255,255,0.25);
-            transform: scale(1.05);
+            background: rgba(0, 215, 179, 0.3);
+            border-color: rgba(0, 215, 179, 0.6);
+            transform: scale(1.08);
         }
-        .mini-sidebar-toggle:active { transform: scale(0.95); }
+
+        .mini-sidebar-toggle:active {
+            transform: scale(0.95);
+        }
+
         .mini-sidebar-toggle i {
             transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             display: inline-block;
         }
-        .mini-sidebar.expanded .mini-sidebar-toggle i { transform: rotate(180deg); }
+
+        .mini-sidebar.expanded .mini-sidebar-toggle i {
+            transform: rotate(180deg);
+        }
+
         .mini-sidebar.expanded .mini-sidebar-toggle {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             min-width: auto;
+            margin-bottom: 12px;
         }
+
+        /* Adjust main container for mini sidebar — collapsed by default on desktop */
+        section,
+        footer,
+        .page-content,
+        .main-content, 
+        .category-container {
+            margin-left: 0px;
+            transition: margin-left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* When expanded, increase margin */
+        .mini-sidebar.expanded ~ section,
+        .mini-sidebar.expanded ~ footer,
+        .mini-sidebar.expanded ~ .page-content,
+        .mini-sidebar.expanded ~ .main-content,
+        .mini-sidebar.expanded ~ .category-container {
+            margin-left: 280px;
+        }
+
+        @media (max-width: 992px) {
+            section,
+            footer,
+            .page-content, 
+            .main-content, 
+            .category-container {
+                margin-left: 0 !important;
+            }
+
+            .mini-sidebar {
+                display: none !important;
+            }
+        }
+
+        /* When sidebar is expanded (collapsed mini) */
+        .sidebar-overlay.expanded {
+            width: 380px;
+        }
+
+        .overlay-backdrop.expanded {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .mini-sidebar {
+                top: calc(14px + 36px + 14px + 40px);
+                width: 56px !important;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease, width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .mini-sidebar.mobile-visible {
+                transform: translateX(0);
+            }
+            .mini-sidebar.expanded {
+                width: 240px !important;
+            }
+            .browse-toggle {
+                display: inline-flex !important;
+            }
+            .browse-toggle .browse-text {
+                display: inline !important;
+            }
+            .main-content, .category-container {
+                margin-left: 0 !important;
+            }
+            /* Floating toggle button to show/hide mini sidebar on mobile */
+            .mobile-sidebar-fab {
+                display: flex !important;
+            }
+        }
+
+        /* FAB button to toggle mini sidebar on mobile */
+        .mobile-sidebar-fab {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%) translateX(0);
+            z-index: 70;
+            width: 16px;
+            height: 36px;
+            background: #2B11DB;
+            color: #fff;
+            border: none;
+            border-radius: 0 6px 6px 0;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.25);
+            transition: transform 0.3s ease, background 0.2s;
+        }
+        .mobile-sidebar-fab:hover { background: #1a0aa8; }
+        .mobile-sidebar-fab.open { transform: translateY(-50%) translateX(56px); }
+        .mobile-sidebar-fab.open.wide { transform: translateY(-50%) translateX(240px); }
+
         /* Mini popover styles for subcategories */
         .mini-popover {
             position: fixed;
@@ -1290,16 +3024,14 @@
             background: rgba(255,255,255,0.12);
             transform: translateX(2px);
         }
-        @media (max-width: 1024px) {
-            .mini-sidebar { display: none !important; }
-            .browse-toggle { display: inline-flex !important; }
-            .browse-toggle .browse-text { display: inline !important; }
-            .main-content { margin-left: 0 !important; }
-        }
     </style>
 </head>
 <body>
-    <?php
+        <?php
+        // Set page title
+        $page_title = "Industries";
+        $company_name = "ANDISON INDUSTRIAL";
+        
         // Contact information
         $phone = "+1(234) 567 8900";
         $phone2 = "+1(234) 567 8900";
@@ -1321,21 +3053,21 @@
             </div>
 
             <div class="right-actions">
-                <a href="inquirylist.php" class="inquiry-btn">INQUIRY LIST <span class="cart-badge hidden" id="cartBadge">0</span></a>
+                <a href="inquirylist.php" class="inquiry-btn"><i class="bi bi-card-checklist btn-icon"></i> <span class="btn-text">INQUIRY LIST</span> <span class="cart-badge hidden" id="cartBadge">0</span></a>
                 <div class="header-contact">
-                    <div class="contact-dropdown" tabindex="0" aria-haspopup="true">
-                        <a href="#contact" class="contact-link" aria-label="Contact Us">Contact Us ▾</a>
-                        <div class="contact-popover" role="menu" aria-hidden="true">
-                            <button class="contact-close" aria-label="Close contact popover">✕</button>
-                            <ul class="contact-list">
-                                <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone; ?>"><?php echo $phone; ?></a></li>
-                                <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone2; ?>"><?php echo $phone2; ?></a></li>
-                                <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone3; ?>"><?php echo $phone3; ?></a></li>
-                                <li><span class="icon"><i class="bi bi-envelope"></i></span><a href="mailto:<?php echo $email; ?>"><?php echo $email; ?></a></li>
-                            </ul>
+                        <div class="contact-dropdown" tabindex="0" aria-haspopup="true">
+                            <a href="#contact" class="contact-link" aria-label="Contact Us">Contact Us ▾</a>
+                            <div class="contact-popover" role="menu" aria-hidden="true">
+                                <button class="contact-close" aria-label="Close contact popover">✕</button>
+                                <ul class="contact-list">
+                                    <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone; ?>"><?php echo $phone; ?></a></li>
+                                    <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone2; ?>"><?php echo $phone2; ?></a></li>
+                                    <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone3; ?>"><?php echo $phone3; ?></a></li>
+                                    <li><span class="icon"><i class="bi bi-envelope"></i></span><a href="mailto:<?php echo $email; ?>"><?php echo $email; ?></a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
             </div>
         </div>
 
@@ -1344,7 +3076,7 @@
             <div class="nav-inner">
                 <ul class="nav-list">
                     <li>
-                        <a href="home.php">Home</a>
+                        <a href="home.php" class="active">Home</a>
                         <div class="nav-dropdown">
                             <h4>Welcome</h4>
                             <p>Discover our complete range of industrial welding solutions and equipment.</p>
@@ -1406,11 +3138,11 @@
                         <div class="nav-dropdown">
                             <h4>Industries We Serve</h4>
                             <ul>
-                                <li><a href="industries.php#motorvehicleindustry">Motor Vehicle Industry</a></li>
-                                <li><a href="industries.php#metalfabricationandindustrial">Metal Fabrication and Industrial</a></li>
-                                <li><a href="industries.php#powergeneration">Power Generation</a></li>
-                                <li><a href="industries.php#oilandpetrochemicalindustry">Oil and Petrochemical Industry</a></li>
-                                <li><a href="industries.php#miningindustries">Mining Industries</a></li>
+                                <li><a href="industries.php#motor-vehicle">Motor Vehicle Industry</a></li>
+                                <li><a href="industries.php#metal-fabrication">Metal Fabrication and Industrial</a></li>
+                                <li><a href="industries.php#power-generation">Power Generation</a></li>
+                                <li><a href="industries.php#oil-petrochemical">Oil and Petrochemical Industry</a></li>
+                                <li><a href="industries.php#mining">Mining Industry</a></li>
                                 <li><a href="industries.php#shipyard">Shipyard</a></li>
                             </ul>
                         </div>
@@ -1439,37 +3171,43 @@
         </nav>
     </header>
 
-    <!-- Sidebar overlay -->
-    <div id="overlay" class="overlay-backdrop" aria-hidden="true"></div>
+    <!-- Overlay Backdrop -->
+    <div class="overlay-backdrop" id="overlayBackdrop"></div>
+
+    <!-- Sidebar Navigation -->
     <aside id="sidebar" class="sidebar-overlay" aria-hidden="true">
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 12px; border-bottom: 1px solid #e5e7eb;">
-            <h3 style="margin: 0; font-size: 18px; color: #1f2937;">Categories</h3>
-            <button class="sidebar-close" id="closeSidebar">✕</button>
+        <div style="padding: 14px 20px; background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 8px; color: white; flex: 1;">
+                <i class="bi bi-list" style="font-size: 20px; font-weight: 700;"></i>
+                <span style="font-size: 14px; font-weight: 700; letter-spacing: 0.5px;">BROWSE</span>
+            </div>
+            <button id="closeSidebar" style="background: transparent; border: none; color: white; cursor: pointer; font-size: 24px; padding: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; line-height: 1;">×</button>
         </div>
         <ul class="sidebar-list">
             <li class="has-sub">
-                <a href="arc-welding-machine/arc-welding-machine.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span><span class="sidebar-label">Arc Welding Machine</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-welding" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <a href="arc-welding-machine/arc-welding-machine.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span><span class="sidebar-label">Arc Welding Machines</span></a>
+                <button class="sub-toggle" aria-controls="sub-arc-welding" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
                     <li><a href="arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
                     <li><a href="arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
                     <li><a href="arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
                     <li><a href="arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
+                    <li><a href="arc-welding-machine/plasma-cutting-machine.php">Plasma Cutting Machine</a></li>
                 </ul>
             </li>
             <li class="has-sub">
                 <a href="arc-welding-robots/arc-welding-robot.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label">Arc Welding Robots</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-arc-robot" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
-                <ul id="sub-arc-robot" class="sidebar-sublist collapsed">
+                <button class="sub-toggle" aria-controls="sub-arc-robots" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
+                <ul id="sub-arc-robots" class="sidebar-sublist collapsed">
                     <li><a href="arc-welding-robots/g3-controller-series.php">G3 Controller Series</a></li>
                     <li><a href="arc-welding-robots/g4-controller-series.php">G4 Controller Series</a></li>
-                    <li><a href="arc-welding-robots/featured-products-and-solution.php">Featured Products & Solutions</a></li>
+                    <li><a href="arc-welding-robots/featured-products-and-solution.php">Featured Products and Solutions</a></li>
                     <li><a href="arc-welding-robots/robot-system-peripherals.php">Robot System Peripherals</a></li>
                 </ul>
             </li>
             <li class="has-sub">
-                <a href="batteries/batteries.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-battery-full"></i></span><span class="sidebar-label">Batteries</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-batteries" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <a href="batteries/batteries.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-fill"></i></span><span class="sidebar-label">Batteries</span></a>
+                <button class="sub-toggle" aria-controls="sub-batteries" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-batteries" class="sidebar-sublist collapsed">
                     <li><a href="batteries/maintenance-free.php">Maintenance Free</a></li>
                     <li><a href="batteries/low-maintenance.php">Low Maintenance</a></li>
@@ -1478,7 +3216,7 @@
             </li>
             <li class="has-sub">
                 <a href="drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling and Lifting</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-drilling-lifting" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <button class="sub-toggle" aria-controls="sub-drilling-lifting" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
                     <li><a href="drilling-and-lifting/lifting.php">Lifting</a></li>
                     <li><a href="drilling-and-lifting/magnetic-drill.php">Magnetic Drill</a></li>
@@ -1486,22 +3224,23 @@
                 </ul>
             </li>
             <li class="has-sub">
-                <a href="gas-detectors/portable-gas-detectors.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></span><span class="sidebar-label">Portable Gas Detectors</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-gas-detectors" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <a href="gas-detectors/gas-detectors.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></span><span class="sidebar-label">Gas Detectors</span></a>
+                <button class="sub-toggle" aria-controls="sub-gas-detectors" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-gas-detectors" class="sidebar-sublist collapsed">
                     <li><a href="gas-detectors/single-gas-detector.php">Single Gas Detector</a></li>
                     <li><a href="gas-detectors/multi-gas-detector.php">Multi Gas Detector</a></li>
+                    <li><a href="gas-detectors/portable-gas-detectors.php">Portable Gas Detectors</a></li>
                     <li><a href="gas-detectors/docking-data-management.php">Docking and Data Management</a></li>
                     <li><a href="gas-detectors/calibration-gas-regulators.php">Calibration Gas and Regulators</a></li>
                 </ul>
             </li>
-            <li>
+            <li class="">
                 <a href="portable-ventilators/portable-ventilators.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-fan"></i></span><span class="sidebar-label">Portable Ventilators</span></a>
             </li>
             <li class="has-sub">
                 <a href="power-tools/power-tools.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-tools"></i></span><span class="sidebar-label">Power Tools</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-power-tools" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
-                <ul id="sub-power-tools" class="sidebar-sublist collapsed">
+                <button class="sub-toggle" aria-controls="sub-power-tool" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
+                <ul id="sub-power-tool" class="sidebar-sublist collapsed">
                     <li><a href="power-tools/grinder.php">Grinder</a></li>
                     <li><a href="power-tools/saw.php">Saw</a></li>
                     <li><a href="power-tools/drill-and-wrench.php">Drill and Wrench</a></li>
@@ -1511,12 +3250,12 @@
             </li>
             <li class="has-sub">
                 <a href="protection/protection.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-shield-check"></i></span><span class="sidebar-label">Personal Protective Equipment</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-protection-safety" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <button class="sub-toggle" aria-controls="sub-protection-safety" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-protection-safety" class="sidebar-sublist collapsed">
                     <li><a href="protection/eye-protection.php">Eye Protection</a></li>
                     <li class="has-nested-sub">
                         <a href="protection/hand-protection.php">Hand Protection</a>
-                        <button class="nested-toggle" aria-expanded="false" aria-controls="nested-hand-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                        <button class="nested-toggle" aria-controls="nested-hand-protection" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>
                         <ul id="nested-hand-protection" class="sidebar-nested-sublist collapsed">
                             <li><a href="protection/working-gloves.php">Working Gloves</a></li>
                             <li><a href="protection/chemical-liquid-protection-gloves.php">Chemical and Liquid Protection Gloves</a></li>
@@ -1528,7 +3267,7 @@
                     <li><a href="protection/welding-head-and-face-protection.php">Welding Head and Face Protection</a></li>
                     <li class="has-nested-sub">
                         <a href="protection/body-protection.php">Body Protection</a>
-                        <button class="nested-toggle" aria-expanded="false" aria-controls="nested-body-protection" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                        <button class="nested-toggle" aria-controls="nested-body-protection" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>
                         <ul id="nested-body-protection" class="sidebar-nested-sublist collapsed">
                             <li><a href="protection/chemical-flame-retardant.php">Chemical and Flame Retardant</a></li>
                             <li><a href="protection/liquid-spray-splash.php">Liquid Spray and Splash</a></li>
@@ -1539,7 +3278,7 @@
             </li>
             <li class="has-sub">
                 <a href="welding-accessories/welding-accessories.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-gear"></i></span><span class="sidebar-label">Welding Accessories</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-accessories" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <button class="sub-toggle" aria-controls="sub-welding-accessories" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-welding-accessories" class="sidebar-sublist collapsed">
                     <li><a href="welding-accessories/welding-electrode-oven.php">Welding Electrode Oven</a></li>
                     <li><a href="welding-accessories/non-destructive-crack-detection.php">Non-Destructive Crack Detection</a></li>
@@ -1552,7 +3291,7 @@
             </li>
             <li class="has-sub">
                 <a href="welding-consumables/welding-consumables.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-box"></i></span><span class="sidebar-label">Welding Consumables</span></a>
-                <button class="sub-toggle" aria-expanded="false" aria-controls="sub-welding-consumables" title="Toggle subcategories"><i class="bi bi-chevron-right"></i></button>
+                <button class="sub-toggle" aria-controls="sub-welding-consumables" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-welding-consumables" class="sidebar-sublist collapsed">
                     <li><a href="welding-consumables/kobelco.php">Kobelco</a></li>
                     <li><a href="welding-consumables/metrode.php">Metrode</a></li>
@@ -1580,34 +3319,37 @@
         <button class="mini-sidebar-toggle" id="expandSidebar" title="Toggle Sidebar"><i class="bi bi-chevron-right"></i></button>
     </div>
 
+    <!-- Mobile FAB to show/hide mini sidebar -->
+    <button class="mobile-sidebar-fab" id="mobileSidebarFab"><i class="bi bi-chevron-right" id="mobileFabIcon"></i></button>
+
     <!-- Floating popover for mini sidebar subcategories -->
     <div id="miniPopover" class="mini-popover" aria-hidden="true">
         <div class="mini-popover-header">
-            <div class="mini-popover-title">Categories</div>
+            <div class="mini-popover-title">Arc Welding Robots</div>
         </div>
         <div class="mini-popover-body">
             <ul class="mini-popover-list"></ul>
         </div>
     </div>
 
-    <!-- Main Content -->
+    <!-- Industries Section -->
     <main class="container">
         <section class="industries-section">
             <div class="industries-header">
-                <h1>Our Industrial Expertise</h1>
+                <h1><span class="blue-part">Our Industrial</span> <span class="teal-part">Expertise</span></h1>
                 <p>Andison Industrial proudly serves a diverse range of sectors, delivering precision, innovation, and reliability to drive progress in every industry we touch.</p>
             </div>
 
             <div class="industries-grid">
                 <!-- Motor Vehicle Industry -->
-                <div class="industry-card">
+                <div class="industry-card" id="motor-vehicle">
                     <div class="industry-content">
                         <h2>Motor Vehicle Industry</h2>
                         <p>This industry manufactures automobiles, motorcycles, buses, and truck vans. They have a growing presence in the Philippine market, especially with the high demand for motorcycles. We offer a wide assortment of welding equipment and consumables necessary to produce world-class products.</p>
                         <button class="read-more-btn" onclick="toggleExpanded(this)">Read More</button>
                         <div class="expanded-content">
                             <div class="expanded-content-inner">
-                                <p>Top multinational and domestic automotive companies choose our Panasonic Welding Systems to significantly improve weld quality and boost efficiency while reducing production costs. We provide consultation, training, maintenance, and reliable after-sales service to satisfy our customers’ expectations.</p>
+                                <p>Top multinational and domestic automotive companies choose our Panasonic Welding Systems to significantly improve weld quality and boost efficiency while reducing production costs. We provide consultation, training, maintenance, and reliable after-sales service to satisfy our customers' expectations.</p>
                                 <p><strong>Some of our products used in this industry are:</strong></p>
                                 <ul class="products-list">
                                     <li>Arc Welding Robot with Power Source</li>
@@ -1615,8 +3357,7 @@
                                     <li>Power Tools and Hand Tools</li>
                                     <li>Personal Protective Equipment (PPEs)</li>
                                 </ul>
-                                <p>For items not found on our website, kindly see our contact details and send us an inquiry.</p>
-</p>
+                                <p>For items not found on our website, kindly see our contact details and send us an inquiry.</p>
                             </div>
                         </div>
                     </div>
@@ -1626,7 +3367,7 @@
                 </div>
 
                 <!-- Metal Fabrication and Industrial Projects -->
-                <div class="industry-card reverse">
+                <div class="industry-card reverse" id="metal-fabrication">
                     <div class="industry-content">
                         <h2>Metal Fabrication and Industrial</h2>
                         <p>Bridges, railways, refineries, shipyards, transmission lines, and other large-scale projects require steel frames and other metals to support the large infrastructures. Workers in the metal fabrication industry do welding, metal cutting, and fastening to assemble metal parts.</p>
@@ -1652,10 +3393,10 @@
                 </div>
 
                 <!-- Power Generation -->
-                <div class="industry-card">
+                <div class="industry-card" id="power-generation">
                     <div class="industry-content">
                         <h2>Power Generation</h2>
-                        <p>The Power Generation Industry is vital in a country’s growth. They must be a reliable partner in meeting the Philippine Energy Market’s ever-growing demands.</p>
+                        <p>The Power Generation Industry is vital in a country's growth. They must be a reliable partner in meeting the Philippine Energy Market's ever-growing demands.</p>
                         <button class="read-more-btn" onclick="toggleExpanded(this)">Read More</button>
                         <div class="expanded-content">
                             <div class="expanded-content-inner">
@@ -1676,7 +3417,7 @@
                 </div>
 
                 <!-- Oil and Petrochemical Industry -->
-                <div class="industry-card reverse">
+                <div class="industry-card reverse" id="oil-petrochemical">
                     <div class="industry-content">
                         <h2>Oil and Petrochemical Industry</h2>
                         <p>Oil refineries use fractional distillation and other methods to process crude oil into more useful products like petroleum, gasoline, and other fuels. During the distillation, heavier by-products settle at the bottom. Petrochemical plants crack the by-products and further process them into more useful chemicals. Other industries use these petrochemicals to create different products.</p>
@@ -1703,7 +3444,7 @@
                 </div>
 
                 <!-- Mining Industry -->
-                <div class="industry-card">
+                <div class="industry-card" id="mining">
                     <div class="industry-content">
                         <h2>Mining Industry</h2>
                         <p>This industry extracts coal, oil, metals, and other raw materials from the earth. These resources are processed by other industries to create products such as fuel, jewelry, construction materials, and everyday items. Mining is vital to the economy.</p>
@@ -1729,10 +3470,10 @@
                 </div>
 
                 <!-- Shipyard -->
-                <div class="industry-card reverse">
+                <div class="industry-card reverse" id="shipyard">
                     <div class="industry-content">
                         <h2>Shipyard</h2>
-                        <p>World trade relies heavily on freight ships because it offers a high capacity at a low cost in transporting goods. Being an archipelago, the Philippines also uses ships to ferry people to the country’s many islands. Shipyards play a critical role in maintaining ships, ensuring they are seaworthy and safe.</p>
+                        <p>World trade relies heavily on freight ships because it offers a high capacity at a low cost in transporting goods. Being an archipelago, the Philippines also uses ships to ferry people to the country's many islands. Shipyards play a critical role in maintaining ships, ensuring they are seaworthy and safe.</p>
                         <button class="read-more-btn" onclick="toggleExpanded(this)">Read More</button>
                         <div class="expanded-content">
                             <div class="expanded-content-inner">
@@ -1768,11 +3509,10 @@
                 <a href="#sitemap">Sitemap</a>
             </div>
             <div class="footer-copyright">
-                &copy; 2024 ANDISON INDUSTRIAL. All rights reserved.
+                <p>&copy; 2026 <?php echo $company_name; ?>. All rights reserved.</p>
             </div>
         </div>
     </footer>
-
     <script>
         function toggleExpanded(button) {
             const expandedContent = button.nextElementSibling;
@@ -1784,56 +3524,38 @@
             const browseToggle = document.getElementById('browseToggle');
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('overlay');
-            const closeSidebar = document.getElementById('closeSidebar');
-            const contactDropdown = document.querySelector('.contact-dropdown');
-            const contactClose = document.querySelector('.contact-close');
+            const closeBtn = document.getElementById('closeSidebar');
 
-            // Browse toggle
-            if (browseToggle) {
-                browseToggle.addEventListener('click', function() {
-                    sidebar.classList.add('active');
-                    overlay.classList.add('active');
-                });
+            function openSidebar(){
+                sidebar.classList.add('active');
+                overlay.classList.add('active');
+                sidebar.setAttribute('aria-hidden','false');
+                overlay.setAttribute('aria-hidden','false');
             }
 
-            // Close sidebar
-            if (closeSidebar) {
-                closeSidebar.addEventListener('click', function() {
-                    sidebar.classList.remove('active');
-                    overlay.classList.remove('active');
-                });
+            function closeSidebar(){
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                sidebar.setAttribute('aria-hidden','true');
+                overlay.setAttribute('aria-hidden','true');
             }
 
-            // Close on overlay click
-            if (overlay) {
-                overlay.addEventListener('click', function() {
-                    sidebar.classList.remove('active');
-                    overlay.classList.remove('active');
-                });
+            if(browseToggle){
+                browseToggle.addEventListener('click', function(e){ e.preventDefault(); openSidebar(); });
             }
-
-            // Contact dropdown close
-            if (contactClose) {
-                contactClose.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    contactDropdown.classList.add('closed');
-                    setTimeout(() => {
-                        contactDropdown.classList.remove('closed');
-                    }, 3000);
-                });
-            }
-
-            // Set active nav link
+            if(closeBtn) closeBtn.addEventListener('click', closeSidebar);
+            if(overlay) overlay.addEventListener('click', closeSidebar);
+            document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeSidebar(); });
+            
+            // Set active nav link for Industries page
             const currentPage = 'industries.php';
-            document.querySelectorAll('.nav-list a').forEach(link => {
-                if (link.href.includes(currentPage)) {
+            document.querySelectorAll('.nav-list > li > a').forEach(link => {
+                link.classList.remove('active');
+                if (link.href.includes(currentPage) && link.textContent.includes('Industries')) {
                     link.classList.add('active');
                 }
             });
         });
-    </script>
-
-    <script>
         // Sidebar sublist toggle behavior with persistent state
         (function(){
             var toggles = document.querySelectorAll('.sub-toggle');
@@ -1909,27 +3631,385 @@
             });
         })();
     </script>
+    <script>
+        // Manage aria states for contact dropdown (improves accessibility)
+        (function(){
+            var dropdowns = document.querySelectorAll('.contact-dropdown');
+            dropdowns.forEach(function(dd){
+                var pop = dd.querySelector('.contact-popover');
+                var link = dd.querySelector('.contact-link');
+                dd.addEventListener('keydown', function(e){
+                    if(e.key === 'Escape') { link.blur(); pop.setAttribute('aria-hidden','true'); }
+                });
+                dd.addEventListener('focusin', function(){ pop.setAttribute('aria-hidden','false'); dd.setAttribute('aria-expanded','true'); });
+                dd.addEventListener('focusout', function(){ setTimeout(function(){ if(!dd.contains(document.activeElement)){ pop.setAttribute('aria-hidden','true'); dd.setAttribute('aria-expanded','false'); } }, 10); });
+                dd.addEventListener('mouseenter', function(){ 
+                    if(dd.classList.contains('closed')) return;
+                    pop.setAttribute('aria-hidden','false'); dd.setAttribute('aria-expanded','true'); 
+                });
+                dd.addEventListener('mouseleave', function(){ pop.setAttribute('aria-hidden','true'); dd.setAttribute('aria-expanded','false'); dd.classList.remove('closed'); });
+
+                // Mobile: click to toggle
+                dd.addEventListener('click', function(e){
+                    if(window.innerWidth > 768) return;
+                    e.stopPropagation();
+                    var isOpen = dd.classList.contains('open');
+                    document.querySelectorAll('.contact-dropdown').forEach(function(d){ d.classList.remove('open'); });
+                    if(!isOpen) dd.classList.add('open');
+                });
+
+                // Close button
+                var closeBtn = dd.querySelector('.contact-close');
+                if(closeBtn){
+                    closeBtn.addEventListener('click', function(e){
+                        e.stopPropagation();
+                        e.preventDefault();
+                        pop.setAttribute('aria-hidden','true');
+                        dd.setAttribute('aria-expanded','false');
+                        dd.classList.add('closed');
+                        dd.classList.remove('open');
+                        document.activeElement.blur();
+                    });
+                }
+            });
+
+            // Mobile: click outside closes all
+            document.addEventListener('click', function(){
+                if(window.innerWidth > 768) return;
+                document.querySelectorAll('.contact-dropdown').forEach(function(d){ d.classList.remove('open'); });
+            });
+        })();
+    </script>
+    <script>
+        // Hero slider functionality
+        (function(){
+            var slider = document.getElementById('heroSlider');
+            var slides = slider.querySelectorAll('.hero-slide');
+            var dots = slider.querySelectorAll('.hero-dot');
+            var currentSlide = 0;
+            var autoplayInterval;
+
+            function showSlide(n) {
+                slides.forEach(function(slide) { 
+                    slide.classList.remove('active', 'prev', 'next'); 
+                });
+                dots.forEach(function(dot) { dot.classList.remove('active'); });
+                
+                var prevIndex = (n - 1 + slides.length) % slides.length;
+                var nextIndex = (n + 1) % slides.length;
+                
+                slides[prevIndex].classList.add('prev');
+                slides[n].classList.add('active');
+                slides[nextIndex].classList.add('next');
+                
+                dots[n].classList.add('active');
+                currentSlide = n;
+            }
+
+            function nextSlide() {
+                showSlide((currentSlide + 1) % slides.length);
+            }
+
+            function goToSlide(n) {
+                showSlide(n);
+                clearInterval(autoplayInterval);
+                autoplayInterval = setInterval(nextSlide, 5000);
+            }
+
+            // Dot click handlers
+            dots.forEach(function(dot, index) {
+                dot.addEventListener('click', function() {
+                    goToSlide(index);
+                });
+            });
+
+            // Initialize first slide
+            showSlide(0);
+            
+            // Auto-play
+            autoplayInterval = setInterval(nextSlide, 5000);
+        })();
+    </script>
 
     <script>
-        // Brand dropdown navigation handler
+        // ============================================
+        // SCROLL ANIMATIONS - Trigger animations when elements come into view
+        // ============================================
         (function(){
+            var observerOptions = {
+                threshold: 0.15,
+                rootMargin: '0px 0px -100px 0px'
+            };
+
+            var observer = new IntersectionObserver(function(entries){
+                entries.forEach(function(entry){
+                    if(entry.isIntersecting){
+                        entry.target.classList.add('visible');
+                        // Optional: stop observing once animated
+                        // observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all elements with scroll-animate class
+            var animatedElements = document.querySelectorAll('.scroll-animate, .product-card, section h2, .section-description, .featured-section');
+            animatedElements.forEach(function(el){
+                observer.observe(el);
+            });
+
+            // Stagger animations for product cards on page load
+            setTimeout(function(){
+                var cards = document.querySelectorAll('.product-card');
+                cards.forEach(function(card, index){
+                    setTimeout(function(){
+                        card.style.opacity = '1';
+                    }, index * 150);
+                });
+            }, 300);
+        })();
+    </script>
+
+    <script>
+        // ============================================
+        // BRAND DROPDOWN NAVIGATION (priority handler)
+        // ============================================
+        (function(){
+            // Handle brand dropdown clicks with immediate navigation
             document.addEventListener('click', function(e){
+                // Check if click is within brands dropdown
                 var brandLink = e.target.closest('.nav-list li:nth-child(3) .nav-dropdown a');
                 if(brandLink){
                     e.preventDefault();
                     e.stopPropagation();
                     var href = brandLink.getAttribute('href');
-                    if(href){ window.location.href = href; }
+                    if(href){
+                        window.location.href = href;
+                    }
                     return;
                 }
-            }, true);
+            }, true); // Use capture phase for priority
         })();
     </script>
 
     <script>
+        // ============================================
+        // PAGE TRANSITION EFFECTS
+        // ============================================
+        (function(){
+            // Smooth page transitions on link clicks
+            document.addEventListener('click', function(e){
+                var link = e.target.closest('a[href*=".php"], a[href^="#"]');
+                if(!link) return;
+                
+                var href = link.getAttribute('href');
+                
+                // Skip if it's an anchor link or javascript link
+                if(href.startsWith('#') || href.startsWith('javascript:')) return;
+                
+                // Check if it's an internal PHP file
+                if(!href.includes('.php')) return;
+                
+                // Prevent default and add exit animation
+                e.preventDefault();
+                
+                var body = document.body;
+                body.style.animation = 'none';
+
+                setTimeout(function(){
+                    window.location.href = href;
+                }, 0);
+            });
+
+            // Add page entry animation on load
+            window.addEventListener('load', function(){
+                document.body.style.animation = 'none';
+            });
+        })();
+    </script>
+
+    <script>
+        // ============================================
+        // TEXT ANIMATIONS - Enhanced text reveal effects
+        // ============================================
+        (function(){
+            // Add text animation to headings and descriptions
+            var headings = document.querySelectorAll('h2, h3');
+            headings.forEach(function(heading, index){
+                heading.style.animationDelay = (index * 0.1) + 's';
+            });
+
+            // Animate footer links on hover
+            var footerLinks = document.querySelectorAll('.footer-links a');
+            footerLinks.forEach(function(link, index){
+                link.style.animationDelay = (index * 0.1) + 's';
+            });
+
+            // Stagger contact list items
+            var contactItems = document.querySelectorAll('.contact-list li');
+            contactItems.forEach(function(item, index){
+                item.style.opacity = '0';
+                item.style.animation = 'fadeInUp 0.5s ease ' + (index * 0.1) + 's forwards';
+            });
+        })();
+    </script>
+
+    <script>
+        // ============================================
+        // HOVER EFFECTS - Enhanced interactive feedback
+        // ============================================
+        (function(){
+            // Add hover effects to product cards
+            var cards = document.querySelectorAll('.product-card');
+            cards.forEach(function(card){
+                card.addEventListener('mouseenter', function(){
+                    this.style.boxShadow = '0 20px 40px rgba(0, 212, 170, 0.2)';
+                });
+                card.addEventListener('mouseleave', function(){
+                    this.style.boxShadow = '';
+                });
+            });
+
+            // Enhance button interactions
+            var buttons = document.querySelectorAll('button, .cta-button, .featured-btn');
+            buttons.forEach(function(btn){
+                btn.addEventListener('mousedown', function(){
+                    this.style.transform = 'scale(0.98)';
+                });
+                btn.addEventListener('mouseup', function(){
+                    this.style.transform = '';
+                });
+                btn.addEventListener('mouseleave', function(){
+                    this.style.transform = '';
+                });
+            });
+
+            // Enhance navigation link hover effects
+            var navLinks = document.querySelectorAll('.nav-list a');
+            navLinks.forEach(function(link){
+                link.addEventListener('mouseenter', function(){
+                    this.style.color = '#ffffff';
+                });
+                link.addEventListener('mouseleave', function(){
+                    if(!this.classList.contains('active')){
+                        this.style.color = '';
+                    }
+                });
+            });
+        })();
+    </script>
+
+    <script>
+        // ============================================
+        // PARALLAX & SCROLL EFFECTS
+        // ============================================
+        (function(){
+            var heroSlider = document.getElementById('heroSlider');
+            if(!heroSlider) return;
+
+            window.addEventListener('scroll', function(){
+                var scrolled = window.pageYOffset;
+                if(scrolled < 500){
+                    heroSlider.style.transform = 'translateY(' + (scrolled * 0.5) + 'px)';
+                    heroSlider.style.opacity = 1 - (scrolled / 800);
+                }
+            }, false);
+        })();
+    </script>
+
+    <script>
+        // Sidebar overlay functionality (for backdrop close)
+        (function(){
+            var overlayBackdrop = document.querySelector('.overlay-backdrop');
+            var sidebar = document.getElementById('sidebar');
+            
+            if(overlayBackdrop) {
+                overlayBackdrop.addEventListener('click', function(){
+                    if(sidebar) sidebar.classList.remove('active');
+                    overlayBackdrop.classList.remove('active');
+                });
+            }
+            
+            // Sidebar sub-toggle functionality
+            var subToggles = document.querySelectorAll('.sub-toggle');
+            subToggles.forEach(function(toggle) {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var sublist = document.getElementById(toggle.getAttribute('aria-controls'));
+                    if(sublist) {
+                        sublist.classList.toggle('collapsed');
+                        toggle.setAttribute('aria-expanded', sublist.classList.contains('collapsed') ? 'false' : 'true');
+                    }
+                });
+            });
+            
+            // Nested toggle functionality
+            var nestedToggles = document.querySelectorAll('.nested-toggle');
+            nestedToggles.forEach(function(toggle) {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var nested = document.getElementById(toggle.getAttribute('aria-controls'));
+                    if(nested) {
+                        nested.classList.toggle('collapsed');
+                        toggle.setAttribute('aria-expanded', nested.classList.contains('collapsed') ? 'false' : 'true');
+                    }
+                });
+            });
+        })();
+    </script>
+
+    <script>
+        // ============================================
+        // ACTIVE SIDEBAR CATEGORY HIGHLIGHTING
+        // ============================================
+        setTimeout(function(){
+            var currentPath = window.location.pathname.toLowerCase();
+            var sidebar = document.getElementById('sidebar');
+            if(sidebar) {
+                var pathParts = currentPath.split('/').filter(function(p) { return p && p !== 'andison-1'; });
+                var currentCategory = null;
+                
+                var categoryList = [
+                    'arc-welding-machine',
+                    'arc-welding-robots',
+                    'batteries',
+                    'drilling-and-lifting',
+                    'gas-detectors',
+                    'portable-ventilators',
+                    'power-tools',
+                    'protection',
+                    'welding-accessories',
+                    'welding-consumables'
+                ];
+                
+                for(var i = 0; i < pathParts.length; i++) {
+                    if(categoryList.indexOf(pathParts[i]) !== -1) {
+                        currentCategory = pathParts[i];
+                        break;
+                    }
+                }
+
+                if(currentCategory){
+                    var links = sidebar.querySelectorAll('.sidebar-list > li > a');
+                    links.forEach(function(link){
+                        var href = link.getAttribute('href').toLowerCase();
+                        if(href.includes(currentCategory)){
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            }
+        }, 500);
+    </script>
+
+    <script>
+        // ============================================
+        // MINI SIDEBAR AND BROWSE TOGGLE FUNCTIONALITY
+        // ============================================
         var miniSidebar = document.getElementById('miniSidebar');
         var mainSidebar = document.getElementById('sidebar');
-        var backdrop = document.getElementById('overlay');
+        var backdrop = document.getElementById('overlayBackdrop');
         var expandBtn = document.getElementById('expandSidebar');
         var browseToggle = document.getElementById('browseToggle');
         var miniIcons = document.querySelectorAll('.mini-sidebar-icon');
@@ -1937,47 +4017,154 @@
         var popoverTitle = miniPopover ? miniPopover.querySelector('.mini-popover-title') : null;
         var popoverList = miniPopover ? miniPopover.querySelector('.mini-popover-list') : null;
         var currentPopoverKey = null;
+
+        // Responsive function to show/hide browse toggle
         function updateBrowseToggleVisibility() {
+            if(!browseToggle) return;
             if(window.innerWidth <= 1024) {
-                if(browseToggle) browseToggle.classList.add('active');
+                browseToggle.classList.add('active');
             } else {
-                if(browseToggle) browseToggle.classList.remove('active');
+                browseToggle.classList.remove('active');
             }
         }
+
+        // Initialize on load
         if(browseToggle) updateBrowseToggleVisibility();
-        if(browseToggle) window.addEventListener('resize', updateBrowseToggleVisibility);
+
+        // Update on window resize
+        window.addEventListener('resize', updateBrowseToggleVisibility);
+
+        // Helpers for popover
         function getCategoryKeyFromTarget(dataTarget) {
             if (!dataTarget) return null;
-            var keys = ['arc-welding-machine','arc-welding-robots','batteries','drilling-and-lifting','gas-detectors','portable-ventilators','power-tools','protection','welding-accessories','welding-consumables'];
+            var keys = [
+                'arc-welding-machine','arc-welding-robots','batteries','drilling-and-lifting','gas-detectors','portable-ventilators','power-tools','protection','welding-accessories','welding-consumables'
+            ];
             for (var i=0;i<keys.length;i++) { if (dataTarget.indexOf('/'+keys[i]+'/') !== -1 || dataTarget.indexOf(keys[i]+'/') !== -1) return keys[i]; }
             return null;
         }
         function getCategoryTitle(key) {
-            var map = {'arc-welding-machine': 'Arc Welding Machines','arc-welding-robots': 'Arc Welding Robots','batteries': 'Batteries','drilling-and-lifting': 'Drilling and Lifting','gas-detectors': 'Gas Detectors','portable-ventilators': 'Portable Ventilators','power-tools': 'Power Tools','protection': 'Personal Protective Equipment','welding-accessories': 'Welding Accessories','welding-consumables': 'Welding Consumables'};
+            var map = {
+                'arc-welding-machine': 'Arc Welding Machines',
+                'arc-welding-robots': 'Arc Welding Robots',
+                'batteries': 'Batteries',
+                'drilling-and-lifting': 'Drilling and Lifting',
+                'gas-detectors': 'Gas Detectors',
+                'portable-ventilators': 'Portable Ventilators',
+                'power-tools': 'Power Tools',
+                'protection': 'Personal Protective Equipment',
+                'welding-accessories': 'Welding Accessories',
+                'welding-consumables': 'Welding Consumables'
+            };
             return map[key] || 'Categories';
         }
         function getPopoverItems(key) {
-            var maps = {'arc-welding-robots': [{label: 'G3 Controller Series', href: 'arc-welding-robots/g3-controller-series.php'},{label: 'G4 Controller Series', href: 'arc-welding-robots/g4-controller-series.php'},{label: 'Featured Products and Solutions', href: 'arc-welding-robots/featured-products-and-solution.php'},{label: 'Robot System Peripherals', href: 'arc-welding-robots/robot-system-peripherals.php'}],'arc-welding-machine': [{label: 'CO2/MAG Welding Machine', href: 'arc-welding-machine/co2-mag-welding-machine.php'},{label: 'MIG Welding Machine', href: 'arc-welding-machine/mig-welding-machine.php'},{label: 'TIG Welding Machine', href: 'arc-welding-machine/tig-welding-machine.php'},{label: 'Plasma Cutting Machine', href: 'arc-welding-machine/plasma-cutting-machine.php'},{label: 'Stud Welding', href: 'arc-welding-machine/stud-welding-machine.php'},{label: 'Accessories & Consumables', href: 'arc-welding-machine/accessories-and-consumables.php'}],'batteries': [{label: 'Maintenance Free', href: 'batteries/maintenance-free.php'},{label: 'Low Maintenance', href: 'batteries/low-maintenance.php'},{label: 'Special Batteries', href: 'batteries/special-batteries.php'}],'drilling-and-lifting': [{label: 'Material Handling & Lifting', href: 'drilling-and-lifting/lifting.php'},{label: 'Magnetic Drill', href: 'drilling-and-lifting/magnetic-drill.php'},{label: 'Core Cutters', href: 'drilling-and-lifting/cutters.php'}],'gas-detectors': [{label: 'Single Gas Detector', href: 'gas-detectors/single-gas-detector.php'},{label: 'Multi Gas Detector', href: 'gas-detectors/multi-gas-detector.php'},{label: 'Portable Gas Detectors', href: 'gas-detectors/portable-gas-detectors.php'},{label: 'Docking and Data Management', href: 'gas-detectors/docking-data-management.php'},{label: 'Calibration Gas and Regulators', href: 'gas-detectors/calibration-gas-regulators.php'}],'power-tools': [{label: 'Grinder', href: 'power-tools/grinder.php'},{label: 'Saw', href: 'power-tools/saw.php'},{label: 'Drill and Wrench', href: 'power-tools/drill-and-wrench.php'},{label: 'Rotary and Demolition Hammer', href: 'power-tools/rotary-and-demolition-hammer.php'},{label: 'Accessories', href: 'power-tools/accessories.php'}],'portable-ventilators': [{label: 'Electric Driven', href: 'portable-ventilators/electric-driven.php'},{label: 'Pneumatic Driven', href: 'portable-ventilators/pneumatic-driven.php'}],'protection': [{label: 'Eye Protection', href: 'protection/eye-protection.php'},{label: 'Hand Protection', href: 'protection/hand-protection.php'},{label: 'Hearing & Respiratory Protection', href: 'protection/hearing-respiratory-protection.php'},{label: 'Welding Head and Face Protection', href: 'protection/welding-head-and-face-protection.php'},{label: 'Body Protection', href: 'protection/body-protection.php'}],'welding-accessories': [{label: 'Welding Electrode Oven', href: 'welding-accessories/welding-electrode-oven.php'},{label: 'Non-Destructive Crack Detection', href: 'welding-accessories/non-destructive-crack-detection.php'},{label: 'Gas Saving Regulator', href: 'welding-accessories/gas-saving-regulator.php'},{label: 'Gas Cutting Equipment', href: 'welding-accessories/gas-cutting-equipment.php'},{label: 'Industrial Markers', href: 'welding-accessories/industrial-markers.php'},{label: 'Measuring Gauge', href: 'welding-accessories/measuring-gauge.php'},{label: 'Others', href: 'welding-accessories/others.php'}],'welding-consumables': [{label: 'Kobelco', href: 'welding-consumables/kobelco.php'},{label: 'Metrode', href: 'welding-consumables/metrode.php'}]};
+            var base = '.';
+            var maps = {
+                'arc-welding-robots': [
+                    { label: 'G3 Controller Series', href: base + '/arc-welding-robots/g3-controller-series.php' },
+                    { label: 'G4 Controller Series', href: base + '/arc-welding-robots/g4-controller-series.php' },
+                    { label: 'Featured Products and Solutions', href: base + '/arc-welding-robots/featured-products-and-solution.php' },
+                    { label: 'Robot System Peripherals', href: base + '/arc-welding-robots/robot-system-peripherals.php' }
+                ],
+                'arc-welding-machine': [
+                    { label: 'MIG Welding Machine', href: base + '/arc-welding-machine/mig-welding-machine.php' },
+                    { label: 'CO1/MAG Welding Machine', href: base + '/arc-welding-machine/co1-mag-welding-machine.php' },
+                    { label: 'STUD Welding Machine', href: base + '/arc-welding-machine/stud-welding-machine.php' },
+                    { label: 'TIG Welding Machine', href: base + '/arc-welding-machine/tig-welding-machine.php' },
+                    { label: 'Plasma Cutting Machine', href: base + '/arc-welding-machine/plasma-cutting-machine.php' }
+                ],
+                'batteries': [
+                    { label: 'Maintenance Free', href: base + '/batteries/maintenance-free.php' },
+                    { label: 'Low Maintenance', href: base + '/batteries/low-maintenance.php' },
+                    { label: 'Special Batteries', href: base + '/batteries/special-batteries.php' }
+                ],
+                'drilling-and-lifting': [
+                    { label: 'Lifting', href: base + '/drilling-and-lifting/lifting.php' },
+                    { label: 'Magnetic Drill', href: base + '/drilling-and-lifting/magnetic-drill.php' },
+                    { label: 'Cutters', href: base + '/drilling-and-lifting/cutters.php' }
+                ],
+                'gas-detectors': [
+                    { label: 'Single Gas Detector', href: base + '/gas-detectors/single-gas-detector.php' },
+                    { label: 'Multi Gas Detector', href: base + '/gas-detectors/multi-gas-detector.php' },
+                    { label: 'Portable Gas Detectors', href: base + '/gas-detectors/portable-gas-detectors.php' },
+                    { label: 'Docking and Data Management', href: base + '/gas-detectors/docking-data-management.php' },
+                    { label: 'Calibration Gas and Regulators', href: base + '/gas-detectors/calibration-gas-regulators.php' }
+                ],
+                'power-tools': [
+                    { label: 'Grinder', href: base + '/power-tools/grinder.php' },
+                    { label: 'Saw', href: base + '/power-tools/saw.php' },
+                    { label: 'Drill and Wrench', href: base + '/power-tools/drill-and-wrench.php' },
+                    { label: 'Rotary and Demolition Hammer', href: base + '/power-tools/rotary-and-demolition-hammer.php' },
+                    { label: 'Accessories', href: base + '/power-tools/accessories.php' }
+                ],
+                'portable-ventilators': [
+                    { label: 'Electric Driven', href: base + '/portable-ventilators/electric-driven.php' },
+                    { label: 'Pneumatic Driven', href: base + '/portable-ventilators/pneumatic-driven.php' }
+                ],
+                'protection': [
+                    { label: 'Eye Protection', href: base + '/protection/eye-protection.php' },
+                    { label: 'Hand Protection', href: base + '/protection/hand-protection.php' },
+                    { label: 'Hearing & Respiratory Protection', href: base + '/protection/hearing-respiratory-protection.php' },
+                    { label: 'Welding Head and Face Protection', href: base + '/protection/welding-head-and-face-protection.php' },
+                    { label: 'Body Protection', href: base + '/protection/body-protection.php' }
+                ],
+                'welding-accessories': [
+                    { label: 'Welding Electrode Oven', href: base + '/welding-accessories/welding-electrode-oven.php' },
+                    { label: 'Non-Destructive Crack Detection', href: base + '/welding-accessories/non-destructive-crack-detection.php' },
+                    { label: 'Gas Saving Regulator', href: base + '/welding-accessories/gas-saving-regulator.php' },
+                    { label: 'Gas Cutting Equipment', href: base + '/welding-accessories/gas-cutting-equipment.php' },
+                    { label: 'Industrial Markers', href: base + '/welding-accessories/industrial-markers.php' },
+                    { label: 'Measuring Gauge', href: base + '/welding-accessories/measuring-gauge.php' },
+                    { label: 'Others', href: base + '/welding-accessories/others.php' }
+                ],
+                'welding-consumables': [
+                    { label: 'Kobelco', href: base + '/welding-consumables/kobelco.php' },
+                    { label: 'Metrode', href: base + '/welding-consumables/metrode.php' }
+                ]
+            };
             return maps[key] || [];
         }
         function renderPopover(key) {
             if (!miniPopover || !popoverList) return;
             popoverList.innerHTML = '';
             var items = getPopoverItems(key);
-            items.forEach(function(it){var li = document.createElement('li'); li.className = 'mini-popover-item'; li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a>'; popoverList.appendChild(li);});
+            items.forEach(function(it){
+                var li = document.createElement('li');
+                li.className = 'mini-popover-item';
+                li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a>';
+                popoverList.appendChild(li);
+            });
             if (popoverTitle) popoverTitle.textContent = getCategoryTitle(key);
         }
         function positionPopoverForIcon(icon) {
             if (!miniPopover || !icon) return;
-            miniPopover.style.left = '-9999px'; miniPopover.style.top = '-9999px'; miniPopover.classList.add('show');
-            var rect = icon.getBoundingClientRect(); var pw = miniPopover.offsetWidth; var ph = miniPopover.offsetHeight;
-            var iconCenterY = rect.top + rect.height / 2; var left = Math.round(rect.right + 14); var top = Math.round(iconCenterY - ph / 2);
-            if (left + pw + 12 > window.innerWidth) left = Math.round(rect.left - pw - 14);
-            var headerHeight = 170; var minTop = headerHeight + 12; var maxTop = window.innerHeight - ph - 12;
-            if (top < minTop) top = minTop; if (top > maxTop) top = maxTop;
+            miniPopover.style.left = '-9999px';
+            miniPopover.style.top = '-9999px';
+            miniPopover.classList.add('show');
+            var rect = icon.getBoundingClientRect();
+            var pw = miniPopover.offsetWidth;
+            var ph = miniPopover.offsetHeight;
+            var iconCenterY = rect.top + rect.height / 2;
+
+            var left = Math.round(rect.right + 14);
+            var top = Math.round(iconCenterY - ph / 2);
+
+            if (left + pw + 12 > window.innerWidth) {
+                left = Math.round(rect.left - pw - 14);
+            }
+
+            var headerHeight = 170;
+            var minTop = headerHeight + 12;
+            var maxTop = window.innerHeight - ph - 12;
+            if (top < minTop) top = minTop;
+            if (top > maxTop) top = maxTop;
+
             var arrowOffset = iconCenterY - top - 26;
             miniPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
-            miniPopover.style.left = left + 'px'; miniPopover.style.top = top + 'px';
+
+            miniPopover.style.left = left + 'px';
+            miniPopover.style.top = top + 'px';
         }
         function hidePopover() {
             if (!miniPopover) return;
@@ -1987,26 +4174,131 @@
         }
         function showPopoverForKey(key, icon) {
             if (!miniPopover) return;
-            if (currentPopoverKey === key && miniPopover.classList.contains('show')) { hidePopover(); return; }
+            if (currentPopoverKey === key && miniPopover.classList.contains('show')) {
+                hidePopover();
+                return;
+            }
             renderPopover(key);
             positionPopoverForIcon(icon);
             miniPopover.classList.add('show');
             miniPopover.setAttribute('aria-hidden', 'false');
             currentPopoverKey = key;
         }
-        document.addEventListener('click', function(e){ if (!miniPopover) return; if (!miniPopover.classList.contains('show')) return; if (e.target.closest('.mini-popover') || e.target.closest('.sub-indicator')) return; hidePopover(); });
+
+        // Close on outside click / Escape
+        document.addEventListener('click', function(e){
+            if (!miniPopover) return;
+            if (!miniPopover.classList.contains('show')) return;
+            if (e.target.closest('.mini-popover') || e.target.closest('.sub-indicator')) return;
+            hidePopover();
+        });
         document.addEventListener('keydown', function(e){ if (e.key === 'Escape') hidePopover(); });
-        if(browseToggle) { browseToggle.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); var isMiniSidebarVisible = miniSidebar && window.getComputedStyle(miniSidebar).display !== 'none'; if(window.innerWidth > 1024 && isMiniSidebarVisible) { miniSidebar.classList.toggle('expanded'); browseToggle.classList.toggle('expanded'); } else { if(mainSidebar.classList.contains('active')) { mainSidebar.classList.remove('active'); backdrop.classList.remove('active'); } else { mainSidebar.classList.add('active'); backdrop.classList.add('active'); mainSidebar.style.display = 'block'; backdrop.style.display = 'block'; } } }); }
-        if(expandBtn) { expandBtn.addEventListener('click', function() { miniSidebar.classList.toggle('expanded'); if(browseToggle) browseToggle.classList.toggle('expanded'); }); }
+
+        // Browse toggle click
+        if(browseToggle) {
+            browseToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                var isMiniSidebarVisible = window.getComputedStyle(miniSidebar).display !== 'none';
+                
+                if(window.innerWidth > 1024 && isMiniSidebarVisible) {
+                    miniSidebar.classList.toggle('expanded');
+                    browseToggle.classList.toggle('expanded');
+                } else {
+                    if(mainSidebar.classList.contains('active')) {
+                        mainSidebar.classList.remove('active');
+                        backdrop.classList.remove('active');
+                    } else {
+                        mainSidebar.classList.add('active');
+                        backdrop.classList.add('active');
+                        mainSidebar.style.display = 'block';
+                        backdrop.style.display = 'block';
+                    }
+                }
+            });
+        }
+
+        // Expand/collapse sidebar when clicking expand button
+        expandBtn.addEventListener('click', function() {
+            miniSidebar.classList.toggle('expanded');
+            if(browseToggle) browseToggle.classList.toggle('expanded');
+        });
+
+        // On mobile, collapse by default
+        if(window.innerWidth <= 768) {
+            miniSidebar.classList.remove('expanded');
+            if(browseToggle) browseToggle.classList.remove('expanded');
+        }
+
+        // Menu bar click handler
         var menuBar = document.getElementById('miniSidebarMenuBar');
-        if(menuBar) { menuBar.addEventListener('click', function() { miniSidebar.classList.toggle('expanded'); if(browseToggle) browseToggle.classList.toggle('expanded'); }); }
-        var arrowHandler = function(e) { e.stopPropagation(); e.preventDefault(); var arrow = (e.target && e.target.closest('.sub-indicator')) || e.currentTarget; var icon = arrow ? arrow.closest('.mini-sidebar-icon') : null; if (!icon) return; var dataTarget = icon.getAttribute('data-target') || ''; var categoryKey = getCategoryKeyFromTarget(dataTarget); if (!categoryKey) return; showPopoverForKey(categoryKey, icon); };
-        document.querySelectorAll('.sub-indicator').forEach(function(arrow) { arrow.addEventListener('click', arrowHandler, true); });
-        document.addEventListener('click', function(e) { if (e.target.closest('.sub-indicator')) { arrowHandler(e); } }, true);
-        miniIcons.forEach(function(icon) { icon.addEventListener('click', function(e) { if (e.target.closest('.sub-indicator')) { e.stopPropagation(); return; } var target = this.getAttribute('data-target'); if (target) { window.location.href = target; } }, true); });
-        if(backdrop) { backdrop.addEventListener('click', function() { if(mainSidebar.classList.contains('active')) { mainSidebar.classList.remove('active'); backdrop.classList.remove('active'); } }); }
+        if(menuBar) {
+            menuBar.addEventListener('click', function() {
+                miniSidebar.classList.toggle('expanded');
+                if(browseToggle) browseToggle.classList.toggle('expanded');
+            });
+        }
+
+        // ARROW CLICK HANDLER
+        var arrowHandler = function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            var arrow = (e.target && e.target.closest('.sub-indicator')) || e.currentTarget;
+            var icon = arrow ? arrow.closest('.mini-sidebar-icon') : null;
+            if (!icon) return;
+
+            var dataTarget = icon.getAttribute('data-target') || '';
+            var categoryKey = getCategoryKeyFromTarget(dataTarget);
+            if (!categoryKey) return;
+
+            showPopoverForKey(categoryKey, icon);
+        };
+        
+        document.querySelectorAll('.sub-indicator').forEach(function(arrow) {
+            arrow.addEventListener('click', arrowHandler, true);
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.sub-indicator')) {
+                arrowHandler(e);
+            }
+        }, true);
+
+        // Mini icon navigation
+        miniIcons.forEach(function(icon) {
+            icon.addEventListener('click', function(e) {
+                if (e.target.closest('.sub-indicator')) {
+                    e.stopPropagation();
+                    return;
+                }
+                
+                var target = this.getAttribute('data-target');
+                if (target) {
+                    window.location.href = target;
+                }
+            }, true);
+        });
+
+        // Close sidebar backdrop click
+        backdrop.addEventListener('click', function() {
+            if(mainSidebar.classList.contains('active')) {
+                mainSidebar.classList.remove('active');
+                backdrop.classList.remove('active');
+            }
+        });
+
+        // Close sidebar button click
         var closeSidebarBtn = document.getElementById('closeSidebar');
-        if(closeSidebarBtn) { closeSidebarBtn.addEventListener('click', function() { if(mainSidebar.classList.contains('active')) { mainSidebar.classList.remove('active'); backdrop.classList.remove('active'); } }); }
+        if(closeSidebarBtn) {
+            closeSidebarBtn.addEventListener('click', function() {
+                if(mainSidebar.classList.contains('active')) {
+                    mainSidebar.classList.remove('active');
+                    backdrop.classList.remove('active');
+                }
+            });
+        }
     </script>
 
     <script>
@@ -2039,6 +4331,40 @@
             setInterval(updateCartBadge, 500);
         })();
     </script>
-    </body>
+
+    <script>
+        // Mobile FAB toggle for mini sidebar
+        (function() {
+            var fab = document.getElementById('mobileSidebarFab');
+            var sidebar = document.getElementById('miniSidebar');
+            var fabIcon = document.getElementById('mobileFabIcon');
+            if (!fab || !sidebar) return;
+
+            function isMobile() { return window.innerWidth <= 768; }
+
+            function syncFab() {
+                if (!isMobile()) { fab.classList.remove('open', 'wide'); return; }
+                var isOpen = sidebar.classList.contains('mobile-visible');
+                var isExpanded = sidebar.classList.contains('expanded');
+                fab.classList.toggle('open', isOpen);
+                fab.classList.toggle('wide', isOpen && isExpanded);
+                fabIcon.className = isOpen ? 'bi bi-chevron-left' : 'bi bi-chevron-right';
+            }
+
+            fab.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (!isMobile()) return;
+                sidebar.classList.toggle('mobile-visible');
+                syncFab();
+            });
+
+            // Keep FAB in sync when sidebar expand/collapse changes its width
+            var observer = new MutationObserver(function() { syncFab(); });
+            observer.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
+
+            window.addEventListener('resize', syncFab);
+        })();
+    </script>
+</body>
 </html>
 

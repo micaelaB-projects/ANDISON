@@ -562,21 +562,22 @@ $ytLinks = andison_get_youtube_links();
         /* Hero Section */
         .hero {
             position: relative;
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23888888" width="1200" height="600"/></svg>');
+            background: linear-gradient(135deg, rgba(43, 17, 219, 0.8) 0%, rgba(0, 215, 179, 0.8) 100%), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23888888" width="1200" height="600"/></svg>');
             background-size: cover;
             background-position: center;
             color: white;
             text-align: center;
-            padding: 60px 20px;
+            padding: 80px 20px;
             aspect-ratio: 16;
-            min-height: 300px;
-            max-height: 600px;
+            min-height: 400px;
+            max-height: 700px;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            margin-bottom: 40px;
+            margin-bottom: 80px;
             z-index: 1;
+            box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.1);
         }
 
         .hero-slider {
@@ -738,21 +739,23 @@ $ytLinks = andison_get_youtube_links();
         }
 
         .cta-button {
-            background: #00d4aa;
+            background: linear-gradient(135deg, #00D7B3 0%, #00C99A 100%);
             color: white;
-            padding: 12px 35px;
+            padding: 14px 40px;
             border: none;
-            border-radius: 3px;
+            border-radius: 10px;
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 700;
             cursor: pointer;
-            transition: background 0.1s;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
             text-decoration: none;
             display: inline-block;
+            box-shadow: 0 4px 15px rgba(0, 215, 179, 0.3);
         }
 
         .cta-button:hover {
-            background: #00b88a;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 215, 179, 0.4);
         }
 
         /* Section */
@@ -766,7 +769,7 @@ $ytLinks = andison_get_youtube_links();
 
         section {
             width: 100%;
-            padding: 60px 20px;
+            padding: 100px 20px;
             position: relative;
             z-index: 10;
             background: white;
@@ -774,32 +777,41 @@ $ytLinks = andison_get_youtube_links();
             display: flex;
             flex-direction: column;
             align-items: center;
+            border-top: 1px solid rgba(0, 0, 0, 0.04);
         }
 
         section h2 {
             text-align: center;
-            font-size: 45px;
-            margin-bottom: 20px;
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
             color: #2B11DB;
             width: 100%;
+            background: linear-gradient(135deg, #2B11DB 0%, #00D7B3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
         }
     
         .section-description {
             text-align: center;
-            max-width: 700px;
-            margin: 0 auto 50px;
-            color: #666;
-            line-height: 1.8;
+            max-width: 750px;
+            margin: 0 auto 60px;
+            color: #555;
+            line-height: 1.9;
             width: 100%;
             box-sizing: border-box;
             padding: 0 20px;
+            font-size: 16px;
+            font-weight: 500;
         }
 
         /* Product Highlights */
         .highlights-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 28px;
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            gap: 40px;
             margin-bottom: 50px;
             width: 100%;
             max-width: 1200px;
@@ -811,23 +823,23 @@ $ytLinks = andison_get_youtube_links();
 
         .product-card {
             background: #ffffff;
-            border-radius: 12px;
+            border-radius: 16px;
             overflow: hidden;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-            transition: transform 0.18s, box-shadow 0.18s;
+            border: 1px solid #e8eef7;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.4s ease;
         }
 
         .product-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.13);
+            transform: translateY(-12px);
+            box-shadow: 0 20px 40px rgba(43, 17, 219, 0.15);
         }
 
         .product-image {
             width: 100%;
             aspect-ratio: 16 / 9;
-            min-height: 280px;
-            background: linear-gradient(135deg, #888 0%, #666 100%);
+            min-height: 320px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -876,43 +888,48 @@ $ytLinks = andison_get_youtube_links();
         }
 
         .product-info {
-            padding: 18px 20px 20px;
+            padding: 28px 24px;
             background: white;
             width: 100%;
             box-sizing: border-box;
             border-top: 1px solid #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .product-info h3 {
-            font-size: 15px;
+            font-size: 18px;
             font-weight: 700;
-            margin-bottom: 8px;
-            color: #1a1a1a;
+            margin-bottom: 6px;
+            color: #2B11DB;
+            line-height: 1.4;
         }
 
         .product-info p {
-            font-size: 13px;
-            color: #6b7280;
-            line-height: 1.6;
+            font-size: 15px;
+            color: #666;
+            line-height: 1.7;
             margin: 0;
         }
 
         /* Featured Section */
         .featured-section {
-            background: linear-gradient(135deg, #c8f0ed 0%, #a8e6e1 100%);
-            padding: 60px 50px;
-            border-radius: 16px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            padding: 70px 60px;
+            border-radius: 20px;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 50px;
+            gap: 70px;
             align-items: center;
-            box-shadow: 0 8px 32px rgba(0, 212, 170, 0.12);
+            box-shadow: 0 4px 20px rgba(43, 17, 219, 0.08);
             overflow: hidden;
             position: relative;
             max-width: 1100px;
             margin: 0 auto;
             width: 100%;
             box-sizing: border-box;
+            border: 1px solid #e8eef7;
         }
 
         .featured-section::before {
@@ -933,24 +950,25 @@ $ytLinks = andison_get_youtube_links();
 
         .featured-badge {
             display: inline-block;
-            background: #00d4aa;
+            background: linear-gradient(135deg, #00D7B3 0%, #00C99A 100%);
             color: white;
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-size: 11px;
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 13px;
             font-weight: 700;
-            letter-spacing: 1px;
-            margin-bottom: 20px;
+            letter-spacing: 1.2px;
+            margin-bottom: 24px;
             text-transform: uppercase;
-            box-shadow: 0 4px 12px rgba(0, 212, 170, 0.25);
+            box-shadow: 0 4px 12px rgba(0, 215, 179, 0.3);
         }
 
         .featured-content h3 {
-            font-size: 36px;
-            margin-bottom: 8px;
-            color: #1a1a1a;
+            font-size: 40px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: #2B11DB;
             font-weight: 700;
-            line-height: 1.3;
+            line-height: 1.2;
             letter-spacing: -0.5px;
         }
 
@@ -1024,53 +1042,55 @@ $ytLinks = andison_get_youtube_links();
 
         .featured-content p {
             color: #555;
-            margin-bottom: 24px;
-            line-height: 1.8;
-            font-size: 15px;
+            margin-bottom: 32px;
+            line-height: 1.9;
+            font-size: 16px;
+            font-weight: 500;
         }
 
         .featured-btn {
-            background: linear-gradient(135deg, #00D7B3 0%, #00b8a0 100%);
+            background: linear-gradient(135deg, #2B11DB 0%, #1e0aa3 100%);
             color: white;
-            padding: 14px 36px;
+            padding: 14px 42px;
             border: none;
-            border-radius: 6px;
+            border-radius: 10px;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 15px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
             text-decoration: none;
             display: inline-block;
-            box-shadow: 0 6px 20px rgba(0, 215, 179, 0.35);
+            box-shadow: 0 4px 15px rgba(43, 17, 219, 0.3);
             letter-spacing: 0.5px;
         }
 
         .featured-btn:hover {
-            background: linear-gradient(135deg, #00E6FF 0%, #00d4aa 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 28px rgba(0, 215, 179, 0.45);
+            background: linear-gradient(135deg, #3d1ffa 0%, #2B11DB 100%);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(43, 17, 219, 0.4);
         }
 
         .featured-btn:active {
-            transform: translateY(0);
+            transform: translateY(-1px);
         }
 
         .featured-image {
             width: 100%;
             aspect-ratio: 16 / 9;
-            min-height: 280px;
-            background: linear-gradient(135deg, #0066cc 0%, #82a2c9 100%);
-            border-radius: 12px;
+            min-height: 400px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-size: 60px;
-            box-shadow: 0 12px 40px rgba(0, 102, 204, 0.25);
+            box-shadow: 0 20px 40px rgba(43, 17, 219, 0.15);
             position: relative;
             z-index: 2;
             overflow: hidden;
             flex-shrink: 0;
+            border: 1px solid #e8eef7;
         }
 
         .featured-image img {
@@ -1100,9 +1120,9 @@ $ytLinks = andison_get_youtube_links();
 
         /* Footer */
         footer {
-            background: #2B11DB;
+            background: linear-gradient(135deg, #1a0d7a 0%, #2B11DB 100%);
             color: white;
-            padding: 40px 0;
+            padding: 60px 0 40px;
             text-align: center;
             margin-top: auto;
             width: 100vw;
@@ -1111,38 +1131,57 @@ $ytLinks = andison_get_youtube_links();
             right: 0;
             margin-left: 0;
             margin-right: 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .footer-content {
             width: 100%;
             margin: 0;
             padding: 0 20px;
-        }
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
         }
 
         .footer-links {
             display: flex;
             justify-content: center;
-            gap: 30px;
-            margin-bottom: 20px;
+            gap: 40px;
+            margin-bottom: 16px;
             flex-wrap: wrap;
         }
 
         .footer-links a {
-            color: white;
+            color: rgba(255, 255, 255, 0.95);
             text-decoration: none;
-            font-size: 13px;
-            transition: color 0.1s;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            padding-bottom: 4px;
         }
 
-        .footer-links a:hover {
-            color: #00d4aa;
+        .footer-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00D7B3;
+            transition: width 0.3s ease;
+        }
+
+        .footer-links a:hover::after {
+            width: 100%;
         }
 
         .footer-copyright {
-            font-size: 12px;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            padding-top: 20px;
+            font-size: 14px;
+            opacity: 0.85;
+            font-weight: 500;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            padding-top: 24px;
         }
 
         /* Responsive */
@@ -1241,29 +1280,29 @@ $ytLinks = andison_get_youtube_links();
             }
 
             .nav-inner {
-                padding-left: 50px;
-                padding-right: 6px;
-                gap: 2px;
-                min-height: 40px;
-                overflow-x: auto;
+                padding-left: 0;
+                padding-right: 0;
+                gap: 0;
+                min-height: auto;
+                overflow-x: hidden;
                 overflow-y: visible;
-                justify-content: flex-start;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: none;
+                justify-content: center;
+                flex-wrap: wrap;
             }
 
             .nav-inner::-webkit-scrollbar { display: none; }
 
             .nav-list {
                 gap: 0;
-                flex-wrap: nowrap;
-                flex-shrink: 0;
+                flex-wrap: wrap;
+                flex-shrink: 1;
+                justify-content: center;
             }
 
             .nav-list > li > a {
-                white-space: nowrap;
-                font-size: 12px;
-                padding: 8px 10px;
+                white-space: normal;
+                font-size: 11px;
+                padding: 10px 8px;
             }
 
             .browse-toggle {
@@ -1277,27 +1316,50 @@ $ytLinks = andison_get_youtube_links();
             }
             
             .hero {
-                aspect-ratio: 4 / 3;
-                min-height: 250px;
+                aspect-ratio: auto;
+                min-height: 420px;
+                padding: 20px 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .hero-content {
+                max-width: 100%;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .hero-thumb {
+                width: 85%;
+                height: auto;
+                max-width: 95%;
+                aspect-ratio: 16 / 9 !important;
             }
             
             .product-image {
                 aspect-ratio: 4 / 3;
-                min-height: 200px;
+                min-height: 240px;
             }
             
             .featured-image {
                 aspect-ratio: 4 / 3;
-                min-height: 200px;
+                min-height: 260px;
             }
 
             .featured-section {
                 grid-template-columns: 1fr;
-                padding: 40px 24px;
+                padding: 40px 28px;
+                gap: 40px;
+                border-radius: 16px;
             }
 
             .featured-content h3 {
-                font-size: 24px;
+                font-size: 28px;
+                font-weight: 800;
             }
 
             .featured-meta {
@@ -1313,26 +1375,14 @@ $ytLinks = andison_get_youtube_links();
                 font-size: 13px;
             }
 
-            .footer-links {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            section {
-                padding: 40px 16px;
-                text-align: center;
-            }
-
-            .container {
-                padding: 0 12px;
-                margin: 0 auto;
-                width: 100%;
-                box-sizing: border-box;
+            .featured-btn {
+                padding: 12px 32px;
+                font-size: 14px;
             }
 
             .highlights-grid {
                 grid-template-columns: 1fr;
-                gap: 20px;
+                gap: 24px;
             }
 
             section h2 {
