@@ -75,7 +75,7 @@ andison_admin_header('Dashboard', 'dashboard');
     <!-- ── ANALYTICS (Visitor Stats) ─────────────────────────── -->
     <section class="card" style="grid-column:span 12;">
         <h2 style="font-size:15px;margin-bottom:12px;display:flex;align-items:center;gap:8px;">
-            <i class="bi bi-bar-chart-line"></i> Website Analytics
+            <i class="bi bi-people"></i> Site Visitors
             <span id="analytics-live-dot" style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:#10b981;background:rgba(16,185,129,0.10);padding:2px 8px;border-radius:999px;letter-spacing:0.3px;">
                 <span style="width:6px;height:6px;border-radius:50%;background:#10b981;display:inline-block;animation:livePulse 1.4s ease-in-out infinite;"></span>
                 LIVE
@@ -87,56 +87,56 @@ andison_admin_header('Dashboard', 'dashboard');
                 0%,100%{opacity:1;transform:scale(1)}
                 50%{opacity:0.4;transform:scale(0.7)}
             }
-            .analytics-num{transition:color 0.4s ease}
-            .analytics-num.flash{color:#00D7B3!important}
+            .analytics-num{transition:color 0.4s ease,transform 0.3s ease}
+            .analytics-num.flash{color:#00D7B3!important;transform:scale(1.15)}
         </style>
 
         <!-- Stat Tiles -->
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px;">
-            <!-- Total Page Views -->
-            <div style="padding:12px;background:linear-gradient(135deg,#2B11DB,#1a0a8f);border-radius:10px;color:white;">
+            <!-- Total Visitors -->
+            <div id="card-total" style="padding:12px;background:linear-gradient(135deg,#2B11DB,#1a0a8f);border-radius:10px;color:white;transition:box-shadow 0.3s,transform 0.3s;">
                 <div style="display:flex;align-items:center;justify-content:space-between;">
                     <div id="an-total-pv" class="analytics-num" style="font-size:22px;font-weight:800;"><?php echo number_format($analytics['total_pageviews']); ?></div>
-                    <i class="bi bi-eye" style="font-size:18px;opacity:0.55;"></i>
+                    <i class="bi bi-people" style="font-size:18px;opacity:0.55;"></i>
                 </div>
-                <div style="font-size:11px;opacity:0.9;margin-top:4px;">Total Page Views</div>
+                <div style="font-size:11px;opacity:0.9;margin-top:4px;">Total Visitors</div>
                 <div style="font-size:10px;opacity:0.65;margin-top:1px;">All time</div>
             </div>
 
             <!-- Today -->
-            <div style="padding:12px;background:linear-gradient(135deg,#f59e0b,#92400e);border-radius:10px;color:white;">
+            <div id="card-today" style="padding:12px;background:linear-gradient(135deg,#f59e0b,#92400e);border-radius:10px;color:white;transition:box-shadow 0.3s,transform 0.3s;">
                 <div style="display:flex;align-items:center;justify-content:space-between;">
                     <div id="an-today-pv" class="analytics-num" style="font-size:22px;font-weight:800;"><?php echo number_format($analytics['today_pageviews']); ?></div>
                     <i class="bi bi-calendar-day" style="font-size:18px;opacity:0.55;"></i>
                 </div>
-                <div style="font-size:11px;opacity:0.9;margin-top:4px;">Views Today</div>
-                <div id="an-today-unique" style="font-size:10px;opacity:0.65;margin-top:1px;"><?php echo number_format($analytics['today_unique']); ?> unique</div>
+                <div style="font-size:11px;opacity:0.9;margin-top:4px;">Visitors Today</div>
+                <div id="an-today-unique" style="font-size:10px;opacity:0.65;margin-top:1px;"><?php echo date('l'); ?></div>
             </div>
 
             <!-- This Week -->
-            <div style="padding:12px;background:linear-gradient(135deg,#06b6d4,#0e7490);border-radius:10px;color:white;">
+            <div id="card-week" style="padding:12px;background:linear-gradient(135deg,#06b6d4,#0e7490);border-radius:10px;color:white;transition:box-shadow 0.3s,transform 0.3s;">
                 <div style="display:flex;align-items:center;justify-content:space-between;">
                     <div id="an-week-pv" class="analytics-num" style="font-size:22px;font-weight:800;"><?php echo number_format($analytics['week_pageviews']); ?></div>
                     <i class="bi bi-calendar-week" style="font-size:18px;opacity:0.55;"></i>
                 </div>
                 <div style="font-size:11px;opacity:0.9;margin-top:4px;">This Week</div>
-                <div id="an-week-unique" style="font-size:10px;opacity:0.65;margin-top:1px;"><?php echo number_format($analytics['week_unique']); ?> unique</div>
+                <div id="an-week-unique" style="font-size:10px;opacity:0.65;margin-top:1px;">Since <?php echo date('M j', strtotime('monday this week')); ?></div>
             </div>
 
             <!-- This Month -->
-            <div style="padding:12px;background:linear-gradient(135deg,#8b5cf6,#4c1d95);border-radius:10px;color:white;">
+            <div id="card-month" style="padding:12px;background:linear-gradient(135deg,#8b5cf6,#4c1d95);border-radius:10px;color:white;transition:box-shadow 0.3s,transform 0.3s;">
                 <div style="display:flex;align-items:center;justify-content:space-between;">
                     <div id="an-month-pv" class="analytics-num" style="font-size:22px;font-weight:800;"><?php echo number_format($analytics['month_pageviews']); ?></div>
                     <i class="bi bi-calendar-month" style="font-size:18px;opacity:0.55;"></i>
                 </div>
                 <div style="font-size:11px;opacity:0.9;margin-top:4px;">This Month</div>
-                <div id="an-month-unique" style="font-size:10px;opacity:0.65;margin-top:1px;"><?php echo number_format($analytics['month_unique']); ?> unique</div>
+                <div id="an-month-unique" style="font-size:10px;opacity:0.65;margin-top:1px;"><?php echo date('F Y'); ?></div>
             </div>
         </div>
 
         <!-- Last 7 Days Bar Chart -->
         <div style="margin-bottom:4px;">
-            <div style="font-size:11px;font-weight:700;color:#374151;margin-bottom:6px;"><i class="bi bi-graph-up-arrow" style="color:var(--accent);"></i> Page Views — Last 7 Days</div>
+            <div style="font-size:11px;font-weight:700;color:#374151;margin-bottom:6px;"><i class="bi bi-graph-up-arrow" style="color:var(--accent);"></i> Visitors — Last 7 Days</div>
             <?php
                 $maxViews = max(array_column($chartData, 'views') ?: [1]);
                 $maxViews = max($maxViews, 1);
@@ -211,14 +211,14 @@ andison_admin_header('Dashboard', 'dashboard');
 
     <script>
     (function(){
-        var POLL_MS = 5000; // refresh every 5 seconds
+        var POLL_MS = 2000; // refresh every 2 seconds
 
         function fmt(n){ return Number(n).toLocaleString(); }
 
         function flashEl(el){
             if(!el) return;
             el.classList.add('flash');
-            setTimeout(function(){ el.classList.remove('flash'); }, 600);
+            setTimeout(function(){ el.classList.remove('flash'); }, 1000);
         }
 
         function setVal(id, newVal, doFlash){
@@ -295,14 +295,16 @@ andison_admin_header('Dashboard', 'dashboard');
                     setVal('an-week-pv',    d.week_pageviews,   true);
                     setVal('an-month-pv',   d.month_pageviews,  true);
 
-                    var todayUq = document.getElementById('an-today-unique');
-                    if(todayUq) todayUq.textContent = fmt(d.today_unique) + ' unique';
-
-                    var weekUq = document.getElementById('an-week-unique');
-                    if(weekUq) weekUq.textContent = fmt(d.week_unique) + ' unique';
-
-                    var monthUq = document.getElementById('an-month-unique');
-                    if(monthUq) monthUq.textContent = fmt(d.month_unique) + ' unique';
+                    // Quick Stats section
+                    function pluralV(n){ return n + ' visitor' + (n !== 1 ? 's' : ''); }
+                    var qsToday = document.getElementById('qs-today');
+                    var qsWeek  = document.getElementById('qs-week');
+                    var qsMon   = document.getElementById('qs-month');
+                    var qsTot   = document.getElementById('qs-total');
+                    if(qsToday) qsToday.textContent = pluralV(d.today_pageviews) + ' on ' + d.day_label;
+                    if(qsWeek)  qsWeek.textContent  = pluralV(d.week_pageviews)  + ' since ' + d.week_label;
+                    if(qsMon)   qsMon.textContent   = pluralV(d.month_pageviews) + ' in ' + d.month_label;
+                    if(qsTot)   qsTot.textContent   = d.total_pageviews.toLocaleString() + ' total visitors since launch';
 
                     rebuildChart(d.chart);
                     rebuildRankList('an-brands-list',     d.brands,     'var(--accent)');
@@ -312,7 +314,20 @@ andison_admin_header('Dashboard', 'dashboard');
                 .catch(function(){/* silently ignore network errors */});
         }
 
-        // Start polling
+        function highlightCard(id) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            el.scrollIntoView({behavior:'smooth', block:'center'});
+            el.style.boxShadow = '0 0 0 4px rgba(255,255,255,0.7), 0 8px 24px rgba(0,0,0,0.35)';
+            el.style.transform = 'scale(1.06)';
+            setTimeout(function(){
+                el.style.boxShadow = '';
+                el.style.transform = '';
+            }, 900);
+        }
+
+        // Run immediately then keep polling
+        poll();
         setInterval(poll, POLL_MS);
         updateTimestamp();
     })();
@@ -479,21 +494,21 @@ andison_admin_header('Dashboard', 'dashboard');
     <section class="card" style="grid-column:span 6;">
         <h2 style="font-size:15px;margin-bottom:10px;"><i class="bi bi-clock-history"></i> Quick Stats</h2>
         <div style="display:flex;flex-direction:column;gap:7px;">
-            <div style="padding:9px;background:#f0fdf4;border-left:3px solid #22c55e;border-radius:6px;">
-                <div style="font-weight:600;font-size:12px;color:#166534;">Products</div>
-                <div style="font-size:11px;color:#4b5563;margin-top:1px;"><?php echo $totalProducts; ?> items across <?php echo $totalBrands; ?> brands ready to display</div>
+            <div onclick="highlightCard('card-today')" style="padding:9px;background:#f0fdf4;border-left:3px solid #22c55e;border-radius:6px;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#dcfce7'" onmouseout="this.style.background='#f0fdf4'">
+                <div style="font-weight:600;font-size:12px;color:#166534;">Today <i class="bi bi-arrow-up-right" style="font-size:9px;opacity:0.5;"></i></div>
+                <div id="qs-today" style="font-size:11px;color:#4b5563;margin-top:1px;"><?php echo $analytics['today_pageviews']; ?> visitor<?php echo $analytics['today_pageviews'] != 1 ? 's' : ''; ?> on <?php echo date('l, F j'); ?></div>
             </div>
-            <div style="padding:9px;background:<?php echo $sliderCount >= 4 ? '#f0fdf4' : '#fef3c7'; ?>;border-left:3px solid <?php echo $sliderCount >= 4 ? '#22c55e' : '#f59e0b'; ?>;border-radius:6px;">
-                <div style="font-weight:600;font-size:12px;color:<?php echo $sliderCount >= 4 ? '#166534' : '#92400e'; ?>;">Homepage Slider</div>
-                <div style="font-size:11px;color:#4b5563;margin-top:1px;"><?php echo $sliderCount; ?>/4 images configured <?php echo $sliderCount < 4 ? '(add more for better rotation)' : '(complete)'; ?></div>
+            <div onclick="highlightCard('card-week')" style="padding:9px;background:#eff6ff;border-left:3px solid #3b82f6;border-radius:6px;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='#eff6ff'">
+                <div style="font-weight:600;font-size:12px;color:#1e40af;">This Week <i class="bi bi-arrow-up-right" style="font-size:9px;opacity:0.5;"></i></div>
+                <div id="qs-week" style="font-size:11px;color:#4b5563;margin-top:1px;"><?php echo $analytics['week_pageviews']; ?> visitor<?php echo $analytics['week_pageviews'] != 1 ? 's' : ''; ?> since <?php echo date('M j', strtotime('monday this week')); ?></div>
             </div>
-            <div style="padding:9px;background:<?php echo $youtubeCount >= 2 ? '#f0fdf4' : '#fef3c7'; ?>;border-left:3px solid <?php echo $youtubeCount >= 2 ? '#22c55e' : '#f59e0b'; ?>;border-radius:6px;">
-                <div style="font-weight:600;font-size:12px;color:<?php echo $youtubeCount >= 2 ? '#166534' : '#92400e'; ?>;">YouTube Videos</div>
-                <div style="font-size:11px;color:#4b5563;margin-top:1px;"><?php echo $youtubeCount; ?>/2 videos set for homepage highlights</div>
+            <div onclick="highlightCard('card-month')" style="padding:9px;background:#f5f3ff;border-left:3px solid #8b5cf6;border-radius:6px;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#ede9fe'" onmouseout="this.style.background='#f5f3ff'">
+                <div style="font-weight:600;font-size:12px;color:#5b21b6;">This Month <i class="bi bi-arrow-up-right" style="font-size:9px;opacity:0.5;"></i></div>
+                <div id="qs-month" style="font-size:11px;color:#4b5563;margin-top:1px;"><?php echo $analytics['month_pageviews']; ?> visitor<?php echo $analytics['month_pageviews'] != 1 ? 's' : ''; ?> in <?php echo date('F Y'); ?></div>
             </div>
-            <div style="padding:9px;background:<?php echo $featuredConfigured ? '#f0fdf4' : '#fee2e2'; ?>;border-left:3px solid <?php echo $featuredConfigured ? '#22c55e' : '#ef4444'; ?>;border-radius:6px;">
-                <div style="font-weight:600;font-size:12px;color:<?php echo $featuredConfigured ? '#166534' : '#7f1d1d'; ?>;">Featured Section</div>
-                <div style="font-size:11px;color:#4b5563;margin-top:1px;"><?php echo $featuredConfigured ? 'Configured with ' . htmlspecialchars(substr($featured['title'], 0, 30)) . '...' : 'Not yet configured'; ?></div>
+            <div onclick="highlightCard('card-total')" style="padding:9px;background:#f0fdf4;border-left:3px solid #22c55e;border-radius:6px;cursor:pointer;transition:background 0.15s;" onmouseover="this.style.background='#dcfce7'" onmouseout="this.style.background='#f0fdf4'">
+                <div style="font-weight:600;font-size:12px;color:#166534;">All Time <i class="bi bi-arrow-up-right" style="font-size:9px;opacity:0.5;"></i></div>
+                <div id="qs-total" style="font-size:11px;color:#4b5563;margin-top:1px;"><?php echo number_format($analytics['total_pageviews']); ?> total visitors since launch</div>
             </div>
         </div>
     </section>
