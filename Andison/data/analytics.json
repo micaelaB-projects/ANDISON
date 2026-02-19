@@ -1,31 +1,31 @@
 {
-    "total_pageviews": 93,
+    "total_pageviews": 177,
     "unique_sessions": 13,
-    "today_pageviews": 93,
+    "today_pageviews": 177,
     "today_unique": 13,
     "today_date": "2026-02-19",
-    "week_pageviews": 93,
+    "week_pageviews": 177,
     "week_unique": 13,
     "week_start": "2026-02-16",
-    "month_pageviews": 93,
+    "month_pageviews": 177,
     "month_unique": 13,
     "month_key": "2026-02",
     "daily": {
-        "2026-02-19": 93
+        "2026-02-19": 177
     },
     "pages": {
-        "home": 21,
-        "brands": 11,
-        "brand": 16,
-        "services": 23,
-        "industries": 7,
+        "home": 40,
+        "brands": 26,
+        "brand": 18,
+        "services": 32,
+        "industries": 20,
         "category": 2,
-        "contact": 8,
-        "about": 5
+        "contact": 15,
+        "about": 24
     },
     "brands": {
         "Kobelco": 2,
-        "Panasonic Connect": 8,
+        "Panasonic Connect": 10,
         "Uvex": 2,
         "Aces": 1
     },
