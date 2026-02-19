@@ -123,162 +123,59 @@ andison_admin_header('Categories & Products', 'categories');
 ?>
 
 <style>
-    .category-tabs {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        margin-bottom: 24px;
-    }
-    
-    .category-tab {
-        padding: 12px 16px;
-        border-radius: 12px;
-        border: 2px solid #e5e7eb;
-        background: #fff;
-        cursor: pointer;
-        font-weight: 600;
-        font-size: 13px;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    
-    .category-tab:hover {
-        border-color: var(--accent);
-        background: rgba(43,17,219,0.04);
-    }
-    
-    .category-tab.active {
-        background: var(--accent);
-        border-color: var(--accent);
-        color: #fff;
-    }
-    
-    .category-tab i {
-        font-size: 16px;
-    }
-    
-    .subcategory-tabs {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        margin-bottom: 24px;
-        padding: 16px;
-        background: #f9fafb;
-        border-radius: 12px;
-    }
-    
-    .subcategory-tab {
-        padding: 10px 14px;
-        border-radius: 10px;
-        border: 2px solid #e5e7eb;
-        background: #fff;
-        cursor: pointer;
-        font-weight: 600;
-        font-size: 12px;
-        transition: all 0.2s ease;
-    }
-    
-    .subcategory-tab:hover {
-        border-color: var(--mint);
-        background: rgba(0,215,179,0.04);
-    }
-    
-    .subcategory-tab.active {
-        background: var(--mint);
-        border-color: var(--mint);
-        color: #0b1b16;
-    }
-    
-    .products-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 24px;
-    }
-    
-    .btn-add-product {
-        padding: 12px 20px;
-        background: var(--mint);
-        color: #0b1b16;
-    }
-    
-    .products-table {
-        width: 100%;
-        border-collapse: collapse;
-        background: #fff;
-        border-radius: 14px;
-        overflow: hidden;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    
-    .products-table thead {
-        background: #f9fafb;
-        border-bottom: 2px solid #e5e7eb;
-    }
-    
-    .products-table th {
-        padding: 16px;
-        text-align: left;
-        font-size: 12px;
-        font-weight: 900;
-        text-transform: uppercase;
-        color: #6b7280;
-        letter-spacing: 0.5px;
-    }
-    
-    .products-table td {
-        padding: 16px;
-        border-bottom: 1px solid #e5e7eb;
-        font-size: 14px;
-    }
-    
-    .products-table tbody tr:last-child td {
-        border-bottom: none;
-    }
-    
-    .products-table tbody tr:hover {
-        background: #f9fafb;
-    }
-    
-    .product-image-thumb {
-        width: 60px;
-        height: 60px;
-        border-radius: 10px;
-        background: #f0f0f0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-    }
-    
-    .product-image-thumb img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-    
-    .product-image-thumb i {
-        font-size: 24px;
-        color: #ccc;
-    }
-    
-    .product-name-cell {
-        font-weight: 600;
-        color: var(--accent);
-    }
-    
-    .product-actions {
-        display: flex;
-        gap: 8px;
-    }
-    
-    .product-actions .btn {
-        padding: 8px 12px;
-        font-size: 12px;
-        white-space: nowrap;
-    }
+    /* ── Category Tabs ────────────────────────────────── */
+    .cat-section-header { background:linear-gradient(135deg,#2B11DB 0%,#3d22ef 60%,#4f35e8 100%);border-radius:14px;padding:18px 22px;color:white;margin-bottom:0; }
+    .cat-section-header h2 { font-size:11px;font-weight:700;opacity:0.7;letter-spacing:0.6px;text-transform:uppercase;margin:0 0 12px; }
+    .category-tabs { display:flex;gap:8px;flex-wrap:wrap; }
+    .category-tab { padding:8px 14px;border-radius:999px;border:1.5px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.1);color:white;cursor:pointer;font-weight:600;font-size:12px;transition:all 0.2s;display:flex;align-items:center;gap:6px; }
+    .category-tab:hover { background:rgba(255,255,255,0.2);border-color:rgba(255,255,255,0.5); }
+    .category-tab.active { background:white;border-color:white;color:#2B11DB; }
+    .category-tab i { font-size:13px; }
+
+    /* ── Subcategory Tabs ─────────────────────────────── */
+    .sub-section { }
+    .sub-section-title { display:flex;align-items:center;gap:8px;margin-bottom:12px; }
+    .sub-section-title .sub-label { font-size:12px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px; }
+    .sub-section-title .sub-cat-name { font-size:13px;font-weight:700;color:#111827; }
+    .subcategory-tabs { display:flex;gap:6px;flex-wrap:wrap; }
+    .subcategory-tab { display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:8px;border:1.5px solid #e5e7eb;background:#fff;cursor:pointer;font-weight:600;font-size:12px;color:#374151;transition:all 0.2s; }
+    .subcategory-tab:hover { border-color:#10b981;background:rgba(16,185,129,0.05);color:#059669; }
+    .subcategory-tab.active { background:#10b981;border-color:#10b981;color:#fff; }
+    .subcategory-tab.active .sub-count { background:rgba(255,255,255,0.25);color:white; }
+    .sub-count { display:inline-flex;align-items:center;justify-content:center;padding:1px 6px;border-radius:999px;font-size:10px;font-weight:700;background:#f3f4f6;color:#6b7280;min-width:18px;line-height:1.4; }
+
+    /* ── Products Table ───────────────────────────────── */
+    .products-table { width:100%;border-collapse:collapse; }
+    .products-table thead th { padding:10px 13px;text-align:left;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.6px;background:#f9fafb;border-bottom:1px solid #e5e7eb; }
+    .products-table thead th:first-child { border-radius:9px 0 0 0; }
+    .products-table thead th:last-child { border-radius:0 9px 0 0;text-align:center; }
+    .products-table td { padding:12px 13px;border-bottom:1px solid #f3f4f6;vertical-align:middle;font-size:13px; }
+    .products-table tbody tr:last-child td { border-bottom:none; }
+    .products-table tbody tr:hover { background:#fafbff; }
+
+    /* ── Product Image thumb ──────────────────────────── */
+    .product-image-thumb { width:46px;height:46px;border-radius:8px;background:#f3f4f6;border:1px solid #e5e7eb;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0; }
+    .product-image-thumb img { width:100%;height:100%;object-fit:contain; }
+    .product-image-thumb i { font-size:18px;color:#d1d5db; }
+
+    /* ── Badge chips ──────────────────────────────────── */
+    .cat-badge-chip { display:inline-flex;align-items:center;padding:3px 9px;font-size:10px;font-weight:700;border-radius:999px;white-space:nowrap; }
+    .cat-badge-available { background:#dcfce7;color:#16a34a; }
+    .cat-badge-unavailable { background:#fee2e2;color:#dc2626; }
+    .cat-badge-featured { background:#fef9c3;color:#b45309; }
+    .cat-badge-new { background:#ede9fe;color:#7c3aed; }
+    .cat-badge-bestseller { background:#fce7f3;color:#be185d; }
+    .cat-badge-limited { background:#ffedd5;color:#c2410c; }
+    .cat-badge-default { background:#f3f4f6;color:#374151; }
+
+    /* ── Product row actions ──────────────────────────── */
+    .product-actions { display:flex;gap:5px;justify-content:center; }
+    .product-actions .btn { padding:5px 10px;font-size:11px;white-space:nowrap; }
+
+    /* ── Breadcrumb ───────────────────────────────────── */
+    .cat-breadcrumb { display:flex;align-items:center;gap:6px;font-size:12px;color:#9ca3af;margin-bottom:14px; }
+    .cat-breadcrumb strong { color:#374151; }
+    .cat-breadcrumb i { font-size:10px; }
     
     .modal-backdrop {
         display: none;
@@ -446,8 +343,9 @@ andison_admin_header('Categories & Products', 'categories');
 </style>
 
 <div class="grid">
-    <div class="card">
-        <h2><i class="bi bi-shop"></i> Categories</h2>
+    <!-- Category Selector Header -->
+    <div style="grid-column:span 12;" class="cat-section-header">
+        <h2>Categories</h2>
         <div class="category-tabs">
             <?php foreach ($categoryList as $cat): ?>
                 <button class="category-tab <?php echo $selectedCategory === $cat['id'] ? 'active' : ''; ?>" onclick="selectCategory('<?php echo htmlspecialchars($cat['id']); ?>')">
@@ -461,13 +359,22 @@ andison_admin_header('Categories & Products', 'categories');
     <?php if ($selectedCategory && isset($categoryList[$selectedCategory])): ?>
         <?php $currentCat = $categoryList[$selectedCategory]; ?>
 
-        <div class="card">
-            <h2><i class="bi bi-list-check"></i> Subcategories - <?php echo htmlspecialchars($currentCat['name']); ?></h2>
+        <!-- Subcategory Tabs -->
+        <div class="card" style="grid-column:span 12;padding:16px 20px;">
+            <div class="sub-section-title">
+                <div style="width:26px;height:26px;border-radius:7px;background:rgba(16,185,129,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="bi bi-list-check" style="color:#10b981;font-size:12px;"></i>
+                </div>
+                <span class="sub-label">Subcategories</span>
+                <i class="bi bi-chevron-right" style="font-size:10px;color:#d1d5db;"></i>
+                <span class="sub-cat-name"><?php echo htmlspecialchars($currentCat['name']); ?></span>
+            </div>
             <div class="subcategory-tabs">
                 <?php foreach ($currentCat['subcategories'] ?? [] as $sub): ?>
+                    <?php $subCount = count(andison_get_products_for_subcategory($selectedCategory, $sub['id'])); ?>
                     <button class="subcategory-tab <?php echo $selectedSubcategory === $sub['id'] ? 'active' : ''; ?>" onclick="selectSubcategory('<?php echo htmlspecialchars($selectedCategory); ?>', '<?php echo htmlspecialchars($sub['id']); ?>')">
                         <?php echo htmlspecialchars($sub['name']); ?>
-                        <span style="font-size: 11px; opacity: 0.7;">(<?php echo count(andison_get_products_for_subcategory($selectedCategory, $sub['id'])); ?>)</span>
+                        <span class="sub-count"><?php echo $subCount; ?></span>
                     </button>
                 <?php endforeach; ?>
             </div>
@@ -485,66 +392,103 @@ andison_admin_header('Categories & Products', 'categories');
                 }
             ?>
 
-            <div class="card">
-                <div class="products-header">
-                    <h2 style="margin: 0;"><i class="bi bi-boxes"></i> Products (<?php echo count($products); ?>)</h2>
-                    <button class="btn btn-primary btn-add-product" onclick="openAddProductModal()">
-                        <i class="bi bi-plus-circle"></i> Add Product
+            <!-- Products Section -->
+            <div class="card" style="grid-column:span 12;">
+                <!-- Header -->
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div style="width:34px;height:34px;border-radius:9px;background:rgba(16,185,129,0.1);display:flex;align-items:center;justify-content:center;">
+                            <i class="bi bi-boxes" style="color:#10b981;font-size:15px;"></i>
+                        </div>
+                        <div>
+                            <div style="font-size:15px;font-weight:700;color:#111827;">Product List</div>
+                            <div style="font-size:11px;color:#9ca3af;margin-top:1px;"><?php echo count($products); ?> product<?php echo count($products) !== 1 ? 's' : ''; ?></div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="openAddProductModal()" style="font-size:12px;padding:8px 16px;">
+                        <i class="bi bi-plus-lg"></i> Add Product
                     </button>
                 </div>
 
-                <div style="font-size: 13px; color: #666; margin-bottom: 20px;">
-                    <strong><?php echo htmlspecialchars($currentCat['name']); ?></strong> → <strong><?php echo htmlspecialchars($subName); ?></strong>
+                <!-- Breadcrumb -->
+                <div class="cat-breadcrumb">
+                    <i class="bi bi-house-door"></i>
+                    <strong><?php echo htmlspecialchars($currentCat['name']); ?></strong>
+                    <i class="bi bi-chevron-right"></i>
+                    <strong><?php echo htmlspecialchars($subName); ?></strong>
                 </div>
 
                 <?php if (empty($products)): ?>
-                    <p style="text-align: center; color: #999; padding: 40px;">No products yet. Add your first product!</p>
+                    <div style="text-align:center;padding:48px 20px;">
+                        <div style="width:56px;height:56px;border-radius:14px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"><i class="bi bi-inbox" style="font-size:24px;color:#d1d5db;"></i></div>
+                        <div style="font-weight:600;font-size:14px;color:#374151;margin-bottom:4px;">No products yet</div>
+                        <div style="font-size:12px;color:#9ca3af;margin-bottom:14px;">Add the first product to <strong><?php echo htmlspecialchars($subName); ?></strong></div>
+                        <button class="btn btn-primary" onclick="openAddProductModal()" style="font-size:12px;padding:7px 16px;"><i class="bi bi-plus-lg"></i> Add Product</button>
+                    </div>
                 <?php else: ?>
-                    <table class="products-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 80px;">Image</th>
-                                <th>Name</th>
-                                <th>Model</th>
-                                <th>Price</th>
-                                <th>Badge</th>
-                                <th style="width: 150px;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($products as $prod): ?>
+                    <div style="overflow-x:auto;border-radius:10px;border:1px solid #e5e7eb;background:white;">
+                        <table class="products-table">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        <div class="product-image-thumb">
-                                            <?php if (!empty($prod['image'])): ?>
-                                                <img src="<?php echo htmlspecialchars('../../' . str_replace('andison/', '', $prod['image'])); ?>" alt="<?php echo htmlspecialchars($prod['name']); ?>">
-                                            <?php else: ?>
-                                                <i class="bi bi-image"></i>
-                                            <?php endif; ?>
-                                        </div>
-                                    </td>
-                                    <td class="product-name-cell"><?php echo htmlspecialchars($prod['name']); ?></td>
-                                    <td><?php echo htmlspecialchars($prod['model'] ?? $prod['id']); ?></td>
-                                    <td><?php echo htmlspecialchars($prod['price'] ?? '-'); ?></td>
-                                    <td><?php echo htmlspecialchars($prod['badge'] ?? '-'); ?></td>
-                                    <td>
-                                        <div class="product-actions">
-                                            <button class="btn btn-outline" onclick="openEditProductModal(<?php echo htmlspecialchars(json_encode($prod)); ?>)">
-                                                <i class="bi bi-pencil"></i> Edit
-                                            </button>
-                                            <form method="POST" style="display: inline;" onsubmit="handleDeleteProduct(event);">
-                                                <input type="hidden" name="action" value="delete_product">
-                                                <input type="hidden" name="product_id" value="<?php echo htmlspecialchars($prod['id']); ?>">
-                                                <button type="submit" class="btn btn-danger" style="padding: 8px 12px; font-size: 12px;">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
+                                    <th style="width:62px;">Image</th>
+                                    <th>Name</th>
+                                    <th style="width:140px;">Model</th>
+                                    <th style="width:110px;">Price</th>
+                                    <th style="width:120px;">Badge</th>
+                                    <th style="width:130px;text-align:center;">Actions</th>
                                 </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($products as $prod): ?>
+                                    <?php
+                                        $badge = (string)($prod['badge'] ?? '');
+                                        $bClass = 'cat-badge-default';
+                                        if ($badge === 'Available') $bClass = 'cat-badge-available';
+                                        elseif ($badge === 'Not Available') $bClass = 'cat-badge-unavailable';
+                                        elseif ($badge === 'Featured') $bClass = 'cat-badge-featured';
+                                        elseif ($badge === 'New Arrival') $bClass = 'cat-badge-new';
+                                        elseif ($badge === 'Best Seller') $bClass = 'cat-badge-bestseller';
+                                        elseif ($badge === 'Limited Stock') $bClass = 'cat-badge-limited';
+                                    ?>
+                                    <tr>
+                                        <td>
+                                            <div class="product-image-thumb">
+                                                <?php if (!empty($prod['image'])): ?>
+                                                    <img src="<?php echo htmlspecialchars('../../' . str_replace('andison/', '', $prod['image'])); ?>" alt="<?php echo htmlspecialchars($prod['name']); ?>">
+                                                <?php else: ?>
+                                                    <i class="bi bi-image"></i>
+                                                <?php endif; ?>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div style="font-weight:600;font-size:13px;color:#111827;"><?php echo htmlspecialchars($prod['name']); ?></div>
+                                        </td>
+                                        <td style="color:#6b7280;font-size:12px;"><?php echo htmlspecialchars($prod['model'] ?? $prod['id']); ?></td>
+                                        <td style="color:#374151;font-size:12px;"><?php echo htmlspecialchars($prod['price'] ?? '—'); ?></td>
+                                        <td>
+                                            <?php if ($badge !== '' && $badge !== '-'): ?>
+                                                <span class="cat-badge-chip <?php echo $bClass; ?>"><?php echo htmlspecialchars($badge); ?></span>
+                                            <?php else: ?>
+                                                <span style="color:#d1d5db;font-size:12px;">&mdash;</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <div class="product-actions">
+                                                <button class="btn btn-outline" onclick="openEditProductModal(<?php echo htmlspecialchars(json_encode($prod)); ?>)" style="padding:5px 10px;font-size:11px;">
+                                                    <i class="bi bi-pencil"></i> Edit
+                                                </button>
+                                                <form method="POST" style="display:inline;" onsubmit="handleDeleteProduct(event);">
+                                                    <input type="hidden" name="action" value="delete_product">
+                                                    <input type="hidden" name="product_id" value="<?php echo htmlspecialchars($prod['id']); ?>">
+                                                    <button type="submit" class="btn btn-danger" style="padding:5px 10px;font-size:11px;"><i class="bi bi-trash"></i></button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 <?php endif; ?>
             </div>
         <?php endif; ?>

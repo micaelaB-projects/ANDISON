@@ -1,3 +1,11 @@
+
+<?php
+require_once __DIR__ . '/andison/includes/analytics.php';
+andison_track_visit('brand');
+$_btrack = isset($_GET['name']) ? trim(strip_tags($_GET['name'])) : '';
+if ($_btrack) andison_track_brand_visit($_btrack);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

@@ -64,6 +64,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_locked) {
                 $_SESSION['andison_admin_user'] = $username;
                 $_SESSION['login_attempts'] = 0;
                 $_SESSION['last_attempt_time'] = 0;
+                // Record last login timestamp
+                $cfgWrite = andison_admin_config();
+                $cfgWrite['last_login'] = time();
+                if (empty($cfgWrite['created_at'])) {
+                    $cfgWrite['created_at'] = time();
+                }
+                @file_put_contents(__DIR__ . '/config.php', "<?php\n\nreturn " . var_export($cfgWrite, true) . ";\n", LOCK_EX);
                 // Regenerate session ID after successful login
                 session_regenerate_id(true);
                 header('Location: ' . $next);

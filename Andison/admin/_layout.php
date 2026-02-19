@@ -174,6 +174,7 @@ function andison_admin_header(string $title, string $active = 'dashboard'): void
         </div>
         <nav class="nav">
             <a href="index.php" class="<?php echo $active === 'dashboard' ? 'active' : ''; ?>"><i class="bi bi-grid"></i> Dashboard</a>
+            <a href="analytics.php" class="<?php echo $active === 'analytics' ? 'active' : ''; ?>"><i class="bi bi-bar-chart-line"></i> Analytics</a>
             <a href="products.php" class="<?php echo $active === 'products' ? 'active' : ''; ?>"><i class="bi bi-box-seam"></i> Products</a>
             <a href="categories.php" class="<?php echo $active === 'categories' ? 'active' : ''; ?>"><i class="bi bi-tag"></i> Categories</a>
             <a href="featured.php" class="<?php echo $active === 'featured' ? 'active' : ''; ?>"><i class="bi bi-star"></i> Homepage Featured</a>

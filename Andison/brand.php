@@ -1,5 +1,9 @@
 <?php
 require_once __DIR__ . '/includes/brands_info.php';
+require_once __DIR__ . '/includes/analytics.php';
+andison_track_visit('brand-detail');
+$_btrack = isset($_GET['name']) ? trim(strip_tags($_GET['name'])) : '';
+if ($_btrack) andison_track_brand_visit($_btrack);
 
 $brand_name = isset($_GET['name']) ? htmlspecialchars($_GET['name']) : 'Brand';
 

@@ -16,14 +16,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = isset($_POST['email']) ? trim((string)$_POST['email']) : '';
         $newUser = isset($_POST['username']) ? trim((string)$_POST['username']) : $username;
 
-        // Persist into config.php (adds extra fields)
-        $newCfg = [
+        // Persist into config.php — merge with existing to preserve timestamps/image
+        $newCfg = array_merge($cfg, [
             'username' => $newUser,
             'password' => $password,
             'first_name' => $first,
             'last_name' => $last,
             'email' => $email,
-        ];
+            'last_updated' => time(),
+        ]);
 
         $out = "<?php\n\nreturn ".var_export($newCfg, true).";\n";
         $written = @file_put_contents(__DIR__ . '/config.php', $out, LOCK_EX);
@@ -67,6 +68,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($written === false) {
             andison_set_flash('error', 'Unable to update password. Check permissions.');
         } else {
+            // Record last_updated timestamp
+            $cfgTs = andison_admin_config();
+            $cfgTs['last_updated'] = time();
+            @file_put_contents(__DIR__ . '/config.php', "<?php\n\nreturn " . var_export($cfgTs, true) . ";\n", LOCK_EX);
             andison_set_flash('success', 'Password updated successfully.');
         }
 
@@ -125,6 +130,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($written === false) {
             andison_set_flash('error', 'Uploaded but failed to save config. Check permissions.');
         } else {
+            // Record last_updated timestamp
+            $cfgTs = andison_admin_config();
+            $cfgTs['last_updated'] = time();
+            @file_put_contents(__DIR__ . '/config.php', "<?php\n\nreturn " . var_export($cfgTs, true) . ";\n", LOCK_EX);
             andison_set_flash('success', 'Profile image updated.');
         }
 
@@ -143,7 +152,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         unset($cfg['profile_image']);
         $out = "<?php\n\nreturn " . var_export($cfg, true) . ";\n";
-        @file_put_contents(__DIR__ . '/config.php', $out, LOCK_EX);
+        $written = @file_put_contents(__DIR__ . '/config.php', $out, LOCK_EX);
+        if ($written !== false) {
+            $cfgTs = andison_admin_config();
+            $cfgTs['last_updated'] = time();
+            @file_put_contents(__DIR__ . '/config.php', "<?php\n\nreturn " . var_export($cfgTs, true) . ";\n", LOCK_EX);
+        }
         andison_set_flash('success', 'Profile image removed.');
         header('Location: profile.php');
         exit;
@@ -157,8 +171,8 @@ $lastVal = htmlspecialchars((string)($cfg['last_name'] ?? 'Industrial'));
 $emailVal = htmlspecialchars((string)($cfg['email'] ?? 'andisonindustrial@gmail.com'));
 $usernameVal = htmlspecialchars((string)($cfg['username'] ?? 'andisonindustrial'));
 $profileImage = htmlspecialchars((string)($cfg['profile_image'] ?? 'assets/HOME/profile-placeholder.png'));
-$todayDate = date('M d, Y');
-$nowDate = date('M d, Y h:i A');
+$createdAt = !empty($cfg['created_at']) ? date('M d, Y', (int)$cfg['created_at']) : 'Not recorded';
+$lastLogin  = !empty($cfg['last_login'])  ? date('M d, Y g:i A', (int)$cfg['last_login'])  : 'Not recorded';
 $flash = andison_get_flash();
 ?>
 
@@ -214,12 +228,30 @@ $flash = andison_get_flash();
 </script>
 <?php endif; ?>
 
-<div class="grid" style="grid-template-columns:repeat(12,1fr);gap:18px">
-    <div class="card" style="grid-column:span 8">
-        <h2><i class="bi bi-person-circle"></i> Profile Management</h2>
+<style>
+.prof-page-header { background:linear-gradient(135deg,#2B11DB 0%,#3d22ef 60%,#4f35e8 100%);border-radius:14px;padding:18px 22px;color:white;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px; }
+.prof-section-hd { display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;margin-bottom:14px; }
+.prof-hd-icon { width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0; }
+.prof-hd-title { font-size:13px;font-weight:800;line-height:1.2; }
+.prof-input { border:1.5px solid #e5e7eb;border-radius:8px;font-size:13px;padding:9px 12px;width:100%;transition:border-color 0.2s; }
+.prof-input:focus { outline:none;border-color:#2B11DB;box-shadow:0 0 0 3px rgba(43,17,219,0.08); }
+</style>
 
+<div class="grid" style="grid-template-columns:repeat(12,1fr);gap:18px">
+    <div style="grid-column:span 12;" class="prof-page-header">
+        <div>
+            <div style="font-size:11px;font-weight:700;opacity:0.7;letter-spacing:0.6px;text-transform:uppercase;margin-bottom:4px;">Admin Settings</div>
+            <div style="font-size:20px;font-weight:800;letter-spacing:-0.2px;display:flex;align-items:center;gap:8px;"><i class="bi bi-person-circle" style="color:#fbbf24;"></i> Profile Management</div>
+        </div>
+        <span style="font-size:12px;opacity:0.75;">Manage your account details and security</span>
+    </div>
+
+    <div class="card" style="grid-column:span 8">
         <div class="card" style="margin-bottom:18px;padding:18px;border-radius:12px">
-            <h3 style="margin:0 0 16px;font-size:14px;font-weight:900;color:#0f1724"><i class="bi bi-person"></i> Account Information</h3>
+            <div class="prof-section-hd" style="background:rgba(43,17,219,0.05);">
+                <div class="prof-hd-icon" style="background:rgba(43,17,219,0.1);color:#2B11DB;"><i class="bi bi-person"></i></div>
+                <div class="prof-hd-title" style="color:#2B11DB;">Account Information</div>
+            </div>
             <form id="updateProfileForm" method="post" action="profile.php" style="margin-top:12px">
                 <input type="hidden" name="action" value="update_profile">
                 <div class="row">
@@ -253,16 +285,19 @@ $flash = andison_get_flash();
                     </div>
                 </div>
 
-                <div style="margin-top:20px;text-align:right">
-                    <button class="btn btn-primary" id="updateProfileBtn" type="submit" style="padding:12px 28px;font-size:15px;font-weight:700">
-                        <i class="bi bi-check-circle" style="font-size:18px"></i>Update Profile
+                <div style="margin-top:16px;text-align:right">
+                    <button class="btn btn-primary" id="updateProfileBtn" type="submit" style="font-size:13px;padding:10px 22px;display:inline-flex;align-items:center;gap:6px;">
+                        <i class="bi bi-check-circle"></i>Update Profile
                     </button>
                 </div>
             </form>
         </div>
 
         <div class="card">
-            <h3 style="margin:0 0 12px;font-size:14px;font-weight:900;color:#0f1724"><i class="bi bi-shield-lock"></i> Change Password</h3>
+            <div class="prof-section-hd" style="background:rgba(239,68,68,0.05);">
+                <div class="prof-hd-icon" style="background:rgba(239,68,68,0.1);color:#dc2626;"><i class="bi bi-shield-lock"></i></div>
+                <div class="prof-hd-title" style="color:#dc2626;">Change Password</div>
+            </div>
             <form id="changePasswordForm" method="post" action="profile.php" style="margin-top:12px">
                 <input type="hidden" name="action" value="change_password">
                 <div class="row">
@@ -295,7 +330,7 @@ $flash = andison_get_flash();
                         <span>Show Passwords</span>
                     </label>
                     <div style="margin-left:auto;display:flex;gap:8px">
-                        <button class="btn btn-danger" id="changePasswordBtn" type="submit">
+                        <button class="btn btn-danger" id="changePasswordBtn" type="submit" style="font-size:13px;padding:10px 22px;display:inline-flex;align-items:center;gap:6px;">
                             <i class="bi bi-shield-check"></i>Change Password
                         </button>
                     </div>
@@ -306,33 +341,54 @@ $flash = andison_get_flash();
 
     <div style="grid-column:span 4;display:flex;flex-direction:column;gap:18px">
         <div class="card">
-            <h3 style="margin:0 0 12px;font-size:14px;font-weight:900;color:#0f1724"><i class="bi bi-image"></i> Profile Image</h3>
-            <div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:12px">
-                <div id="profileWrapper" style="width:140px;max-width:40%;min-width:86px;">
-                    <div id="profileCircle" style="width:100%;padding-top:100%;position:relative;border-radius:999px;overflow:hidden;border:6px solid var(--accent);box-shadow:0 6px 20px rgba(43,17,219,0.2);background:#fff;transition:box-shadow 0.3s ease">
-                        <img id="profileImg" src="../<?php echo $profileImage; ?>" alt="Profile" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+            <div class="prof-section-hd" style="background:rgba(16,185,129,0.05);">
+                <div class="prof-hd-icon" style="background:rgba(16,185,129,0.1);color:#059669;"><i class="bi bi-person-circle"></i></div>
+                <div class="prof-hd-title" style="color:#059669;">Profile Image</div>
+            </div>
+
+            <?php
+                $initials = strtoupper(substr((string)($cfg['first_name'] ?? 'A'), 0, 1) . substr((string)($cfg['last_name'] ?? 'I'), 0, 1));
+                $displayName = trim((string)($cfg['first_name'] ?? '') . ' ' . (string)($cfg['last_name'] ?? '')) ?: 'Admin';
+            ?>
+
+            <!-- Avatar -->
+            <div style="display:flex;flex-direction:column;align-items:center;padding:4px 12px 16px;">
+                <div style="position:relative;margin-bottom:14px;">
+                    <div id="profileCircle" style="width:110px;height:110px;border-radius:999px;overflow:hidden;border:4px solid #2B11DB;box-shadow:0 4px 20px rgba(43,17,219,0.2);background:linear-gradient(135deg,#2B11DB,#4f35e8);display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;" onclick="document.getElementById('fileInput').click();" title="Click to change photo">
+                        <img id="profileImg" src="../<?php echo $profileImage; ?>" alt="Profile"
+                             onerror="this.style.display='none';document.getElementById('profileInitials').style.display='flex';"
+                             onload="this.style.display='block';document.getElementById('profileInitials').style.display='none';"
+                             style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+                        <span id="profileInitials" style="display:none;font-size:32px;font-weight:900;color:#fff;letter-spacing:-1px;z-index:1;"><?php echo htmlspecialchars($initials); ?></span>
+                        <!-- Hover overlay -->
+                        <div style="position:absolute;inset:0;background:rgba(43,17,219,0.55);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;border-radius:999px;z-index:2;"
+                             onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">
+                            <i class="bi bi-camera" style="color:#fff;font-size:22px;"></i>
+                        </div>
                     </div>
+                    <!-- Online indicator dot -->
+                    <span style="position:absolute;bottom:6px;right:6px;width:14px;height:14px;background:#10b981;border-radius:999px;border:2px solid #fff;display:block;"></span>
                 </div>
 
-                <form id="uploadForm" method="post" action="profile.php" enctype="multipart/form-data" style="width:100%;text-align:center;margin-top:6px">
+                <div style="font-size:14px;font-weight:800;color:#111827;margin-bottom:2px;"><?php echo htmlspecialchars($displayName); ?></div>
+                <div style="font-size:11px;color:#6b7280;margin-bottom:14px;"><?php echo htmlspecialchars($usernameVal); ?></div>
+
+                <form id="uploadForm" method="post" action="profile.php" enctype="multipart/form-data" style="width:100%;">
                     <input type="hidden" name="action" value="upload_image">
-                    <div id="dropZone" style="width:100%;border:2px dashed var(--border);padding:16px;border-radius:12px;text-align:center;color:var(--muted);cursor:pointer;transition:all 0.3s ease;background:rgba(43,17,219,0.02)">
-                        <div id="dropText" style="font-size:13px">
-                            <div style="margin-bottom:4px"><i class="bi bi-cloud-arrow-up"></i></div>
-                            <div>Drag & drop an image here or click to choose</div>
-                            <div style="font-size:11px;margin-top:4px">(JPG, PNG, GIF up to 5MB)</div>
-                        </div>
+
+                    <div id="dropZone" style="border:2px dashed #e5e7eb;border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer;transition:border-color 0.2s,background 0.2s;background:#fafafa;margin-bottom:10px;">
+                        <i class="bi bi-cloud-arrow-up" style="font-size:22px;color:#2B11DB;display:block;margin-bottom:4px;"></i>
+                        <div id="dropText" style="font-size:12px;font-weight:600;color:#374151;">Click or drag to upload</div>
+                        <div id="dropFileName" style="font-size:11px;color:#9ca3af;margin-top:2px;">JPG, PNG, GIF · max 5MB</div>
                         <input id="fileInput" type="file" name="profile_image" accept="image/*" style="display:none">
                     </div>
-                    <div id="uploadProgress" style="display:none;margin-top:12px">
-                        <div style="text-align:center;font-size:12px">Uploading...</div>
-                    </div>
-                    <div style="margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-                        <button class="btn btn-primary" id="uploadImageBtn" type="submit">
-                            <i class="bi bi-upload"></i>Upload Image
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                        <button class="btn btn-primary" id="uploadImageBtn" type="submit" style="font-size:12px;padding:8px 10px;display:inline-flex;align-items:center;justify-content:center;gap:5px;">
+                            <i class="bi bi-upload"></i>Upload
                         </button>
-                        <button class="btn btn-outline" id="removeImageBtn" type="button">
-                            <i class="bi bi-trash"></i>Remove Image
+                        <button class="btn btn-outline" id="removeImageBtn" type="button" style="font-size:12px;padding:8px 10px;display:inline-flex;align-items:center;justify-content:center;gap:5px;color:#dc2626;border-color:#fecaca;">
+                            <i class="bi bi-trash3"></i>Remove
                         </button>
                     </div>
                 </form>
@@ -340,13 +396,16 @@ $flash = andison_get_flash();
         </div>
 
         <div class="card">
-            <h3 style="margin:0 0 12px;font-size:14px;font-weight:900;color:#0f1724"><i class="bi bi-bar-chart-line"></i> Account Statistics</h3>
+            <div class="prof-section-hd" style="background:rgba(245,158,11,0.05);">
+                <div class="prof-hd-icon" style="background:rgba(245,158,11,0.1);color:#d97706;"><i class="bi bi-bar-chart-line"></i></div>
+                <div class="prof-hd-title" style="color:#d97706;">Account Statistics</div>
+            </div>
                 <div style="display:flex;flex-direction:column;gap:12px;padding:6px">
                 <div style="display:flex;gap:12px;align-items:center;padding:12px;background:rgba(0,215,179,0.06);border-radius:12px;transition:all 0.3s ease">
                     <div class="badge-icon" style="background:rgba(0,215,179,0.12);color:#065f46"><i class="bi bi-calendar-event"></i></div>
                     <div>
                         <div style="font-weight:900;font-size:14px">Account Created</div>
-                        <div style="color:var(--muted);font-size:12px"><?php echo $todayDate; ?></div>
+                        <div style="color:var(--muted);font-size:12px"><?php echo htmlspecialchars($createdAt); ?></div>
                     </div>
                 </div>
 
@@ -354,17 +413,11 @@ $flash = andison_get_flash();
                     <div class="badge-icon" style="background:rgba(43,17,219,0.12);color:var(--accent)"><i class="bi bi-box-arrow-in-right"></i></div>
                     <div>
                         <div style="font-weight:900;font-size:14px">Last Login</div>
-                        <div style="color:var(--muted);font-size:12px"><?php echo $nowDate; ?></div>
+                        <div id="lastLoginTime" data-ts="<?php echo (int)($cfg['last_login'] ?? 0); ?>" style="color:var(--muted);font-size:12px"><?php echo htmlspecialchars($lastLogin); ?></div>
                     </div>
                 </div>
 
-                <div style="display:flex;gap:12px;align-items:center;padding:12px;background:rgba(239,68,68,0.06);border-radius:12px;transition:all 0.3s ease">
-                    <div class="badge-icon" style="background:rgba(239,68,68,0.12);color:var(--danger)"><i class="bi bi-arrow-repeat"></i></div>
-                    <div>
-                        <div style="font-weight:900;font-size:14px">Last Updated</div>
-                        <div style="color:var(--muted);font-size:12px"><?php echo $nowDate; ?></div>
-                    </div>
-                </div>
+
             </div>
         </div>
     </div>
@@ -372,8 +425,35 @@ $flash = andison_get_flash();
 
 <?php
 andison_admin_footer();
-
 ?>
+
+<script>
+// Real-time last login display
+(function(){
+    const el = document.getElementById('lastLoginTime');
+    if (!el) return;
+    const ts = parseInt(el.getAttribute('data-ts'), 10);
+    if (!ts) return;
+
+    function timeAgo(ts) {
+        const now = Math.floor(Date.now() / 1000);
+        const diff = now - ts;
+        if (diff < 5)   return 'Just now';
+        if (diff < 60)  return diff + ' seconds ago';
+        if (diff < 120) return '1 minute ago';
+        if (diff < 3600) return Math.floor(diff / 60) + ' minutes ago';
+        if (diff < 7200) return '1 hour ago';
+        if (diff < 86400) return Math.floor(diff / 3600) + ' hours ago';
+        if (diff < 172800) return 'Yesterday at ' + new Date(ts * 1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        const d = new Date(ts * 1000);
+        return d.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) + ' ' + d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    }
+
+    function update() { el.textContent = timeAgo(ts); }
+    update();
+    setInterval(update, 10000);
+})();
+</script>
 
 <script>
 // Email copy button
@@ -588,26 +668,29 @@ function getStrengthInfo(strength) {
     const fileInput = document.getElementById('fileInput');
     const dropZone = document.getElementById('dropZone');
     const profileImg = document.getElementById('profileImg');
+    const profileInitials = document.getElementById('profileInitials');
+    const dropFileName = document.getElementById('dropFileName');
+    const dropText = document.getElementById('dropText');
     const removeBtn = document.getElementById('removeImageBtn');
-    const uploadForm = document.getElementById('uploadForm');
 
     function previewFile(file) {
         if (!file) return;
-        
-        if (!file.type.startsWith('image/')) {
-            alert('Please select an image file');
-            return;
-        }
-        
-        if (file.size > 5 * 1024 * 1024) {
-            alert('File size exceeds 5MB limit');
-            return;
-        }
-        
+        if (!file.type.startsWith('image/')) { alert('Please select an image file'); return; }
+        if (file.size > 5 * 1024 * 1024) { alert('File size exceeds 5MB limit'); return; }
+
+        // Show filename in drop zone
+        const kb = (file.size / 1024).toFixed(0);
+        dropText.textContent = file.name;
+        dropFileName.textContent = (file.size > 1024 * 1024 ? (file.size / 1024 / 1024).toFixed(1) + ' MB' : kb + ' KB');
+        dropZone.style.borderColor = '#2B11DB';
+        dropZone.style.background = 'rgba(43,17,219,0.04)';
+
         const reader = new FileReader();
-        reader.onload = function(e){ 
+        reader.onload = function(e){
             profileImg.src = e.target.result;
-            profileImg.parentElement.style.boxShadow = '0 6px 20px rgba(0,215,179,0.3)';
+            profileImg.style.display = 'block';
+            if (profileInitials) profileInitials.style.display = 'none';
+            document.getElementById('profileCircle').style.boxShadow = '0 4px 20px rgba(16,185,129,0.35)';
         };
         reader.readAsDataURL(file);
     }
@@ -619,51 +702,35 @@ function getStrengthInfo(strength) {
         if (f) previewFile(f);
     });
 
-    // Drag/drop
-    dropZone.addEventListener('dragover', function(e){ 
+    dropZone.addEventListener('dragover', function(e){
         e.preventDefault();
-        dropZone.style.borderColor = 'var(--accent)';
-        dropZone.style.backgroundColor = 'rgba(43,17,219,0.08)';
+        dropZone.style.borderColor = '#2B11DB';
+        dropZone.style.background = 'rgba(43,17,219,0.06)';
     });
-    
-    dropZone.addEventListener('dragleave', function(e){ 
-        dropZone.style.borderColor = 'var(--border)';
-        dropZone.style.backgroundColor = 'rgba(43,17,219,0.02)';
+
+    dropZone.addEventListener('dragleave', function(){
+        dropZone.style.borderColor = '#e5e7eb';
+        dropZone.style.background = '#fafafa';
     });
-    
+
     dropZone.addEventListener('drop', function(e){
         e.preventDefault();
-        dropZone.style.borderColor = 'var(--border)';
-        dropZone.style.backgroundColor = 'rgba(43,17,219,0.02)';
-        
+        dropZone.style.borderColor = '#e5e7eb';
+        dropZone.style.background = '#fafafa';
         const dt = e.dataTransfer;
         if (!dt || !dt.files || !dt.files[0]) return;
-        
         const f = dt.files[0];
-        try { 
-            fileInput.files = dt.files;
-        } catch(err) { 
-            // Some browsers readonly
-        }
+        try { fileInput.files = dt.files; } catch(err) {}
         previewFile(f);
     });
 
-    // Remove image handler
     removeBtn.addEventListener('click', function(){
         if (!confirm('Are you sure you want to remove your profile image?')) return;
-        
         const f = document.createElement('form');
-        f.method = 'post';
-        f.action = 'profile.php';
-        
+        f.method = 'post'; f.action = 'profile.php';
         const i = document.createElement('input');
-        i.type = 'hidden';
-        i.name = 'action';
-        i.value = 'remove_image';
-        f.appendChild(i);
-        
-        document.body.appendChild(f);
-        f.submit();
+        i.type = 'hidden'; i.name = 'action'; i.value = 'remove_image';
+        f.appendChild(i); document.body.appendChild(f); f.submit();
     });
 })();
 </script>

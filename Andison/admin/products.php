@@ -189,41 +189,78 @@ $products = isset($brandInfo['products']) && is_array($brandInfo['products']) ? 
 andison_admin_header('Products', 'products');
 ?>
 
+<style>
+.prod-page-header { background:linear-gradient(135deg,#2B11DB 0%,#3d22ef 60%,#4f35e8 100%);border-radius:14px;padding:20px 24px;color:white;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap; }
+.prod-brand-select { background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.3);color:white;border-radius:8px;padding:9px 36px 9px 14px;font-size:13px;font-weight:600;appearance:none;-webkit-appearance:none;cursor:pointer;min-width:260px;backdrop-filter:blur(4px);transition:border-color 0.2s; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='white' d='M6 9L1 4h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center; }
+.prod-brand-select option { color:#111;background:white; }
+.prod-brand-select:focus { outline:none;border-color:rgba(255,255,255,0.8); }
+.prod-load-btn { background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.4);color:white;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap; }
+.prod-load-btn:hover { background:rgba(255,255,255,0.35); }
+.prod-stat-pill { display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:999px;padding:6px 14px;font-size:12px;font-weight:600;white-space:nowrap; }
+.prod-table thead th { padding:11px 14px;text-align:left;font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.6px;background:#f9fafb;border-bottom:1px solid #e5e7eb; }
+.prod-table thead th:first-child { border-radius:10px 0 0 0; }
+.prod-table thead th:last-child { border-radius:0 10px 0 0;text-align:center; }
+.prod-table tbody tr { border-bottom:1px solid #f3f4f6;transition:background 0.15s; }
+.prod-table tbody tr:last-child { border-bottom:none; }
+.prod-table tbody tr:hover { background:#fafbff; }
+.prod-table td { padding:12px 14px;vertical-align:middle; }
+.prod-num { width:36px;height:36px;border-radius:8px;background:#f3f4f6;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#9ca3af; }
+.prod-badge-chip { display:inline-flex;align-items:center;gap:4px;padding:3px 10px;font-size:10px;font-weight:700;border-radius:999px;white-space:nowrap; }
+.prod-badge-available { background:#dcfce7;color:#16a34a; }
+.prod-badge-unavailable { background:#fee2e2;color:#dc2626; }
+.prod-badge-featured { background:#fef9c3;color:#b45309; }
+.prod-badge-new { background:#ede9fe;color:#7c3aed; }
+.prod-badge-bestseller { background:#fce7f3;color:#be185d; }
+.prod-badge-limited { background:#ffedd5;color:#c2410c; }
+.prod-badge-default { background:#f3f4f6;color:#374151; }
+.prod-search-wrap { position:relative; }
+.prod-search-wrap .search-icon { position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#9ca3af;font-size:14px;pointer-events:none; }
+.prod-search-wrap input { width:100%;padding:9px 14px 9px 36px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:13px;transition:border-color 0.2s,box-shadow 0.2s; }
+.prod-search-wrap input:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(43,17,219,0.08); }
+.prod-desc-textarea { width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;min-height:80px;transition:border-color 0.2s; }
+.prod-desc-textarea:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(43,17,219,0.08); }
+</style>
+
 <div class="grid">
     <!-- Brand Selector Section -->
-    <section class="card" style="grid-column:span 12;background:linear-gradient(135deg,rgba(43,17,219,0.05),rgba(16,185,129,0.05));">
-        <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:flex-end;">
-            <div>
-                <h2 style="font-size:20px;margin-bottom:8px;"><i class="bi bi-building" style="color:var(--accent);"></i> Select Brand</h2>
-                <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Choose a brand to manage its products and description</p>
-                <form method="get" action="products.php" style="display:flex;gap:8px;">
-                    <select id="brand" name="brand" style="flex:1;min-width:300px;">
-                        <?php foreach ($brandNames as $bn): ?>
-                            <option value="<?php echo htmlspecialchars($bn); ?>" <?php echo $bn === $selectedBrand ? 'selected' : ''; ?>><?php echo htmlspecialchars($bn); ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                    <button class="btn btn-primary" type="submit"><i class="bi bi-arrow-repeat"></i> Load</button>
-                </form>
+    <section style="grid-column:span 12;" class="prod-page-header">
+        <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="font-size:11px;font-weight:600;opacity:0.7;letter-spacing:0.5px;text-transform:uppercase;">Product Management</div>
+            <div style="font-size:20px;font-weight:800;letter-spacing:-0.2px;"><i class="bi bi-building"></i>
+                <?php echo $selectedBrand !== '' ? htmlspecialchars($selectedBrand) : 'Select a Brand'; ?>
             </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
             <?php if ($selectedBrand !== ''): ?>
-                <div style="text-align:right;">
-                    <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Products:</div>
-                    <div style="font-size:32px;font-weight:700;color:var(--accent);"><?php echo count($products); ?></div>
-                </div>
+                <span class="prod-stat-pill"><i class="bi bi-box-seam"></i> <?php echo count($products); ?> product<?php echo count($products) !== 1 ? 's' : ''; ?></span>
             <?php endif; ?>
+            <form method="get" action="products.php" style="display:flex;gap:8px;align-items:center;">
+                <select name="brand" class="prod-brand-select">
+                    <?php foreach ($brandNames as $bn): ?>
+                        <option value="<?php echo htmlspecialchars($bn); ?>" <?php echo $bn === $selectedBrand ? 'selected' : ''; ?>><?php echo htmlspecialchars($bn); ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <button class="prod-load-btn" type="submit"><i class="bi bi-arrow-repeat"></i> Switch</button>
+            </form>
         </div>
     </section>
 
     <!-- Brand Description Section -->
     <?php if ($selectedBrand !== ''): ?>
-        <section class="card" style="grid-column:span 12;">
-            <h3 style="font-size:18px;margin-bottom:12px;"><i class="bi bi-file-text" style="color:#f59e0b;"></i> Brand Description</h3>
+        <section class="card" style="grid-column:span 12;padding:16px 20px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                <div style="width:28px;height:28px;border-radius:7px;background:rgba(245,158,11,0.12);display:flex;align-items:center;justify-content:center;">
+                    <i class="bi bi-file-text" style="color:#f59e0b;font-size:13px;"></i>
+                </div>
+                <span style="font-size:13px;font-weight:700;color:#374151;">Brand Description</span>
+                <span style="font-size:11px;color:#9ca3af;margin-left:4px;">Shown on the brand page</span>
+            </div>
             <form method="post" action="products.php?brand=<?php echo urlencode($selectedBrand); ?>" class="brand-desc-form">
                 <input type="hidden" name="action" value="update_brand">
                 <input type="hidden" name="brand" value="<?php echo htmlspecialchars($selectedBrand); ?>">
-                <div style="display:grid;grid-template-columns:1fr auto;gap:16px;">
-                    <textarea id="description" name="description" style="font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;min-height:100px;padding:12px;border:1px solid #e5e7eb;border-radius:8px;"><?php echo htmlspecialchars((string)($brandInfo['description'] ?? '')); ?></textarea>
-                    <button class="btn btn-primary" type="submit" style="height:fit-content;white-space:nowrap;"><i class="bi bi-save"></i> Save Description</button>
+                <div style="display:flex;gap:10px;align-items:flex-end;">
+                    <textarea id="description" name="description" class="prod-desc-textarea" style="flex:1;"><?php echo htmlspecialchars((string)($brandInfo['description'] ?? '')); ?></textarea>
+                    <button class="btn btn-primary" type="submit" style="white-space:nowrap;height:fit-content;font-size:12px;padding:9px 16px;"><i class="bi bi-save"></i> Save</button>
                 </div>
             </form>
         </section>
@@ -232,40 +269,48 @@ andison_admin_header('Products', 'products');
     <!-- Products Section -->
     <?php if ($selectedBrand !== ''): ?>
         <section class="card" style="grid-column:span 12;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid #f0f0f0;">
-                <div>
-                    <h2 style="font-size:22px;"><i class="bi bi-box-seam" style="color:var(--mint);"></i> Products in <?php echo htmlspecialchars($selectedBrand); ?></h2>
-                    <p style="font-size:13px;color:var(--muted);margin-top:4px;"><?php echo count($products); ?> product<?php echo count($products) !== 1 ? 's' : ''; ?> listed</p>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <div style="width:34px;height:34px;border-radius:9px;background:rgba(16,185,129,0.1);display:flex;align-items:center;justify-content:center;">
+                        <i class="bi bi-box-seam" style="color:var(--mint);font-size:15px;"></i>
+                    </div>
+                    <div>
+                        <div style="font-size:15px;font-weight:700;color:#111827;">Product List</div>
+                        <div style="font-size:11px;color:#9ca3af;margin-top:1px;"><?php echo count($products); ?> product<?php echo count($products) !== 1 ? 's' : ''; ?> &middot; <?php echo htmlspecialchars($selectedBrand); ?></div>
+                    </div>
                 </div>
-                <button class="btn btn-primary" type="button" onclick="openAddProductModal();"><i class="bi bi-plus-lg"></i> Add New Product</button>
+                <button class="btn btn-primary" type="button" onclick="openAddProductModal();" style="font-size:12px;padding:8px 16px;"><i class="bi bi-plus-lg"></i> Add Product</button>
             </div>
 
             <!-- Search Bar -->
-            <div style="margin-bottom:16px;display:flex;gap:8px;align-items:center;">
-                <div class="field" style="flex:1;margin:0;">
-                    <input id="productSearch" type="text" placeholder="🔍 Search by model, type, or badge..." style="width:100%;padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;">
+            <div style="margin-bottom:14px;">
+                <div class="prod-search-wrap">
+                    <i class="bi bi-search search-icon"></i>
+                    <input id="productSearch" type="text" placeholder="Search by model, name, type, or badge...">
                 </div>
             </div>
 
             <!-- Products Table -->
-            <div style="overflow-x:auto;border-radius:12px;border:1px solid #e5e7eb;background:white;">
-                <table class="table" id="productsTable" style="width:100%;border-collapse:collapse;">
-                    <thead style="background:linear-gradient(135deg,#f9fafb,#f0f0f0);border-bottom:2px solid #e5e7eb;">
+            <div style="overflow-x:auto;border-radius:10px;border:1px solid #e5e7eb;background:white;">
+                <table class="prod-table" id="productsTable" style="width:100%;border-collapse:collapse;">
+                    <thead>
                         <tr>
-                            <th style="padding:14px;text-align:left;font-weight:600;color:#374151;width:60px;">#</th>
-                            <th style="padding:14px;text-align:left;font-weight:600;color:#374151;">Model</th>
-                            <th style="padding:14px;text-align:left;font-weight:600;color:#374151;width:140px;">Type</th>
-                            <th style="padding:14px;text-align:left;font-weight:600;color:#374151;width:120px;">Badge</th>
-                            <th style="padding:14px;text-align:center;font-weight:600;color:#374151;width:120px;">Image</th>
-                            <th style="padding:14px;text-align:center;font-weight:600;color:#374151;width:200px;">Actions</th>
+                            <th style="width:50px;">#</th>
+                            <th>Product</th>
+                            <th style="width:130px;">Type</th>
+                            <th style="width:120px;">Status</th>
+                            <th style="width:90px;text-align:center;">Image</th>
+                            <th style="width:160px;text-align:center;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (empty($products)): ?>
                             <tr>
-                                <td colspan="6" style="padding:40px;text-align:center;color:var(--muted);">
-                                    <i class="bi bi-inbox" style="font-size:32px;opacity:0.3;display:block;margin-bottom:8px;"></i>
-                                    No products found for this brand. <a href="#addProductForm" style="color:var(--accent);text-decoration:underline;">Add one now</a>
+                                <td colspan="6" style="padding:48px;text-align:center;">
+                                    <div style="width:56px;height:56px;border-radius:14px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"><i class="bi bi-inbox" style="font-size:24px;color:#d1d5db;"></i></div>
+                                    <div style="font-weight:600;font-size:14px;color:#374151;margin-bottom:4px;">No products yet</div>
+                                    <div style="font-size:12px;color:#9ca3af;margin-bottom:14px;">Add the first product for <?php echo htmlspecialchars($selectedBrand); ?></div>
+                                    <button class="btn btn-primary" type="button" onclick="openAddProductModal();" style="font-size:12px;padding:7px 16px;"><i class="bi bi-plus-lg"></i> Add Product</button>
                                 </td>
                             </tr>
                         <?php else: ?>
@@ -275,33 +320,44 @@ andison_admin_header('Products', 'products');
                             ?>
                             <?php foreach ($products as $i => $prod): ?>
                                 <?php if (!is_array($prod)) { continue; } ?>
+                                <?php
+                                    $badge = (string)($prod['badge'] ?? '');
+                                    $badgeClass = 'prod-badge-default';
+                                    if ($badge === 'Available') $badgeClass = 'prod-badge-available';
+                                    elseif ($badge === 'Not Available') $badgeClass = 'prod-badge-unavailable';
+                                    elseif ($badge === 'Featured') $badgeClass = 'prod-badge-featured';
+                                    elseif ($badge === 'New Arrival') $badgeClass = 'prod-badge-new';
+                                    elseif ($badge === 'Best Seller') $badgeClass = 'prod-badge-bestseller';
+                                    elseif ($badge === 'Limited Stock') $badgeClass = 'prod-badge-limited';
+                                ?>
                                 <tr class="product-row <?php echo $i >= $displayLimit ? 'hidden-row' : ''; ?>" 
                                     data-model="<?php echo htmlspecialchars(strtolower((string)($prod['model'] ?? '')), ENT_QUOTES); ?>" 
                                     data-type="<?php echo htmlspecialchars(strtolower((string)($prod['type'] ?? '')), ENT_QUOTES); ?>" 
                                     data-badge="<?php echo htmlspecialchars(strtolower((string)($prod['badge'] ?? '')), ENT_QUOTES); ?>" 
-                                    style="<?php echo $i >= $displayLimit ? 'display:none;' : ''; ?>;border-bottom:1px solid #f0f0f0;transition:background 0.2s ease;"
-                                    onmouseover="this.style.background='#f9fafb';"
-                                    onmouseout="this.style.background='white';">
-                                    <td style="padding:14px;color:#6b7280;font-weight:500;"><?php echo (int)$i + 1; ?></td>
-                                    <td style="padding:14px;"><strong><?php echo htmlspecialchars((string)($prod['model'] ?? '')); ?></strong></td>
-                                    <td style="padding:14px;color:#6b7280;font-size:13px;"><?php echo htmlspecialchars((string)($prod['type'] ?? '')); ?></td>
-                                    <td style="padding:14px;">
-                                        <?php if (!empty($prod['badge'])): ?>
-                                            <span style="display:inline-block;padding:4px 10px;background:var(--accent);color:white;font-size:11px;font-weight:600;border-radius:20px;"><?php echo htmlspecialchars((string)($prod['badge'] ?? '')); ?></span>
-                                        <?php else: ?>
-                                            <span style="color:var(--muted);font-size:12px;">—</span>
+                                    style="<?php echo $i >= $displayLimit ? 'display:none;' : ''; ?>">
+                                    <td><span class="prod-num"><?php echo (int)$i + 1; ?></span></td>
+                                    <td>
+                                        <div style="font-weight:600;font-size:13px;color:#111827;"><?php echo htmlspecialchars((string)($prod['model'] ?? '')); ?></div>
+                                        <?php if (!empty($prod['product_name'])): ?>
+                                            <div style="font-size:11px;color:#9ca3af;margin-top:1px;"><?php echo htmlspecialchars((string)$prod['product_name']); ?></div>
                                         <?php endif; ?>
                                     </td>
-                                    <td style="padding:14px;text-align:center;">
+                                    <td style="color:#6b7280;font-size:12px;"><?php echo htmlspecialchars((string)($prod['type'] ?? '')); ?></td>
+                                    <td>
+                                        <?php if ($badge !== ''): ?>
+                                            <span class="prod-badge-chip <?php echo $badgeClass; ?>"><?php echo htmlspecialchars($badge); ?></span>
+                                        <?php else: ?>
+                                            <span style="color:#d1d5db;font-size:12px;">&mdash;</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td style="text-align:center;">
                                         <?php 
                                             $imgPath = (string)($prod['image'] ?? '');
                                             if ($imgPath !== ''):
-                                                // Convert to relative path for admin display
                                                 $displayPath = $imgPath;
                                                 if (strpos($imgPath, 'andison/') === 0) {
                                                     $displayPath = '../' . substr($imgPath, 8);
                                                 } elseif (strpos($imgPath, 'assets/') === 0) {
-                                                    // assets/ paths need ../ prefix from admin subdirectory
                                                     $displayPath = '../' . $imgPath;
                                                 } elseif (!preg_match('~^(https?://|\.\./)~i', $imgPath)) {
                                                     $displayPath = '../' . $imgPath;
@@ -309,19 +365,19 @@ andison_admin_header('Products', 'products');
                                         ?>
                                             <img src="<?php echo htmlspecialchars($displayPath); ?>" 
                                                  alt="<?php echo htmlspecialchars((string)($prod['model'] ?? '')); ?>" 
-                                                 style="width:60px;height:60px;object-fit:contain;border-radius:6px;cursor:pointer;border:1px solid #e5e7eb;transition:all 0.2s ease;background:#f9fafb;" 
+                                                 style="width:48px;height:48px;object-fit:contain;border-radius:8px;cursor:pointer;border:1px solid #e5e7eb;background:#f9fafb;transition:all 0.2s;" 
                                                  onclick="openImagePreview('<?php echo htmlspecialchars($displayPath, ENT_QUOTES); ?>')"
-                                                 onerror="this.style.display='none';this.nextElementSibling.style.display='inline-block';"
-                                                 onmouseover="this.style.transform='scale(1.1)';this.style.borderColor='var(--accent)';this.style.boxShadow='0 4px 12px rgba(43,17,219,0.15)';"
+                                                 onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';"
+                                                 onmouseover="this.style.transform='scale(1.12)';this.style.borderColor='var(--accent)';this.style.boxShadow='0 4px 10px rgba(43,17,219,0.15)';"
                                                  onmouseout="this.style.transform='scale(1)';this.style.borderColor='#e5e7eb';this.style.boxShadow='none';"
-                                                 title="Click to view full image">
-                                            <span style="display:none;color:var(--muted);font-size:12px;">Not found</span>
+                                                 title="Click to preview">
+                                            <span style="display:none;width:48px;height:48px;background:#f3f4f6;border-radius:8px;align-items:center;justify-content:center;color:#d1d5db;font-size:18px;"><i class="bi bi-image"></i></span>
                                         <?php else: ?>
-                                            <span style="color:var(--muted);font-size:12px;">No image</span>
+                                            <span style="width:48px;height:48px;background:#f3f4f6;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;color:#d1d5db;font-size:18px;"><i class="bi bi-image"></i></span>
                                         <?php endif; ?>
                                     </td>
-                                    <td style="padding:14px;text-align:center;">
-                                        <div style="display:flex;gap:6px;justify-content:center;">
+                                    <td style="text-align:center;">
+                                        <div style="display:flex;gap:5px;justify-content:center;">
                                             <button class="btn btn-outline edit-product-btn" type="button" 
                                                     data-index="<?php echo (int)$i; ?>" 
                                                     data-name="<?php echo htmlspecialchars((string)($prod['product_name'] ?? ''), ENT_QUOTES); ?>"
@@ -332,14 +388,14 @@ andison_admin_header('Products', 'products');
                                                     data-description="<?php echo htmlspecialchars((string)($prod['description'] ?? ''), ENT_QUOTES); ?>"
                                                     data-specifications="<?php echo htmlspecialchars((string)($prod['specifications'] ?? ''), ENT_QUOTES); ?>"
                                                     data-image="<?php echo htmlspecialchars((string)($prod['image'] ?? ''), ENT_QUOTES); ?>"
-                                                    style="padding:6px 12px;font-size:12px;">
+                                                    style="padding:5px 10px;font-size:11px;">
                                                 <i class="bi bi-pencil"></i> Edit
                                             </button>
                                             <form method="post" action="products.php?brand=<?php echo urlencode($selectedBrand); ?>" class="delete-form" style="display:inline;">
                                                 <input type="hidden" name="action" value="delete_product">
                                                 <input type="hidden" name="brand" value="<?php echo htmlspecialchars($selectedBrand); ?>">
                                                 <input type="hidden" name="index" value="<?php echo (int)$i; ?>">
-                                                <button class="btn btn-danger" type="submit" style="padding:6px 12px;font-size:12px;"><i class="bi bi-trash"></i> Delete</button>
+                                                <button class="btn btn-danger" type="submit" style="padding:5px 10px;font-size:11px;"><i class="bi bi-trash"></i></button>
                                             </form>
                                         </div>
                                     </td>
@@ -351,9 +407,9 @@ andison_admin_header('Products', 'products');
             </div>
             
             <?php if (!empty($products) && count($products) > 10): ?>
-                <div style="text-align:center;margin-top:16px;padding-top:16px;border-top:1px solid #f0f0f0;">
-                    <button id="seeMoreBtn" class="btn btn-outline" type="button" onclick="toggleSeeMore()">
-                        <i class="bi bi-chevron-down"></i> Show More (<?php echo count($products) - 10; ?> hidden)
+                <div style="text-align:center;margin-top:12px;">
+                    <button id="seeMoreBtn" type="button" onclick="toggleSeeMore()" style="display:inline-flex;align-items:center;gap:6px;padding:8px 20px;font-size:12px;font-weight:600;color:var(--accent);background:rgba(43,17,219,0.06);border:1.5px solid rgba(43,17,219,0.15);border-radius:8px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(43,17,219,0.1)'" onmouseout="this.style.background='rgba(43,17,219,0.06)'">
+                        <i class="bi bi-chevron-down"></i> Show <?php echo count($products) - 10; ?> more products
                     </button>
                 </div>
             <?php endif; ?>

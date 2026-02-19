@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/andison/includes/analytics.php'; andison_track_visit('about'); ?>
 require_once __DIR__ . '/andison/includes/home_featured.php';
 require_once __DIR__ . '/andison/includes/home_slider.php';
 require_once __DIR__ . '/andison/includes/youtube_links.php';

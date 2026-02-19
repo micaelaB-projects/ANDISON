@@ -1,4 +1,4 @@
-<?php
+<?php require_once __DIR__ . '/andison/includes/analytics.php'; andison_track_visit('brands'); 
 // Set page title 
 $page_title = "Brands";
 $company_name = "ANDISON INDUSTRIAL";

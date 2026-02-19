@@ -155,104 +155,132 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 andison_admin_header('Homepage Featured', 'featured');
 ?>
 
-<div class="grid">
-    <section class="card" style="grid-column:span 12;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #f0f0f0;">
-            <div>
-                <h2 style="font-size:24px;font-weight:700;color:#2b11db;"><i class="bi bi-star-fill" style="color:#f59e0b;margin-right:8px;"></i>Featured Section</h2>
-                <p style="font-size:13px;color:#6b7280;margin-top:4px;">Manage the featured content displayed on your homepage</p>
-            </div>
-        </div>
+<style>
+.feat-page-header { background:linear-gradient(135deg,#2B11DB 0%,#3d22ef 60%,#4f35e8 100%);border-radius:14px;padding:18px 22px;color:white;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px; }
+.feat-section-hd { display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #f3f4f6; }
+.feat-hd-icon { width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+.feat-hd-title { font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#374151; }
+.feat-upload-zone { border:2px dashed #e5e7eb;border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:border-color 0.2s,background 0.2s;background:#f9fafb;margin-bottom:4px; }
+.feat-upload-zone:hover { border-color:#2B11DB;background:rgba(43,17,219,0.02); }
+.feat-upload-zone .uz-icon { font-size:26px;color:#2B11DB;display:block;margin-bottom:6px; }
+.feat-upload-zone .uz-title { font-weight:600;color:#374151;font-size:13px;margin-bottom:2px; }
+.feat-upload-zone .uz-hint { font-size:11px;color:#9ca3af; }
+.feat-input { border:1.5px solid #e5e7eb !important;border-radius:8px !important;transition:border-color 0.2s,box-shadow 0.2s !important; }
+.feat-input:focus { outline:none !important;border-color:#2B11DB !important;box-shadow:0 0 0 3px rgba(43,17,219,0.08) !important; }
+.feat-preview-box { border:1.5px solid #e5e7eb;border-radius:10px;background:#f9fafb;min-height:200px;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:14px;cursor:pointer;transition:border-color 0.2s; }
+.feat-preview-box:hover { border-color:#2B11DB; }
+</style>
 
+<div class="grid">
+    <div style="grid-column:span 12;" class="feat-page-header">
+        <div>
+            <div style="font-size:11px;font-weight:700;opacity:0.7;letter-spacing:0.6px;text-transform:uppercase;margin-bottom:4px;">Homepage Management</div>
+            <div style="font-size:20px;font-weight:800;letter-spacing:-0.2px;display:flex;align-items:center;gap:8px;"><i class="bi bi-star-fill" style="color:#fbbf24;"></i> Featured Section</div>
+        </div>
+        <span style="font-size:12px;opacity:0.75;">Controls the featured banner on your homepage</span>
+    </div>
+
+    <section class="card" style="grid-column:span 12;">
         <form method="post" action="featured.php" enctype="multipart/form-data" id="featuredForm">
-            <!-- Content Information Section -->
-            <div style="margin-bottom:28px;">
-                <h3 style="font-size:14px;font-weight:700;color:#2b11db;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid rgba(43,17,219,0.1);"><i class="bi bi-info-circle" style="margin-right:8px;"></i>Content Information</h3>
+            <!-- Content -->
+            <div style="margin-bottom:24px;">
+                <div class="feat-section-hd">
+                    <div class="feat-hd-icon" style="background:rgba(43,17,219,0.1);"><i class="bi bi-info-circle" style="color:#2B11DB;font-size:13px;"></i></div>
+                    <span class="feat-hd-title">Content Information</span>
+                </div>
                 
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
                     <div class="field" style="margin:0;">
-                        <label for="badge"><i class="bi bi-tag" style="margin-right:6px;"></i>Badge (e.g., EVENTS, NEW, FEATURED)</label>
-                        <input id="badge" name="badge" type="text" value="<?php echo htmlspecialchars((string)($featured['badge'] ?? '')); ?>" placeholder="e.g., EVENTS" style="border:1px solid #e5e7eb;">
+                        <label for="badge">Badge <small style="color:#9ca3af;font-weight:400;">(e.g. EVENTS, NEW)</small></label>
+                        <input id="badge" name="badge" type="text" value="<?php echo htmlspecialchars((string)($featured['badge'] ?? '')); ?>" placeholder="e.g., EVENTS" class="feat-input">
                     </div>
 
                     <div class="field" style="margin:0;">
-                        <label for="media_type"><i class="bi bi-image" style="margin-right:6px;"></i>Media Type</label>
-                        <select id="media_type" name="media_type" style="border:1px solid #e5e7eb;background:linear-gradient(to right, #f9fafb, #f3f4f6);">
-                            <option value="picture" <?php echo ($featured['media_type'] ?? 'picture') === 'picture' ? 'selected' : ''; ?>>🖼️ Picture</option>
-                            <option value="youtube" <?php echo ($featured['media_type'] ?? '') === 'youtube' ? 'selected' : ''; ?>>🎥 YouTube Video</option>
-                            <option value="video" <?php echo ($featured['media_type'] ?? '') === 'video' ? 'selected' : ''; ?>>📹 Video File</option>
+                        <label for="media_type">Media Type</label>
+                        <select id="media_type" name="media_type" class="feat-input" style="cursor:pointer;">
+                            <option value="picture" <?php echo ($featured['media_type'] ?? 'picture') === 'picture' ? 'selected' : ''; ?>>Picture</option>
+                            <option value="youtube" <?php echo ($featured['media_type'] ?? '') === 'youtube' ? 'selected' : ''; ?>>YouTube Video</option>
+                            <option value="video" <?php echo ($featured['media_type'] ?? '') === 'video' ? 'selected' : ''; ?>>Video File</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="field" style="margin:0;margin-bottom:16px;">
-                    <label for="title"><i class="bi bi-pencil-square" style="margin-right:6px;"></i>Title *</label>
-                    <input id="title" name="title" type="text" value="<?php echo htmlspecialchars((string)($featured['title'] ?? '')); ?>" placeholder="Enter featured section title" required style="border:1px solid #e5e7eb;font-weight:500;">
+                <div class="field" style="margin:0 0 14px;">
+                    <label for="title">Title <span style="color:#ef4444;">*</span></label>
+                    <input id="title" name="title" type="text" value="<?php echo htmlspecialchars((string)($featured['title'] ?? '')); ?>" placeholder="Enter featured section title" required class="feat-input" style="font-weight:600;">
                 </div>
 
                 <div class="field" style="margin:0;">
-                    <label for="description"><i class="bi bi-file-text" style="margin-right:6px;"></i>Description</label>
-                    <textarea id="description" name="description" placeholder="Describe the featured content, benefits, and key features..." rows="4" style="font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;border:1px solid #e5e7eb;resize:vertical;"><?php echo htmlspecialchars((string)($featured['description'] ?? '')); ?></textarea>
-                    <small style="color:#6b7280;font-size:12px;margin-top:6px;display:block;">Make it engaging and compelling for your visitors</small>
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" placeholder="Describe the featured content..." rows="3" class="feat-input" style="resize:vertical;font-family:inherit;"><?php echo htmlspecialchars((string)($featured['description'] ?? '')); ?></textarea>
+                    <small style="color:#9ca3af;font-size:11px;margin-top:4px;display:block;">Make it engaging and compelling for your visitors</small>
                 </div>
             </div>
 
-            <!-- Event Information Section -->
-            <div style="margin-bottom:28px;">
-                <h3 style="font-size:14px;font-weight:700;color:#2b11db;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid rgba(43,17,219,0.1);"><i class="bi bi-calendar-event" style="margin-right:8px;"></i>Event & Sales Information</h3>
+            <!-- Event & Sales -->
+            <div style="margin-bottom:24px;">
+                <div class="feat-section-hd">
+                    <div class="feat-hd-icon" style="background:rgba(245,158,11,0.1);"><i class="bi bi-calendar-event" style="color:#f59e0b;font-size:13px;"></i></div>
+                    <span class="feat-hd-title">Event &amp; Sales Information</span>
+                    <span style="font-size:11px;color:#9ca3af;margin-left:4px;">Optional</span>
+                </div>
                 
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
                     <div class="field" style="margin:0;">
-                        <label for="event_date"><i class="bi bi-calendar" style="margin-right:6px;"></i>Event Date</label>
-                        <input id="event_date" name="event_date" type="text" value="<?php echo htmlspecialchars((string)($featured['event_date'] ?? '')); ?>" placeholder="e.g., February 10, 2026" style="border:1px solid #e5e7eb;">
+                        <label for="event_date">Event Date</label>
+                        <input id="event_date" name="event_date" type="text" value="<?php echo htmlspecialchars((string)($featured['event_date'] ?? '')); ?>" placeholder="e.g., February 10, 2026" class="feat-input">
                     </div>
 
                     <div class="field" style="margin:0;">
-                        <label for="event_location"><i class="bi bi-geo-alt" style="margin-right:6px;"></i>Event Location</label>
-                        <input id="event_location" name="event_location" type="text" value="<?php echo htmlspecialchars((string)($featured['event_location'] ?? '')); ?>" placeholder="e.g., Industrial Expo Center" style="border:1px solid #e5e7eb;">
-                    </div>
-                </div>
-
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-                    <div class="field" style="margin:0;">
-                        <label for="discount"><i class="bi bi-percent" style="margin-right:6px;"></i>Discount / Offer</label>
-                        <input id="discount" name="discount" type="text" value="<?php echo htmlspecialchars((string)($featured['discount'] ?? '')); ?>" placeholder="e.g., 20% OFF" style="border:1px solid #e5e7eb;">
-                    </div>
-
-                    <div class="field" style="margin:0;">
-                        <label for="offer_text"><i class="bi bi-bookmark" style="margin-right:6px;"></i>Offer Text</label>
-                        <input id="offer_text" name="offer_text" type="text" value="<?php echo htmlspecialchars((string)($featured['offer_text'] ?? '')); ?>" placeholder="e.g., Limited Time Offer" style="border:1px solid #e5e7eb;">
+                        <label for="event_location">Event Location</label>
+                        <input id="event_location" name="event_location" type="text" value="<?php echo htmlspecialchars((string)($featured['event_location'] ?? '')); ?>" placeholder="e.g., Industrial Expo Center" class="feat-input">
                     </div>
                 </div>
-            </div>
 
-            <!-- Call-to-Action Section -->
-            <div style="margin-bottom:28px;">
-                <h3 style="font-size:14px;font-weight:700;color:#2b11db;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid rgba(43,17,219,0.1);"><i class="bi bi-hand-index-fill" style="margin-right:8px;"></i>Call-to-Action Button</h3>
-                
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
                     <div class="field" style="margin:0;">
-                        <label for="button_text"><i class="bi bi-type" style="margin-right:6px;"></i>Button Text</label>
-                        <input id="button_text" name="button_text" type="text" value="<?php echo htmlspecialchars((string)($featured['button_text'] ?? '')); ?>" placeholder="e.g., Learn More, Shop Now" style="border:1px solid #e5e7eb;">
+                        <label for="discount">Discount / Offer</label>
+                        <input id="discount" name="discount" type="text" value="<?php echo htmlspecialchars((string)($featured['discount'] ?? '')); ?>" placeholder="e.g., 20% OFF" class="feat-input">
                     </div>
 
                     <div class="field" style="margin:0;">
-                        <label for="button_url"><i class="bi bi-link-45deg" style="margin-right:6px;"></i>Button URL</label>
-                        <input id="button_url" name="button_url" type="text" value="<?php echo htmlspecialchars((string)($featured['button_url'] ?? '')); ?>" placeholder="e.g., #products or https://..." style="border:1px solid #e5e7eb;">
+                        <label for="offer_text">Offer Text</label>
+                        <input id="offer_text" name="offer_text" type="text" value="<?php echo htmlspecialchars((string)($featured['offer_text'] ?? '')); ?>" placeholder="e.g., Limited Time Offer" class="feat-input">
                     </div>
                 </div>
             </div>
 
-            <!-- Media Section -->
-            <div style="margin-bottom:28px;">
-                <h3 style="font-size:14px;font-weight:700;color:#2b11db;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid rgba(43,17,219,0.1);"><i class="bi bi-camera" style="margin-right:8px;"></i>Media Content</h3>
+            <!-- CTA Button -->
+            <div style="margin-bottom:24px;">
+                <div class="feat-section-hd">
+                    <div class="feat-hd-icon" style="background:rgba(16,185,129,0.1);"><i class="bi bi-hand-index-fill" style="color:#10b981;font-size:12px;"></i></div>
+                    <span class="feat-hd-title">Call-to-Action Button</span>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                    <div class="field" style="margin:0;">
+                        <label for="button_text">Button Text</label>
+                        <input id="button_text" name="button_text" type="text" value="<?php echo htmlspecialchars((string)($featured['button_text'] ?? '')); ?>" placeholder="e.g., Learn More, Shop Now" class="feat-input">
+                    </div>
+
+                    <div class="field" style="margin:0;">
+                        <label for="button_url">Button URL</label>
+                        <input id="button_url" name="button_url" type="text" value="<?php echo htmlspecialchars((string)($featured['button_url'] ?? '')); ?>" placeholder="e.g., #products or https://..." class="feat-input">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Media Content -->
+            <div style="margin-bottom:20px;">
+                <div class="feat-section-hd">
+                    <div class="feat-hd-icon" style="background:rgba(139,92,246,0.1);"><i class="bi bi-camera" style="color:#8b5cf6;font-size:13px;"></i></div>
+                    <span class="feat-hd-title">Media Content</span>
+                </div>
                 
                 <!-- Preview -->
-                <div style="margin-bottom:16px;">
-                    <label style="font-size:12px;font-weight:700;color:#374151;text-transform:uppercase;margin-bottom:8px;display:block;">Preview</label>
-                    <div id="preview_container" style="border:2px solid #e5e7eb;border-radius:12px;padding:20px;background:linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);min-height:280px;cursor:pointer;transition:all 0.3s ease;display:flex;align-items:center;justify-content:center;" title="Click to view full size">
-                        <?php
-                        $mType = $featured['media_type'] ?? 'picture';
+                <div class="feat-preview-box" id="preview_container" title="Click to view full size">
+                    <?php
+                    $mType = $featured['media_type'] ?? 'picture';
                         if ($mType === 'picture'):
                             $imgPath = (string)($featured['image'] ?? '');
                             $displayImgPath = $imgPath;
@@ -287,41 +315,41 @@ andison_admin_header('Homepage Featured', 'featured');
                 </div>
 
                 <!-- Upload Fields -->
-                <div id="field_picture" class="field" style="margin:0;display:<?php echo ($mType === 'picture') ? 'block' : 'none'; ?>;">
-                    <label for="image" style="margin-bottom:12px;"><i class="bi bi-upload" style="margin-right:6px;"></i>Upload Picture</label>
-                    <div style="border:2px dashed #e5e7eb;border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:all 0.3s ease;background:#f9fafb;hover-effect:" onmouseover="this.style.borderColor='#2b11db';this.style.backgroundColor='rgba(43,17,219,0.02)';" onmouseout="this.style.borderColor='#e5e7eb';this.style.backgroundColor='#f9fafb';" onclick="document.getElementById('image').click();">
-                        <i class="bi bi-cloud-upload" style="font-size:32px;color:#2b11db;display:block;margin-bottom:8px;"></i>
-                        <div style="font-weight:600;color:#374151;margin-bottom:4px;">Click to upload or drag & drop</div>
-                        <div style="font-size:12px;color:#9ca3af;">JPG, PNG, WebP, GIF or AVIF (max 5MB)</div>
+                <div id="field_picture" style="display:<?php echo ($mType === 'picture') ? 'block' : 'none'; ?>;">
+                    <div class="feat-upload-zone" onclick="document.getElementById('image').click();">
+                        <i class="bi bi-cloud-upload uz-icon"></i>
+                        <div class="uz-title">Click to upload picture</div>
+                        <div class="uz-hint">JPG, PNG, WebP, GIF or AVIF</div>
                     </div>
                     <input id="image" name="image" type="file" accept="image/*" style="display:none;">
-                    <div class="field" style="margin:0;margin-top:12px;">
-                        <label for="image_alt"><i class="bi bi-chat" style="margin-right:6px;"></i>Image Alt Text</label>
-                        <input id="image_alt" name="image_alt" type="text" value="<?php echo htmlspecialchars((string)($featured['image_alt'] ?? '')); ?>" placeholder="Describe the image for accessibility" style="border:1px solid #e5e7eb;">
-                        <small style="color:#6b7280;font-size:12px;margin-top:6px;display:block;">Used for accessibility and SEO</small>
+                    <div class="field" style="margin:10px 0 0;">
+                        <label for="image_alt">Image Alt Text</label>
+                        <input id="image_alt" name="image_alt" type="text" value="<?php echo htmlspecialchars((string)($featured['image_alt'] ?? '')); ?>" placeholder="Describe the image for accessibility" class="feat-input">
+                        <small style="color:#9ca3af;font-size:11px;margin-top:4px;display:block;">Used for accessibility and SEO</small>
                     </div>
                 </div>
 
-                <div id="field_youtube" class="field" style="margin:0;display:<?php echo ($mType === 'youtube') ? 'block' : 'none'; ?>;">
-                    <label for="youtube_url" style="margin-bottom:8px;"><i class="bi bi-youtube" style="margin-right:6px;"></i>YouTube URL or Video ID</label>
-                    <input id="youtube_url" name="youtube_url" type="text" value="<?php echo htmlspecialchars((string)($featured['youtube_url'] ?? '')); ?>" placeholder="Paste: https://www.youtube.com/watch?v=... or video ID" style="border:1px solid #e5e7eb;">
-                    <small style="color:#6b7280;font-size:12px;margin-top:6px;display:block;">Supports full URLs or YouTube video IDs</small>
+                <div id="field_youtube" style="display:<?php echo ($mType === 'youtube') ? 'block' : 'none'; ?>;">
+                    <div class="field" style="margin:0;">
+                        <label for="youtube_url"><i class="bi bi-youtube" style="color:#ef4444;margin-right:4px;"></i> YouTube URL or Video ID</label>
+                        <input id="youtube_url" name="youtube_url" type="text" value="<?php echo htmlspecialchars((string)($featured['youtube_url'] ?? '')); ?>" placeholder="Paste: https://www.youtube.com/watch?v=... or video ID" class="feat-input">
+                        <small style="color:#9ca3af;font-size:11px;margin-top:4px;display:block;">Supports full URLs or YouTube video IDs</small>
+                    </div>
                 </div>
 
-                <div id="field_video" class="field" style="margin:0;display:<?php echo ($mType === 'video') ? 'block' : 'none'; ?>;">
-                    <label for="video" style="margin-bottom:12px;"><i class="bi bi-upload" style="margin-right:6px;"></i>Upload Video</label>
-                    <div style="border:2px dashed #e5e7eb;border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:all 0.3s ease;background:#f9fafb;" onmouseover="this.style.borderColor='#2b11db';this.style.backgroundColor='rgba(43,17,219,0.02)';" onmouseout="this.style.borderColor='#e5e7eb';this.style.backgroundColor='#f9fafb';" onclick="document.getElementById('video').click();">
-                        <i class="bi bi-cloud-upload" style="font-size:32px;color:#2b11db;display:block;margin-bottom:8px;"></i>
-                        <div style="font-weight:600;color:#374151;margin-bottom:4px;">Click to upload or drag & drop</div>
-                        <div style="font-size:12px;color:#9ca3af;">MP4, WebM, OGG or MOV (max 50MB)</div>
+                <div id="field_video" style="display:<?php echo ($mType === 'video') ? 'block' : 'none'; ?>;">
+                    <div class="feat-upload-zone" onclick="document.getElementById('video').click();">
+                        <i class="bi bi-cloud-upload uz-icon"></i>
+                        <div class="uz-title">Click to upload video</div>
+                        <div class="uz-hint">MP4, WebM, OGG or MOV</div>
                     </div>
                     <input id="video" name="video" type="file" accept="video/*" style="display:none;">
                 </div>
             </div>
 
-            <!-- Save Button -->
-            <div style="display:flex;gap:12px;justify-content:flex-end;padding-top:20px;border-top:1px solid #f0f0f0;">
-                <button class="btn btn-primary" type="submit" style="padding:12px 24px;font-weight:600;display:flex;align-items:center;gap:8px;"><i class="bi bi-check-circle"></i> Save Featured Section</button>
+            <!-- Save -->
+            <div style="display:flex;justify-content:flex-end;padding-top:16px;border-top:1px solid #f3f4f6;">
+                <button class="btn btn-primary" type="submit" style="font-size:13px;padding:10px 22px;"><i class="bi bi-check-circle"></i> Save Featured Section</button>
             </div>
         </form>
     </section>
@@ -349,10 +377,7 @@ document.getElementById('featuredForm').addEventListener('submit', function(e){
     to { opacity: 1; }
 }
 
-#preview_container:hover {
-    border-color: #2b11db;
-    background: linear-gradient(135deg, rgba(43,17,219,0.02) 0%, rgba(43,17,219,0.01) 100%);
-}
+    #preview_container img, #preview_container video, #preview_container iframe { max-height:200px; }
 </style>
 
 <script>
