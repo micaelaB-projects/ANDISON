@@ -1,27 +1,27 @@
 {
-    "total_pageviews": 177,
+    "total_pageviews": 189,
     "unique_sessions": 13,
-    "today_pageviews": 177,
+    "today_pageviews": 189,
     "today_unique": 13,
     "today_date": "2026-02-19",
-    "week_pageviews": 177,
+    "week_pageviews": 189,
     "week_unique": 13,
     "week_start": "2026-02-16",
-    "month_pageviews": 177,
+    "month_pageviews": 189,
     "month_unique": 13,
     "month_key": "2026-02",
     "daily": {
-        "2026-02-19": 177
+        "2026-02-19": 189
     },
     "pages": {
-        "home": 40,
-        "brands": 26,
+        "home": 41,
+        "brands": 27,
         "brand": 18,
-        "services": 32,
-        "industries": 20,
+        "services": 33,
+        "industries": 21,
         "category": 2,
-        "contact": 15,
-        "about": 24
+        "contact": 16,
+        "about": 31
     },
     "brands": {
         "Kobelco": 2,

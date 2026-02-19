@@ -3200,7 +3200,7 @@ $ytLinks = andison_get_youtube_links();
             <div class="nav-inner">
                 <ul class="nav-list">
                     <li>
-                        <a href="home.php" class="active">Home</a>
+                        <a href="home.php">Home</a>
                         <div class="nav-dropdown">
                             <h4>Welcome</h4>
                             <p>Discover our complete range of industrial welding solutions and equipment.</p>
