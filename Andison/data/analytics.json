@@ -1,8 +1,40 @@
 {
+<<<<<<< HEAD
     "total_pageviews": 194,
     "unique_sessions": 16,
     "today_pageviews": 194,
     "today_unique": 16,
+=======
+<<<<<<< HEAD
+    "total_pageviews": 4,
+    "unique_sessions": 4,
+    "today_pageviews": 4,
+    "today_unique": 4,
+    "today_date": "2026-02-19",
+    "week_pageviews": 4,
+    "week_unique": 4,
+    "week_start": "2026-02-16",
+    "month_pageviews": 4,
+    "month_unique": 4,
+    "month_key": "2026-02",
+    "daily": {
+        "2026-02-19": 4
+    },
+    "pages": {
+        "home": 4
+    },
+    "brands": {
+        "Panasonic Connect": 2,
+        "ACES": 1,
+        "Microgard": 1,
+        "Uvex": 1,
+        "TANAKA": 1
+=======
+    "total_pageviews": 189,
+    "unique_sessions": 13,
+    "today_pageviews": 189,
+    "today_unique": 13,
+>>>>>>> 380cd43eff3919a80d344d9aa994b2dd0d094595
     "today_date": "2026-02-19",
     "week_pageviews": 194,
     "week_unique": 16,
@@ -28,9 +60,10 @@
         "Panasonic Connect": 10,
         "Uvex": 2,
         "Aces": 1
+>>>>>>> 514d6653b15fbc5c877bad0870b49166c8d0a5c8
     },
     "categories": {
-        "Arc Welding Machine": 1,
-        "Portable Ventilators": 1
+        "Arc Welding Robots": 1,
+        "Batteries": 1
     }
 }

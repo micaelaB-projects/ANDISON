@@ -8,26 +8,47 @@ define('ANDISON_ANALYTICS_FILE', __DIR__ . '/../data/analytics.json');
 
 /**
  * Record a page visit. Call once per page load on public-facing pages.
- * Deduplicates per session so refreshes don't inflate counts.
+ *
+ * Deduplication strategy:
+ *   - Uses PHP sessions (no cookies set manually, avoids header issues).
+ *   - Session ID is unique per browser tab/window open.
+ *   - A per-session-per-day key ensures only the FIRST page load counts.
+ *   - Navigating to other pages = NOT counted again.
+ *   - Opening a new browser session = new count.
  */
 function andison_track_visit(string $page = 'unknown'): void
 {
-    if (session_status() === PHP_SESSION_NONE) {
-        @session_start();
-    }
-
     $today     = date('Y-m-d');
     $weekStart = date('Y-m-d', strtotime('monday this week'));
     $month     = date('Y-m');
 
-    // --- deduplicate within the same session per page ---
-    $sessionKey = 'andison_tracked_' . $page . '_' . $today;
-    $isNewVisit = empty($_SESSION[$sessionKey]);
-    if ($isNewVisit) {
-        $_SESSION[$sessionKey] = true;
+    // Use the admin's dedicated session name only if already active,
+    // otherwise use the default public session.
+    if (session_status() === PHP_SESSION_NONE) {
+        // Only start a session if headers haven't been sent yet
+        if (!headers_sent()) {
+            session_start();
+        }
     }
 
-    // Always count page-views (every request), but only bump unique once per session
+    // Key is fixed (no date) — counted ONCE per browser session.
+    // Closing the browser clears the session, so reopening counts again.
+    $sessionKey = 'av';
+
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        if (!empty($_SESSION[$sessionKey])) {
+            return; // already counted this browser session
+        }
+        $_SESSION[$sessionKey] = 1;
+    } else {
+        // Sessions unavailable (headers already sent) — deduplicate within same request only
+        static $counted = false;
+        if ($counted) {
+            return;
+        }
+        $counted = true;
+    }
+
     $data = andison_read_json_file(ANDISON_ANALYTICS_FILE, []);
 
     // ── Structural defaults ────────────────────────────────────────
@@ -68,29 +89,25 @@ function andison_track_visit(string $page = 'unknown'): void
         $data['month_key']       = $month;
     }
 
-    // ── Increment page-view counters (every request) ──────────────
+    // ── Count this visit ONCE per browser session per day ─────────
     $data['total_pageviews']++;
     $data['today_pageviews']++;
     $data['week_pageviews']++;
     $data['month_pageviews']++;
+    $data['unique_sessions']++;
+    $data['today_unique']++;
+    $data['week_unique']++;
+    $data['month_unique']++;
 
-    // Daily breakdown (keep last 30 days)
+    // Daily visitor breakdown (keep last 30 days)
     $data['daily'][$today] = ($data['daily'][$today] ?? 0) + 1;
     if (count($data['daily']) > 30) {
         ksort($data['daily']);
         $data['daily'] = array_slice($data['daily'], -30, 30, true);
     }
 
-    // Per-page counts
+    // Entry-page tracking (which page the visitor first landed on)
     $data['pages'][$page] = ($data['pages'][$page] ?? 0) + 1;
-
-    // ── Increment unique-session counters (once per session/day) ──
-    if ($isNewVisit) {
-        $data['unique_sessions']++;
-        $data['today_unique']++;
-        $data['week_unique']++;
-        $data['month_unique']++;
-    }
 
     andison_write_json_file(ANDISON_ANALYTICS_FILE, $data);
 }
@@ -142,14 +159,26 @@ function andison_get_daily_chart(int $days = 7): array
 
 /**
  * Internal helper — increment a named entity counter (brand/category).
+ * Uses PHP session so each brand/category is counted once per browser session per day.
  */
 function _andison_track_entity(string $type, string $name): void
 {
     if (empty($name)) return;
 
+    if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
+        session_start();
+    }
+
+    $sessionKey = 'ae_' . $type . '_' . md5($name) . '_' . date('Y-m-d');
+
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        if (!empty($_SESSION[$sessionKey])) return;
+        $_SESSION[$sessionKey] = 1;
+    }
+
     $data = andison_read_json_file(ANDISON_ANALYTICS_FILE, []);
-    $data[$type]         = $data[$type] ?? [];
-    $data[$type][$name]  = ($data[$type][$name] ?? 0) + 1;
+    $data[$type]        = $data[$type] ?? [];
+    $data[$type][$name] = ($data[$type][$name] ?? 0) + 1;
     andison_write_json_file(ANDISON_ANALYTICS_FILE, $data);
 }
 

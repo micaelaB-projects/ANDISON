@@ -3,6 +3,11 @@
 declare(strict_types=1);
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
+    // Use a dedicated session name for the admin panel so it never
+    // shares the PHPSESSID cookie with the public website. This prevents
+    // the admin's own browser visit from consuming the per-session
+    // analytics deduplication slot and blocking new visitor counts.
+    session_name('ANDISON_ADMIN');
     session_start();
 }
 
