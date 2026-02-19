@@ -1319,7 +1319,7 @@ $ytLinks = andison_get_youtube_links();
             
             .hero {
                 aspect-ratio: auto;
-                min-height: 420px;
+                min-height: 260px;
                 padding: 20px 0;
                 display: flex;
                 align-items: center;
@@ -1335,10 +1335,32 @@ $ytLinks = andison_get_youtube_links();
                 justify-content: center;
             }
 
+            .hero-slide {
+                width: 92% !important;
+                left: 50% !important;
+                transform: translateX(-50%) scale(1) !important;
+                filter: blur(0) !important;
+                opacity: 0 !important;
+            }
+
+            .hero-slide.active {
+                width: 92% !important;
+                left: 50% !important;
+                transform: translateX(-50%) scale(1) !important;
+                filter: blur(0) !important;
+                opacity: 1 !important;
+            }
+
+            .hero-slide.prev,
+            .hero-slide.next {
+                opacity: 0 !important;
+                pointer-events: none;
+            }
+
             .hero-thumb {
-                width: 85%;
+                width: 100%;
                 height: auto;
-                max-width: 95%;
+                max-width: 100%;
                 aspect-ratio: 16 / 9 !important;
             }
             

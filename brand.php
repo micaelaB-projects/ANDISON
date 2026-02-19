@@ -250,47 +250,43 @@ if ($_btrack) andison_track_brand_visit($_btrack);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
             cursor: pointer;
             text-decoration: none;
-            color: #111;
-            font-weight: 800;
-            padding: 10px 22px;
+            color: white;
+            padding: 8px 16px;
             border-radius: 8px;
-            transition: all 0.25s ease;
-             background: linear-gradient(135deg, #00E5C8  0%, #347aec   100%);
-            color: #111;
-            line-height: 1.3;
-            height: auto;
-            min-height: 40px;
-            font-size: 13px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #00E5C8 0%, #347aec 100%);
+            position: relative;
+            font-size: 14px;
+            font-weight: 700;
             white-space: nowrap;
-            box-shadow: 0 3px 10px rgba(0,215,179,0.35);
+            box-shadow: 0 4px 15px rgba(0,188,212,0.4);
+            gap: 8px;
         }
 
         .inquiry-btn:hover,
         .cart-icon-wrapper:hover {
-            background: linear-gradient(135deg, #1473b2 50%, #00CCA8 100%);
+            background: linear-gradient(135deg, #00ACC1, #00796B);
             transform: translateY(-2px);
-            box-shadow: 0 5px 16px rgba(0,215,179,0.45);
-            color: #111;
+            box-shadow: 0 6px 20px rgba(0,188,212,0.5);
+            color: white;
         }
 
         .cart-badge {
-            background: #e53935;
+            background: #c70d0d;
             color: white;
-            font-size: 12px;
-            font-weight: 800;
-            width: 22px;
-            height: 22px;
+            font-size: 11px;
+            font-weight: 700;
             border-radius: 50%;
+            width: 20px;
+            height: 20px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
-            box-shadow: 0 2px 6px rgba(229,57,53,0.5);
+            box-shadow: 0 2px 8px rgba(199,13,13,0.5);
+            position: static;
+            margin-left: 2px;
         }
 
         .cart-badge.hidden {
@@ -298,10 +294,10 @@ if ($_btrack) andison_track_brand_visit($_btrack);
         }
 
         .add-to-inquiry {
-            background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%);
-            color: #1a1a2e;
+            background: linear-gradient(135deg, #00D7B3 0%, #347aec 100%);
+            color: white;
             border: none;
-            padding: 12px 28px;
+            padding: 10px 22px;
             border-radius: 25px;
             cursor: pointer;
             font-size: 13px;
@@ -314,12 +310,15 @@ if ($_btrack) andison_track_brand_visit($_btrack);
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 12px rgba(0, 215, 179, 0.3);
+            position: relative;
+            z-index: 2;
         }
 
         .add-to-inquiry:hover {
-            background: linear-gradient(135deg, #00FFD1 0%, #00FFD1 100%);
+            background: linear-gradient(135deg, #00ACC1, #00796B);
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 215, 179, 0.4);
+            box-shadow: 0 6px 18px rgba(0, 215, 179, 0.45);
+            color: white;
         }
 
         .add-to-inquiry:active {
@@ -351,11 +350,11 @@ if ($_btrack) andison_track_brand_visit($_btrack);
             margin: 0 auto;
             padding: 0 20px;
             display: flex;
+            flex-wrap: nowrap;
             align-items: center;
             min-height: 52px;
-            gap: 18px;
-            justify-content: flex-start;
-            padding-left: 100px; /* space for the left Browse toggle */
+            gap: 0;
+            justify-content: center;
         }
 
         /* Pin the browse toggle to the left side of the nav area */
@@ -381,9 +380,12 @@ if ($_btrack) andison_track_brand_visit($_btrack);
         .nav-list {
             list-style: none;
             display: flex;
-            gap: 28px;
+            flex-wrap: nowrap;
+            gap: 30px;
             margin: 0;
             padding: 0;
+            width: 100%;
+            justify-content: center;
         }
 
         .nav-list li { position: relative; }
@@ -1010,17 +1012,123 @@ if ($_btrack) andison_track_brand_visit($_btrack);
 
         /* Responsive */
         @media (max-width: 768px) {
+            /* Single row: logo | search | inquiry | contact */
             .header-top {
-                flex-direction: column;
-                gap: 15px;
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                align-items: center;
+                gap: 8px;
+                padding: 0 10px;
+                margin-bottom: 8px;
+            }
+
+            .logo {
+                flex: 0 0 auto;
+            }
+
+            .logo-box img {
+                height: 36px;
+            }
+
+            .search-bar {
+                position: static;
+                transform: none;
+                flex: 1 1 0;
+                min-width: 0;
+                width: auto;
+                max-width: none;
+                margin: 0;
+            }
+
+            .search-bar .search-field {
+                width: 100%;
+            }
+
+            .search-bar input {
+                width: 100%;
+                height: 36px;
+                font-size: 12px;
+                padding: 6px 8px 6px 30px;
+            }
+
+            .search-bar .search-field::before {
+                font-size: 13px;
+                left: 8px;
+            }
+
+            .right-actions {
+                flex: 0 0 auto;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: 6px;
+                margin-left: 0;
+            }
+
+            .inquiry-btn,
+            .cart-icon-wrapper {
+                background: transparent !important;
+                box-shadow: none !important;
+                padding: 6px !important;
+                font-size: 28px !important;
+                position: relative;
+            }
+
+            .inquiry-btn .btn-text { display: none; }
+            .inquiry-btn .btn-icon { font-size: 28px; }
+
+            .cart-badge {
+                background: #2196F3 !important;
+                box-shadow: 0 2px 8px rgba(33,150,243,0.5) !important;
+                width: 26px !important;
+                height: 26px !important;
+                font-size: 13px !important;
+                position: absolute !important;
+                top: -4px !important;
+                right: -8px !important;
+                margin-left: 0 !important;
+            }
+
+            .cart-badge.hidden { display: inline-flex !important; }
+
+            .header-contact {
+                flex: 0 0 auto;
             }
 
             nav ul {
-                flex-wrap: wrap;
+                flex-wrap: nowrap;
+                gap: 0;
             }
 
             nav li {
-                margin-right: 20px;
+                margin-right: 0;
+            }
+
+            .nav-inner {
+                padding-left: 0;
+                padding-right: 0;
+                gap: 0;
+                min-height: auto;
+                overflow-x: hidden;
+                overflow-y: visible;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .nav-inner::-webkit-scrollbar { display: none; }
+
+            .nav-list {
+                gap: 0;
+                flex-wrap: wrap;
+                flex-shrink: 1;
+                justify-content: center;
+            }
+
+            .nav-list > li > a {
+                white-space: normal;
+                font-size: 11px;
+                padding: 10px 8px;
             }
 
             .hero h1 {
@@ -1746,64 +1854,139 @@ if ($_btrack) andison_track_brand_visit($_btrack);
         }
 
         .product-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 25px;
-            margin-top: 30px;
-            justify-content: center;
-            align-items: stretch;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+            margin-bottom: 40px;
+            padding: 0 10px;
         }
 
         .brand-page .product-card {
-            flex: 0 1 calc(20% - 20px);
-            min-width: 240px;
-            max-width: 280px;
-            height: auto;
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 25px;
-            text-align: center;
-            transition: all 0.3s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 20px;
+            padding: 40px 24px 28px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.9) 100%);
+            border: 3px solid rgba(0,215,179,0.35);
+            border-top: 3px solid rgba(0,215,179,0.6);
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.7s cubic-bezier(0.25,0.46,0.45,0.94);
+            min-height: 300px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08), inset 0 1px 1px rgba(255,255,255,0.5), 0 0 1px rgba(0,215,179,0.2);
             cursor: pointer;
         }
 
+        /* animated background glow */
+        .brand-page .product-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(0,215,179,0.15) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.7s ease;
+            pointer-events: none;
+        }
+
+        /* decorative bottom stripe */
+        .brand-page .product-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent 0%, rgba(0,215,179,0.8) 50%, transparent 100%);
+            opacity: 0;
+            transition: all 0.7s ease;
+            pointer-events: none;
+        }
+
+        .brand-page .product-card:hover::before { opacity: 1; }
+        .brand-page .product-card:hover::after  { opacity: 1; height: 4px; box-shadow: 0 -2px 10px rgba(0,215,179,0.3); }
+
         .brand-page .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(43,17,219,0.15);
-            border-color: #2B11DB;
-            background: #fafafa;
+            transform: translateY(-16px) scale(1.03);
+            border-color: rgba(0,215,179,0.8);
+            box-shadow: 0 40px 80px rgba(0,215,179,0.25), inset 0 1px 1px rgba(255,255,255,0.8), 0 0 20px rgba(0,215,179,0.15);
+            border-top-color: rgba(0,215,179,0.9);
         }
 
         .brand-page .product-image {
-            width: 100%;
-            height: 220px;
-            background: #ffffff;
-            border-radius: 8px;
+            width: 140px;
+            height: 140px;
+            min-width: 140px;
+            background: linear-gradient(135deg, rgba(0,215,179,0.12) 0%, rgba(0,102,255,0.1) 100%);
+            border: 2.5px solid rgba(0,215,179,0.4);
+            border-radius: 16px;
+            padding: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 15px;
-            font-size: 60px;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 2;
+            box-shadow: inset 0 1px 2px rgba(255,255,255,0.6), 0 4px 15px rgba(0,215,179,0.1);
+            transition: all 0.7s cubic-bezier(0.25,0.46,0.45,0.94);
+            font-size: 40px;
             color: #ccc;
         }
 
+        .brand-page .product-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: block;
+            filter: brightness(1.05) saturate(1.1) contrast(1.1);
+            transition: all 0.7s ease;
+        }
+
+        .brand-page .product-card:hover .product-image {
+            background: linear-gradient(135deg, rgba(0,215,179,0.22) 0%, rgba(0,102,255,0.16) 100%);
+            border-color: rgba(0,215,179,0.75);
+            transform: scale(1.1) rotate(2deg);
+            box-shadow: 0 16px 40px rgba(0,215,179,0.25), inset 0 1px 3px rgba(255,255,255,0.8);
+        }
+
+        .brand-page .product-card:hover .product-image img {
+            filter: brightness(1.15) saturate(1.3) contrast(1.2) drop-shadow(0 0 12px rgba(0,215,179,0.4));
+        }
+
         .brand-page .product-card h4 {
-            color: #2B11DB;
-            margin-bottom: 10px;
             font-size: 18px;
             font-weight: 700;
+            text-align: center;
+            color: #1a0080;
+            line-height: 1.2;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            transition: all 0.7s ease;
+            position: relative;
+            z-index: 2;
+            margin: 0;
+        }
+
+        .brand-page .product-card:hover h4 {
+            color: #0066ff;
+            letter-spacing: 1.5px;
+            font-weight: 800;
+            text-shadow: 0 4px 8px rgba(0,102,255,0.2);
         }
 
         .brand-page .product-card p {
             color: #666;
-            font-size: 14px;
+            font-size: 13px;
             line-height: 1.5;
-            flex-grow: 1;
+            position: relative;
+            z-index: 2;
+            margin: 0;
         }
 
         .product-badge {
@@ -1814,7 +1997,7 @@ if ($_btrack) andison_track_brand_visit($_btrack);
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 4px;
         }
 
         .inquiry-btn,
@@ -1824,20 +2007,25 @@ if ($_btrack) andison_track_brand_visit($_btrack);
             gap: 8px;
             cursor: pointer;
             text-decoration: none;
-            color: #333;
+            color: white;
             font-weight: 600;
-            padding: 10px 18px;
-            border-radius: 6px;
+            padding: 10px 20px;
+            border-radius: 8px;
             transition: all 0.3s ease;
-            background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%);
+            background: linear-gradient(135deg, #00D7B3 0%, #347aec 100%);
+            position: relative;
+            z-index: 2;
+            font-size: 13px;
+            box-shadow: 0 4px 12px rgba(0,215,179,0.3);
+            margin-top: 4px;
         }
 
         .inquiry-btn:hover,
         .cart-icon-wrapper:hover {
-            background: linear-gradient(135deg, #00FFD1 0%, #00FFD1 100%);
+            background: linear-gradient(135deg, #00ACC1, #00796B);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 255, 209, 0.4);
-            color: #333;
+            box-shadow: 0 6px 18px rgba(0,215,179,0.45);
+            color: white;
         }
 
         .inquiry-btn {
@@ -2308,11 +2496,19 @@ if ($_btrack) andison_track_brand_visit($_btrack);
             }
 
             .product-grid {
-                justify-content: center;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
             }
 
             .brand-page .product-card {
-                flex: 0 1 calc(50% - 13px);
+                padding: 28px 16px;
+                min-height: 260px;
+            }
+
+            .brand-page .product-image {
+                width: 110px;
+                height: 110px;
+                min-width: 110px;
             }
         }
 
@@ -2320,36 +2516,50 @@ if ($_btrack) andison_track_brand_visit($_btrack);
         .mini-sidebar {
             position: fixed;
             left: 0;
-            top: calc(14px + 50px + 14px + 12px + 52px);
+            top: calc(14px + 50px + 14px + 52px);
             bottom: 0;
             width: 80px;
-            background: #2B11DB;
-            box-shadow: 2px 0 16px rgba(0,0,0,0.1);
+            background: linear-gradient(180deg, #2B11DB 0%, #1a0a7f 100%);
+            box-shadow: 2px 0 16px rgba(0,0,0,0.2);
             z-index: 65;
-            padding: 20px 12px;
-            overflow: hidden;
+            padding: 24px 12px;
+            overflow-y: auto;
+            overflow-x: hidden;
             transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
             align-items: center;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.1) transparent;
         }
+
+        .mini-sidebar::-webkit-scrollbar { width: 6px; }
+        .mini-sidebar::-webkit-scrollbar-track { background: transparent; }
+        .mini-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+        .mini-sidebar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
         .mini-sidebar.expanded {
             width: 280px;
             overflow-y: auto;
-            padding: 20px 12px;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+            padding: 24px 16px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0,0,0,0.1) transparent;
+            align-items: stretch;
         }
 
-        .mini-sidebar.expanded ~ .main-content,
-        .mini-sidebar.expanded ~ .category-container {
-            margin-left: 280px;
-            margin-right: 0;
+        .mini-sidebar.expanded::-webkit-scrollbar { width: 6px; }
+        .mini-sidebar.expanded::-webkit-scrollbar-track { background: transparent; }
+        .mini-sidebar.expanded::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 3px; }
+        .mini-sidebar.expanded::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.2); }
+
+        .mini-sidebar.active {
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .mini-sidebar.expanded::-webkit-scrollbar {
-            display: none;
+        .mini-sidebar.active.expanded {
+            align-items: stretch;
         }
 
         .mini-sidebar-icon {
@@ -2363,7 +2573,7 @@ if ($_btrack) andison_track_brand_visit($_btrack);
             cursor: pointer;
             position: relative;
             border-radius: 8px;
-            margin-bottom: 8px;
+            margin-bottom: 16px;
             transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), justify-content 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease;
             gap: 12px;
             padding: 0;
@@ -2385,66 +2595,22 @@ if ($_btrack) andison_track_brand_visit($_btrack);
         .mini-sidebar.expanded .mini-sidebar-icon {
             width: 100%;
             justify-content: flex-start;
-            padding: 12px;
+            padding: 14px;
             min-width: auto;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.08);
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-icon:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateX(4px);
         }
 
         .mini-sidebar.expanded .mini-sidebar-icon .label {
             display: block;
             opacity: 1;
-        }
-
-        .mini-sidebar-icon:hover {
-            background: rgba(255,255,255,0.2);
-            transform: scale(1.05);
-        }
-
-        .mini-sidebar.expanded .mini-sidebar-icon:hover {
-            transform: translateX(4px);
-        }
-
-        .mini-sidebar-icon .sub-indicator {
-            position: absolute;
-            bottom: -1px;
-            right: -1px;
-            background: rgba(255,255,255,0.1);
             color: #ffffff;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 9px;
-            opacity: 0.95;
-            transition: background 0.15s ease, color 0.15s ease;
-            z-index: 999;
-            cursor: pointer;
-            pointer-events: auto;
-            border: 1px solid #ffffff;
-            box-shadow: none;
-        }
-
-        .mini-sidebar-icon:hover .sub-indicator {
-            opacity: 1;
-            background: #00D7B3;
-            color: #2B11DB;
-        }
-
-        .mini-sidebar.expanded .mini-sidebar-icon .sub-indicator {
-            position: static;
-            background: transparent;
-            color: #2B11DB;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-left: auto;
-            opacity: 1;
-            border: 0;
-            cursor: pointer;
-            pointer-events: auto;
-            z-index: 100;
-            box-shadow: none;
         }
 
         #miniSidebarMenuBar {
@@ -2456,10 +2622,6 @@ if ($_btrack) andison_track_brand_visit($_btrack);
             flex-shrink: 0;
         }
 
-        .browse-label {
-            display: none;
-        }
-
         .mini-sidebar.expanded #miniSidebarMenuBar {
             justify-content: flex-start;
             width: 100%;
@@ -2468,8 +2630,73 @@ if ($_btrack) andison_track_brand_visit($_btrack);
             margin-bottom: 8px;
         }
 
+        .browse-label {
+            display: none;
+        }
+
         .mini-sidebar.expanded .browse-label {
-            display: inline;
+            display: inline-block !important;
+        }
+
+        .mini-sidebar-icon:hover {
+            background: rgba(0, 215, 179, 0.15);
+            transform: scale(1.08);
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-icon:hover {
+            transform: translateX(6px);
+            background: rgba(0, 215, 179, 0.2);
+        }
+
+        .mini-sidebar-icon.active-icon {
+            background: #00D7B3;
+            color: #2B11DB;
+            font-weight: 600;
+        }
+
+        .mini-sidebar-icon .sub-indicator {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            background: rgba(0, 215, 179, 0.9);
+            color: #ffffff;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            opacity: 0.9;
+            transition: background 0.15s ease, color 0.15s ease, transform 0.2s ease;
+            z-index: 999;
+            cursor: pointer;
+            pointer-events: auto;
+            border: 1px solid #2B11DB;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .mini-sidebar-icon:hover .sub-indicator {
+            opacity: 1;
+            background: #00D7B3;
+            color: #2B11DB;
+            transform: scale(1.15);
+        }
+
+        .mini-sidebar.expanded .mini-sidebar-icon .sub-indicator {
+            position: static;
+            background: #00D7B3;
+            color: #2B11DB;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            margin-left: auto;
+            opacity: 0.9;
+            border: 1px solid #2B11DB;
+            cursor: pointer;
+            pointer-events: auto;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .mini-sidebar-toggle {
@@ -2478,40 +2705,94 @@ if ($_btrack) andison_track_brand_visit($_btrack);
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255,255,255,0.15);
-            border: none;
-            color: #fff;
+            background: rgba(0, 215, 179, 0.2);
+            border: 1px solid rgba(0, 215, 179, 0.4);
+            color: #00D7B3;
             cursor: pointer;
             border-radius: 8px;
             font-size: 20px;
             margin-top: auto;
-            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease, transform 0.2s ease, border-color 0.3s ease;
             flex-shrink: 0;
         }
 
         .mini-sidebar-toggle:hover {
-            background: rgba(255,255,255,0.25);
-            transform: scale(1.05);
+            background: rgba(0, 215, 179, 0.3);
+            border-color: rgba(0, 215, 179, 0.6);
+            transform: scale(1.08);
         }
 
-        .mini-sidebar-toggle:active {
-            transform: scale(0.95);
-        }
+        .mini-sidebar-toggle:active { transform: scale(0.95); }
 
         .mini-sidebar-toggle i {
             transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             display: inline-block;
         }
 
-        .mini-sidebar.expanded .mini-sidebar-toggle i {
-            transform: rotate(180deg);
-        }
+        .mini-sidebar.expanded .mini-sidebar-toggle i { transform: rotate(180deg); }
 
         .mini-sidebar.expanded .mini-sidebar-toggle {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             min-width: auto;
+            margin-bottom: 12px;
         }
+
+        section, footer, .page-content, .main-content, .category-container {
+            margin-left: 0px;
+            transition: margin-left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mini-sidebar.expanded ~ section,
+        .mini-sidebar.expanded ~ footer,
+        .mini-sidebar.expanded ~ .page-content,
+        .mini-sidebar.expanded ~ .main-content,
+        .mini-sidebar.expanded ~ .category-container {
+            margin-left: 280px;
+        }
+
+        @media (max-width: 992px) {
+            section, footer, .page-content, .main-content, .category-container { margin-left: 0 !important; }
+            .mini-sidebar { display: none !important; }
+        }
+
+        @media (max-width: 768px) {
+            .mini-sidebar {
+                top: calc(14px + 36px + 14px + 40px);
+                width: 56px !important;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease, width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+                display: flex !important;
+            }
+            .mini-sidebar.mobile-visible { transform: translateX(0); }
+            .mini-sidebar.expanded { width: 240px !important; }
+            .main-content, .category-container { margin-left: 0 !important; }
+            .mobile-sidebar-fab { display: flex !important; }
+        }
+
+        .mobile-sidebar-fab {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%) translateX(0);
+            z-index: 70;
+            width: 16px;
+            height: 36px;
+            background: #2B11DB;
+            color: #fff;
+            border: none;
+            border-radius: 0 6px 6px 0;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.25);
+            transition: transform 0.3s ease, background 0.2s;
+        }
+        .mobile-sidebar-fab:hover { background: #1a0aa8; }
+        .mobile-sidebar-fab.open { transform: translateY(-50%) translateX(56px); }
+        .mobile-sidebar-fab.open.wide { transform: translateY(-50%) translateX(240px); }
 
         .brand-container {
             max-width: 1200px;
@@ -2789,8 +3070,8 @@ if ($_btrack) andison_track_brand_visit($_btrack);
             </div>
 
             <div class="right-actions">
-                <a href="javascript:history.back()" class="inquiry-btn" style="margin-right: 12px;">BACK</a>
-                <a href="inquirylist.php" class="inquiry-btn">INQUIRY LIST <span class="cart-badge hidden" id="cartBadge">0</span></a>
+                <a href="brands.php" class="inquiry-btn" style="margin-right: 12px;"><i class="bi bi-arrow-left btn-icon"></i> <span class="btn-text"> BRANDS</span></a>
+                <a href="inquirylist.php" class="inquiry-btn"><i class="bi bi-card-checklist btn-icon"></i> <span class="btn-text">INQUIRY LIST</span> <span class="cart-badge hidden" id="cartBadge">0</span></a>
                 <div class="header-contact">
                         <div class="contact-dropdown" tabindex="0" aria-haspopup="true">
                             <a href="#contact" class="contact-link" aria-label="Contact Us">Contact Us ▾</a>
@@ -2811,9 +3092,6 @@ if ($_btrack) andison_track_brand_visit($_btrack);
         <!-- Navigation -->
         <nav>
             <div class="nav-inner">
-                <button id="browseToggle" class="browse-toggle" aria-label="Browse Categories">
-                    <i class="bi bi-list" style="font-size: 22px;"></i>
-                </button>
                 <ul class="nav-list">
                     <li>
                         <a href="home.php">Home</a>
@@ -3050,6 +3328,9 @@ if ($_btrack) andison_track_brand_visit($_btrack);
         <button class="mini-sidebar-toggle" id="expandSidebar" title="Toggle Sidebar"><i class="bi bi-chevron-right"></i></button>
     </div>
 
+    <!-- Mobile FAB to show/hide mini sidebar -->
+    <button class="mobile-sidebar-fab" id="mobileSidebarFab"><i class="bi bi-chevron-right" id="mobileFabIcon"></i></button>
+
     <!-- Floating popover for mini sidebar subcategories -->
     <div id="miniPopover" class="mini-popover" aria-hidden="true">
         <div class="mini-popover-header">
@@ -3081,9 +3362,9 @@ if ($_btrack) andison_track_brand_visit($_btrack);
                     <div class="product-card<?php echo $is_highlight ? ' product-highlight' : ''; ?>"<?php echo $is_highlight ? ' id="highlight-product"' : ''; ?> data-model="<?php echo htmlspecialchars($product_model_value, ENT_QUOTES); ?>">
                         <div class="product-image">
                             <?php if(is_array($product) && !empty($product['image'])): ?>
-                                <img src="<?php echo $product['image']; ?>" alt="<?php echo $product['model']; ?>" style="width: 100%; height: 100%; object-fit: contain;">
+                                <img src="<?php echo $product['image']; ?>" alt="<?php echo $product['model']; ?>">
                             <?php else: ?>
-                                <img src="assets/brands%20items/PANASONIC/Arc Welding Robot/robot-placeholder.jpg" alt="Product" style="width: 100%; height: 100%; object-fit: contain;" onerror="this.style.display='none'; this.parentElement.innerHTML='🤖';">
+                                <img src="assets/brands%20items/PANASONIC/Arc Welding Robot/robot-placeholder.jpg" alt="Product" onerror="this.style.display='none'; this.parentElement.innerHTML='🔧';">
                             <?php endif; ?>
                         </div>
                         <?php if(is_array($product)): ?>
@@ -3096,7 +3377,7 @@ if ($_btrack) andison_track_brand_visit($_btrack);
                             <h4><?php echo $product; ?></h4>
                             <p>Professional grade solutions for your industrial needs</p>
                         <?php endif; ?>
-                        <div style="margin-top:auto; padding-top:15px;">
+                        <div>
                             <button class="add-to-inquiry" type="button"
                                 data-model="<?php echo htmlspecialchars(is_array($product) ? $product['model'] : $product, ENT_QUOTES); ?>"
                                 data-type="<?php echo htmlspecialchars(is_array($product) ? (isset($product['type']) ? $product['type'] : '') : 'Product', ENT_QUOTES); ?>"
@@ -3795,6 +4076,39 @@ if ($_btrack) andison_track_brand_visit($_btrack);
                 }
             });
         }
+    </script>
+
+    <script>
+        // Mobile FAB toggle for mini sidebar
+        (function() {
+            var fab = document.getElementById('mobileSidebarFab');
+            var sidebar = document.getElementById('miniSidebar');
+            var fabIcon = document.getElementById('mobileFabIcon');
+            if (!fab || !sidebar) return;
+
+            function isMobile() { return window.innerWidth <= 768; }
+
+            function syncFab() {
+                if (!isMobile()) { fab.classList.remove('open', 'wide'); return; }
+                var isOpen = sidebar.classList.contains('mobile-visible');
+                var isExpanded = sidebar.classList.contains('expanded');
+                fab.classList.toggle('open', isOpen);
+                fab.classList.toggle('wide', isOpen && isExpanded);
+                fabIcon.className = isOpen ? 'bi bi-chevron-left' : 'bi bi-chevron-right';
+            }
+
+            fab.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (!isMobile()) return;
+                sidebar.classList.toggle('mobile-visible');
+                syncFab();
+            });
+
+            var observer = new MutationObserver(function() { syncFab(); });
+            observer.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
+
+            window.addEventListener('resize', syncFab);
+        })();
     </script>
 
     <script>
