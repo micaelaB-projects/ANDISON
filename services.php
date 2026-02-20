@@ -3458,3 +3458,27 @@ $ytLinks = andison_get_youtube_links();
 </body>
 </html>
 
+;
+                var isExpanded = sidebar.classList.contains('expanded');
+                fab.classList.toggle('open', isOpen);
+                fab.classList.toggle('wide', isOpen && isExpanded);
+                fabIcon.className = isOpen ? 'bi bi-chevron-left' : 'bi bi-chevron-right';
+            }
+
+            fab.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (!isMobile()) return;
+                sidebar.classList.toggle('mobile-visible');
+                syncFab();
+            });
+
+            // Keep FAB in sync when sidebar expand/collapse changes its width
+            var observer = new MutationObserver(function() { syncFab(); });
+            observer.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
+
+            window.addEventListener('resize', syncFab);
+        })();
+    </script>
+</body>
+</html>
+

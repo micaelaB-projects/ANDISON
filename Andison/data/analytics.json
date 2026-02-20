@@ -1,69 +1,35 @@
 {
-<<<<<<< HEAD
-    "total_pageviews": 194,
-    "unique_sessions": 16,
-    "today_pageviews": 194,
-    "today_unique": 16,
-=======
-<<<<<<< HEAD
-    "total_pageviews": 4,
-    "unique_sessions": 4,
+    "total_pageviews": 6,
+    "unique_sessions": 6,
     "today_pageviews": 4,
     "today_unique": 4,
-    "today_date": "2026-02-19",
-    "week_pageviews": 4,
-    "week_unique": 4,
+    "today_date": "2026-02-20",
+    "week_pageviews": 6,
+    "week_unique": 6,
     "week_start": "2026-02-16",
-    "month_pageviews": 4,
-    "month_unique": 4,
+    "month_pageviews": 6,
+    "month_unique": 6,
     "month_key": "2026-02",
     "daily": {
-        "2026-02-19": 4
+        "2026-02-19": 2,
+        "2026-02-20": 4
     },
     "pages": {
-        "home": 4
+        "home": 2,
+        "industries": 1,
+        "brand": 3
     },
     "brands": {
-        "Panasonic Connect": 2,
-        "ACES": 1,
-        "Microgard": 1,
-        "Uvex": 1,
-        "TANAKA": 1
-=======
-    "total_pageviews": 189,
-    "unique_sessions": 13,
-    "today_pageviews": 189,
-    "today_unique": 13,
->>>>>>> 380cd43eff3919a80d344d9aa994b2dd0d094595
-    "today_date": "2026-02-19",
-    "week_pageviews": 194,
-    "week_unique": 16,
-    "week_start": "2026-02-16",
-    "month_pageviews": 194,
-    "month_unique": 16,
-    "month_key": "2026-02",
-    "daily": {
-        "2026-02-19": 194
-    },
-    "pages": {
-        "home": 45,
-        "brands": 27,
-        "brand": 18,
-        "services": 34,
-        "industries": 21,
-        "category": 2,
-        "contact": 16,
-        "about": 31
-    },
-    "brands": {
+        "Metrode": 2,
+        "DryRod. II": 1,
+        "Panasonic Connect": 3,
         "Kobelco": 2,
-        "Panasonic Connect": 10,
-        "Uvex": 2,
-        "Aces": 1
->>>>>>> 514d6653b15fbc5c877bad0870b49166c8d0a5c8
+        "PANASONIC": 2,
+        "Magnaflux": 1
     },
     "categories": {
+        "Arc Welding Machine": 3,
         "Arc Welding Robots": 1,
-        "Batteries": 1
+        "Protection": 1
     }
 }

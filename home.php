@@ -2059,10 +2059,11 @@ $ytLinks = andison_get_youtube_links();
             border-left: 2px solid #e5e7eb;
             padding-top: 8px;
             padding-bottom: 8px;
-            max-height: 1000px;
+            max-height: 0;
             overflow: hidden;
             transition: max-height 0.3s ease, opacity 0.3s ease;
-            opacity: 1;
+            opacity: 0;
+            display: none;
         }
         
         .sidebar-sublist.collapsed {
@@ -2581,7 +2582,7 @@ $ytLinks = andison_get_youtube_links();
             left: -9999px;
             width: 320px;
             max-width: calc(100vw - 32px);
-            background: linear-gradient(180deg, #1976D2FF 0%, #19D2B6FF 100%);
+            background: linear-gradient(180deg, #00D7B3 0%, #00b399 100%);
             color: #fff;
             border-radius: 16px;
             box-shadow: 0 12px 30px rgba(0,0,0,0.25);
@@ -2604,12 +2605,12 @@ $ytLinks = andison_get_youtube_links();
             width: 0; height: 0;
             border-top: 10px solid transparent;
             border-bottom: 10px solid transparent;
-            border-right: 10px solid #1976D2;
+            border-right: 10px solid #00D7B3;
             filter: drop-shadow(-2px 2px 2px rgba(0,0,0,0.12));
         }
         .mini-popover-header {
-            background: #f5f9ff;
-            color: #0f5132;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
             border-top-left-radius: 16px;
             border-top-right-radius: 16px;
             padding: 12px 16px;
@@ -2617,7 +2618,7 @@ $ytLinks = andison_get_youtube_links();
             font-size: 15px;
             letter-spacing: 0.3px;
         }
-        .mini-popover-title { color: #0f5132; }
+        .mini-popover-title { color: #ffffff; }
         .mini-popover-body {
             padding: 12px 16px 16px 16px;
             max-height: calc(100vh - 100px);
@@ -2655,8 +2656,9 @@ $ytLinks = andison_get_youtube_links();
             margin: auto;
             width: 14px; height: 14px;
             border-radius: 3px;
-            background: #7aa7ff;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.18), inset 0 -1px 0 rgba(0,0,0,0.08);
+            background: rgba(255, 255, 255, 0.25);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.18);
             flex-shrink: 0;
             pointer-events: none;
         }
@@ -3540,18 +3542,113 @@ $ytLinks = andison_get_youtube_links();
                 });
             }
             
-            // Sidebar sub-toggle functionality
+            // Sidebar sub-toggle functionality - Show popover card
+            var mainSidebarPopover = document.getElementById('miniPopover');
+            var popoverTitle = mainSidebarPopover ? mainSidebarPopover.querySelector('.mini-popover-title') : null;
+            var popoverList = mainSidebarPopover ? mainSidebarPopover.querySelector('.mini-popover-list') : null;
+            var currentMainSidebarKey = null;
+            
+            function showMainSidebarPopover(toggle) {
+                if (!mainSidebarPopover || !popoverList || !popoverTitle) return;
+                
+                var sublistId = toggle.getAttribute('aria-controls');
+                var sublist = document.getElementById(sublistId);
+                if (!sublist) return;
+                
+                // Extract title from parent li's main link
+                var parentLi = toggle.closest('.has-sub');
+                var mainLink = parentLi ? parentLi.querySelector(':scope > a:not([class])') : null;
+                var title = mainLink ? mainLink.textContent.trim() : 'Items';
+                
+                // Extract items from the sublist
+                var items = [];
+                var listItems = sublist.querySelectorAll('li > a');
+                listItems.forEach(function(link) {
+                    items.push({
+                        text: link.textContent.trim(),
+                        href: link.getAttribute('href') || '#'
+                    });
+                });
+                
+                // Populate popover
+                popoverTitle.textContent = title;
+                popoverList.innerHTML = '';
+                items.forEach(function(item) {
+                    var li = document.createElement('li');
+                    li.className = 'mini-popover-item';
+                    li.innerHTML = '<span class="square"></span><a href="' + item.href + '">' + item.text + '</a>';
+                    popoverList.appendChild(li);
+                });
+                
+                // Position popover next to toggle button
+                setTimeout(function() {
+                    mainSidebarPopover.style.left = '-9999px';
+                    mainSidebarPopover.style.top = '-9999px';
+                    mainSidebarPopover.classList.add('show');
+                    
+                    var toggleRect = toggle.getBoundingClientRect();
+                    var pw = mainSidebarPopover.offsetWidth;
+                    var ph = mainSidebarPopover.offsetHeight;
+                    var toggleCenterY = toggleRect.top + toggleRect.height / 2;
+                    
+                    // Position to the right of the toggle button
+                    var left = Math.round(toggleRect.right + 14);
+                    var top = Math.round(toggleCenterY - ph / 2);
+                    
+                    // Adjust if off-screen horizontally
+                    if (left + pw + 12 > window.innerWidth) {
+                        left = Math.round(toggleRect.left - pw - 14);
+                    }
+                    
+                    // Adjust if off-screen vertically
+                    var headerHeight = 100;
+                    var minTop = headerHeight + 12;
+                    var maxTop = window.innerHeight - ph - 12;
+                    if (top < minTop) top = minTop;
+                    if (top > maxTop) top = maxTop;
+                    
+                    var arrowOffset = toggleCenterY - top - 26;
+                    mainSidebarPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+                    
+                    mainSidebarPopover.style.left = left + 'px';
+                    mainSidebarPopover.style.top = top + 'px';
+                    mainSidebarPopover.setAttribute('aria-hidden', 'false');
+                    currentMainSidebarKey = sublistId;
+                }, 5);
+            }
+            
+            function hideMainSidebarPopover() {
+                if (!mainSidebarPopover) return;
+                mainSidebarPopover.classList.remove('show');
+                mainSidebarPopover.setAttribute('aria-hidden', 'true');
+                currentMainSidebarKey = null;
+            }
+            
             var subToggles = document.querySelectorAll('.sub-toggle');
             subToggles.forEach(function(toggle) {
                 toggle.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    var sublist = document.getElementById(toggle.getAttribute('aria-controls'));
-                    if(sublist) {
-                        sublist.classList.toggle('collapsed');
-                        toggle.setAttribute('aria-expanded', sublist.classList.contains('collapsed') ? 'false' : 'true');
+                    
+                    if (currentMainSidebarKey === toggle.getAttribute('aria-controls') && mainSidebarPopover.classList.contains('show')) {
+                        hideMainSidebarPopover();
+                    } else {
+                        showMainSidebarPopover(toggle);
                     }
                 });
+            });
+            
+            // Close popover on outside click
+            document.addEventListener('click', function(e) {
+                if (!mainSidebarPopover) return;
+                if (!mainSidebarPopover.classList.contains('show')) return;
+                if (e.target.closest('.mini-popover') || e.target.closest('.sub-toggle')) return;
+                hideMainSidebarPopover();
+            });
+            
+            // Close popover on Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') hideMainSidebarPopover();
             });
             
             // Nested toggle functionality

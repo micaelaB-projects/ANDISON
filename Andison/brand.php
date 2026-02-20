@@ -289,6 +289,8 @@ $brand_info = isset($brands_info[$brand_name]) ? $brands_info[$brand_name] : [
             }
         }
     </style>
+    <!-- Inquiry List Handler -->
+    <script src="../assets/js/inquiry-handler.js"></script>
 </head>
 <body>
     <div class="container">
@@ -354,65 +356,6 @@ $brand_info = isset($brands_info[$brand_name]) ? $brands_info[$brand_name] : [
         </div>
     </div>
 
-    <script>
-        (function(){
-            function getItems(){
-                try{ return JSON.parse(localStorage.getItem('inquiryItems')||'[]'); }catch(e){ return []; }
-            }
-            function setItems(items){ 
-                localStorage.setItem('inquiryItems', JSON.stringify(items));
-                // Dispatch custom event to update badges on all pages
-                window.dispatchEvent(new Event('inquiryItemsUpdated'));
-            }
-            function addItem(item){
-                var items = getItems();
-                var found = items.find(function(i){ return i.model === item.model && i.brand === item.brand; });
-                if(found){
-                    return false;
-                }
-                item.qty = 1;
-                items.push(item);
-                setItems(items);
-                return true;
-            }
-
-            function showToast(msg){
-                var t = document.querySelector('.inquiry-toast');
-                if(!t){
-                    t = document.createElement('div');
-                    t.className = 'inquiry-toast';
-                    document.body.appendChild(t);
-                }
-                t.textContent = msg;
-                requestAnimationFrame(function(){
-                    t.style.opacity = '1';
-                    t.style.transform = 'translateX(-50%) translateY(-6px)';
-                });
-                clearTimeout(t._hide);
-                t._hide = setTimeout(function(){
-                    t.style.opacity = '0';
-                    t.style.transform = 'translateX(-50%) translateY(0)';
-                }, 1800);
-            }
-
-            document.addEventListener('click', function(e){
-                var btn = e.target.closest('.add-to-inquiry');
-                if(!btn) return;
-                var model = btn.dataset.model || '';
-                var type = btn.dataset.type || '';
-                var brand = btn.dataset.brand || '';
-                var added = addItem({ model: model, type: type, brand: brand });
-                if(!added){
-                    showToast('Product already in inquiry list');
-                    btn.classList.add('already');
-                    setTimeout(function(){ btn.classList.remove('already'); }, 700);
-                    return;
-                }
-                btn.textContent = 'Added';
-                setTimeout(function(){ btn.textContent = 'ADD TO INQUIRY LIST'; }, 900);
-                showToast('Added to inquiry list!');
-            });
-        })();
     </script>
 </body>
 </html>

@@ -1522,6 +1522,8 @@ if (!$current_category) {
             transform: translateX(2px);
         }
     </style>
+    <!-- Inquiry List Handler -->
+    <script src="../assets/js/inquiry-handler.js"></script>
 </head>
 <body>
     <!-- Header -->

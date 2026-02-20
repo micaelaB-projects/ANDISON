@@ -1,5 +1,4 @@
 <?php
-require_once __DIR__ . '/andison/includes/analytics.php'; andison_track_visit('industries');
 require_once __DIR__ . '/andison/includes/home_featured.php';
 require_once __DIR__ . '/andison/includes/home_slider.php';
 require_once __DIR__ . '/andison/includes/youtube_links.php';
@@ -1237,10 +1236,8 @@ $ytLinks = andison_get_youtube_links();
                 display: flex;
                 flex-direction: row;
                 align-items: center;
-                gap: 8px;
-                margin-left: 8px;
-                margin-right: 8px;
-                padding-right: 8px;
+                gap: 6px;
+                margin-left: 0;
             }
 
             .inquiry-btn,
@@ -1270,7 +1267,7 @@ $ytLinks = andison_get_youtube_links();
             .cart-badge.hidden { display: inline-flex !important; }
 
             .header-contact {
-                display: none;
+                flex: 0 0 auto;
             }
 
             nav ul {
@@ -3137,7 +3134,7 @@ $ytLinks = andison_get_youtube_links();
                         </div>
                     </li>
                     <li>
-                        <a href="industries.php" class="active">Industries</a>
+                        <a href="industries.php">Industries</a>
                         <div class="nav-dropdown">
                             <h4>Industries We Serve</h4>
                             <ul>

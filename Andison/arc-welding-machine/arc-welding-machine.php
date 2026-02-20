@@ -977,6 +977,8 @@ if (!$current_category) {
             color: #374151;
         }
     </style>
+    <!-- Inquiry List Handler -->
+    <script src="../../assets/js/inquiry-handler.js"></script>
 </head>
 <body>
     <!-- Header -->

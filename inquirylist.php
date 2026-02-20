@@ -440,6 +440,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             display: none;
         }
 
+        /* Toast notification for inquiry items */
+        .inquiry-toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: linear-gradient(135deg, #2B11DB 0%, #1e0aa3 100%);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 8px 24px rgba(43,17,219,0.4);
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 5000;
+            pointer-events: none;
+            letter-spacing: 0.3px;
+        }
+
+        .inquiry-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-6px);
+        }
+
         .right-actions {
             margin-left: auto;
             display: flex;
@@ -4695,7 +4720,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if(items.length===0){ container.innerHTML='<p class="small">📦 No items added yet. Use <strong>"ADD TO INQUIRY LIST"</strong> on product pages to add items.</p>'; return; }
                 var html='<table><tr><th>Product</th><th style="text-align:center;">Qty</th><th style="text-align:center;">Action</th></tr>';
                 items.forEach(function(item, idx){
-                    html+='<tr><td>'+htmlEscape(item.name)+'</td><td style="text-align:center;"><input type="number" class="qty-input" data-idx="'+idx+'" value="'+item.qty+'" min="1"></td><td style="text-align:center;"><button type="button" class="rem-btn" data-idx="'+idx+'">Remove</button></td></tr>';
+                    var productName = (item.name || item.model || 'Product') + (item.brand ? ' (' + item.brand + ')' : '');
+                    html+='<tr><td>'+htmlEscape(productName)+'</td><td style="text-align:center;"><input type="number" class="qty-input" data-idx="'+idx+'" value="'+(item.qty || 1)+'" min="1"></td><td style="text-align:center;"><button type="button" class="rem-btn" data-idx="'+idx+'">Remove</button></td></tr>';
                 });
                 html+='</table>';
                 container.innerHTML=html;
@@ -4716,11 +4742,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if(clearBtn){ clearBtn.addEventListener('click', function(){ localStorage.removeItem('inquiryItems'); render(); triggerBadgeUpdate(); }); }
 
             render();
+            
+            // Listen for storage changes from other tabs/windows
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'inquiryItems') {
+                    render();
+                }
+            });
+            
+            // Listen for items updated event from the handler
+            window.addEventListener('inquiryItemsUpdated', function(e) {
+                render();
+            });
         })();
     </script>
 
+    <!-- Inquiry List Handler -->
+    <script src="assets/js/inquiry-handler.js"></script>
+    
+    <script>
+        // Debug: Log localStorage contents to console
+        console.log('=== INQUIRY LIST DEBUG INFO ===');
+        console.log('localStorage inquiryItems:', localStorage.getItem('inquiryItems'));
+        console.log('Parsed items:', JSON.parse(localStorage.getItem('inquiryItems') || '[]'));
+    </script>
+    
     <script>
         (function(){
+            // Sync badge with storage changes
             function updateCartBadge() {
                 var badge = document.getElementById('cartBadge');
                 if(!badge) return;
@@ -4735,6 +4784,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             updateCartBadge();
             window.addEventListener('storage', updateCartBadge);
+            window.addEventListener('inquiryItemsUpdated', updateCartBadge);
             setInterval(updateCartBadge, 500);
         })();
     </script>

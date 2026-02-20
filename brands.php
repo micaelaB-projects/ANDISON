@@ -2728,7 +2728,7 @@ $email = "info@andison-industrial.com";
             text-decoration: none;
             color: #1f2937;
             transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            min-height: 320px;
+            min-height: 420px;
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(15px);
@@ -2776,15 +2776,15 @@ $email = "info@andison-industrial.com";
         }
 
         .brand-logo-container {
-            width: 140px;
-            height: 140px;
+            width: 220px;
+            height: 220px;
             display: flex;
             align-items: center;
             justify-content: center;
             background: linear-gradient(135deg, rgba(0, 215, 179, 0.12) 0%, rgba(0, 102, 255, 0.1) 100%);
             border: 2.5px solid rgba(0, 215, 179, 0.4);
-            border-radius: 16px;
-            padding: 16px;
+            border-radius: 20px;
+            padding: 20px;
             transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             flex-shrink: 0;
             position: relative;
@@ -2813,10 +2813,10 @@ $email = "info@andison-industrial.com";
         }
 
         .brand-card h3 {
-            font-size: 22px;
-            font-weight: 700;
+            font-size: 24px;
+            font-weight: 900;
             text-align: center;
-            color: #1a0080;
+            color: #2B11DB;
             line-height: 1.2;
             letter-spacing: 1.2px;
             transition: all 0.7s ease;
@@ -2895,8 +2895,8 @@ $email = "info@andison-industrial.com";
             }
 
             .brand-logo-container {
-                width: 110px;
-                height: 110px;
+                width: 140px;
+                height: 140px;
             }
 
             .brand-card h3 {
@@ -3036,8 +3036,8 @@ $email = "info@andison-industrial.com";
             }
 
             .brand-logo-container {
-                width: 90px;
-                height: 90px;
+                width: 110px;
+                height: 110px;
             }
 
             .brand-card h3 {

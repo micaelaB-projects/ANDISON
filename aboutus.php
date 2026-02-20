@@ -2,10 +2,12 @@
 require_once __DIR__ . '/andison/includes/home_featured.php';
 require_once __DIR__ . '/andison/includes/home_slider.php';
 require_once __DIR__ . '/andison/includes/youtube_links.php';
+require_once __DIR__ . '/includes/brands_info.php';
 
 $featured = andison_get_home_featured();
 $slides = andison_get_home_slider();
 $ytLinks = andison_get_youtube_links();
+$brands_info = andison_get_brands_info();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -2659,6 +2661,206 @@ $ytLinks = andison_get_youtube_links();
             background: rgba(255,255,255,0.12);
             transform: translateX(2px);
         }
+
+        /* Brand Slider Section */
+        .brands-slider-section {
+            background: linear-gradient(135deg, rgba(43, 17, 219, 0.05) 0%, rgba(0, 215, 179, 0.05) 100%);
+            padding: 80px 20px;
+            position: relative;
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        .brands-slider-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .brands-slider-title {
+            font-size: 32px;
+            font-weight: 900;
+            color: #2B11DB;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .brands-slider-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 48px;
+            font-weight: 500;
+        }
+
+        .brands-slider-wrapper {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            background: white;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .brands-slider {
+            display: flex;
+            gap: 20px;
+            padding: 40px 20px;
+            scroll-behavior: smooth;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .brands-slider::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .brands-slider::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
+        }
+
+        .brands-slider::-webkit-scrollbar-thumb {
+            background: rgba(0, 215, 179, 0.4);
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        .brands-slider::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 215, 179, 0.7);
+        }
+
+        .brand-slide {
+            flex: 0 0 auto;
+            width: 160px;
+            height: 160px;
+            background: white;
+            border: 2px solid rgba(0, 215, 179, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            scroll-snap-align: center;
+            cursor: pointer;
+        }
+
+        .brand-slide:hover {
+            border-color: rgba(0, 215, 179, 0.6);
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 12px 32px rgba(0, 215, 179, 0.25);
+            background: linear-gradient(135deg, rgba(0, 215, 179, 0.05) 0%, rgba(43, 17, 219, 0.05) 100%);
+        }
+
+        .brand-slide img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: brightness(1) contrast(1) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+            transition: filter 0.3s ease;
+        }
+
+        .brand-slide:hover img {
+            filter: brightness(1.1) contrast(1.1) drop-shadow(0 4px 16px rgba(0, 215, 179, 0.3));
+        }
+
+        .brands-slider-nav {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 32px;
+            align-items: center;
+        }
+
+        .slider-nav-btn {
+            width: 44px;
+            height: 44px;
+            border: 2px solid rgba(0, 215, 179, 0.3);
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2B11DB;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            font-weight: 700;
+        }
+
+        .slider-nav-btn:hover {
+            border-color: #00D7B3;
+            background: linear-gradient(135deg, rgba(0, 215, 179, 0.1) 0%, rgba(43, 17, 219, 0.05) 100%);
+            color: #00D7B3;
+            transform: scale(1.1);
+        }
+
+        .slider-nav-btn.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 768px) {
+            .brands-slider-title {
+                font-size: 24px;
+                margin-bottom: 8px;
+            }
+
+            .brands-slider-subtitle {
+                font-size: 14px;
+                margin-bottom: 32px;
+            }
+
+            .brands-slider {
+                padding: 24px 12px;
+                gap: 12px;
+            }
+
+            .brand-slide {
+                width: 120px;
+                height: 120px;
+                padding: 12px;
+            }
+
+            .brands-slider-section {
+                padding: 60px 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .brands-slider-title {
+                font-size: 20px;
+                margin-bottom: 6px;
+            }
+
+            .brands-slider-subtitle {
+                font-size: 12px;
+                margin-bottom: 24px;
+            }
+
+            .brands-slider {
+                padding: 16px 8px;
+                gap: 8px;
+            }
+
+            .brand-slide {
+                width: 100px;
+                height: 100px;
+                padding: 8px;
+            }
+
+            .brands-slider-section {
+                padding: 40px 12px;
+            }
+
+            .slider-nav-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -3073,6 +3275,59 @@ $ytLinks = andison_get_youtube_links();
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Brands Slider Section -->
+    <section class="brands-slider-section">
+        <div class="brands-slider-container">
+            <h2 class="brands-slider-title">Our Partners</h2>
+            <p class="brands-slider-subtitle">Trusted by leading brands in the industrial sector</p>
+            
+            <div class="brands-slider-wrapper">
+                <div class="brands-slider" id="brandsSlider">
+                    <?php 
+                    if(!empty($brands_info)) {
+                        foreach($brands_info as $brand_name => $brand_data) {
+                            // Map brand name to logo filename (exact match with assets/brands/ directory)
+                            $logo_map = [
+                                'Panasonic Connect' => 'PANASONIC',
+                                'BW Technologies' => 'BW TECHNOLOGIES',
+                                'Weldcraft' => 'WELDCRAFT',
+                                'Soyer' => 'SOYER',
+                                'Alfra' => 'ALFRA',
+                                'ACES' => 'ACES',
+                                'UVEX' => 'UVEX',
+                                'ANSELL' => 'ANSELL',
+                                'MICROGARD' => 'MICROGARD',
+                                'WELDAS' => 'WELDAS',
+                                'TANAKA' => 'TANAKA',
+                                'CHIYODA' => 'CHIYODA',
+                                'HARDWORKER' => 'HARDWORKER',
+                                'MAGNAFLUX' => 'MAGNAFLUX',
+                                'COPPUS' => 'COPPUS',
+                                'BOSCH' => 'BOSCH',
+                                'MOTOLITE' => 'MOTOLITE',
+                                'Dryrod' => 'DRYROD',
+                                'Weiler' => 'WEILER'
+                            ];
+                            
+                            $logo_file = isset($logo_map[$brand_name]) ? $logo_map[$brand_name] : $brand_name;
+                            
+                            echo '<div class="brand-slide" title="' . htmlspecialchars($brand_name) . '">';
+                            echo '<img src="assets/brands/' . htmlspecialchars($logo_file) . '.jpg" alt="' . htmlspecialchars($brand_name) . '" onerror="this.style.opacity=\'0.5\'; this.title=\'Logo not found\';">';
+                            echo '</div>';
+                        }
+                    }
+                    ?>
+                </div>
+            </div>
+
+            <div class="brands-slider-nav">
+                <button class="slider-nav-btn" id="sliderPrevBtn" title="Previous brands">❮</button>
+                <span style="color: #666; font-size: 14px; font-weight: 600; min-width: 100px;">Scroll to explore</span>
+                <button class="slider-nav-btn" id="sliderNextBtn" title="Next brands">❯</button>
             </div>
         </div>
     </section>
@@ -3926,6 +4181,116 @@ $ytLinks = andison_get_youtube_links();
             observer.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
 
             window.addEventListener('resize', syncFab);
+        })();
+    </script>
+
+    <script>
+        // Brand Slider Navigation
+        (function() {
+            var brandsSlider = document.getElementById('brandsSlider');
+            var prevBtn = document.getElementById('sliderPrevBtn');
+            var nextBtn = document.getElementById('sliderNextBtn');
+
+            if (!brandsSlider || !prevBtn || !nextBtn) return;
+
+            var scrollAmount = 200; // Distance to scroll
+            var autoScrollInterval = null;
+            var autoScrollDuration = 3000; // Auto scroll every 3 seconds
+            var pauseTimeout = null;
+
+            function updateButtonStates() {
+                var scrollLeft = brandsSlider.scrollLeft;
+                var maxScroll = brandsSlider.scrollWidth - brandsSlider.clientWidth;
+
+                // Disable previous button if at start
+                if (scrollLeft <= 0) {
+                    prevBtn.classList.add('disabled');
+                    prevBtn.disabled = true;
+                } else {
+                    prevBtn.classList.remove('disabled');
+                    prevBtn.disabled = false;
+                }
+
+                // Disable next button if at end
+                if (scrollLeft >= maxScroll - 5) {
+                    nextBtn.classList.add('disabled');
+                    nextBtn.disabled = true;
+                } else {
+                    nextBtn.classList.remove('disabled');
+                    nextBtn.disabled = false;
+                }
+            }
+
+            function autoScroll() {
+                var scrollLeft = brandsSlider.scrollLeft;
+                var maxScroll = brandsSlider.scrollWidth - brandsSlider.clientWidth;
+
+                if (scrollLeft >= maxScroll - 5) {
+                    // Loop back to start
+                    brandsSlider.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    // Scroll to next
+                    brandsSlider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                }
+            }
+
+            function startAutoScroll() {
+                // Clear existing interval
+                if (autoScrollInterval) {
+                    clearInterval(autoScrollInterval);
+                }
+                // Start auto-scroll
+                autoScrollInterval = setInterval(autoScroll, autoScrollDuration);
+            }
+
+            function stopAutoScroll() {
+                if (autoScrollInterval) {
+                    clearInterval(autoScrollInterval);
+                    autoScrollInterval = null;
+                }
+            }
+
+            function pauseAutoScroll() {
+                stopAutoScroll();
+                // Resume after 8 seconds of inactivity
+                if (pauseTimeout) {
+                    clearTimeout(pauseTimeout);
+                }
+                pauseTimeout = setTimeout(startAutoScroll, 8000);
+            }
+
+            // Manual button clicks
+            prevBtn.addEventListener('click', function() {
+                brandsSlider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                pauseAutoScroll();
+                setTimeout(updateButtonStates, 100);
+            });
+
+            nextBtn.addEventListener('click', function() {
+                brandsSlider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                pauseAutoScroll();
+                setTimeout(updateButtonStates, 100);
+            });
+
+            // Pause on hover
+            brandsSlider.addEventListener('mouseenter', stopAutoScroll);
+            brandsSlider.addEventListener('mouseleave', startAutoScroll);
+
+            // Pause on manual scroll
+            brandsSlider.addEventListener('scroll', function() {
+                pauseAutoScroll();
+                updateButtonStates();
+            });
+
+            // Pause on touch
+            brandsSlider.addEventListener('touchstart', stopAutoScroll);
+            brandsSlider.addEventListener('touchend', pauseAutoScroll);
+
+            window.addEventListener('resize', updateButtonStates);
+
+            // Initial state and start auto-scroll
+            updateButtonStates();
+            startAutoScroll();
         })();
     </script>
 </body>
