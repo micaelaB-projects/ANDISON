@@ -3,30 +3,30 @@
         "id": "aces-2118-1af-clear",
         "name": "Aces 2118-1AF Clear",
         "model": "2118-1AF",
-        "brand": "Aces",
+        "brand": "ACES",
         "type": "Eye Protection",
         "description": "Clear protective eyewear for general eye protection",
-        "image": "",
+        "image": "assets/brands%20items/ACES/Eye%20Protection/2118-1AF.jpg",
         "badge": ""
     },
     {
         "id": "aces-2118-4af-gray",
         "name": "Aces 2118-4AF Gray",
         "model": "2118-4AF",
-        "brand": "Aces",
+        "brand": "ACES",
         "type": "Eye Protection",
         "description": "Gray tinted protective eyewear for outdoor and bright conditions",
-        "image": "",
+        "image": "assets/brands%20items/ACES/Eye%20Protection/2118-4AF.jpg",
         "badge": ""
     },
     {
         "id": "aces-2508",
         "name": "Aces 2508",
         "model": "2508",
-        "brand": "Aces",
+        "brand": "ACES",
         "type": "Eye Protection",
         "description": "Standard protective eyewear for industrial use",
-        "image": "",
+        "image": "assets/brands%20items/ACES/Eye%20Protection/2508.jpg",
         "badge": ""
     },
     {
@@ -36,7 +36,7 @@
         "brand": "UVEX",
         "type": "Eye Protection",
         "description": "Lightweight protective eyewear with high comfort fit",
-        "image": "",
+        "image": "assets/brands%20items/UVEX/Eye%20Protection/I-VO.jpg",
         "badge": ""
     },
     {
@@ -46,7 +46,7 @@
         "brand": "UVEX",
         "type": "Eye Protection",
         "description": "Enhanced vision protective eyewear with superior clarity",
-        "image": "",
+        "image": "assets/brands%20items/UVEX/Eye%20Protection/Ultra%20Vision.jpg",
         "badge": ""
     },
     {
@@ -56,17 +56,17 @@
         "brand": "UVEX",
         "type": "Eye Protection",
         "description": "Advanced protective eyewear with anti-fog coating",
-        "image": "",
+        "image": "assets/brands%20items/UVEX/Eye%20Protection/Ultrasonic.jpg",
         "badge": ""
     },
     {
         "id": "uvex-otg",
         "name": "Uvex OTG",
         "model": "OTG",
-        "brand": "Uvex",
+        "brand": "UVEX",
         "type": "Eye Protection",
         "description": "Over-the-glasses protective eyewear",
-        "image": "",
+        "image": "assets/brands%20items/UVEX/Eye%20Protection/OTG.jpg",
         "badge": ""
     }
 ]

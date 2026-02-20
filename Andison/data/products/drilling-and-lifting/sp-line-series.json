@@ -4,23 +4,23 @@
         "name": "Alfra Rotabest RB35SP Magnetic Base Core Drill - Direct Weldon Shank",
         "model": "RB35SP",
         "description": "Precision magnetic base core drill from the SP-Line series with direct Weldon shank",
-        "type": "Magnetic Drill",
+        "type": "SP Line Series",
         "brand": "Alfra",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/ALFRA/SP%20Line%20Series/RB35SP.jpg"
     },
     {
         "id": "sp-line-series-2",
         "name": "Alfra Rotabest RB850SP Magnetic Base Core Drill",
         "model": "RB850SP",
         "description": "Industrial-grade magnetic base core drill from the SP-Line series",
-        "type": "Magnetic Drill",
+        "type": "SP Line Series",
         "brand": "Alfra",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/ALFRA/SP%20Line%20Series/RB850SP.jpg"
     }
 ]

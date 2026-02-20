@@ -5,10 +5,11 @@
         "model": "BMS 8N",
         "description": "Powder-Actuated Stud Welder",
         "type": "Stud Welder",
+        "brand": "Panasonic Connect",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/Stud%20Welding/BMS%208N.jpg"
     },
     {
         "id": "stud-welding-machine-2",
@@ -16,10 +17,11 @@
         "model": "BMK-8i",
         "description": "Intelligent Stud Welder",
         "type": "Stud Welder",
+        "brand": "Panasonic Connect",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/Stud%20Welding/BMK-8i.jpg"
     },
     {
         "id": "stud-welding-machine-3",
@@ -27,9 +29,10 @@
         "model": "BMK 12W",
         "description": "Heavy Duty Stud Welder",
         "type": "Stud Welder",
+        "brand": "Panasonic Connect",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/Stud%20Welding/BMK%2012W.jpg"
     }
 ]

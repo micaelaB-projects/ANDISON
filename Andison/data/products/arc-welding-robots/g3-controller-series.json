@@ -5,10 +5,11 @@
         "model": "TM/TL G3 Series",
         "description": "Compact G3 controller for robotic welding applications",
         "type": "Controller Series",
+        "brand": "Panasonic Connect",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/G3%20Controller%20Series/TM-TL%20G3%20Series.jpg"
     },
     {
         "id": "g3-controller-series-2",
@@ -16,10 +17,11 @@
         "model": "TM/TL TAWERS WG3 Series",
         "description": "Advanced TAWERS WG3 series controller for welding robots",
         "type": "Controller Series",
+        "brand": "Panasonic Connect",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/G3%20Controller%20Series/TM-TL%20TAWERS%20WG3%20Series.jpg"
     },
     {
         "id": "g3-controller-series-3",
@@ -27,9 +29,10 @@
         "model": "Super Active TAWERS",
         "description": "High-performance Super Active TAWERS controller",
         "type": "Controller Series",
+        "brand": "Panasonic Connect",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/G3%20Controller%20Series/Super%20Active%20TAWERS.jpg"
     }
 ]

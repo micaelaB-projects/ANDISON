@@ -5,10 +5,11 @@
         "model": "TM/TL G4 Series",
         "description": "Latest generation G4 controller for advanced welding automation",
         "type": "Controller Series",
+        "brand": "Panasonic Connect",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/G4%20Controller%20Series/TM-TL%20G4%20Series.jpg"
     },
     {
         "id": "g4-controller-series-2",
@@ -16,10 +17,11 @@
         "model": "TM/TL TAWERS WG4 Series",
         "description": "Next-generation TAWERS WG4 series for industrial welding",
         "type": "Controller Series",
+        "brand": "Panasonic Connect",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/G4%20Controller%20Series/TM-TL%20TAWERS%20WG4%20Series.jpg"
     },
     {
         "id": "g4-controller-series-3",
@@ -27,21 +29,23 @@
         "model": "Active TAWERS 4 AWP4-WG4 Series",
         "description": "Premium Active TAWERS 4 AWP4-WG4 series controller",
         "type": "Controller Series",
+        "brand": "Panasonic Connect",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/G4%20Controller%20Series/Active%20TAWERS%204%20AWP4-WG4%20Series.jpg"
     },
     {
         "id": "g4-controller-series-4",
-        "name": "Tip Welding Robot",
-        "model": "Tip Welding Robot",
-        "description": "Specialized tip welding robot system",
+        "name": "Tig Welding Robot",
+        "model": "Tig Welding Robot",
+        "description": "Specialized TIG welding robot system",
         "type": "Welding Robot",
+        "brand": "Panasonic Connect",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/G4%20Controller%20Series/Tig%20Welding%20Robot.jpg"
     },
     {
         "id": "g4-controller-series-5",
@@ -49,10 +53,11 @@
         "model": "Plasma Cutting Robot",
         "description": "Automated plasma cutting robot for precision cutting",
         "type": "Cutting Robot",
+        "brand": "Panasonic Connect",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/G4%20Controller%20Series/Plasma%20Cutting%20Robot.jpg"
     },
     {
         "id": "g4-controller-series-6",
@@ -60,9 +65,10 @@
         "model": "Handling Robot for Welding",
         "description": "Material handling robot specifically designed for welding operations",
         "type": "Handling Robot",
+        "brand": "Panasonic Connect",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/G4%20Controller%20Series/Handling%20Robot%20for%20Welding.jpg"
     }
 ]

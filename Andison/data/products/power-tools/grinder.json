@@ -4,9 +4,9 @@
         "name": "Bosch GWS 9-100P Angle Grinder",
         "model": "GWS 9-100P",
         "brand": "Bosch",
-        "type": "Angle Grinder",
+        "type": "Grinder",
         "description": "Professional angle grinder for cutting and grinding applications",
-        "image": "",
+        "image": "assets/brands%20items/BOSCH/Grinder/GWS 9-100P.jpg",
         "badge": ""
     },
     {
@@ -14,9 +14,9 @@
         "name": "Bosch GGS 3000L Straight Grinder",
         "model": "GGS 3000L",
         "brand": "Bosch",
-        "type": "Straight Grinder",
+        "type": "Grinder",
         "description": "Straight grinder for precision grinding and finishing work",
-        "image": "",
+        "image": "assets/brands%20items/BOSCH/Grinder/GGS 3000L.jpg",
         "badge": ""
     },
     {
@@ -24,9 +24,9 @@
         "name": "Bosch GWS 2200-180 Angle Grinder",
         "model": "GWS 2200-180",
         "brand": "Bosch",
-        "type": "Angle Grinder",
+        "type": "Grinder",
         "description": "Heavy-duty angle grinder for industrial grinding applications",
-        "image": "",
+        "image": "assets/brands%20items/BOSCH/Grinder/GWS 2200-180.jpg",
         "badge": ""
     }
 ]

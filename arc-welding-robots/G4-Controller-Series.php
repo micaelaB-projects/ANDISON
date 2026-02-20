@@ -5,9 +5,9 @@ require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
 
-$page_title = "Arc Welding Machines";
-$category_id = "arc-welding-machine";
-$subcategory_id = "arc-welding-machine";
+$page_title = "G4 Controller Series";
+$category_id = "arc-welding-robots";
+$subcategory_id = "g4-controller-series";
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";
@@ -23,14 +23,20 @@ foreach ($categories as $cat) {
     }
 }
 
+// Override category data for G4 Controller Series subcategory
+if ($current_category && $subcategory_id === 'g4-controller-series') {
+    $current_category['name'] = 'G4 Controller Series';
+    $current_category['description'] = 'Next-generation G4 series controllers and robotic welding systems.';
+}
+
 if (!$current_category) {
     // Fallback: create a default category object
     $current_category = array(
         'id' => $category_id,
-        'name' => 'Arc Welding Machines',
-        'description' => 'Discover our comprehensive range of arc welding machines for industrial applications.',
+        'name' => 'G4 Controller Series',
+        'description' => 'Next-generation G4 series controllers and robotic welding systems.',
         'subcategories' => array(
-            array('id' => 'arc-welding-machine', 'name' => 'Arc Welding Machines')
+            array('id' => 'g4-controller-series', 'name' => 'G4 Controller Series')
         )
     );
 }
@@ -41,8 +47,8 @@ if (!$current_category) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = $current_category['name'] ?? 'Arc Welding Machines';
-    $category_description = $current_category['description'] ?? 'Discover our comprehensive range of arc welding machines for industrial applications.';
+    $category_name = $current_category['name'] ?? 'G4 Controller Series';
+    $category_description = $current_category['description'] ?? 'Next-generation G4 series controllers and robotic welding systems.';
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -4430,7 +4436,7 @@ if (!$current_category) {
             <i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i>
             <span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px;" class="browse-label">BROWSE CATEGORIES</span>
         </div>
-        <div class="mini-sidebar-icon has-sub" data-target="arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-machine/arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-robots/arc-welding-robot.php" title="Arc Welding Robots"><i class="bi bi-robot"></i><span class="label">Arc Welding Robots</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../batteries/batteries.php" title="Batteries"><i class="bi bi-lightning-fill"></i><span class="label">Batteries</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../drilling-and-lifting/drilling-and-lifting.php" title="Drilling and Lifting"><i class="bi bi-hammer"></i><span class="label">Drilling and Lifting</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
@@ -4457,7 +4463,7 @@ if (!$current_category) {
     </div>
 
         <div class="category-content">
-            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Arc Welding Machines'); ?></h2>
+            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'G4 Controller Series'); ?></h2>
             
             <!-- Left Sidebar Filters -->
             <div class="product-filters">
@@ -4548,23 +4554,8 @@ if (!$current_category) {
                 <!-- Product Grid -->
                 <div class="product-grid">
                 <?php 
-                // Fetch arc welding machine products from all subcategories
-                $subcategories = [
-                    'mig-welding-machine',
-                    'co1-mag-welding-machine',
-                    'stud-welding-machine',
-                    'tig-welding-machine',
-                    'plasma-cutting-machine',
-                    'accessories-and-consumables'
-                ];
-                
-                $all_products = [];
-                foreach ($subcategories as $subcat) {
-                    $products = andison_get_products_for_subcategory('arc-welding-machine', $subcat);
-                    if (!empty($products)) {
-                        $all_products = array_merge($all_products, $products);
-                    }
-                }
+                // Fetch products for G4 Controller Series subcategory
+                $all_products = andison_get_products_for_subcategory('arc-welding-robots', 'g4-controller-series');
                 
                 // Display products
                 if (!empty($all_products)) {
@@ -4617,12 +4608,12 @@ if (!$current_category) {
                     ?>
                 <div class="product-card">
                     <div class="product-image">
-                        <i class="bi bi-lightning-charge" style="font-size: 56px; color: #ccc;"></i>
+                        <i class="bi bi-robot" style="font-size: 56px; color: #ccc;"></i>
                     </div>
                     <div class="product-info">
-                        <h4>Arc Welding Machines</h4>
+                        <h4>G4 Controller Series</h4>
                         <p class="product-description">No products available</p>
-                        <button class="add-to-inquiry" type="button" data-model="Arc Welding Machines" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
+                        <button class="add-to-inquiry" type="button" data-model="G4 Controller Series" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
                     </div>
                 </div>
                 <?php
@@ -4844,10 +4835,12 @@ if (!$current_category) {
         
         // Highlight current category in mini-sidebar
         (function(){
+            var currentCategory = '<?php echo htmlspecialchars(strtolower(basename(dirname($_SERVER["PHP_SELF"])))); ?>';
             var miniIcons = document.querySelectorAll('.mini-sidebar-icon');
             miniIcons.forEach(function(icon){
-                var target = icon.getAttribute('data-target');
-                if(target && target.includes('arc-welding-machine')) {
+                var target = (icon.getAttribute('data-target') || '').toLowerCase().replace('../', '');
+                var category = target.split('/')[0].replace('.php', '');
+                if(category && category === currentCategory) {
                     icon.classList.add('active-icon');
                 }
             });

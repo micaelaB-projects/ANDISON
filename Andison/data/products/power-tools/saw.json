@@ -4,9 +4,9 @@
         "name": "Bosch GCO 14-24J Metal Cut Off Saw",
         "model": "GCO 14-24J",
         "brand": "Bosch",
-        "type": "Metal Cut Off Saw",
+        "type": "Saw",
         "description": "Lightweight metal cut off saw for precise cutting of metal materials",
-        "image": "",
+        "image": "assets/brands%20items/BOSCH/Saw/GCO 14-24J.jpg",
         "badge": ""
     },
     {
@@ -14,9 +14,9 @@
         "name": "Bosch GKS 235 Turbo Hand Held Circular Saw",
         "model": "GKS 235 Turbo",
         "brand": "Bosch",
-        "type": "Hand Held Circular Saw",
+        "type": "Saw",
         "description": "Powerful hand-held circular saw for cutting wood and composite materials",
-        "image": "",
+        "image": "assets/brands%20items/BOSCH/Saw/GKS 235 Turbo.jpg",
         "badge": ""
     },
     {
@@ -24,9 +24,9 @@
         "name": "Bosch GST 80PBE Jig Saw",
         "model": "GST 80PBE",
         "brand": "Bosch",
-        "type": "Jig Saw",
+        "type": "Saw",
         "description": "Professional jig saw for precise straight and curved cuts",
-        "image": "",
+        "image": "assets/brands%20items/BOSCH/Saw/GST 80PBE.jpg",
         "badge": ""
     }
 ]

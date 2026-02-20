@@ -3086,6 +3086,7 @@ if (!$current_category) {
 
         /* Mini popover styles for subcategories */
         .mini-popover {
+           .mini-popover {
             position: fixed;
             top: -9999px;
             left: -9999px;
@@ -4844,10 +4845,12 @@ if (!$current_category) {
         
         // Highlight current category in mini-sidebar
         (function(){
+            var currentCategory = '<?php echo htmlspecialchars(strtolower(basename(dirname($_SERVER["PHP_SELF"])))); ?>';
             var miniIcons = document.querySelectorAll('.mini-sidebar-icon');
             miniIcons.forEach(function(icon){
-                var target = icon.getAttribute('data-target');
-                if(target && target.includes('arc-welding-machine')) {
+                var target = (icon.getAttribute('data-target') || '').toLowerCase().replace('../', '');
+                var category = target.split('/')[0].replace('.php', '');
+                if(category && category === currentCategory) {
                     icon.classList.add('active-icon');
                 }
             });

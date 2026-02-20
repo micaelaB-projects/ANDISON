@@ -25,11 +25,13 @@
         "Panasonic Connect": 3,
         "Kobelco": 2,
         "PANASONIC": 2,
-        "Magnaflux": 1
+        "Magnaflux": 1,
+        "Tempilstik": 1
     },
     "categories": {
         "Arc Welding Machine": 3,
         "Arc Welding Robots": 1,
-        "Protection": 1
+        "Protection": 1,
+        "Welding Accessories": 1
     }
 }

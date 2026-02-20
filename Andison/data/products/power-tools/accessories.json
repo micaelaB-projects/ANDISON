@@ -4,9 +4,9 @@
         "name": "Weiler Industrial Wire Brushes",
         "model": "Industrial Wire Brushes",
         "brand": "Weiler",
-        "type": "Wire Brushes",
+        "type": "Accessories",
         "description": "Industrial-grade wire brushes for cleaning and surface preparation",
-        "image": "",
+        "image": "assets/brands%20items/WEILER/Accessories/Industrial Wire Brushes.jpg",
         "badge": ""
     },
     {
@@ -14,9 +14,9 @@
         "name": "Garryson Tungsten Carbide Burrs",
         "model": "Tungsten Carbide Burrs",
         "brand": "Garryson",
-        "type": "Carbide Burrs",
+        "type": "Accessories",
         "description": "High-performance tungsten carbide burrs for precision grinding and finishing",
-        "image": "",
+        "image": "assets/brands%20items/GARRYSON/Accessories/Tungsten Carbide Burrs.jpg",
         "badge": ""
     }
 ]

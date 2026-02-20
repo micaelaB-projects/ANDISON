@@ -5,9 +5,9 @@ require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
 
-$page_title = "Arc Welding Machines";
-$category_id = "arc-welding-machine";
-$subcategory_id = "arc-welding-machine";
+$page_title = "Welding Electrode Oven";
+$category_id = "welding-accessories";
+$subcategory_id = "welding-electrode-oven";
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";
@@ -27,10 +27,10 @@ if (!$current_category) {
     // Fallback: create a default category object
     $current_category = array(
         'id' => $category_id,
-        'name' => 'Arc Welding Machines',
-        'description' => 'Discover our comprehensive range of arc welding machines for industrial applications.',
+        'name' => 'Welding Electrode Oven',
+        'description' => 'Electrode ovens for proper storage and preheating of welding electrodes.',
         'subcategories' => array(
-            array('id' => 'arc-welding-machine', 'name' => 'Arc Welding Machines')
+            array('id' => 'welding-electrode-oven', 'name' => 'Welding Electrode Oven')
         )
     );
 }
@@ -41,8 +41,8 @@ if (!$current_category) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = $current_category['name'] ?? 'Arc Welding Machines';
-    $category_description = $current_category['description'] ?? 'Discover our comprehensive range of arc welding machines for industrial applications.';
+    $category_name = $current_category['name'] ?? 'Welding Electrode Oven';
+    $category_description = $current_category['description'] ?? 'Electrode ovens for proper storage and preheating of welding electrodes.';
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -2868,20 +2868,20 @@ if (!$current_category) {
 
         .mini-sidebar-icon.active-icon {
             background: #00D7B3;
-            color: #2B11DB;
-            font-weight: 600;
+            color: #ffffff;
+            font-weight: 700;
         }
 
         .mini-sidebar-icon.active-icon .label {
-            color: #2B11DB;
-            font-weight: 600;
+            color: #ffffff;
+            font-weight: 700;
         }
 
         /* Active icon styling when expanded */
         .mini-sidebar.expanded .mini-sidebar-icon.active-icon {
             background: rgba(0, 215, 179, 0.25) !important;
             color: #00D7B3 !important;
-            font-weight: 600;
+            font-weight: 700;
             border-left: 4px solid #00D7B3;
             padding-left: 10px;
             transform: none;
@@ -2889,12 +2889,12 @@ if (!$current_category) {
 
         .mini-sidebar.expanded .mini-sidebar-icon.active-icon .label {
             color: #00D7B3 !important;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .mini-sidebar-icon.active-icon .label {
-            color: #2B11DB;
-            font-weight: 600;
+            color: #ffffff;
+            font-weight: 700;
         }
 
         .mini-sidebar-icon .sub-indicator {
@@ -4154,8 +4154,6 @@ if (!$current_category) {
 </head>
 <body>
         <?php
-        // Set page title
-        $page_title = "Brands";
         $company_name = "ANDISON INDUSTRIAL";
         
         // Contact information
@@ -4457,7 +4455,7 @@ if (!$current_category) {
     </div>
 
         <div class="category-content">
-            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Arc Welding Machines'); ?></h2>
+            <h2><?php echo htmlspecialchars($page_title); ?></h2>
             
             <!-- Left Sidebar Filters -->
             <div class="product-filters">
@@ -4548,23 +4546,8 @@ if (!$current_category) {
                 <!-- Product Grid -->
                 <div class="product-grid">
                 <?php 
-                // Fetch arc welding machine products from all subcategories
-                $subcategories = [
-                    'mig-welding-machine',
-                    'co1-mag-welding-machine',
-                    'stud-welding-machine',
-                    'tig-welding-machine',
-                    'plasma-cutting-machine',
-                    'accessories-and-consumables'
-                ];
-                
-                $all_products = [];
-                foreach ($subcategories as $subcat) {
-                    $products = andison_get_products_for_subcategory('arc-welding-machine', $subcat);
-                    if (!empty($products)) {
-                        $all_products = array_merge($all_products, $products);
-                    }
-                }
+                // Fetch welding electrode oven products
+                $all_products = andison_get_products_for_subcategory('welding-accessories', 'welding-electrode-oven');
                 
                 // Display products
                 if (!empty($all_products)) {
@@ -4583,7 +4566,7 @@ if (!$current_category) {
                         }
                         $model = htmlspecialchars($product['model'] ?? '');
                         $name = htmlspecialchars($product['name'] ?? '');
-                        $type = htmlspecialchars($product['type'] ?? 'Welding Machine');
+                        $type = htmlspecialchars($product['type'] ?? 'Welding Accessory');
                         $brand = htmlspecialchars($product['brand'] ?? 'Industrial');
                         $description = htmlspecialchars($product['description'] ?? '');
                         $badge = htmlspecialchars($product['badge'] ?? '');
@@ -4591,9 +4574,9 @@ if (!$current_category) {
                 <div class="product-card">
                     <div class="product-image">
                         <?php if (!empty($image_src)): ?>
-                            <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=&quot;bi bi-lightning-charge&quot; style=&quot;font-size: 56px; color: #ccc;&quot;></i>'">
+                            <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=&quot;bi bi-gear&quot; style=&quot;font-size: 56px; color: #ccc;&quot;></i>'">
                         <?php else: ?>
-                            <i class="bi bi-lightning-charge" style="font-size: 56px; color: #ccc;"></i>
+                            <i class="bi bi-gear" style="font-size: 56px; color: #ccc;"></i>
                         <?php endif; ?>
                         <?php if (!empty($badge)): ?>
                             <div class="product-badge"><?php echo $badge; ?></div>
@@ -4617,12 +4600,12 @@ if (!$current_category) {
                     ?>
                 <div class="product-card">
                     <div class="product-image">
-                        <i class="bi bi-lightning-charge" style="font-size: 56px; color: #ccc;"></i>
+                        <i class="bi bi-gear" style="font-size: 56px; color: #ccc;"></i>
                     </div>
                     <div class="product-info">
-                        <h4>Arc Welding Machines</h4>
+                        <h4>Welding Electrode Oven</h4>
                         <p class="product-description">No products available</p>
-                        <button class="add-to-inquiry" type="button" data-model="Arc Welding Machines" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
+                        <button class="add-to-inquiry" type="button" data-model="Welding Electrode Oven" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
                     </div>
                 </div>
                 <?php
@@ -4844,10 +4827,12 @@ if (!$current_category) {
         
         // Highlight current category in mini-sidebar
         (function(){
+            var currentCategory = '<?php echo htmlspecialchars(strtolower(basename(dirname($_SERVER["PHP_SELF"])))); ?>';
             var miniIcons = document.querySelectorAll('.mini-sidebar-icon');
             miniIcons.forEach(function(icon){
-                var target = icon.getAttribute('data-target');
-                if(target && target.includes('arc-welding-machine')) {
+                var target = (icon.getAttribute('data-target') || '').toLowerCase().replace('../', '');
+                var category = target.split('/')[0].replace('.php', '');
+                if(category && category === currentCategory) {
                     icon.classList.add('active-icon');
                 }
             });

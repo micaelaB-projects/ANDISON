@@ -3,20 +3,20 @@
         "id": "particulate-1",
         "name": "Alphatec 1500 Plus",
         "model": "111",
-        "brand": "Alphatec",
+        "brand": "ALPHATEC",
         "type": "Particulate Low Hazard",
         "description": "High-efficiency particulate protection suit",
-        "image": "",
+        "image": "assets/brands%20items/ALPHATEC/Particulate%20Low%20Hazard/111.jpg",
         "badge": ""
     },
     {
         "id": "particulate-2",
         "name": "Alphatec 2000 Standard",
         "model": "111",
-        "brand": "Alphatec",
+        "brand": "ALPHATEC",
         "type": "Particulate Low Hazard",
         "description": "Standard particulate protection equipment",
-        "image": "",
+        "image": "assets/brands%20items/ALPHATEC/Particulate%20Low%20Hazard/111.jpg",
         "badge": ""
     }
 ]

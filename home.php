@@ -2582,7 +2582,7 @@ $ytLinks = andison_get_youtube_links();
             left: -9999px;
             width: 320px;
             max-width: calc(100vw - 32px);
-            background: linear-gradient(180deg, #00D7B3 0%, #00b399 100%);
+            background: linear-gradient(180deg, #1976D2FF 0%, #19D2B6FF 100%);
             color: #fff;
             border-radius: 16px;
             box-shadow: 0 12px 30px rgba(0,0,0,0.25);
@@ -2605,12 +2605,12 @@ $ytLinks = andison_get_youtube_links();
             width: 0; height: 0;
             border-top: 10px solid transparent;
             border-bottom: 10px solid transparent;
-            border-right: 10px solid #00D7B3;
+            border-right: 10px solid #1976D2;
             filter: drop-shadow(-2px 2px 2px rgba(0,0,0,0.12));
         }
         .mini-popover-header {
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
+            background: #f5f9ff;
+            color: #0f5132;
             border-top-left-radius: 16px;
             border-top-right-radius: 16px;
             padding: 12px 16px;
@@ -2618,7 +2618,7 @@ $ytLinks = andison_get_youtube_links();
             font-size: 15px;
             letter-spacing: 0.3px;
         }
-        .mini-popover-title { color: #ffffff; }
+        .mini-popover-title { color: #0f5132; }
         .mini-popover-body {
             padding: 12px 16px 16px 16px;
             max-height: calc(100vh - 100px);
@@ -2656,9 +2656,8 @@ $ytLinks = andison_get_youtube_links();
             margin: auto;
             width: 14px; height: 14px;
             border-radius: 3px;
-            background: rgba(255, 255, 255, 0.25);
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+            background: #7aa7ff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.18), inset 0 -1px 0 rgba(0,0,0,0.08);
             flex-shrink: 0;
             pointer-events: none;
         }
@@ -2751,6 +2750,7 @@ $ytLinks = andison_get_youtube_links();
                             <h4>Featured Brands</h4>
                             <ul>
                                 <li><a href="brand.php?name=Panasonic%20Connect"><img src="assets/brands/PANASONIC.jpg" alt="Panasonic Connect" title="Panasonic Connect"></a></li>
+                                <li><a href="brand.php?name=Robot%20Systems"><img src="assets/brands/ROBOT SYSTEMS.jpg" alt="Robot Systems Peripherals" title="Robot Systems Peripherals"></a></li>
                                 <li><a href="brand.php?name=Kobelco"><img src="assets/brands/KOBELCO.jpg" alt="Kobelco" title="Kobelco"></a></li>
                                 <li><a href="brand.php?name=Metrode"><img src="assets/brands/METRODE.jpg" alt="Metrode" title="Metrode"></a></li>
                                 <li><a href="brand.php?name=DryRod.%20II"><img src="assets/brands/DRYROD.jpg" alt="DryRod. II" title="DryRod. II"></a></li>

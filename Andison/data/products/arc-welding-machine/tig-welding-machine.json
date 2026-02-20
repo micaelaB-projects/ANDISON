@@ -2,45 +2,49 @@
     {
         "id": "tig-welding-machine-1",
         "name": "TIG Welding Machine",
-        "model": "YD-300WX4",
+        "model": "YC-300WX4",
         "description": "Portable TIG Welder",
-        "type": "Portable TIG Welder",
+        "type": "TIG Welder",
+        "brand": "Panasonic Connect",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/TIG%20Welding%20Machine/YC-300WX4.jpg"
     },
     {
         "id": "tig-welding-machine-2",
         "name": "TIG Welding Machine",
-        "model": "YD-200BL3",
+        "model": "YC-200BL3",
         "description": "Compact TIG Welder",
-        "type": "Compact TIG Welder",
+        "type": "TIG Welder",
+        "brand": "Panasonic Connect",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/TIG%20Welding%20Machine/YC-200BL3.jpg"
     },
     {
         "id": "tig-welding-machine-3",
         "name": "TIG Welding Machine",
-        "model": "YD-300BZ3",
+        "model": "YC-300BZ3",
         "description": "Industrial Grade TIG Welder",
-        "type": "Industrial TIG Welder",
+        "type": "TIG Welder",
+        "brand": "Panasonic Connect",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/PANASONIC/TIG%20Welding%20Machine/YC-300BZ3.jpeg"
+        "image": "assets/brands%20items/PANASONIC/TIG%20Welding%20Machine/YC-300BZ3.jpg"
     },
     {
         "id": "tig-welding-machine-4",
         "name": "TIG Welding Machine",
-        "model": "YD-300BP4",
+        "model": "YC-300BP4",
         "description": "Professional TIG Welder",
-        "type": "Professional TIG Welder",
+        "type": "TIG Welder",
+        "brand": "Panasonic Connect",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/TIG%20Welding%20Machine/YC-300BP4.jpg"
     }
 ]

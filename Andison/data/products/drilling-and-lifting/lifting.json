@@ -2,34 +2,37 @@
     {
         "id": "material-handling-lifting-1",
         "name": "Alfra TML-250 Lifting Magnet",
+        "brand": "Alfra",
         "model": "TML-250",
         "description": "Powerful lifting magnet with 250kg capacity",
-        "type": "Lifting Magnet",
+        "type": "Lifting",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/ALFRA/Lifting/TML-250.jpg"
     },
     {
         "id": "material-handling-lifting-2",
         "name": "Alfra TML-500 Lifting Magnet",
+        "brand": "Alfra",
         "model": "TML-500",
         "description": "Heavy-duty lifting magnet with 500kg capacity",
-        "type": "Lifting Magnet",
+        "type": "Lifting",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/ALFRA/Lifting/TML-500.jpg"
     },
     {
         "id": "material-handling-lifting-3",
         "name": "Technotex Polyester Webbing Slings",
+        "brand": "Technotex",
         "model": "Polyester Webbing",
         "description": "Durable polyester webbing slings for safe material handling",
-        "type": "Webbing Slings",
+        "type": "Lifting",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/TECHNOTEX/Lifting/Polyester%20Webbing.jpg"
     }
 ]

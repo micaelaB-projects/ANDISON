@@ -5,9 +5,9 @@ require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
 
-$page_title = "Arc Welding Machines";
-$category_id = "arc-welding-machine";
-$subcategory_id = "arc-welding-machine";
+$page_title = "V Line Series";
+$category_id = "drilling-and-lifting";
+$subcategory_id = "v-line-series";
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";
@@ -27,13 +27,17 @@ if (!$current_category) {
     // Fallback: create a default category object
     $current_category = array(
         'id' => $category_id,
-        'name' => 'Arc Welding Machines',
-        'description' => 'Discover our comprehensive range of arc welding machines for industrial applications.',
+        'name' => 'Drilling and Lifting',
+        'description' => 'Discover our comprehensive range of drilling and lifting equipment for industrial applications.',
         'subcategories' => array(
-            array('id' => 'arc-welding-machine', 'name' => 'Arc Welding Machines')
+            array('id' => 'v-line-series', 'name' => 'V Line Series')
         )
     );
 }
+
+// Override category for subcategory-specific display
+$current_category['name'] = 'V Line Series';
+$current_category['description'] = 'Alfra Rotabest V-Line low profile magnetic base core drills for confined spaces.';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,8 +45,8 @@ if (!$current_category) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = $current_category['name'] ?? 'Arc Welding Machines';
-    $category_description = $current_category['description'] ?? 'Discover our comprehensive range of arc welding machines for industrial applications.';
+    $category_name = $current_category['name'] ?? 'V Line Series';
+    $category_description = $current_category['description'] ?? 'Alfra Rotabest V-Line low profile magnetic base core drills for confined spaces.';
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -4548,23 +4552,8 @@ if (!$current_category) {
                 <!-- Product Grid -->
                 <div class="product-grid">
                 <?php 
-                // Fetch arc welding machine products from all subcategories
-                $subcategories = [
-                    'mig-welding-machine',
-                    'co1-mag-welding-machine',
-                    'stud-welding-machine',
-                    'tig-welding-machine',
-                    'plasma-cutting-machine',
-                    'accessories-and-consumables'
-                ];
-                
-                $all_products = [];
-                foreach ($subcategories as $subcat) {
-                    $products = andison_get_products_for_subcategory('arc-welding-machine', $subcat);
-                    if (!empty($products)) {
-                        $all_products = array_merge($all_products, $products);
-                    }
-                }
+                // Fetch V Line Series products
+                $all_products = andison_get_products_for_subcategory('drilling-and-lifting', 'v-line-series');
                 
                 // Display products
                 if (!empty($all_products)) {
@@ -4583,17 +4572,17 @@ if (!$current_category) {
                         }
                         $model = htmlspecialchars($product['model'] ?? '');
                         $name = htmlspecialchars($product['name'] ?? '');
-                        $type = htmlspecialchars($product['type'] ?? 'Welding Machine');
-                        $brand = htmlspecialchars($product['brand'] ?? 'Industrial');
+                        $type = htmlspecialchars($product['type'] ?? 'Magnetic Drill');
+                        $brand = htmlspecialchars($product['brand'] ?? 'Alfra');
                         $description = htmlspecialchars($product['description'] ?? '');
                         $badge = htmlspecialchars($product['badge'] ?? '');
                         ?>
                 <div class="product-card">
                     <div class="product-image">
                         <?php if (!empty($image_src)): ?>
-                            <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=&quot;bi bi-lightning-charge&quot; style=&quot;font-size: 56px; color: #ccc;&quot;></i>'">
+                            <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=&quot;bi bi-gear-wide-connected&quot; style=&quot;font-size: 56px; color: #ccc;&quot;></i>'">
                         <?php else: ?>
-                            <i class="bi bi-lightning-charge" style="font-size: 56px; color: #ccc;"></i>
+                            <i class="bi bi-gear-wide-connected" style="font-size: 56px; color: #ccc;"></i>
                         <?php endif; ?>
                         <?php if (!empty($badge)): ?>
                             <div class="product-badge"><?php echo $badge; ?></div>
@@ -4844,10 +4833,12 @@ if (!$current_category) {
         
         // Highlight current category in mini-sidebar
         (function(){
+            var currentCategory = '<?php echo htmlspecialchars(strtolower(basename(dirname($_SERVER["PHP_SELF"])))); ?>';
             var miniIcons = document.querySelectorAll('.mini-sidebar-icon');
             miniIcons.forEach(function(icon){
-                var target = icon.getAttribute('data-target');
-                if(target && target.includes('arc-welding-machine')) {
+                var target = (icon.getAttribute('data-target') || '').toLowerCase().replace('../', '');
+                var category = target.split('/')[0].replace('.php', '');
+                if(category && category === currentCategory) {
                     icon.classList.add('active-icon');
                 }
             });

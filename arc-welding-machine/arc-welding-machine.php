@@ -4313,7 +4313,7 @@ if (!$current_category) {
                 <button class="sub-toggle" aria-controls="sub-arc-welding" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
                     <li><a href="mig-welding-machine.php">MIG Welding Machine</a></li>
-                    <li><a href="co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
+                    <li><a href="co1-mag-welding-machine.php">CO2 /MAG Welding Machine</a></li>
                     <li><a href="stud-welding-machine.php">STUD Welding Machine</a></li>
                     <li><a href="tig-welding-machine.php">TIG Welding Machine</a></li>
                     <li><a href="plasma-cutting-machine.php">Plasma Cutting Machine</a></li>
@@ -4551,7 +4551,7 @@ if (!$current_category) {
                 // Fetch arc welding machine products from all subcategories
                 $subcategories = [
                     'mig-welding-machine',
-                    'co1-mag-welding-machine',
+                    'co2-mag-welding-machine',
                     'stud-welding-machine',
                     'tig-welding-machine',
                     'plasma-cutting-machine',
@@ -4844,10 +4844,12 @@ if (!$current_category) {
         
         // Highlight current category in mini-sidebar
         (function(){
+            var currentCategory = '<?php echo htmlspecialchars(strtolower(basename(dirname($_SERVER["PHP_SELF"])))); ?>';
             var miniIcons = document.querySelectorAll('.mini-sidebar-icon');
             miniIcons.forEach(function(icon){
-                var target = icon.getAttribute('data-target');
-                if(target && target.includes('arc-welding-machine')) {
+                var target = (icon.getAttribute('data-target') || '').toLowerCase().replace('../', '');
+                var category = target.split('/')[0].replace('.php', '');
+                if(category && category === currentCategory) {
                     icon.classList.add('active-icon');
                 }
             });
@@ -5298,7 +5300,7 @@ if (!$current_category) {
                 ],
                 'arc-welding-machine': [
                     { label: 'MIG Welding Machine', href: base + '/mig-welding-machine.php' },
-                    { label: 'CO1/MAG Welding Machine', href: base + '/co1-mag-welding-machine.php' },
+                    { label: 'CO2/MAG Welding Machine', href: base + '/co1-mag-welding-machine.php' },
                     { label: 'STUD Welding Machine', href: base + '/stud-welding-machine.php' },
                     { label: 'TIG Welding Machine', href: base + '/tig-welding-machine.php' },
                     { label: 'Plasma Cutting Machine', href: base + '/plasma-cutting-machine.php' }

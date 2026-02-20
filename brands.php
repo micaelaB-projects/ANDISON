@@ -3127,6 +3127,7 @@ $email = "info@andison-industrial.com";
                             <h4>Featured Brands</h4>
                             <ul>
                                 <li><a href="brand.php?name=Panasonic%20Connect"><img src="assets/brands/PANASONIC.jpg" alt="Panasonic Connect" title="Panasonic Connect"></a></li>
+                                <li><a href="brand.php?name=Robot%20Systems"><img src="assets/brands/ROBOT SYSTEMS.jpg" alt="Robot Systems Peripherals" title="Robot Systems Peripherals"></a></li>
                                 <li><a href="brand.php?name=Kobelco"><img src="assets/brands/KOBELCO.jpg" alt="Kobelco" title="Kobelco"></a></li>
                                 <li><a href="brand.php?name=Metrode"><img src="assets/brands/METRODE.jpg" alt="Metrode" title="Metrode"></a></li>
                                 <li><a href="brand.php?name=DryRod.%20II"><img src="assets/brands/DRYROD.jpg" alt="DryRod. II" title="DryRod. II"></a></li>
@@ -3144,7 +3145,7 @@ $email = "info@andison-industrial.com";
                                 <li><a href="brand.php?name=SK%20And%20GAL%20GAGE"><img src="assets/brands/SK%20AND%20GAL%20GAGE.jpg" alt="SK And GAL GAGE" title="SK And GAL GAGE"></a></li>
                                 <li><a href="brand.php?name=COPPUS"><img src="assets/brands/COPPUS.jpg" alt="Coppus" title="Coppus"></a></li>
                                 <li><a href="brand.php?name=BW%20Technologies"><img src="assets/brands/BW%20TECHNOLOGIES.jpg" alt="BW Technologies" title="BW Technologies"></a></li>
-                                <li><a href="brand.php?name=RAC"><img src="assets/brands/RAE%20SYSTEMS.jpg" alt="RAC" title="RAC"></a></li>
+                                <li><a href="brand.php?name=RAC"><img src="assets/brands/RAE%20SYSTEMS.jpg" alt="RAE Systems" title="RAE Systems"></a></li>
                                 <li><a href="brand.php?name=WELDAS"><img src="assets/brands/WELDAS.jpg" alt="Weldas" title="Weldas"></a></li>
                                 <li><a href="brand.php?name=UVEX"><img src="assets/brands/UVEX.jpg" alt="Uvex" title="Uvex"></a></li>
                                 <li><a href="brand.php?name=ACES"><img src="assets/brands/ACES.jpg" alt="Aces" title="Aces"></a></li>
@@ -3374,6 +3375,12 @@ $email = "info@andison-industrial.com";
                     </div>
                     <h3>Panasonic Connect</h3>
                 </a>
+                <a href="brand.php?name=Robot%20Systems" class="brand-card" title="Robot Systems Peripherals">
+                    <div class="brand-logo-container">
+                        <img src="assets/brands/ROBOT SYSTEMS.jpg" alt="Robot Systems Peripherals" class="brand-logo">
+                    </div>
+                    <h3>Robot Systems Peripherals</h3>
+                </a>
                 <a href="brand.php?name=Kobelco" class="brand-card" title="Kobelco">
                     <div class="brand-logo-container">
                         <img src="assets/brands/KOBELCO.jpg" alt="Kobelco" class="brand-logo">
@@ -3476,11 +3483,11 @@ $email = "info@andison-industrial.com";
                     </div>
                     <h3>BW Technologies</h3>
                 </a>
-                <a href="brand.php?name=RAC" class="brand-card" title="RAC">
+                <a href="brand.php?name=RAC" class="brand-card" title="RAE SYSTEMS">
                     <div class="brand-logo-container">
-                        <img src="assets/brands/RAE%20SYSTEMS.jpg" alt="RAC" class="brand-logo">
+                        <img src="assets/brands/RAE%20SYSTEMS.jpg" alt="RAE SYSTEMS" class="brand-logo">
                     </div>
-                    <h3>RAC</h3>
+                    <h3>RAE SYSTEMS</h3>
                 </a>
                 <a href="brand.php?name=WELDAS" class="brand-card" title="Weldas">
                     <div class="brand-logo-container">

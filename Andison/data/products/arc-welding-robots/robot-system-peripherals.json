@@ -2,56 +2,61 @@
     {
         "id": "robot-system-peripherals-1",
         "name": "Tokin Arc Nozzle Cleaner",
+        "brand": "Panasonic Connect",
         "model": "Tokin Arc Nozzle Cleaner",
         "description": "Automatic nozzle cleaning system for arc welding robots",
-        "type": "Peripheral Equipment",
+        "type": "Robot System Peripherals",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/Robot%20System%20Peripherals/Tokin%20Arc%20Nozzle%20Cleaner.jpg"
     },
     {
         "id": "robot-system-peripherals-2",
         "name": "Tokin Arc Portable Butt Welder",
+        "brand": "Panasonic Connect",
         "model": "Tokin Arc Portable Butt Welder",
         "description": "Portable butt welding attachment for robotic systems",
-        "type": "Peripheral Equipment",
+        "type": "Robot System Peripherals",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/Robot%20System%20Peripherals/Tokin%20Arc%20Portable%20Butt%20Welder.jpg"
     },
     {
         "id": "robot-system-peripherals-3",
         "name": "Wire Wizard Wire Sizer",
+        "brand": "Panasonic Connect",
         "model": "Wire Wizard Wire Sizer",
         "description": "Precision wire sizing equipment for robot welding",
-        "type": "Peripheral Equipment",
+        "type": "Robot System Peripherals",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/Robot%20System%20Peripherals/Wire%20Wizard%20Wire%20Sizer.jpg"
     },
     {
         "id": "robot-system-peripherals-4",
         "name": "Aer Evo 2.2",
+        "brand": "Panasonic Connect",
         "model": "Aer Evo 2.2",
         "description": "Advanced air filtration system for welding environments",
-        "type": "Peripheral Equipment",
+        "type": "Robot System Peripherals",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/Robot%20System%20Peripherals/Aer%20Evo%202.2.jpg"
     },
     {
         "id": "robot-system-peripherals-5",
         "name": "Aer 201",
+        "brand": "Panasonic Connect",
         "model": "Aer 201",
         "description": "Professional-grade ventilation system for robot welding areas",
-        "type": "Peripheral Equipment",
+        "type": "Robot System Peripherals",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/PANASONIC/Robot%20System%20Peripherals/Aer%20201.jpg"
     }
 ]

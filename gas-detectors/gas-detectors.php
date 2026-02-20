@@ -5,9 +5,9 @@ require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
 
-$page_title = "Arc Welding Machines";
-$category_id = "arc-welding-machine";
-$subcategory_id = "arc-welding-machine";
+$page_title = "Gas Detectors";
+$category_id = "gas-detectors";
+$subcategory_id = "gas-detectors";
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";
@@ -27,10 +27,14 @@ if (!$current_category) {
     // Fallback: create a default category object
     $current_category = array(
         'id' => $category_id,
-        'name' => 'Arc Welding Machines',
-        'description' => 'Discover our comprehensive range of arc welding machines for industrial applications.',
+        'name' => 'Gas Detectors',
+        'description' => 'Professional gas detection equipment for safety and monitoring.',
         'subcategories' => array(
-            array('id' => 'arc-welding-machine', 'name' => 'Arc Welding Machines')
+            array('id' => 'single-gas-detector', 'name' => 'Single Gas Detector'),
+            array('id' => 'multi-gas-detector', 'name' => 'Multi Gas Detector'),
+            array('id' => 'portable-gas-detectors', 'name' => 'Portable Gas Detectors'),
+            array('id' => 'calibration-gas-regulators', 'name' => 'Calibration Gas Regulators'),
+            array('id' => 'docking-data-management', 'name' => 'Docking Data Management')
         )
     );
 }
@@ -41,8 +45,8 @@ if (!$current_category) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = $current_category['name'] ?? 'Arc Welding Machines';
-    $category_description = $current_category['description'] ?? 'Discover our comprehensive range of arc welding machines for industrial applications.';
+    $category_name = $current_category['name'] ?? 'Gas Detectors';
+    $category_description = $current_category['description'] ?? 'Professional gas detection equipment for safety and monitoring.';
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -4430,7 +4434,7 @@ if (!$current_category) {
             <i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i>
             <span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px;" class="browse-label">BROWSE CATEGORIES</span>
         </div>
-        <div class="mini-sidebar-icon has-sub" data-target="arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-machine/arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-robots/arc-welding-robot.php" title="Arc Welding Robots"><i class="bi bi-robot"></i><span class="label">Arc Welding Robots</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../batteries/batteries.php" title="Batteries"><i class="bi bi-lightning-fill"></i><span class="label">Batteries</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../drilling-and-lifting/drilling-and-lifting.php" title="Drilling and Lifting"><i class="bi bi-hammer"></i><span class="label">Drilling and Lifting</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
@@ -4548,19 +4552,18 @@ if (!$current_category) {
                 <!-- Product Grid -->
                 <div class="product-grid">
                 <?php 
-                // Fetch arc welding machine products from all subcategories
+                // Fetch gas detector products from all subcategories
                 $subcategories = [
-                    'mig-welding-machine',
-                    'co1-mag-welding-machine',
-                    'stud-welding-machine',
-                    'tig-welding-machine',
-                    'plasma-cutting-machine',
-                    'accessories-and-consumables'
+                    'single-gas-detector',
+                    'multi-gas-detector',
+                    'portable-gas-detectors',
+                    'calibration-gas-regulators',
+                    'docking-data-management'
                 ];
                 
                 $all_products = [];
                 foreach ($subcategories as $subcat) {
-                    $products = andison_get_products_for_subcategory('arc-welding-machine', $subcat);
+                    $products = andison_get_products_for_subcategory('gas-detectors', $subcat);
                     if (!empty($products)) {
                         $all_products = array_merge($all_products, $products);
                     }
@@ -4583,17 +4586,17 @@ if (!$current_category) {
                         }
                         $model = htmlspecialchars($product['model'] ?? '');
                         $name = htmlspecialchars($product['name'] ?? '');
-                        $type = htmlspecialchars($product['type'] ?? 'Welding Machine');
-                        $brand = htmlspecialchars($product['brand'] ?? 'Industrial');
+                        $type = htmlspecialchars($product['type'] ?? 'Gas Detector');
+                        $brand = htmlspecialchars($product['brand'] ?? 'BW Technologies');
                         $description = htmlspecialchars($product['description'] ?? '');
                         $badge = htmlspecialchars($product['badge'] ?? '');
                         ?>
                 <div class="product-card">
                     <div class="product-image">
                         <?php if (!empty($image_src)): ?>
-                            <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=&quot;bi bi-lightning-charge&quot; style=&quot;font-size: 56px; color: #ccc;&quot;></i>'">
+                            <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=&quot;bi bi-broadcast&quot; style=&quot;font-size: 56px; color: #ccc;&quot;></i>'">
                         <?php else: ?>
-                            <i class="bi bi-lightning-charge" style="font-size: 56px; color: #ccc;"></i>
+                            <i class="bi bi-broadcast" style="font-size: 56px; color: #ccc;"></i>
                         <?php endif; ?>
                         <?php if (!empty($badge)): ?>
                             <div class="product-badge"><?php echo $badge; ?></div>
@@ -4844,10 +4847,12 @@ if (!$current_category) {
         
         // Highlight current category in mini-sidebar
         (function(){
+            var currentCategory = '<?php echo htmlspecialchars(strtolower(basename(dirname($_SERVER["PHP_SELF"])))); ?>';
             var miniIcons = document.querySelectorAll('.mini-sidebar-icon');
             miniIcons.forEach(function(icon){
-                var target = icon.getAttribute('data-target');
-                if(target && target.includes('arc-welding-machine')) {
+                var target = (icon.getAttribute('data-target') || '').toLowerCase().replace('../', '');
+                var category = target.split('/')[0].replace('.php', '');
+                if(category && category === currentCategory) {
                     icon.classList.add('active-icon');
                 }
             });

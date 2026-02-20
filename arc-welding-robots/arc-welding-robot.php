@@ -5,9 +5,9 @@ require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
 
-$page_title = "Arc Welding Machines";
-$category_id = "arc-welding-machine";
-$subcategory_id = "arc-welding-machine";
+$page_title = "Arc Welding Robots";
+$category_id = "arc-welding-robots";
+$subcategory_id = "arc-welding-robots";
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";
@@ -27,10 +27,13 @@ if (!$current_category) {
     // Fallback: create a default category object
     $current_category = array(
         'id' => $category_id,
-        'name' => 'Arc Welding Machines',
-        'description' => 'Discover our comprehensive range of arc welding machines for industrial applications.',
+        'name' => 'Arc Welding Robots',
+        'description' => 'Robotic welding systems for automated industrial applications.',
         'subcategories' => array(
-            array('id' => 'arc-welding-machine', 'name' => 'Arc Welding Machines')
+            array('id' => 'g3-controller-series', 'name' => 'G3 Controller Series'),
+            array('id' => 'g4-controller-series', 'name' => 'G4 Controller Series'),
+            array('id' => 'featured-products-and-solution', 'name' => 'Featured Products and Solutions'),
+            array('id' => 'robot-system-peripherals', 'name' => 'Robot System Peripherals')
         )
     );
 }
@@ -41,8 +44,8 @@ if (!$current_category) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = $current_category['name'] ?? 'Arc Welding Machines';
-    $category_description = $current_category['description'] ?? 'Discover our comprehensive range of arc welding machines for industrial applications.';
+    $category_name = $current_category['name'] ?? 'Arc Welding Robots';
+    $category_description = $current_category['description'] ?? 'Robotic welding systems for automated industrial applications.';
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -4430,7 +4433,7 @@ if (!$current_category) {
             <i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i>
             <span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px;" class="browse-label">BROWSE CATEGORIES</span>
         </div>
-        <div class="mini-sidebar-icon has-sub" data-target="arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+        <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-machine/arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-robots/arc-welding-robot.php" title="Arc Welding Robots"><i class="bi bi-robot"></i><span class="label">Arc Welding Robots</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../batteries/batteries.php" title="Batteries"><i class="bi bi-lightning-fill"></i><span class="label">Batteries</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
         <div class="mini-sidebar-icon has-sub" data-target="../drilling-and-lifting/drilling-and-lifting.php" title="Drilling and Lifting"><i class="bi bi-hammer"></i><span class="label">Drilling and Lifting</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
@@ -4457,7 +4460,7 @@ if (!$current_category) {
     </div>
 
         <div class="category-content">
-            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Arc Welding Machines'); ?></h2>
+            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Arc Welding Robots'); ?></h2>
             
             <!-- Left Sidebar Filters -->
             <div class="product-filters">
@@ -4549,18 +4552,17 @@ if (!$current_category) {
                 <div class="product-grid">
                 <?php 
                 // Fetch arc welding machine products from all subcategories
+                // Fetch products from all Arc Welding Robots subcategories
                 $subcategories = [
-                    'mig-welding-machine',
-                    'co1-mag-welding-machine',
-                    'stud-welding-machine',
-                    'tig-welding-machine',
-                    'plasma-cutting-machine',
-                    'accessories-and-consumables'
+                    'g3-controller-series',
+                    'g4-controller-series',
+                    'featured-products-and-solution',
+                    'robot-system-peripherals'
                 ];
                 
                 $all_products = [];
                 foreach ($subcategories as $subcat) {
-                    $products = andison_get_products_for_subcategory('arc-welding-machine', $subcat);
+                    $products = andison_get_products_for_subcategory('arc-welding-robots', $subcat);
                     if (!empty($products)) {
                         $all_products = array_merge($all_products, $products);
                     }
@@ -4617,12 +4619,12 @@ if (!$current_category) {
                     ?>
                 <div class="product-card">
                     <div class="product-image">
-                        <i class="bi bi-lightning-charge" style="font-size: 56px; color: #ccc;"></i>
+                        <i class="bi bi-robot" style="font-size: 56px; color: #ccc;"></i>
                     </div>
                     <div class="product-info">
-                        <h4>Arc Welding Machines</h4>
+                        <h4>Arc Welding Robots</h4>
                         <p class="product-description">No products available</p>
-                        <button class="add-to-inquiry" type="button" data-model="Arc Welding Machines" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
+                        <button class="add-to-inquiry" type="button" data-model="Arc Welding Robots" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
                     </div>
                 </div>
                 <?php
@@ -4844,10 +4846,12 @@ if (!$current_category) {
         
         // Highlight current category in mini-sidebar
         (function(){
+            var currentCategory = '<?php echo htmlspecialchars(strtolower(basename(dirname($_SERVER["PHP_SELF"])))); ?>';
             var miniIcons = document.querySelectorAll('.mini-sidebar-icon');
             miniIcons.forEach(function(icon){
-                var target = icon.getAttribute('data-target');
-                if(target && target.includes('arc-welding-machine')) {
+                var target = (icon.getAttribute('data-target') || '').toLowerCase().replace('../', '');
+                var category = target.split('/')[0].replace('.php', '');
+                if(category && category === currentCategory) {
                     icon.classList.add('active-icon');
                 }
             });
@@ -5297,11 +5301,11 @@ if (!$current_category) {
                     { label: 'Robot System Peripherals', href: base + '/../arc-welding-robots/robot-system-peripherals.php' }
                 ],
                 'arc-welding-machine': [
-                    { label: 'MIG Welding Machine', href: base + '/mig-welding-machine.php' },
-                    { label: 'CO1/MAG Welding Machine', href: base + '/co1-mag-welding-machine.php' },
-                    { label: 'STUD Welding Machine', href: base + '/stud-welding-machine.php' },
-                    { label: 'TIG Welding Machine', href: base + '/tig-welding-machine.php' },
-                    { label: 'Plasma Cutting Machine', href: base + '/plasma-cutting-machine.php' }
+                    { label: 'MIG Welding Machine', href: base + '/../arc-welding-machine/mig-welding-machine.php' },
+                    { label: 'CO1/MAG Welding Machine', href: base + '/../arc-welding-machine/co1-mag-welding-machine.php' },
+                    { label: 'STUD Welding Machine', href: base + '/../arc-welding-machine/stud-welding-machine.php' },
+                    { label: 'TIG Welding Machine', href: base + '/../arc-welding-machine/tig-welding-machine.php' },
+                    { label: 'Plasma Cutting Machine', href: base + '/../arc-welding-machine/plasma-cutting-machine.php' }
                 ],
                 'batteries': [
                     { label: 'Maintenance Free', href: base + '/../batteries/maintenance-free.php' },

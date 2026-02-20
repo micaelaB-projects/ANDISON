@@ -2,12 +2,13 @@
     {
         "id": "low-maintenance-1",
         "name": "Truckmaster",
+        "brand": "Motolite",
         "model": "Truckmaster",
         "description": "Reliable low-maintenance battery for truck and commercial applications",
-        "type": "Low Maintenance Battery",
+        "type": "Low Maintenance",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/MOTOLITE/Low%20Maintenance/Truckmaster.jpg"
     }
 ]

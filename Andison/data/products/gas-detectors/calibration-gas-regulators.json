@@ -4,23 +4,23 @@
         "name": "Calibration Gas for Gas Detectors",
         "model": "Calibration Gas",
         "description": "High-quality calibration gas for accurate gas detector calibration",
-        "type": "Calibration Gas",
+        "type": "Calibration Gas Regulators",
         "brand": "BW Technologies",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Calibration%20Gas%20Regulators/Calibration%20Gas.jpg"
     },
     {
         "id": "calibration-gas-regulators-2",
         "name": "Gas Regulator for Calibration",
         "model": "Gas Regulator",
         "description": "Precision gas regulator for calibration gas delivery",
-        "type": "Gas Regulator",
+        "type": "Calibration Gas Regulators",
         "brand": "BW Technologies",
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Calibration%20Gas%20Regulators/Gas%20Regulator.jpg"
     }
 ]

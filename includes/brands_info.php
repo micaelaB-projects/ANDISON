@@ -39,6 +39,14 @@ if (!function_exists('andison_get_brands_info')) {
                     ['model' => 'i-Reporter', 'type' => 'Software/System', 'badge' => '', 'image' => ''],
                 ],
             ],
+            'Robot Systems Peripherals ' => [
+                'description' => 'Advanced robotic welding systems and peripherals.',
+                'products' => [
+                    ['model' => 'Welding Positioner', 'type' => 'Robot Peripheral', 'badge' => '', 'image' => ''],
+                    ['model' => 'Robotic Welding Table', 'type' => 'Robot Peripheral', 'badge' => '', 'image' => ''],
+                    ['model' => 'Fixture Systems', 'type' => 'Robot Peripheral', 'badge' => '', 'image' => ''],
+                ],
+            ],
             'BW Technologies' => [
                 'description' => 'A manufacturer of gas detection instrumentation intended to protect personnel and facilities around the world.',
                 'products' => [

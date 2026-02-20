@@ -5,9 +5,9 @@ require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
 
-$page_title = "Arc Welding Machines";
+$page_title = "CO2/MAG Welding Machine";
 $category_id = "arc-welding-machine";
-$subcategory_id = "arc-welding-machine";
+$subcategory_id = "co1-mag-welding-machine";
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";
@@ -23,14 +23,20 @@ foreach ($categories as $cat) {
     }
 }
 
+// Override category name for CO2/MAG subcategory page
+if ($current_category && $subcategory_id === 'co1-mag-welding-machine') {
+    $current_category['name'] = 'CO2/MAG Welding Machine';
+    $current_category['description'] = 'High-performance CO2/MAG welding machines for industrial applications.';
+}
+
 if (!$current_category) {
     // Fallback: create a default category object
     $current_category = array(
         'id' => $category_id,
-        'name' => 'Arc Welding Machines',
-        'description' => 'Discover our comprehensive range of arc welding machines for industrial applications.',
+        'name' => 'CO2/MAG Welding Machine',
+        'description' => 'High-performance CO2/MAG welding machines for industrial applications.',
         'subcategories' => array(
-            array('id' => 'arc-welding-machine', 'name' => 'Arc Welding Machines')
+            array('id' => 'co1-mag-welding-machine', 'name' => 'CO2/MAG Welding Machine')
         )
     );
 }
@@ -41,8 +47,8 @@ if (!$current_category) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = $current_category['name'] ?? 'Arc Welding Machines';
-    $category_description = $current_category['description'] ?? 'Discover our comprehensive range of arc welding machines for industrial applications.';
+    $category_name = $current_category['name'] ?? 'CO2/MAG Welding Machine';
+    $category_description = $current_category['description'] ?? 'High-performance CO2/MAG welding machines for industrial applications.';
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -4313,7 +4319,7 @@ if (!$current_category) {
                 <button class="sub-toggle" aria-controls="sub-arc-welding" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
                     <li><a href="mig-welding-machine.php">MIG Welding Machine</a></li>
-                    <li><a href="co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
+                    <li><a href="co1-mag-welding-machine.php">CO2/MAG Welding Machine</a></li>
                     <li><a href="stud-welding-machine.php">STUD Welding Machine</a></li>
                     <li><a href="tig-welding-machine.php">TIG Welding Machine</a></li>
                     <li><a href="plasma-cutting-machine.php">Plasma Cutting Machine</a></li>
@@ -4457,7 +4463,7 @@ if (!$current_category) {
     </div>
 
         <div class="category-content">
-            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Arc Welding Machines'); ?></h2>
+            <h2><?php echo htmlspecialchars($current_category['name'] ?? 'CO2/MAG Welding Machine'); ?></h2>
             
             <!-- Left Sidebar Filters -->
             <div class="product-filters">
@@ -4548,23 +4554,8 @@ if (!$current_category) {
                 <!-- Product Grid -->
                 <div class="product-grid">
                 <?php 
-                // Fetch arc welding machine products from all subcategories
-                $subcategories = [
-                    'mig-welding-machine',
-                    'co1-mag-welding-machine',
-                    'stud-welding-machine',
-                    'tig-welding-machine',
-                    'plasma-cutting-machine',
-                    'accessories-and-consumables'
-                ];
-                
-                $all_products = [];
-                foreach ($subcategories as $subcat) {
-                    $products = andison_get_products_for_subcategory('arc-welding-machine', $subcat);
-                    if (!empty($products)) {
-                        $all_products = array_merge($all_products, $products);
-                    }
-                }
+                // Fetch CO2/MAG welding machine products
+                $all_products = andison_get_products_for_subcategory('arc-welding-machine', 'co1-mag-welding-machine');
                 
                 // Display products
                 if (!empty($all_products)) {
@@ -4620,9 +4611,9 @@ if (!$current_category) {
                         <i class="bi bi-lightning-charge" style="font-size: 56px; color: #ccc;"></i>
                     </div>
                     <div class="product-info">
-                        <h4>Arc Welding Machines</h4>
+                        <h4>CO2/MAG Welding Machine</h4>
                         <p class="product-description">No products available</p>
-                        <button class="add-to-inquiry" type="button" data-model="Arc Welding Machines" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
+                        <button class="add-to-inquiry" type="button" data-model="CO2/MAG Welding Machine" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
                     </div>
                 </div>
                 <?php
@@ -4844,10 +4835,12 @@ if (!$current_category) {
         
         // Highlight current category in mini-sidebar
         (function(){
+            var currentCategory = '<?php echo htmlspecialchars(strtolower(basename(dirname($_SERVER["PHP_SELF"])))); ?>';
             var miniIcons = document.querySelectorAll('.mini-sidebar-icon');
             miniIcons.forEach(function(icon){
-                var target = icon.getAttribute('data-target');
-                if(target && target.includes('arc-welding-machine')) {
+                var target = (icon.getAttribute('data-target') || '').toLowerCase().replace('../', '');
+                var category = target.split('/')[0].replace('.php', '');
+                if(category && category === currentCategory) {
                     icon.classList.add('active-icon');
                 }
             });
@@ -5298,7 +5291,7 @@ if (!$current_category) {
                 ],
                 'arc-welding-machine': [
                     { label: 'MIG Welding Machine', href: base + '/mig-welding-machine.php' },
-                    { label: 'CO1/MAG Welding Machine', href: base + '/co1-mag-welding-machine.php' },
+                    { label: 'CO2/MAG Welding Machine', href: base + '/co1-mag-welding-machine.php' },
                     { label: 'STUD Welding Machine', href: base + '/stud-welding-machine.php' },
                     { label: 'TIG Welding Machine', href: base + '/tig-welding-machine.php' },
                     { label: 'Plasma Cutting Machine', href: base + '/plasma-cutting-machine.php' }

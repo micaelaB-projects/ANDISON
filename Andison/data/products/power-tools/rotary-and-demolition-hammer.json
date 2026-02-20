@@ -4,9 +4,9 @@
         "name": "Bosch Rotary Hammer with SDS Plus GBH 4-32DFR",
         "model": "GBH 4-32DFR",
         "brand": "Bosch",
-        "type": "Rotary Hammer",
+        "type": "Rotary and Demolition Hammer",
         "description": "Professional rotary hammer with SDS Plus chuck for drilling and chiseling applications",
-        "image": "",
+        "image": "assets/brands%20items/BOSCH/Rotary%20and%20Demolition%20Hammer/GBH 4-32DFR.jpg",
         "badge": ""
     },
     {
@@ -14,9 +14,9 @@
         "name": "Bosch Demolition Hammer with SDS Max GSH 5",
         "model": "GSH 5",
         "brand": "Bosch",
-        "type": "Demolition Hammer",
+        "type": "Rotary and Demolition Hammer",
         "description": "Heavy-duty demolition hammer with SDS Max chuck for powerful breaking and chiseling",
-        "image": "",
+        "image": "assets/brands%20items/BOSCH/Rotary%20and%20Demolition%20Hammer/GSH 5.jpg",
         "badge": ""
     },
     {
@@ -24,9 +24,9 @@
         "name": "Bosch GSH 16-30 Demolition Jack Hammer",
         "model": "GSH 16-30",
         "brand": "Bosch",
-        "type": "Demolition Jack Hammer",
+        "type": "Rotary and Demolition Hammer",
         "description": "Professional jack hammer for heavy demolition and breaking applications",
-        "image": "",
+        "image": "assets/brands%20items/BOSCH/Rotary%20and%20Demolition%20Hammer/GSH 16-30.jpg",
         "badge": ""
     }
 ]

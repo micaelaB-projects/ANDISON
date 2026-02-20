@@ -1,0 +1,42 @@
+[
+    {
+        "id": "vano-175-cv",
+        "name": "Vano 175 CV",
+        "model": "Vano 175 CV",
+        "brand": "Vano",
+        "type": "Pneumatic Driven",
+        "description": "Pneumatic Vano 175 CV portable ventilation system",
+        "image": "assets/brands%20items/VANO/Pneumatic%20Driven/Vano%20175%20CV.jpg",
+        "badge": ""
+    },
+    {
+        "id": "vano-250-cv",
+        "name": "Vano 250 CV",
+        "model": "Vano 250 CV",
+        "brand": "Vano",
+        "type": "Pneumatic Driven",
+        "description": "High-capacity pneumatic Vano 250 CV ventilation equipment",
+        "image": "assets/brands%20items/VANO/Pneumatic%20Driven/Vano%20250%20CV.jpg",
+        "badge": ""
+    },
+    {
+        "id": "jecta-ventilator",
+        "name": "Jecta I Ventilator",
+        "model": "Jecta I",
+        "brand": "Jecta",
+        "type": "Pneumatic Driven",
+        "description": "Professional-grade pneumatic Jecta ventilation system",
+        "image": "assets/brands%20items/JECTA/Pneumatic%20Driven/Jecta%20I.jpg",
+        "badge": ""
+    },
+    {
+        "id": "hornet-hp-ventilator",
+        "name": "Hornet HP Ventilator",
+        "model": "Hornet HP",
+        "brand": "Hornet",
+        "type": "Pneumatic Driven",
+        "description": "High-performance pneumatic Hornet HP ventilation equipment",
+        "image": "assets/brands%20items/HORNET/Pneumatic%20Driven/Hornet%20HP.jpg",
+        "badge": ""
+    }
+]

@@ -3,30 +3,30 @@
         "id": "liquid-splash-1",
         "name": "Alphatec 2300 Plus",
         "model": "132",
-        "brand": "Alphatec",
+        "brand": "ALPHATEC",
         "type": "Liquid Spray Splash Protection",
         "description": "High-performance liquid spray splash protection",
-        "image": "",
+        "image": "assets/brands%20items/ALPHATEC/Liquid%20Spray%20Splash%20Protection/132.jpg",
         "badge": ""
     },
     {
         "id": "liquid-splash-2",
         "name": "Alphatec 3000",
         "model": "111",
-        "brand": "Alphatec",
+        "brand": "ALPHATEC",
         "type": "Liquid Spray Splash Protection",
         "description": "Advanced liquid and splash protection suit",
-        "image": "",
+        "image": "assets/brands%20items/ALPHATEC/Liquid%20Spray%20Splash%20Protection/111.jpg",
         "badge": ""
     },
     {
         "id": "liquid-splash-3",
         "name": "Alphatec 4000",
         "model": "111",
-        "brand": "Alphatec",
+        "brand": "ALPHATEC",
         "type": "Liquid Spray Splash Protection",
         "description": "Premium liquid spray and splash protection equipment",
-        "image": "",
+        "image": "assets/brands%20items/ALPHATEC/Liquid%20Spray%20Splash%20Protection/111.jpg",
         "badge": ""
     }
 ]
