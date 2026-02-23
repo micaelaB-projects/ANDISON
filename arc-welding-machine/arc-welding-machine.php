@@ -4225,6 +4225,7 @@ if (!$current_category) {
                             <h4>Featured Brands</h4>
                             <ul>
                                 <li><a href="../brand.php?name=Panasonic%20Connect"><img src="../assets/brands/PANASONIC.jpg" alt="Panasonic Connect" title="Panasonic Connect"></a></li>
+                                <li><a href="../brand.php?name=Robot%20Systems"><img src="../assets/brands/ROBOT SYSTEMS.jpg" alt="Robot Systems Peripherals" title="Robot Systems Peripherals"></a></li>
                                 <li><a href="../brand.php?name=Kobelco"><img src="../assets/brands/KOBELCO.jpg" alt="Kobelco" title="Kobelco"></a></li>
                                 <li><a href="../brand.php?name=Metrode"><img src="../assets/brands/METRODE.jpg" alt="Metrode" title="Metrode"></a></li>
                                 <li><a href="../brand.php?name=DryRod.%20II"><img src="../assets/brands/DRYROD.jpg" alt="DryRod. II" title="DryRod. II"></a></li>
@@ -4240,8 +4241,8 @@ if (!$current_category) {
                                 <li><a href="../brand.php?name=Soyer"><img src="../assets/brands/SOYER.jpg" alt="Soyer" title="Soyer"></a></li>
                                 <li><a href="../brand.php?name=Aquasol"><img src="../assets/brands/AQUASOL.jpg" alt="Aquasol" title="Aquasol"></a></li>
                                 <li><a href="../brand.php?name=SK%20And%20GAL%20GAGE"><img src="../assets/brands/SK%20AND%20GAL%20GAGE.jpg" alt="SK And GAL GAGE" title="SK And GAL GAGE"></a></li>
-                                <li><a href="brand.php?name=COPPUS"><img src="assets/brands/COPPUS.jpg" alt="Coppus" title="Coppus"></a></li>
-                                <li><a href="brand.php?name=BW%20Technologies"><img src="assets/brands/BW%20TECHNOLOGIES.jpg" alt="BW Technologies" title="BW Technologies"></a></li>
+                                <li><a href="../brand.php?name=COPPUS"><img src="../assets/brands/COPPUS.jpg" alt="Coppus" title="Coppus"></a></li>
+                                <li><a href="../brand.php?name=BW%20Technologies"><img src="../assets/brands/BW%20TECHNOLOGIES.jpg" alt="BW Technologies" title="BW Technologies"></a></li>
                                 <li><a href="../brand.php?name=RAC"><img src="../assets/brands/RAE%20SYSTEMS.jpg" alt="RAC" title="RAC"></a></li>
                                 <li><a href="../brand.php?name=WELDAS"><img src="../assets/brands/WELDAS.jpg" alt="Weldas" title="Weldas"></a></li>
                                 <li><a href="../brand.php?name=UVEX"><img src="../assets/brands/UVEX.jpg" alt="Uvex" title="Uvex"></a></li>
@@ -4255,7 +4256,7 @@ if (!$current_category) {
                                 <li><a href="../brand.php?name=Garryson"><img src="../assets/brands/GARRYSON.jpg" alt="Garryson" title="Garryson"></a></li>
                                 <li><a href="../brand.php?name=Spilfyter"><img src="../assets/brands/SPILFYTER.jpg" alt="Spilfyter" title="Spilfyter"></a></li>
                                 <li><a href="../brand.php?name=Dalo"><img src="../assets/brands/DALO.jpg" alt="Dalo" title="Dalo"></a></li>
-                                <li><a href="brand.php?name=MOTOLITE"><img src="assets/brands/MOTOLITE.jpg" alt="Motolite" title="Motolite"></a></li>
+                                <li><a href="../brand.php?name=MOTOLITE"><img src="../assets/brands/MOTOLITE.jpg" alt="Motolite" title="Motolite"></a></li>
                             </ul>
                         </div>
                     </li>

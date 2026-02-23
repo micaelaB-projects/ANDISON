@@ -3025,7 +3025,7 @@ $brands_info = andison_get_brands_info();
                 <button class="sub-toggle" aria-controls="sub-arc-welding" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
                     <li><a href="arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
-                    <li><a href="arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
+                    <li><a href="arc-welding-machine/co1-mag-welding-machine.php">CO2/MAG Welding Machine</a></li>
                     <li><a href="arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
                     <li><a href="arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
                     <li><a href="arc-welding-machine/plasma-cutting-machine.php">Plasma Cutting Machine</a></li>
@@ -3889,7 +3889,7 @@ $brands_info = andison_get_brands_info();
                 ],
                 'arc-welding-machine': [
                     { label: 'MIG Welding Machine', href: base + '/arc-welding-machine/mig-welding-machine.php' },
-                    { label: 'CO1/MAG Welding Machine', href: base + '/arc-welding-machine/co1-mag-welding-machine.php' },
+                    { label: 'CO2/MAG Welding Machine', href: base + '/arc-welding-machine/co1-mag-welding-machine.php' },
                     { label: 'STUD Welding Machine', href: base + '/arc-welding-machine/stud-welding-machine.php' },
                     { label: 'TIG Welding Machine', href: base + '/arc-welding-machine/tig-welding-machine.php' },
                     { label: 'Plasma Cutting Machine', href: base + '/arc-welding-machine/plasma-cutting-machine.php' }

@@ -9,7 +9,7 @@ require_once __DIR__ . '/_layout.php';
 require_once __DIR__ . '/../includes/youtube_links.php';
 
 $links = andison_get_youtube_links();
-
+ 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $home1 = (string)($_POST['home_1'] ?? '');
     $home2 = (string)($_POST['home_2'] ?? '');

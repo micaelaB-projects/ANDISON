@@ -7,7 +7,7 @@ require_once __DIR__ . '/_auth.php';
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
-
+ 
 $cfg = andison_admin_config();
 $next = isset($_GET['next']) ? (string)$_GET['next'] : 'index.php';
 $error = '';

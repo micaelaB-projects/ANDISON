@@ -469,7 +469,7 @@ andison_admin_header('Dashboard', 'dashboard');
                 <div style="font-size:11px;opacity:0.9;">YouTube Videos</div>
                 <div style="font-size:10px;opacity:0.7;margin-top:2px;"><a href="youtube.php" style="color:white;text-decoration:underline;">Edit</a></div>
             </div>
-
+ 
             <div style="padding:12px;background:linear-gradient(135deg,#8b5cf6,rgba(139,92,246,0.9));border-radius:10px;color:white;">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
                     <div style="font-size:22px;font-weight:700;"><?php echo $featuredConfigured ? '✓' : '○'; ?></div>

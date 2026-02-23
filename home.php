@@ -2921,7 +2921,7 @@ $ytLinks = andison_get_youtube_links();
                 <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
                     <li><a href="arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
                     <li><a href="arc-welding-machine/accessories-and-consumables.php">Accessories and Consumables</a></li>
-                    <li><a href="arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
+                    <li><a href="arc-welding-machine/co1-mag-welding-machine.php">CO2/MAG Welding Machine</a></li>
                     <li><a href="arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
                     <li><a href="arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
                     <li><a href="arc-welding-machine/plasma-cutting-machine.php">Plasma Cutting Machine</a></li>
@@ -3874,7 +3874,7 @@ $ytLinks = andison_get_youtube_links();
                         { label: 'Torch Consumables', href: base + '/arc-welding-machine/accessories-and-consumables/torch-consumables.php' },
                         { label: 'Accessories', href: base + '/arc-welding-machine/accessories-and-consumables/accessories.php' }
                     ]},
-                    { label: 'CO1/MAG Welding Machine', href: base + '/arc-welding-machine/co1-mag-welding-machine.php' },
+                    { label: 'CO2/MAG Welding Machine', href: base + '/arc-welding-machine/co1-mag-welding-machine.php' },
                     { label: 'STUD Welding Machine', href: base + '/arc-welding-machine/stud-welding-machine.php' },
                     { label: 'TIG Welding Machine', href: base + '/arc-welding-machine/tig-welding-machine.php' },
                     { label: 'Plasma Cutting Machine', href: base + '/arc-welding-machine/plasma-cutting-machine.php' }

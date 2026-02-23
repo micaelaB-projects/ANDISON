@@ -47,7 +47,7 @@ function andison_handle_product_upload(string $fieldName = 'image_file'): string
     if (!is_dir($destDir)) {
         @mkdir($destDir, 0755, true);
     }
-
+ 
     $destName = $base . '_' . date('Ymd_His') . '.' . $ext;
     $destPath = $destDir . '/' . $destName;
 

@@ -2205,6 +2205,11 @@ $ytLinks = andison_get_youtube_links();
             background: rgba(255,255,255,0.12);
             transform: translateX(2px);
         }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
@@ -2219,7 +2224,6 @@ $ytLinks = andison_get_youtube_links();
         $phone3 = "+1(639) 977 803 7398";
         $email = "info@andison-industrial.com";
     ?>
-
     <!-- Header -->
     <header>
         <div class="header-top">
@@ -2250,6 +2254,10 @@ $ytLinks = andison_get_youtube_links();
                         </div>
                     </div>
             </div>
+            
+            
+            </div>
+        </div>
         </div>
 
         <!-- Navigation -->
@@ -2369,7 +2377,7 @@ $ytLinks = andison_get_youtube_links();
                 <button class="sub-toggle" aria-controls="sub-arc-welding" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
                     <li><a href="arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
-                    <li><a href="arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
+                    <li><a href="arc-welding-machine/co1-mag-welding-machine.php">CO2/MAG Welding Machine</a></li>
                     <li><a href="arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
                     <li><a href="arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
                     <li><a href="arc-welding-machine/plasma-cutting-machine.php">Plasma Cutting Machine</a></li>
@@ -3160,7 +3168,7 @@ $ytLinks = andison_get_youtube_links();
                 ],
                 'arc-welding-machine': [
                     { label: 'MIG Welding Machine', href: base + '/arc-welding-machine/mig-welding-machine.php' },
-                    { label: 'CO1/MAG Welding Machine', href: base + '/arc-welding-machine/co1-mag-welding-machine.php' },
+                    { label: 'CO2/MAG Welding Machine', href: base + '/arc-welding-machine/co1-mag-welding-machine.php' },
                     { label: 'STUD Welding Machine', href: base + '/arc-welding-machine/stud-welding-machine.php' },
                     { label: 'TIG Welding Machine', href: base + '/arc-welding-machine/tig-welding-machine.php' },
                     { label: 'Plasma Cutting Machine', href: base + '/arc-welding-machine/plasma-cutting-machine.php' }

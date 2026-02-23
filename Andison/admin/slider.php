@@ -9,7 +9,7 @@ require_once __DIR__ . '/_layout.php';
 require_once __DIR__ . '/../includes/home_slider.php';
 
 $slides = andison_get_home_slider();
-
+ 
 function andison_admin_is_image_upload(array $f): bool
 {
     if (!isset($f['error']) || $f['error'] !== UPLOAD_ERR_OK) {

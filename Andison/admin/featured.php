@@ -10,7 +10,7 @@ require_once __DIR__ . '/../includes/home_featured.php';
 require_once __DIR__ . '/../includes/youtube_links.php';
 
 $featured = andison_get_home_featured();
-
+ 
 function andison_admin_is_upload(array $f): bool
 {
     if (!isset($f['error']) || $f['error'] !== UPLOAD_ERR_OK) {

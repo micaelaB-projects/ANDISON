@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/_auth.php';
 andison_require_admin();
-
+ 
 require_once __DIR__ . '/../includes/analytics.php';
 
 header('Content-Type: application/json');

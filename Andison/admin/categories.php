@@ -669,7 +669,7 @@ function openEditProductModal(product) {
 function closeProductModal() {
     document.getElementById('productModal').classList.remove('show');
 }
-
+ 
 function previewImage(event) {
     const file = event.target.files[0];
     if (file) {

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/_auth.php';
-
+ 
 function andison_admin_header(string $title, string $active = 'dashboard'): void
 {
     $flash = andison_get_flash();
