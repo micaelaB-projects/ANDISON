@@ -1,8 +1,10 @@
 ﻿<?php
+require_once __DIR__ . '/andison/includes/analytics.php';
+andison_track_visit('services');
 require_once __DIR__ . '/andison/includes/home_featured.php';
 require_once __DIR__ . '/andison/includes/home_slider.php';
 require_once __DIR__ . '/andison/includes/youtube_links.php';
-require_once __DIR__ . '/andison/includes/analytics.php'; andison_track_visit('services');
+
 $featured = andison_get_home_featured();
 $slides = andison_get_home_slider();
 $ytLinks = andison_get_youtube_links();
@@ -12,7 +14,7 @@ $ytLinks = andison_get_youtube_links();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - ANDISON INDUSTRIAL</title>
+    <title>Our Services - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
         * {
@@ -787,7 +789,7 @@ $ytLinks = andison_get_youtube_links();
             margin-bottom: 16px;
             color: #2B11DB;
             width: 100%;
-            background: linear-gradient(135deg, #2B11DB 0%, #00D7B3 100%);
+            background: linear-gradient(90deg, #1565C0 0%, #00BCD4 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -798,12 +800,12 @@ $ytLinks = andison_get_youtube_links();
             text-align: center;
             max-width: 750px;
             margin: 0 auto 60px;
-            color: #555;
+            color: #8B4513;
             line-height: 1.9;
             width: 100%;
             box-sizing: border-box;
             padding: 0 20px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 500;
         }
 
@@ -888,43 +890,140 @@ $ytLinks = andison_get_youtube_links();
         }
 
         .product-info {
-            padding: 18px 20px 20px;
+            padding: 28px 24px;
             background: white;
             width: 100%;
             box-sizing: border-box;
             border-top: 1px solid #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .product-info h3 {
-            font-size: 15px;
+            font-size: 18px;
             font-weight: 700;
-            margin-bottom: 8px;
-            color: #1a1a1a;
+            margin-bottom: 6px;
+            color: #2B11DB;
+            line-height: 1.4;
         }
 
         .product-info p {
-            font-size: 13px;
-            color: #6b7280;
-            line-height: 1.6;
+            font-size: 15px;
+            color: #666;
+            line-height: 1.7;
             margin: 0;
         }
 
-        /* Featured Section */
-        .featured-section {
-            background: linear-gradient(135deg, #c8f0ed 0%, #a8e6e1 100%);
-            padding: 60px 50px;
-            border-radius: 16px;
+        /* Service Cards - Old Layout */
+        .services-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            width: 100%;
+            max-width: 1050px;
+        }
+
+        .service-card {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 50px;
             align-items: center;
-            box-shadow: 0 8px 32px rgba(0, 212, 170, 0.12);
+            background: white;
+            border-radius: 16px;
+            padding: 48px 44px;
+            border: 1px solid #E0E3FF;
+            box-shadow: 0 4px 16px rgba(30, 136, 229, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .service-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 32px rgba(30, 136, 229, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .service-card.reverse {
+            direction: rtl;
+        }
+
+        .service-card.reverse > * {
+            direction: ltr;
+        }
+
+        .service-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 24px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            box-shadow: 0 4px 12px rgba(30, 136, 229, 0.25);
+        }
+
+        .service-card.teal .service-badge {
+            background: linear-gradient(135deg, #00bcd4 0%, #00897b 100%);
+            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.25);
+        }
+
+        .service-content h3 {
+            font-size: 26px;
+            font-weight: 800;
+            color: #1e88e5;
+            margin-bottom: 18px;
+            line-height: 1.3;
+            letter-spacing: -0.3px;
+        }
+
+        .service-card.teal .service-content h3 {
+            color: #00bcd4;
+        }
+
+        .service-content p {
+            font-size: 14px;
+            color: #8B4513;
+            line-height: 1.85;
+            margin: 0;
+        }
+
+        .service-icon-box {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #1e88e5 0%, #00bcd4 100%);
+            font-size: 68px;
+            color: white;
+            box-shadow: 0 8px 24px rgba(30, 136, 229, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .service-card.teal .service-icon-box {
+            background: linear-gradient(135deg, #00bcd4 0%, #00897b 100%);
+            box-shadow: 0 8px 24px rgba(0, 188, 212, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        /* Featured Section */
+        .featured-section {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            padding: 70px 60px;
+            border-radius: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 70px;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(43, 17, 219, 0.08);
             overflow: hidden;
             position: relative;
             max-width: 1100px;
             margin: 0 auto;
             width: 100%;
             box-sizing: border-box;
+            border: 1px solid #e8eef7;
         }
 
         .featured-section::before {
@@ -945,24 +1044,25 @@ $ytLinks = andison_get_youtube_links();
 
         .featured-badge {
             display: inline-block;
-            background: #00d4aa;
+            background: linear-gradient(135deg, #00D7B3 0%, #00C99A 100%);
             color: white;
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-size: 11px;
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 13px;
             font-weight: 700;
-            letter-spacing: 1px;
-            margin-bottom: 20px;
+            letter-spacing: 1.2px;
+            margin-bottom: 24px;
             text-transform: uppercase;
-            box-shadow: 0 4px 12px rgba(0, 212, 170, 0.25);
+            box-shadow: 0 4px 12px rgba(0, 215, 179, 0.3);
         }
 
         .featured-content h3 {
-            font-size: 36px;
-            margin-bottom: 8px;
-            color: #1a1a1a;
+            font-size: 40px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: #2B11DB;
             font-weight: 700;
-            line-height: 1.3;
+            line-height: 1.2;
             letter-spacing: -0.5px;
         }
 
@@ -1036,53 +1136,55 @@ $ytLinks = andison_get_youtube_links();
 
         .featured-content p {
             color: #555;
-            margin-bottom: 24px;
-            line-height: 1.8;
-            font-size: 15px;
+            margin-bottom: 32px;
+            line-height: 1.9;
+            font-size: 16px;
+            font-weight: 500;
         }
 
         .featured-btn {
-            background: linear-gradient(135deg, #00D7B3 0%, #00b8a0 100%);
+            background: linear-gradient(135deg, #2B11DB 0%, #1e0aa3 100%);
             color: white;
-            padding: 14px 36px;
+            padding: 14px 42px;
             border: none;
-            border-radius: 6px;
+            border-radius: 10px;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 15px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
             text-decoration: none;
             display: inline-block;
-            box-shadow: 0 6px 20px rgba(0, 215, 179, 0.35);
+            box-shadow: 0 4px 15px rgba(43, 17, 219, 0.3);
             letter-spacing: 0.5px;
         }
 
         .featured-btn:hover {
-            background: linear-gradient(135deg, #00E6FF 0%, #00d4aa 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 28px rgba(0, 215, 179, 0.45);
+            background: linear-gradient(135deg, #3d1ffa 0%, #2B11DB 100%);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(43, 17, 219, 0.4);
         }
 
         .featured-btn:active {
-            transform: translateY(0);
+            transform: translateY(-1px);
         }
 
         .featured-image {
             width: 100%;
             aspect-ratio: 16 / 9;
-            min-height: 280px;
-            background: linear-gradient(135deg, #0066cc 0%, #82a2c9 100%);
-            border-radius: 12px;
+            min-height: 400px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-size: 60px;
-            box-shadow: 0 12px 40px rgba(0, 102, 204, 0.25);
+            box-shadow: 0 20px 40px rgba(43, 17, 219, 0.15);
             position: relative;
             z-index: 2;
             overflow: hidden;
             flex-shrink: 0;
+            border: 1px solid #e8eef7;
         }
 
         .featured-image img {
@@ -1311,7 +1413,7 @@ $ytLinks = andison_get_youtube_links();
             
             .hero {
                 aspect-ratio: auto;
-                min-height: 420px;
+                min-height: 260px;
                 padding: 20px 0;
                 display: flex;
                 align-items: center;
@@ -1327,10 +1429,32 @@ $ytLinks = andison_get_youtube_links();
                 justify-content: center;
             }
 
+            .hero-slide {
+                width: 92% !important;
+                left: 50% !important;
+                transform: translateX(-50%) scale(1) !important;
+                filter: blur(0) !important;
+                opacity: 0 !important;
+            }
+
+            .hero-slide.active {
+                width: 92% !important;
+                left: 50% !important;
+                transform: translateX(-50%) scale(1) !important;
+                filter: blur(0) !important;
+                opacity: 1 !important;
+            }
+
+            .hero-slide.prev,
+            .hero-slide.next {
+                opacity: 0 !important;
+                pointer-events: none;
+            }
+
             .hero-thumb {
-                width: 85%;
+                width: 100%;
                 height: auto;
-                max-width: 95%;
+                max-width: 100%;
                 aspect-ratio: 16 / 9 !important;
             }
             
@@ -1344,21 +1468,16 @@ $ytLinks = andison_get_youtube_links();
                 min-height: 260px;
             }
 
-            /* Responsive image hero section */
-            .hero-section {
-                aspect-ratio: 16 / 12 !important;
-                min-height: 220px;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-
             .featured-section {
                 grid-template-columns: 1fr;
-                padding: 40px 24px;
+                padding: 40px 28px;
+                gap: 40px;
+                border-radius: 16px;
             }
 
             .featured-content h3 {
-                font-size: 24px;
+                font-size: 28px;
+                font-weight: 800;
             }
 
             .featured-meta {
@@ -1374,26 +1493,48 @@ $ytLinks = andison_get_youtube_links();
                 font-size: 13px;
             }
 
-            .footer-links {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            section {
-                padding: 40px 16px;
-                text-align: center;
-            }
-
-            .container {
-                padding: 0 12px;
-                margin: 0 auto;
-                width: 100%;
-                box-sizing: border-box;
+            .featured-btn {
+                padding: 12px 32px;
+                font-size: 14px;
             }
 
             .highlights-grid {
                 grid-template-columns: 1fr;
-                gap: 20px;
+                gap: 24px;
+            }
+
+            .services-grid {
+                gap: 24px;
+            }
+
+            .service-card {
+                grid-template-columns: 1fr;
+                gap: 24px;
+                padding: 24px;
+            }
+
+            .service-card.reverse {
+                direction: ltr;
+            }
+
+            .service-badge {
+                margin-bottom: 8px;
+                font-size: 11px;
+            }
+
+            .service-content h3 {
+                font-size: 20px;
+                margin-bottom: 12px;
+            }
+
+            .service-content p {
+                font-size: 14px;
+                line-height: 1.7;
+            }
+
+            .service-icon-box {
+                aspect-ratio: 1 / 1;
+                font-size: 48px;
             }
 
             section h2 {
@@ -1406,24 +1547,76 @@ $ytLinks = andison_get_youtube_links();
             }
 
             .sidebar-overlay {
-                width: 95%;
-                max-width: 100%;
-                max-height: 95vh;
-                padding: 28px 20px;
+                width: 75%;
+                max-width: 320px;
+                padding: 12px 0;
             }
 
             .sidebar-overlay h3 {
-                font-size: 16px;
-                margin-bottom: 20px;
+                font-size: 14px;
+                margin-bottom: 8px;
+                padding: 0 12px;
+            }
+
+            .sidebar-list { 
+                padding: 0;
+            }
+
+            .sidebar-list li { 
+                border-bottom: none;
             }
 
             .sidebar-list a {
-                font-size: 14px;
-                padding: 14px 10px;
+                font-size: 13px;
+                padding: 10px 14px;
+                gap: 12px;
+                min-height: 36px;
+                align-items: center;
+            }
+
+            .sidebar-list a:active {
+                background: rgba(43, 17, 219, 0.08);
+            }
+
+            .sidebar-icon {
+                width: 20px;
+                height: 20px;
+                font-size: 16px;
+            }
+
+            .sidebar-sublist {
+                background: #f8f9fa;
+                border-left: 3px solid #2B11DB;
+                margin: 2px 0;
+                padding: 4px 0 4px 12px;
             }
 
             .sidebar-sublist a {
-                font-size: 13px;
+                font-size: 12px;
+                padding: 8px 14px 8px 42px;
+                min-height: 32px;
+            }
+
+            .sidebar-nested-sublist {
+                margin: 4px 0;
+                padding: 6px 0 6px 14px;
+                background: rgba(43, 17, 219, 0.06);
+                border-left: 2px solid rgba(43, 17, 219, 0.3);
+            }
+
+            .sidebar-nested-sublist a {
+                font-size: 11px;
+                padding: 8px 14px 8px 36px;
+                color: #5a6b7d;
+                min-height: 30px;
+                margin: 0;
+            }
+
+            .sidebar-nested-sublist a:hover,
+            .sidebar-nested-sublist a:active {
+                background: rgba(43, 17, 219, 0.14);
+                color: #2B11DB;
+                padding-left: 44px;
             }
         }
 
@@ -1448,14 +1641,14 @@ $ytLinks = andison_get_youtube_links();
             left: 0;
             top: calc(14px + 50px + 14px + 12px + 52px);
             bottom: 0;
-            width: 380px;
-            max-width: 90%;
+            width: 320px;
+            max-width: 80%;
             background: #fff;
             box-shadow: 4px 0 24px rgba(0,0,0,0.15);
             transform: translateX(-100%);
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 70;
-            padding: 28px 20px;
+            padding: 20px 12px;
             overflow-y: auto;
         }
 
@@ -1484,6 +1677,516 @@ $ytLinks = andison_get_youtube_links();
             justify-content: space-between;
             transition: all 0.2s ease;
             font-size: 15px;
+            min-height: 48px;
+        }
+        .sidebar-list a:hover { 
+            background: #f3f4f6; 
+            color: #2B11DB;
+            padding-left: 16px;
+        }
+        .sidebar-list a:active {
+            background: rgba(43, 17, 219, 0.08);
+        }
+        .sidebar-list li a.active {
+            background: #f3f4f6;
+            color: #2B11DB;
+            font-weight: 600;
+            border-left: 4px solid #2B11DB;
+            padding-left: 12px;
+        }
+        .sidebar-list li a.active .sidebar-icon {
+            color: #2B11DB;
+        }
+        .sidebar-icon { 
+            color: #5b21b6; 
+            width: 24px; 
+            height: 24px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-list a .sidebar-label {
+            flex: 1;
+        }
+
+        .sidebar-list a .sidebar-arrow {
+            width: 20px;
+            height: 20px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+            font-size: 14px;
+            flex-shrink: 0;
+            margin-left: 8px;
+        }
+
+        .sidebar-list li.has-sub a .sidebar-arrow {
+            display: flex;
+        }
+
+
+        .sidebar-sublist li { 
+            padding: 0; 
+            border: none;
+        }
+        .sidebar-sublist a { 
+            color: #4b5563; 
+            font-size: 14px; 
+            padding: 10px 16px 10px 48px; 
+            display: block; 
+            text-decoration: none;
+            justify-content: flex-start;
+            min-height: 42px;
+            align-items: center;
+        }
+        .sidebar-sublist a:hover { 
+            color: #2B11DB; 
+            background: rgba(43, 17, 219, 0.08);
+            padding-left: 52px;
+        }
+
+        /* Nested sublists */
+        .sidebar-sublist li.has-nested-sub { position: relative; }
+        .sidebar-sublist li.has-nested-sub > a { padding-right: 24px; }
+        
+        .nested-toggle {
+            position: absolute;
+            right: 0;
+            top: 6px;
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        .nested-toggle:focus { outline: none; }
+        .nested-toggle .bi { transition: transform 200ms ease; }
+        .nested-toggle[aria-expanded="true"] .bi { transform: rotate(90deg); }
+
+
+        .sidebar-nested-sublist li { 
+            padding: 0;
+            border: none;
+        }
+        .sidebar-nested-sublist a { 
+            color: #5a6b7d; 
+            font-size: 11px; 
+            padding: 8px 10px 8px 32px; 
+            display: block; 
+            text-decoration: none;
+            position: relative;
+            transition: all 0.25s ease;
+            border-radius: 4px;
+            margin: 0;
+            min-height: 30px;
+        }
+
+        .sidebar-list li.has-sub { position: relative; }
+        .has-sub > a { padding-right: 40px; }
+
+
+        .sidebar-close { 
+            background: transparent; 
+            border: none; 
+            color: #9ca3af; 
+            font-weight: 700; 
+            cursor: pointer; 
+            position: static;
+            font-size: 16px;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s ease;
+            flex-shrink: 0;
+        }
+        .sidebar-close:hover {
+            color: #374151;
+        }
+
+        /* ============================================
+           ANIMATIONS
+           ============================================ */
+
+        /* 1. HOVER EFFECTS */
+        @keyframes hoverGlow {
+            0% { box-shadow: 0 0 0px rgba(0, 212, 170, 0); }
+            100% { box-shadow: 0 0 20px rgba(0, 212, 170, 0.4); }
+        }
+
+        @keyframes hoverScale {
+            from { transform: scale(1); }
+            to { transform: scale(1.05); }
+        }
+
+        @keyframes buttonBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        .product-card {
+            transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 1;
+            transform: translateY(0);
+            will-change: transform, opacity, box-shadow;
+        }
+
+        .product-card:hover {
+            transform: translateY(-12px) scale(1.03);
+            box-shadow: 0 25px 50px rgba(43,17,219,0.2);
+            z-index: 1000;
+        }
+
+        .featured-btn:hover,
+        .cta-button:hover {
+            animation: buttonBounce 0.6s ease;
+        }
+
+        .nav-list a:hover {
+            animation: hoverScale 0.3s ease;
+        }
+
+        .inquiry-btn:hover {
+            animation: hoverGlow 0.4s ease forwards;
+        }
+
+        /* 2. SCROLLING ANIMATIONS */
+        /* Use shared fadeUp keyframe for consistent reveals */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .scroll-animate { opacity: 0; transform: translateY(40px); transition: opacity 0s ease, transform 0s ease; }
+        .scroll-animate.visible { }
+
+        /* Match brands.php staggered reveal timings (faster) */
+        .product-card { opacity: 1; transform: translateY(0); will-change: transform,opacity; }
+        .product-card:nth-of-type(1){ --i:1; }
+        .product-card:nth-of-type(2){ --i:2; }
+
+        section h2 { opacity: 1; }
+        .section-description { opacity: 1; }
+        .featured-section { opacity: 1; }
+
+        /* 3. PAGE TRANSITIONS */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pageExit {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+        }
+
+        body {
+            opacity: 1;
+        }
+
+        section {
+            opacity: 1;
+        }
+
+        section:nth-of-type(1) { animation-delay: 0s; }
+        section:nth-of-type(2) { animation-delay: 0.1s; }
+        section:nth-of-type(3) { animation-delay: 0.2s; }
+        section:nth-of-type(4) { animation-delay: 0.3s; }
+
+        /* 4. SELF-DRAWING ANIMATIONS */
+        @keyframes drawBorder {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(0, 212, 170, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(0, 212, 170, 0);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+
+        .featured-badge {
+            animation: pulseGlow 2s infinite;
+        }
+
+        .product-image {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        /* 5. TEXT ANIMATIONS */
+        @keyframes typeWriter {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%;
+            }
+        }
+
+        @keyframes blinkCursor {
+            0%, 49% {
+                border-right-color: transparent;
+            }
+            50%, 100% {
+                border-right-color: #00d4aa;
+            }
+        }
+
+        @keyframes textGradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes textFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            animation: textFadeIn 0.8s ease;
+        }
+
+        .hero p {
+            animation: textFadeIn 0.8s ease 0.2s both;
+        }
+
+        .product-info h3,
+        .featured-content h3 {
+            animation: textFadeIn 0.6s ease;
+            position: relative;
+        }
+
+        
+        .footer-links a {
+            position: relative;
+            animation: textFadeIn 0.6s ease;
+        }
+
+        .footer-links a::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00d4aa;
+            transition: width 0.3s ease;
+        }
+
+        .footer-links a:hover::before {
+            width: 100%;
+        }
+
+        /* Stagger text animations */
+        .nav-list li { opacity: 1; }
+
+        .nav-list li:nth-child(1) { animation-delay: 0.1s; }
+        .nav-list li:nth-child(2) { animation-delay: 0.2s; }
+        .nav-list li:nth-child(3) { animation-delay: 0.3s; }
+        .nav-list li:nth-child(4) { animation-delay: 0.4s; }
+        .nav-list li:nth-child(5) { animation-delay: 0.5s; }
+        .nav-list li:nth-child(6) { animation-delay: 0.6s; }
+
+        /* Smooth transitions for all interactive elements */
+        a, button, input, [role="button"] {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @media (max-width: 768px) {
+            .main-wrapper {
+                grid-template-columns: 1fr;
+                padding: 0 12px;
+            }
+
+            .sidebar {
+                position: static;
+            }
+            .nav-inner { padding-left: 50px; padding-right: 6px; min-height: 40px; overflow-x: auto; overflow-y: visible; justify-content: flex-start; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+            .nav-inner::-webkit-scrollbar { display: none; }
+            .nav-list { position: static; transform: none; left: auto; flex-wrap: nowrap; flex-shrink: 0; gap: 0; }
+            .browse-toggle { position: static; transform: none; left: auto; top: auto; padding: 6px 10px; }
+        }
+
+        /* Global animation utilities (shared) */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+        .reveal-hidden { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+        .reveal { opacity: 1; transform: none; }
+        .reveal-stagger > * { opacity: 0; transform: translateY(18px); }
+        .reveal-stagger.revealed > * { opacity: 1; transform: none; transition: all .48s ease; }
+
+        h1, .page-title { opacity: 1; }
+        h1 + p, .page-subtitle { opacity: 1; }
+        img:not(.no-anim) { opacity: 1; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .reveal, .reveal-hidden, img { animation: none !important; transition: none !important; }
+        }
+        /* Ensure header/navigation/footer do not animate or move */
+        header, nav, footer, .header-top, .nav-inner, .browse-toggle, .nav-list, .right-actions, .footer-content {
+            animation: none !important;
+            transition: none !important;
+            transform: none !important;
+            opacity: 1 !important;
+        }
+
+        /* Prevent individual nav items from receiving reveal animations */
+        .nav-list li { animation: none !important; opacity: 1 !important; transform: none !important; }
+
+        /* Overlay sidebar (full-height left panel) */
+        .overlay-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s;
+            z-index: 60;
+        }
+
+        .overlay-backdrop.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            left: 0;
+            top: calc(14px + 50px + 14px + 12px + 52px);
+            bottom: 0;
+            right: auto;
+            width: 380px;
+            max-width: 90%;
+            background: #fff;
+            box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 70;
+            padding: 12px 8px;
+            overflow-y: auto;
+        }
+
+        .sidebar-overlay.active {
+            transform: translateX(0);
+        }
+
+        .sidebar-overlay h3 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #222;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-list { list-style: none; padding: 8px 8px 0 8px; margin: 0; }
+        .sidebar-list li { border-bottom: 1px solid #e5e7eb; }
+        .sidebar-list li:last-child { border-bottom: none; }
+        .sidebar-list a { 
+            display: flex; 
+            gap: 12px; 
+            padding: 10px 10px; 
+            color: #1f2937; 
+            text-decoration: none; 
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+            font-size: 13px;
+            min-height: 36px;
         }
         .sidebar-list a:hover { 
             background: #f3f4f6; 
@@ -1531,23 +2234,42 @@ $ytLinks = andison_get_youtube_links();
             display: flex;
         }
 
-
+        .sidebar-sublist { 
+            list-style: none; 
+            margin: 2px 0; 
+            padding: 4px 0 4px 12px;
+            background: #f8f9fa;
+            border-left: 3px solid #2B11DB;
+            max-height: 500px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 1;
+            display: block;
+        }
+        
+        .sidebar-sublist.collapsed {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
         .sidebar-sublist li { 
-            padding: 4px 0; 
+            padding: 0; 
             border: none;
         }
         .sidebar-sublist a { 
             color: #4b5563; 
-            font-size: 14px; 
-            padding: 6px 8px; 
+            font-size: 12px; 
+            padding: 8px 12px 8px 38px; 
             display: block; 
             text-decoration: none;
             justify-content: flex-start;
+            min-height: 32px;
+            align-items: center;
         }
         .sidebar-sublist a:hover { 
             color: #2B11DB; 
-            background: transparent;
-            padding-left: 12px;
+            background: rgba(43, 17, 219, 0.08);
+            padding-left: 52px;
         }
 
         /* Nested sublists */
@@ -1574,44 +2296,98 @@ $ytLinks = andison_get_youtube_links();
         .nested-toggle .bi { transition: transform 200ms ease; }
         .nested-toggle[aria-expanded="true"] .bi { transform: rotate(90deg); }
 
-
+        .sidebar-nested-sublist { 
+            list-style: none; 
+            margin: 2px 0;
+            padding: 4px 0 4px 12px;
+            max-height: 500px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 1;
+            background: rgba(43, 17, 219, 0.05);
+            border-left: 2px solid rgba(43, 17, 219, 0.3);
+        }
+        }
+        
+        .sidebar-nested-sublist.collapsed {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
         .sidebar-nested-sublist li { 
             padding: 0;
             border: none;
         }
         .sidebar-nested-sublist a { 
             color: #5a6b7d; 
-            font-size: 13px; 
-            padding: 10px 12px 10px 28px; 
+            font-size: 11px; 
+            padding: 8px 10px 8px 32px; 
             display: block; 
             text-decoration: none;
             position: relative;
             transition: all 0.25s ease;
-            border-radius: 6px;
-            margin: 2px 0;
+            border-radius: 4px;
+            margin: 0;
+            min-height: 30px;
+            align-items: center;
         }
         .sidebar-nested-sublist a::before {
             content: '';
             position: absolute;
-            left: 8px;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
             background: linear-gradient(135deg, #2B11DB 0%, #6d28d9 100%);
             border-radius: 50%;
             box-shadow: 0 2px 4px rgba(43, 17, 219, 0.2);
         }
         .sidebar-nested-sublist a:hover { 
             color: #2B11DB;
-            background: rgba(43, 17, 219, 0.08);
-            padding-left: 32px;
-            transform: translateX(4px);
+            background: rgba(43, 17, 219, 0.12);
+            padding-left: 36px;
+            transform: none;
         }
 
         .sidebar-list li.has-sub { position: relative; }
         .has-sub > a { padding-right: 40px; }
-
+        .sub-toggle {
+            position: absolute;
+            right: 8px;
+            top: 12px;
+            transform: none;
+            background: transparent;
+            border: 2px solid #d1d5db;
+            color: #2B11DB;
+            cursor: pointer;
+            padding: 4px;
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            box-shadow: none;
+            transition: all 0.2s ease;
+            font-size: 0;
+            z-index: 10;
+        }
+        .sub-toggle:hover {
+            background: rgba(43, 17, 219, 0.1);
+            border-color: #2B11DB;
+            transform: scale(1.1);
+        }
+        .sub-toggle:active {
+            transform: scale(0.95);
+        }
+        .sub-toggle:focus { outline: none; }
+        .sub-toggle .bi { 
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            font-size: 14px;
+            display: inline-flex;
+        }
+        .sub-toggle[aria-expanded="true"] .bi { transform: rotate(180deg); }
 
         .sidebar-close { 
             background: transparent; 
@@ -1728,7 +2504,7 @@ $ytLinks = andison_get_youtube_links();
 
         .mini-sidebar-icon .label {
             display: none;
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 500;
             white-space: nowrap;
             flex: 1;
@@ -1923,134 +2699,16 @@ $ytLinks = andison_get_youtube_links();
             .mini-sidebar {
                 display: none !important;
             }
-
-            /* Services responsive - mobile */
-            .services-section {
-                padding: 80px 15px !important;
-            }
-
-            .services-header {
-                max-width: 100% !important;
-                margin: 0 auto 60px !important;
-                padding: 0 15px !important;
-            }
-
-            .services-header h2 {
-                font-size: 36px !important;
-                margin-bottom: 16px !important;
-            }
-
-            .services-header p {
-                font-size: 16px !important;
-                line-height: 1.6 !important;
-            }
-
-            .services-grid-cards {
-                gap: 30px !important;
-                margin-top: 40px !important;
-                padding: 0 15px !important;
-            }
-
-            .service-card {
-                grid-template-columns: 1fr !important;
-                gap: 30px !important;
-                padding: 30px !important;
-                border-radius: 16px !important;
-            }
-
-            .service-content {
-                order: 2 !important;
-            }
-
-            .service-image {
-                width: 100% !important;
-                height: 250px !important;
-                order: 1 !important;
-                transform: rotate(0deg) !important;
-            }
-
-            .service-card[style*="direction: rtl"] {
-                direction: ltr !important;
-            }
-
-            .services-header div[style*="inline-block"] {
-                display: block !important;
-                width: 100% !important;
-            }
-
-            .services-header h2 {
-                background: linear-gradient(135deg, #0052cc 0%, #00a8a8 100%) !important;
-                -webkit-background-clip: text !important;
-                -webkit-text-fill-color: transparent !important;
-                background-clip: text !important;
-            }
         }
 
-        @media (max-width: 480px) {
-            /* Services responsive - extra small mobile */
-            .services-section {
-                padding: 60px 12px !important;
-            }
-
-            .services-header {
-                margin: 0 auto 50px !important;
-                padding: 0 12px !important;
-            }
-
-            .services-header h2 {
-                font-size: 28px !important;
-                margin-bottom: 14px !important;
-                line-height: 1.2 !important;
-            }
-
-            .services-header p {
-                font-size: 14px !important;
-                line-height: 1.5 !important;
-            }
-
-            .services-header div[style*="height: 6px"] {
-                width: 60px !important;
-                margin: 18px auto !important;
-            }
-
-            .services-grid-cards {
-                gap: 20px !important;
-                margin-top: 30px !important;
-                padding: 0 12px !important;
-            }
-
-            .service-card {
-                gap: 20px !important;
-                padding: 20px !important;
-                border-radius: 12px !important;
-            }
-
-            .service-card div[style*="display: inline-block"][style*="padding: 12px"] {
-                padding: 8px 16px !important;
-                font-size: 11px !important;
-            }
-
-            .service-card h3 {
-                font-size: 24px !important;
-                margin-bottom: 16px !important;
-                line-height: 1.2 !important;
-            }
-
-            .service-card p {
-                font-size: 14px !important;
-                line-height: 1.6 !important;
-                margin-bottom: 12px !important;
-            }
-
-            .service-image {
-                height: 200px !important;
-            }
-
-            .service-image i {
-                font-size: 70px !important;
-            }
+        /* When sidebar is expanded (collapsed mini) */
+        .sidebar-overlay.expanded {
+            width: 380px;
         }
 
+        .overlay-backdrop.expanded {
+            display: none !important;
+        }
 
         @media (max-width: 768px) {
             .mini-sidebar {
@@ -2105,27 +2763,99 @@ $ytLinks = andison_get_youtube_links();
         .mobile-sidebar-fab.open { transform: translateY(-50%) translateX(56px); }
         .mobile-sidebar-fab.open.wide { transform: translateY(-50%) translateX(240px); }
 
+        /* Mini popover — mobile overrides */
+        @media (max-width: 768px) {
+            .mini-popover {
+                border-radius: 0 12px 12px 0 !important;
+                box-shadow: 4px 8px 24px rgba(0,0,0,0.28) !important;
+                overflow: hidden !important;
+            }
+            .mini-popover::before { display: none !important; }
+            .mini-popover-header {
+                border-radius: 0 !important;
+                padding: 10px 14px !important;
+                font-size: 13px !important;
+                letter-spacing: 0.5px !important;
+            }
+            .mini-popover-body {
+                padding: 6px 8px 8px 8px !important;
+            }
+            .mini-popover-list {
+                padding: 0 !important;
+            }
+            .mini-popover-list::before {
+                display: none !important;
+            }
+            .mini-popover-item {
+                margin: 2px 0 !important;
+                min-height: auto !important;
+                padding-left: 4px !important;
+                align-items: center !important;
+            }
+            .mini-popover-item .square {
+                width: 6px !important;
+                height: 6px !important;
+                min-width: 6px !important;
+                border-radius: 2px !important;
+            }
+            .mini-popover-item a {
+                font-size: 12px !important;
+                padding: 8px 10px !important;
+                line-height: 1.2 !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                font-weight: 600 !important;
+            }
+            .mini-popover-item a:active {
+                background: rgba(255,255,255,0.18) !important;
+            }
+            .mini-popover-item.has-subitems {
+                padding-right: 30px !important;
+            }
+            .popover-expand-btn {
+                height: 28px !important;
+                width: 28px !important;
+                right: 4px !important;
+            }
+            .popover-expand-btn .bi {
+                font-size: 14px !important;
+            }
+            .popover-subitem {
+                padding: 5px 10px 5px 18px !important;
+                font-size: 11px !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+        }
+
         /* Mini popover styles for subcategories */
         .mini-popover {
             position: fixed;
             top: -9999px;
             left: -9999px;
-            width: 320px;
-            max-width: calc(100vw - 32px);
-            background: linear-gradient(180deg, #1976D2FF 0%, #19D2B6FF 100%);
+            width: 380px;
+            max-width: calc(100vw - 40px);
+            background: linear-gradient(135deg, #1E88E5 0%, #00BCD4 100%);
             color: #fff;
             border-radius: 16px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+            box-shadow: 0 16px 40px rgba(30, 136, 229, 0.3), 0 2px 8px rgba(0,0,0,0.2);
             opacity: 0;
             visibility: hidden;
-            transform: translateY(-6px);
-            transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease;
-            z-index: 200;
+            transform: translateY(-8px) scale(0.95);
+            transition: opacity 180ms cubic-bezier(0.34, 1.56, 0.64, 1), transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1), visibility 180ms ease;
+            z-index: 1300;
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.15);
         }
         .mini-popover.show {
             opacity: 1;
             visibility: visible;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
         .mini-popover::before {
             content: '';
@@ -2139,25 +2869,27 @@ $ytLinks = andison_get_youtube_links();
             filter: drop-shadow(-2px 2px 2px rgba(0,0,0,0.12));
         }
         .mini-popover-header {
-            background: #f5f9ff;
-            color: #0f5132;
+            background: linear-gradient(135deg, #1E88E5 0%, #1565C0 100%);
+            color: #ffffff;
             border-top-left-radius: 16px;
             border-top-right-radius: 16px;
-            padding: 12px 16px;
-            font-weight: 800;
-            font-size: 15px;
-            letter-spacing: 0.3px;
+            padding: 16px 20px;
+            font-weight: 700;
+            font-size: 16px;
+            letter-spacing: 0.4px;
+            line-height: 1.3;
         }
-        .mini-popover-title { color: #0f5132; }
+        .mini-popover-title { color: #ffffff; }
         .mini-popover-body {
-            padding: 12px 16px 16px 16px;
-            max-height: calc(100vh - 100px);
-            overflow-y: auto;
+            padding: 14px 16px 18px 16px;
+            overflow: visible;
+            flex: 1;
+            background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 100%);
         }
         .mini-popover-list {
             list-style: none;
             margin: 0;
-            padding: 6px 0 6px 0;
+            padding: 0;
             position: relative;
         }
         .mini-popover-list::before {
@@ -2169,14 +2901,15 @@ $ytLinks = andison_get_youtube_links();
             width: 2px;
             background: rgba(255,255,255,0.35);
             border-radius: 2px;
+            display: none;
         }
         .mini-popover-item {
             position: relative;
-            padding-left: 42px;
-            margin: 12px 0;
+            padding-left: 0;
+            margin: 3px 0;
             display: flex;
             align-items: stretch;
-            min-height: 32px;
+            min-height: auto;
         }
         .mini-popover-item .square {
             position: absolute;
@@ -2190,32 +2923,119 @@ $ytLinks = andison_get_youtube_links();
             box-shadow: 0 2px 6px rgba(0,0,0,0.18), inset 0 -1px 0 rgba(0,0,0,0.08);
             flex-shrink: 0;
             pointer-events: none;
+            display: none;
         }
         .mini-popover-item a {
             color: #ffffff;
             text-decoration: none;
             font-weight: 600;
             display: block;
-            padding: 8px 10px;
+            padding: 12px 14px;
             border-radius: 8px;
-            transition: background 140ms ease, transform 120ms ease;
+            transition: all 160ms cubic-bezier(0.34, 1.56, 0.64, 1);
             width: 100%;
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+            line-height: 1.4;
+            font-size: 14px;
+            background: rgba(255,255,255,0.06);
+            border-left: 3px solid transparent;
         }
         .mini-popover-item a:hover {
-            background: rgba(255,255,255,0.12);
-            transform: translateX(2px);
+            background: rgba(255,255,255,0.16);
+            transform: translateX(4px);
+            border-left-color: rgba(255,255,255,0.5);
         }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to   { opacity: 1; transform: translateY(0); }
+        
+        /* Expandable popover items */
+        .mini-popover-item.has-subitems {
+            flex-wrap: wrap;
+            padding-right: 36px;
+        }
+        .popover-expand-btn {
+            position: absolute;
+            right: 8px;
+            top: 0;
+            bottom: 0;
+            height: 32px;
+            width: 32px;
+            margin: auto;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 160ms cubic-bezier(0.34, 1.56, 0.64, 1);
+            flex-shrink: 0;
+            border-radius: 8px;
+        }
+        .popover-expand-btn:hover {
+            background: rgba(255,255,255,0.22);
+            transform: scale(1.08);
+        }
+        .popover-expand-btn:active {
+            background: rgba(255,255,255,0.3);
+            transform: scale(0.95);
+        }
+        .popover-expand-btn .bi {
+            font-size: 18px;
+            transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .popover-expand-btn[aria-expanded="true"] .bi {
+            transform: rotate(90deg);
+        }
+        
+        .popover-subitems {
+            width: 100%;
+            margin-top: 8px;
+            max-height: none;
+            overflow: visible;
+            transition: opacity 250ms ease;
+            opacity: 1;
+            padding-left: 0;
+        }
+        .popover-subitems.collapsed {
+            display: none;
+        }
+        
+        .popover-subitem {
+            color: rgba(255,255,255,0.85) !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            padding: 6px 10px 6px 28px !important;
+            display: block !important;
+            text-decoration: none !important;
+            border-radius: 6px !important;
+            transition: all 120ms ease !important;
+            position: relative;
+        }
+        .popover-subitem::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #ffffff;
+            opacity: 0.6;
+        }
+        .popover-subitem:hover {
+            background: rgba(255,255,255,0.12) !important;
+            transform: translateX(2px) !important;
+            color: #ffffff !important;
         }
     </style>
 </head>
 <body>
-         <?php
+        <?php
         // Set page title
-        $page_title = "Home";
+        $page_title = "Services";
         $company_name = "ANDISON INDUSTRIAL";
         
         // Contact information
@@ -2224,6 +3044,7 @@ $ytLinks = andison_get_youtube_links();
         $phone3 = "+1(639) 977 803 7398";
         $email = "info@andison-industrial.com";
     ?>
+
     <!-- Header -->
     <header>
         <div class="header-top">
@@ -2254,10 +3075,6 @@ $ytLinks = andison_get_youtube_links();
                         </div>
                     </div>
             </div>
-            
-            
-            </div>
-        </div>
         </div>
 
         <!-- Navigation -->
@@ -2377,6 +3194,7 @@ $ytLinks = andison_get_youtube_links();
                 <button class="sub-toggle" aria-controls="sub-arc-welding" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
                     <li><a href="arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
+                    <li><a href="arc-welding-machine/accessories-and-consumables.php">Accessories and Consumables</a></li>
                     <li><a href="arc-welding-machine/co1-mag-welding-machine.php">CO2/MAG Welding Machine</a></li>
                     <li><a href="arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
                     <li><a href="arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
@@ -2407,7 +3225,17 @@ $ytLinks = andison_get_youtube_links();
                 <button class="sub-toggle" aria-controls="sub-drilling-lifting" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
                     <li><a href="drilling-and-lifting/lifting.php">Lifting</a></li>
-                    <li><a href="drilling-and-lifting/magnetic-drill.php">Magnetic Drill</a></li>
+                    <li class="has-nested-sub">
+                        <a href="drilling-and-lifting/magnetic-drill.php">Magnetic Drill</a>
+                        <button class="nested-toggle" aria-controls="nested-magnetic-drill" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>
+                        <ul id="nested-magnetic-drill" class="sidebar-nested-sublist collapsed">
+                            <li><a href="drilling-and-lifting/magnetic-drill/b-line-series.php">B-Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/rl-e-line-series.php">RL-E Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/rbx-line-series.php">RBX-Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/sp-line-series.php">SP-Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/v-line-series.php">V-Line Series</a></li>
+                        </ul>
+                    </li>
                     <li><a href="drilling-and-lifting/cutters.php">Cutters</a></li>
                 </ul>
             </li>
@@ -2520,93 +3348,67 @@ $ytLinks = andison_get_youtube_links();
         </div>
     </div>
 
-    <!-- Main Content -->
+    <!-- Services Content -->
     <div class="page-content">
-    <!-- Services Section -->
-    <section class="services-section" style="background: linear-gradient(135deg, #f0f5ff 0%, #f5f9ff 50%, #e8f4ff 100%); padding: 120px 20px; width: 100%; box-sizing: border-box; position: relative; overflow: hidden;">
-        <!-- Animated background elements -->
-        <div style="position: absolute; top: -100px; right: -100px; width: 600px; height: 600px; background: radial-gradient(circle, rgba(0, 82, 204, 0.08) 0%, transparent 70%); border-radius: 50%; pointer-events: none;"></div>
-        <div style="position: absolute; bottom: -150px; left: -100px; width: 500px; height: 500px; background: radial-gradient(circle, rgba(0, 168, 168, 0.06) 0%, transparent 70%); border-radius: 50%; pointer-events: none;"></div>
-        
-        <div class="container" style="max-width: 1200px; margin: 0 auto; position: relative; z-index: 1;">
-            <div class="services-header" style="text-align: center; max-width: 900px; margin: 0 auto 80px; padding: 0 20px;">
-                <div style="display: inline-block; background: linear-gradient(135deg, #0052cc 0%, #00a8a8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
-                    <h2 style="font-size: 64px; font-weight: 900; margin: 0 0 24px; letter-spacing: -1px; line-height: 1.1;">Comprehensive Service Solutions</h2>
-                </div>
-                <div style="height: 6px; width: 80px; background: linear-gradient(90deg, #0052cc 0%, #00a8a8 100%); margin: 24px auto; border-radius: 3px;"></div>
-                <p style="font-size: 20px; line-height: 1.8; color: #333; margin: 0; font-weight: 500;">From expert consultation to ongoing support, we deliver world-class services that empower your industrial operations<br/><span style="color: #0052cc; font-weight: 700;">exactly when you need it.</span></p>
-            </div>
 
-            <div class="services-grid-cards" style="display: grid; grid-template-columns: 1fr; gap: 50px; margin-top: 60px; max-width: 1200px; margin-left: auto; margin-right: auto; padding: 0 20px;">
+    <!-- Services Overview -->
+    <section id="services-overview">
+        <div class="container">
+            <h2>Comprehensive Service Solutions</h2>
+            <p class="section-description">
+                From expert consultation to ongoing support, we deliver world-class services that empower your industrial operations exactly when you need it.
+            </p>
+
+            <div class="services-grid">
                 <!-- Technical Consultation -->
-                <div class="service-card" style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; padding: 50px; background: linear-gradient(135deg, #ffffff 0%, rgba(240, 245, 255, 0.8) 100%); border-radius: 20px; border: 2px solid rgba(0, 82, 204, 0.15); transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); box-shadow: 0 10px 40px rgba(0, 82, 204, 0.12), 0 20px 60px rgba(0, 168, 168, 0.06); position: relative; overflow: hidden;">
-                    <div style="position: absolute; top: -50%; right: -50%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(0, 82, 204, 0.05) 0%, transparent 70%); border-radius: 50%; pointer-events: none;"></div>
-                    <div class="service-content" style="position: relative; z-index: 1;">
-                        <div style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, rgba(0, 82, 204, 0.1) 0%, rgba(0, 168, 168, 0.08) 100%); border-radius: 12px; margin-bottom: 20px;">
-                            <span style="font-size: 13px; font-weight: 700; color: #0052cc; letter-spacing: 1px; text-transform: uppercase;">Expert Guidance</span>
-                        </div>
-                        <h3 style="font-size: 36px; font-weight: 900; margin: 0 0 20px; color: #0052cc; letter-spacing: -0.5px;">Technical<br/>Consultation</h3>
-                        <p style="color: #555; margin: 0 0 15px; line-height: 1.8; font-size: 16px;">Expert guidance from our team of experienced industrial specialists. We analyze your specific welding and fabrication requirements to recommend the most suitable equipment and processes for your applications.</p>
-                        <p style="color: #666; margin: 0 0 15px; line-height: 1.8; font-size: 15px;">Our consultation services include process optimization, equipment selection, productivity improvement strategies, and compliance with international welding standards. We work closely with your engineering team to ensure successful project implementation.</p>
+                <div class="service-card">
+                    <div class="service-content">
+                        <span class="service-badge">Expert Assistance</span>
+                        <h3>Technical Consultation</h3>
+                        <p>Expert guidance from our team of experienced industrial specialists. We provide comprehensive consultation on equipment selection, process optimization, and technical specifications to ensure you have the solid support and processes for your application.</p>
+                        <p style="margin-top: 12px;">Our consultation services include process optimization, equipment selection assistance, facility design and compliance audit support customized to support successful project implementation.</p>
                     </div>
-                    <div class="service-image" style="width: 100%; height: 350px; background: linear-gradient(135deg, #0052cc 0%, #003d99 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 50px rgba(0, 82, 204, 0.25); position: relative; overflow: hidden; transform: rotate(-2deg);">
-                        <div style="position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1) 0%, transparent 50%); pointer-events: none;"></div>
-                        <i class="bi bi-gear" style="font-size: 100px; color: #ffffff; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2)); position: relative; z-index: 1;"></i>
+                    <div class="service-icon-box">
+                        <i class="bi bi-gear"></i>
                     </div>
                 </div>
 
                 <!-- Training Programs -->
-                <div class="service-card" style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; padding: 50px; background: linear-gradient(135deg, #ffffff 0%, rgba(240, 245, 255, 0.8) 100%); border-radius: 20px; border: 2px solid rgba(0, 168, 168, 0.15); transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); box-shadow: 0 10px 40px rgba(0, 168, 168, 0.12), 0 20px 60px rgba(0, 82, 204, 0.06); position: relative; overflow: hidden; direction: rtl;">
-                    <div style="position: absolute; top: -50%; left: -50%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(0, 168, 168, 0.05) 0%, transparent 70%); border-radius: 50%; pointer-events: none;"></div>
-                    <div style="direction: ltr;">
-                        <div class="service-content" style="position: relative; z-index: 1;">
-                            <div style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, rgba(0, 168, 168, 0.1) 0%, rgba(0, 82, 204, 0.08) 100%); border-radius: 12px; margin-bottom: 20px;">
-                                <span style="font-size: 13px; font-weight: 700; color: #00a8a8; letter-spacing: 1px; text-transform: uppercase;">Skill Development</span>
-                            </div>
-                            <h3 style="font-size: 36px; font-weight: 900; margin: 0 0 20px; color: #00a8a8; letter-spacing: -0.5px;">Training<br/>Programs</h3>
-                            <p style="color: #555; margin: 0 0 15px; line-height: 1.8; font-size: 16px;">Comprehensive training programs designed to maximize your team's capabilities with advanced welding equipment and safety protocols. Our certified instructors provide hands-on training covering equipment operation, maintenance procedures, and best practices.</p>
-                            <p style="color: #666; margin: 0 0 15px; line-height: 1.8; font-size: 15px;">Training modules include Panasonic robotic welding systems, gas detection equipment operation, PPE selection and usage, and industry-specific welding techniques. We offer both on-site training at your facility and classroom sessions at our technical center.</p>
-                        </div>
+                <div class="service-card teal reverse">
+                    <div class="service-content">
+                        <span class="service-badge">Skill Development</span>
+                        <h3>Training Programs</h3>
+                        <p>Comprehensive training programs designed to enhance your team's capabilities with advanced welding equipment and safety protocols. Our certified instructors provide hands-on training covering operator qualification, preventive procedures, and technical troubleshooting.</p>
+                        <p style="margin-top: 12px;">Training includes onsite training sessions, certification programs, hands and angle verification procedures, and comprehensive documentation to ensure technician competency and adherence to safety standards.</p>
                     </div>
-                    <div class="service-image" style="width: 100%; height: 350px; background: linear-gradient(135deg, #00a8a8 0%, #007a7a 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 50px rgba(0, 168, 168, 0.25); position: relative; overflow: hidden; transform: rotate(2deg); order: -1;">
-                        <div style="position: absolute; inset: 0; background: radial-gradient(circle at 70% 30%, rgba(255,255,255,0.1) 0%, transparent 50%); pointer-events: none;"></div>
-                        <i class="bi bi-book" style="font-size: 100px; color: #ffffff; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2)); position: relative; z-index: 1;"></i>
+                    <div class="service-icon-box">
+                        <i class="bi bi-book"></i>
                     </div>
                 </div>
 
                 <!-- Equipment Maintenance -->
-                <div class="service-card" style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; padding: 50px; background: linear-gradient(135deg, #ffffff 0%, rgba(240, 245, 255, 0.8) 100%); border-radius: 20px; border: 2px solid rgba(0, 82, 204, 0.15); transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); box-shadow: 0 10px 40px rgba(0, 82, 204, 0.12), 0 20px 60px rgba(0, 168, 168, 0.06); position: relative; overflow: hidden;">
-                    <div style="position: absolute; bottom: -50%; right: -50%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(0, 82, 204, 0.05) 0%, transparent 70%); border-radius: 50%; pointer-events: none;"></div>
-                    <div class="service-content" style="position: relative; z-index: 1;">
-                        <div style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, rgba(0, 82, 204, 0.1) 0%, rgba(0, 168, 168, 0.08) 100%); border-radius: 12px; margin-bottom: 20px;">
-                            <span style="font-size: 13px; font-weight: 700; color: #0052cc; letter-spacing: 1px; text-transform: uppercase;">Peak Performance</span>
-                        </div>
-                        <h3 style="font-size: 36px; font-weight: 900; margin: 0 0 20px; color: #0052cc; letter-spacing: -0.5px;">Equipment<br/>Maintenance</h3>
-                        <p style="color: #555; margin: 0 0 15px; line-height: 1.8; font-size: 16px;">Preventive maintenance and repair services to keep your critical welding and industrial equipment operating at peak performance. Our factory-trained technicians provide scheduled maintenance, emergency repairs, and equipment calibration services.</p>
-                        <p style="color: #666; margin: 0 0 15px; line-height: 1.8; font-size: 15px;">We maintain extensive inventories of genuine spare parts for all major brands we distribute. Our maintenance contracts include regular inspections, performance testing, consumables replacement, and detailed service reports to minimize downtime and extend equipment lifespan.</p>
+                <div class="service-card">
+                    <div class="service-content">
+                        <span class="service-badge">Full Performance</span>
+                        <h3>Equipment Maintenance</h3>
+                        <p>Preventive maintenance and repair service to keep equipment operating at peak performance, maximize uptime and equipment lifespan. Our field service team ensures all critical equipment is properly maintained and emergency repairs are addressed immediately.</p>
+                        <p style="margin-top: 12px;">We maintain extensive preventive care upon the full inspection maintenance contract schedules such repairs, quick emergency support and emergency repairs. Also maintain complete spare parts inventory to minimize downtime and extend equipment lifespan.</p>
                     </div>
-                    <div class="service-image" style="width: 100%; height: 350px; background: linear-gradient(135deg, #0052cc 0%, #003d99 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 50px rgba(0, 82, 204, 0.25); position: relative; overflow: hidden; transform: rotate(-2deg);">
-                        <div style="position: absolute; inset: 0; background: radial-gradient(circle at 30% 70%, rgba(255,255,255,0.1) 0%, transparent 50%); pointer-events: none;"></div>
-                        <i class="bi bi-tools" style="font-size: 100px; color: #ffffff; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2)); position: relative; z-index: 1;"></i>
+                    <div class="service-icon-box">
+                        <i class="bi bi-tools"></i>
                     </div>
                 </div>
 
                 <!-- After-Sales Support -->
-                <div class="service-card" style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; padding: 50px; background: linear-gradient(135deg, #ffffff 0%, rgba(240, 245, 255, 0.8) 100%); border-radius: 20px; border: 2px solid rgba(0, 168, 168, 0.15); transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); box-shadow: 0 10px 40px rgba(0, 168, 168, 0.12), 0 20px 60px rgba(0, 82, 204, 0.06); position: relative; overflow: hidden; direction: rtl;">
-                    <div style="position: absolute; bottom: -50%; left: -50%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(0, 168, 168, 0.05) 0%, transparent 70%); border-radius: 50%; pointer-events: none;"></div>
-                    <div style="direction: ltr;">
-                        <div class="service-content" style="position: relative; z-index: 1;">
-                            <div style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, rgba(0, 168, 168, 0.1) 0%, rgba(0, 82, 204, 0.08) 100%); border-radius: 12px; margin-bottom: 20px;">
-                                <span style="font-size: 13px; font-weight: 700; color: #00a8a8; letter-spacing: 1px; text-transform: uppercase;">Ongoing Support</span>
-                            </div>
-                            <h3 style="font-size: 36px; font-weight: 900; margin: 0 0 20px; color: #00a8a8; letter-spacing: -0.5px;">After-Sales<br/>Support</h3>
-                            <p style="color: #555; margin: 0 0 15px; line-height: 1.8; font-size: 16px;">Dedicated technical support team available to assist with equipment troubleshooting, spare parts procurement, and application-specific questions. We provide prompt response to service requests through multiple channels including phone, email, and on-site visits.</p>
-                            <p style="color: #666; margin: 0 0 15px; line-height: 1.8; font-size: 15px;">Our after-sales services include warranty administration, technical documentation, software updates for robotic systems, and ongoing consultation. We maintain long-term partnerships with our customers to ensure continuous operational success and equipment reliability.</p>
-                        </div>
+                <div class="service-card teal reverse">
+                    <div class="service-content">
+                        <span class="service-badge">Ongoing Support</span>
+                        <h3>After-Sales Support</h3>
+                        <p>Dedicated support team to assist with troubleshooting, spare part procurement and application-specific guidance. We provide prompt response to ensure minimal disruption to your operations.</p>
+                        <p style="margin-top: 12px;">Our after-sales support includes company standardization technical documentation, software updates for remote systems and dispatch our integrated specialized team for comprehensive technical support and immediate availability.</p>
                     </div>
-                    <div class="service-image" style="width: 100%; height: 350px; background: linear-gradient(135deg, #00a8a8 0%, #007a7a 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 50px rgba(0, 168, 168, 0.25); position: relative; overflow: hidden; transform: rotate(2deg); order: -1;">
-                        <div style="position: absolute; inset: 0; background: radial-gradient(circle at 70% 70%, rgba(255,255,255,0.1) 0%, transparent 50%); pointer-events: none;"></div>
-                        <i class="bi bi-headset" style="font-size: 100px; color: #ffffff; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2)); position: relative; z-index: 1;"></i>
+                    <div class="service-icon-box">
+                        <i class="bi bi-headset"></i>
                     </div>
                 </div>
             </div>
@@ -2892,7 +3694,7 @@ $ytLinks = andison_get_youtube_links();
 
     <script>
         // ============================================
-        // PAGE TRANSITIONS
+        // PAGE TRANSITION EFFECTS
         // ============================================
         (function(){
             // Smooth page transitions on link clicks
@@ -3028,18 +3830,113 @@ $ytLinks = andison_get_youtube_links();
                 });
             }
             
-            // Sidebar sub-toggle functionality
+            // Sidebar sub-toggle functionality - Show popover card
+            var mainSidebarPopover = document.getElementById('miniPopover');
+            var popoverTitle = mainSidebarPopover ? mainSidebarPopover.querySelector('.mini-popover-title') : null;
+            var popoverList = mainSidebarPopover ? mainSidebarPopover.querySelector('.mini-popover-list') : null;
+            var currentMainSidebarKey = null;
+            
+            function showMainSidebarPopover(toggle) {
+                if (!mainSidebarPopover || !popoverList || !popoverTitle) return;
+                
+                var sublistId = toggle.getAttribute('aria-controls');
+                var sublist = document.getElementById(sublistId);
+                if (!sublist) return;
+                
+                // Extract title from parent li's main link
+                var parentLi = toggle.closest('.has-sub');
+                var mainLink = parentLi ? parentLi.querySelector(':scope > a:not([class])') : null;
+                var title = mainLink ? mainLink.textContent.trim() : 'Items';
+                
+                // Extract items from the sublist
+                var items = [];
+                var listItems = sublist.querySelectorAll('li > a');
+                listItems.forEach(function(link) {
+                    items.push({
+                        text: link.textContent.trim(),
+                        href: link.getAttribute('href') || '#'
+                    });
+                });
+                
+                // Populate popover
+                popoverTitle.textContent = title;
+                popoverList.innerHTML = '';
+                items.forEach(function(item) {
+                    var li = document.createElement('li');
+                    li.className = 'mini-popover-item';
+                    li.innerHTML = '<span class="square"></span><a href="' + item.href + '">' + item.text + '</a>';
+                    popoverList.appendChild(li);
+                });
+                
+                // Position popover next to toggle button
+                setTimeout(function() {
+                    mainSidebarPopover.style.left = '-9999px';
+                    mainSidebarPopover.style.top = '-9999px';
+                    mainSidebarPopover.classList.add('show');
+                    
+                    var toggleRect = toggle.getBoundingClientRect();
+                    var pw = mainSidebarPopover.offsetWidth;
+                    var ph = mainSidebarPopover.offsetHeight;
+                    var toggleCenterY = toggleRect.top + toggleRect.height / 2;
+                    
+                    // Position to the right of the toggle button
+                    var left = Math.round(toggleRect.right + 14);
+                    var top = Math.round(toggleCenterY - ph / 2);
+                    
+                    // Adjust if off-screen horizontally
+                    if (left + pw + 12 > window.innerWidth) {
+                        left = Math.round(toggleRect.left - pw - 14);
+                    }
+                    
+                    // Adjust if off-screen vertically
+                    var headerHeight = 100;
+                    var minTop = headerHeight + 12;
+                    var maxTop = window.innerHeight - ph - 12;
+                    if (top < minTop) top = minTop;
+                    if (top > maxTop) top = maxTop;
+                    
+                    var arrowOffset = toggleCenterY - top - 26;
+                    mainSidebarPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+                    
+                    mainSidebarPopover.style.left = left + 'px';
+                    mainSidebarPopover.style.top = top + 'px';
+                    mainSidebarPopover.setAttribute('aria-hidden', 'false');
+                    currentMainSidebarKey = sublistId;
+                }, 5);
+            }
+            
+            function hideMainSidebarPopover() {
+                if (!mainSidebarPopover) return;
+                mainSidebarPopover.classList.remove('show');
+                mainSidebarPopover.setAttribute('aria-hidden', 'true');
+                currentMainSidebarKey = null;
+            }
+            
             var subToggles = document.querySelectorAll('.sub-toggle');
             subToggles.forEach(function(toggle) {
                 toggle.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    var sublist = document.getElementById(toggle.getAttribute('aria-controls'));
-                    if(sublist) {
-                        sublist.classList.toggle('collapsed');
-                        toggle.setAttribute('aria-expanded', sublist.classList.contains('collapsed') ? 'false' : 'true');
+                    
+                    if (currentMainSidebarKey === toggle.getAttribute('aria-controls') && mainSidebarPopover.classList.contains('show')) {
+                        hideMainSidebarPopover();
+                    } else {
+                        showMainSidebarPopover(toggle);
                     }
                 });
+            });
+            
+            // Close popover on outside click
+            document.addEventListener('click', function(e) {
+                if (!mainSidebarPopover) return;
+                if (!mainSidebarPopover.classList.contains('show')) return;
+                if (e.target.closest('.mini-popover') || e.target.closest('.sub-toggle')) return;
+                hideMainSidebarPopover();
+            });
+            
+            // Close popover on Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') hideMainSidebarPopover();
             });
             
             // Nested toggle functionality
@@ -3116,6 +4013,9 @@ $ytLinks = andison_get_youtube_links();
         var popoverTitle = miniPopover ? miniPopover.querySelector('.mini-popover-title') : null;
         var popoverList = miniPopover ? miniPopover.querySelector('.mini-popover-list') : null;
         var currentPopoverKey = null;
+        var lastIconCenterY = 0; // track icon center Y for arrow realignment
+        var lastIconRight   = 0; // track icon right edge for mobile popover left
+        var lastIconTop     = 0; // track icon top for mobile popover start
 
         // Responsive function to show/hide browse toggle
         function updateBrowseToggleVisibility() {
@@ -3168,6 +4068,11 @@ $ytLinks = andison_get_youtube_links();
                 ],
                 'arc-welding-machine': [
                     { label: 'MIG Welding Machine', href: base + '/arc-welding-machine/mig-welding-machine.php' },
+                    { label: 'Accessories and Consumables', href: base + '/arc-welding-machine/accessories-and-consumables.php', subitems: [
+                        { label: 'Welding Torch / Gun', href: base + '/arc-welding-machine/accessories-and-consumables/welding-torch-gun.php' },
+                        { label: 'Torch Consumables', href: base + '/arc-welding-machine/accessories-and-consumables/torch-consumables.php' },
+                        { label: 'Accessories', href: base + '/arc-welding-machine/accessories-and-consumables/accessories.php' }
+                    ]},
                     { label: 'CO2/MAG Welding Machine', href: base + '/arc-welding-machine/co1-mag-welding-machine.php' },
                     { label: 'STUD Welding Machine', href: base + '/arc-welding-machine/stud-welding-machine.php' },
                     { label: 'TIG Welding Machine', href: base + '/arc-welding-machine/tig-welding-machine.php' },
@@ -3180,7 +4085,13 @@ $ytLinks = andison_get_youtube_links();
                 ],
                 'drilling-and-lifting': [
                     { label: 'Lifting', href: base + '/drilling-and-lifting/lifting.php' },
-                    { label: 'Magnetic Drill', href: base + '/drilling-and-lifting/magnetic-drill.php' },
+                    { label: 'Magnetic Drill', href: base + '/drilling-and-lifting/magnetic-drill.php', subitems: [
+                        { label: 'B-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/b-line-series.php' },
+                        { label: 'RL-E Line Series', href: base + '/drilling-and-lifting/magnetic-drill/rl-e-line-series.php' },
+                        { label: 'RBX-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/rbx-line-series.php' },
+                        { label: 'SP-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/sp-line-series.php' },
+                        { label: 'V-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/v-line-series.php' }
+                    ]},
                     { label: 'Cutters', href: base + '/drilling-and-lifting/cutters.php' }
                 ],
                 'gas-detectors': [
@@ -3203,10 +4114,19 @@ $ytLinks = andison_get_youtube_links();
                 ],
                 'protection': [
                     { label: 'Eye Protection', href: base + '/protection/eye-protection.php' },
-                    { label: 'Hand Protection', href: base + '/protection/hand-protection.php' },
+                    { label: 'Hand Protection', href: base + '/protection/hand-protection.php', subitems: [
+                        { label: 'Welding Gloves', href: base + '/protection/welding-gloves.php' },
+                        { label: 'Working Gloves', href: base + '/protection/working-gloves.php' },
+                        { label: 'Chemical and Liquid Protection Gloves', href: base + '/protection/chemical-liquid-protection-gloves.php' },
+                        { label: 'Disposable Gloves', href: base + '/protection/disposable-gloves.php' }
+                    ]},
                     { label: 'Hearing & Respiratory Protection', href: base + '/protection/hearing-respiratory-protection.php' },
                     { label: 'Welding Head and Face Protection', href: base + '/protection/welding-head-and-face-protection.php' },
-                    { label: 'Body Protection', href: base + '/protection/body-protection.php' }
+                    { label: 'Body Protection', href: base + '/protection/body-protection.php', subitems: [
+                        { label: 'Particulate and Low Hazard', href: base + '/protection/particulate-low-hazard.php' },
+                        { label: 'Liquid Spray and Splash', href: base + '/protection/liquid-spray-splash.php' },
+                        { label: 'Chemical and Flame Retardant', href: base + '/protection/chemical-flame-retardant.php' }
+                    ]}
                 ],
                 'welding-accessories': [
                     { label: 'Welding Electrode Oven', href: base + '/welding-accessories/welding-electrode-oven.php' },
@@ -3231,44 +4151,143 @@ $ytLinks = andison_get_youtube_links();
             items.forEach(function(it){
                 var li = document.createElement('li');
                 li.className = 'mini-popover-item';
-                li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a>';
+                
+                if (it.subitems && it.subitems.length > 0) {
+                    // Item with subitems - add container for expanded view
+                    li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a><button class="popover-expand-btn" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>';
+                    li.className += ' has-subitems';
+                    
+                    // Create subitems container
+                    var subContainer = document.createElement('div');
+                    subContainer.className = 'popover-subitems collapsed';
+                    subContainer.innerHTML = it.subitems.map(function(sub){
+                        return '<a href="'+ sub.href +'" class="popover-subitem">'+ sub.label +'</a>';
+                    }).join('');
+                    
+                    li.appendChild(subContainer);
+                    
+                    // Add expand/collapse handler
+                    var expandBtn = li.querySelector('.popover-expand-btn');
+                    expandBtn.addEventListener('click', function(e){
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var isExpanded = expandBtn.getAttribute('aria-expanded') === 'true';
+                        if (isExpanded) {
+                            expandBtn.setAttribute('aria-expanded', 'false');
+                            subContainer.classList.add('collapsed');
+                        } else {
+                            expandBtn.setAttribute('aria-expanded', 'true');
+                            subContainer.classList.remove('collapsed');
+                        }
+                        // Adjust popover height after expanding/collapsing
+                        setTimeout(function(){
+                            adjustPopoverHeight();
+                        }, 10);
+                    });
+                } else {
+                    // Regular item
+                    li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a>';
+                }
+                
                 popoverList.appendChild(li);
             });
             if (popoverTitle) popoverTitle.textContent = getCategoryTitle(key);
         }
+        /* Shared: compute top + arrow for a given height, centered on lastIconCenterY */
+        function _applyPosition(finalHeight) {
+            var vh = window.innerHeight;
+            var isMobile = window.innerWidth <= 768;
+
+            if (isMobile) {
+                // On mobile: align to icon top, but shift up if it would overflow the bottom
+                var popLeft   = Math.round(lastIconRight);
+                var headerMin = 90; // don't go above header
+                var bottomPad = 8;
+                var popTop    = Math.round(lastIconTop);
+                var maxH      = vh - headerMin - bottomPad;
+                var contentH  = Math.min(finalHeight, maxH);
+                // If it would overflow the bottom, shift top upward just enough
+                if (popTop + contentH > vh - bottomPad) {
+                    popTop = vh - contentH - bottomPad;
+                }
+                // Never overlap the header
+                if (popTop < headerMin) popTop = headerMin;
+
+                miniPopover.style.left   = popLeft + 'px';
+                miniPopover.style.right  = '0px';
+                miniPopover.style.width  = 'auto';
+                miniPopover.style.top    = popTop + 'px';
+                miniPopover.style.height = contentH + 'px';
+                miniPopover.style.setProperty('--arrow-offset', '-9999px');
+            } else {
+                // Desktop: center on icon
+                var headerBottom = 140;
+                var top = Math.round(lastIconCenterY - finalHeight / 2);
+                if (top < headerBottom)                top = headerBottom;
+                if (top + finalHeight > vh - 8)        top = vh - finalHeight - 8;
+                if (top < headerBottom)                top = headerBottom;
+
+                miniPopover.style.right  = '';
+                miniPopover.style.width  = '';
+                var arrowOffset = Math.round(lastIconCenterY - top - 26);
+                arrowOffset = Math.max(8, Math.min(finalHeight - 44, arrowOffset));
+
+                miniPopover.style.top    = top + 'px';
+                miniPopover.style.height = finalHeight + 'px';
+                miniPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+            }
+        }
+        function adjustPopoverHeight() {
+            if (!miniPopover) return;
+            var isMobile = window.innerWidth <= 768;
+
+            miniPopover.style.height = 'auto';
+            var naturalH = miniPopover.offsetHeight; 
+            var finalH   = Math.min(naturalH, window.innerHeight * 0.88);
+            _applyPosition(finalH);
+        }
         function positionPopoverForIcon(icon) {
             if (!miniPopover || !icon) return;
-            miniPopover.style.left = '-9999px';
-            miniPopover.style.top = '-9999px';
-            miniPopover.classList.add('show');
+
+            // Always reset mobile-specific styles first so they don't bleed into desktop
+            miniPopover.style.right = '';
+            miniPopover.style.width = '';
+
             var rect = icon.getBoundingClientRect();
-            var pw = miniPopover.offsetWidth;
-            var ph = miniPopover.offsetHeight;
-            var iconCenterY = rect.top + rect.height / 2;
+            lastIconCenterY = rect.top + rect.height / 2;
+            lastIconRight   = rect.right;
+            lastIconTop     = rect.top;
 
-            var left = Math.round(rect.right + 14);
-            var top = Math.round(iconCenterY - ph / 2);
+            var isMobile = window.innerWidth <= 768;
 
-            if (left + pw + 12 > window.innerWidth) {
-                left = Math.round(rect.left - pw - 14);
+            if (!isMobile) {
+                // Desktop: position to the right of the icon
+                var pw   = miniPopover.offsetWidth;
+                var left = Math.round(rect.right + 14);
+                if (left + pw + 12 > window.innerWidth) {
+                    left = Math.round(rect.left - pw - 14);
+                }
+                miniPopover.style.left = left + 'px';
             }
 
-            var headerHeight = 170;
-            var minTop = headerHeight + 12;
-            var maxTop = window.innerHeight - ph - 12;
-            if (top < minTop) top = minTop;
-            if (top > maxTop) top = maxTop;
+            // Measure true height off-screen, then position
+            miniPopover.style.height = 'auto';
+            miniPopover.style.top    = '-9999px';
+            miniPopover.classList.add('show');
 
-            var arrowOffset = iconCenterY - top - 26;
-            miniPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+            var naturalH = miniPopover.offsetHeight;
+            var finalH   = Math.min(naturalH, window.innerHeight * 0.88);
 
-            miniPopover.style.left = left + 'px';
-            miniPopover.style.top = top + 'px';
+            _applyPosition(finalH);
         }
         function hidePopover() {
             if (!miniPopover) return;
             miniPopover.classList.remove('show');
             miniPopover.setAttribute('aria-hidden', 'true');
+            // Reset all inline styles so next open starts clean
+            miniPopover.style.right  = '';
+            miniPopover.style.width  = '';
+            miniPopover.style.height = '';
             currentPopoverKey = null;
         }
         function showPopoverForKey(key, icon) {
@@ -3277,11 +4296,18 @@ $ytLinks = andison_get_youtube_links();
                 hidePopover();
                 return;
             }
+            // Reset while we measure new content
+            miniPopover.classList.remove('show');
+            miniPopover.style.left = '-9999px';
+            miniPopover.style.top  = '-9999px';
+            miniPopover.style.height = 'auto';
+
             renderPopover(key);
-            positionPopoverForIcon(icon);
-            miniPopover.classList.add('show');
-            miniPopover.setAttribute('aria-hidden', 'false');
             currentPopoverKey = key;
+
+            // positionPopoverForIcon makes it visible off-screen, measures, then places it
+            positionPopoverForIcon(icon);
+            miniPopover.setAttribute('aria-hidden', 'false');
         }
 
         // Close on outside click / Escape
@@ -3292,6 +4318,23 @@ $ytLinks = andison_get_youtube_links();
             hidePopover();
         });
         document.addEventListener('keydown', function(e){ if (e.key === 'Escape') hidePopover(); });
+
+        // On resize, force-close and fully reset the popover so mobile styles never bleed into desktop
+        var _resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(_resizeTimer);
+            _resizeTimer = setTimeout(function() {
+                if (!miniPopover) return;
+                miniPopover.classList.remove('show');
+                miniPopover.setAttribute('aria-hidden', 'true');
+                miniPopover.style.right  = '';
+                miniPopover.style.width  = '';
+                miniPopover.style.height = '';
+                miniPopover.style.top    = '';
+                miniPopover.style.left   = '';
+                currentPopoverKey = null;
+            }, 150);
+        });
 
         // Browse toggle click
         if(browseToggle) {
@@ -3444,30 +4487,6 @@ $ytLinks = andison_get_youtube_links();
             function syncFab() {
                 if (!isMobile()) { fab.classList.remove('open', 'wide'); return; }
                 var isOpen = sidebar.classList.contains('mobile-visible');
-                var isExpanded = sidebar.classList.contains('expanded');
-                fab.classList.toggle('open', isOpen);
-                fab.classList.toggle('wide', isOpen && isExpanded);
-                fabIcon.className = isOpen ? 'bi bi-chevron-left' : 'bi bi-chevron-right';
-            }
-
-            fab.addEventListener('click', function(e) {
-                e.stopPropagation();
-                if (!isMobile()) return;
-                sidebar.classList.toggle('mobile-visible');
-                syncFab();
-            });
-
-            // Keep FAB in sync when sidebar expand/collapse changes its width
-            var observer = new MutationObserver(function() { syncFab(); });
-            observer.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
-
-            window.addEventListener('resize', syncFab);
-        })();
-    </script>
-</body>
-</html>
-
-;
                 var isExpanded = sidebar.classList.contains('expanded');
                 fab.classList.toggle('open', isOpen);
                 fab.classList.toggle('wide', isOpen && isExpanded);
