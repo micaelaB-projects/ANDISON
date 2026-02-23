@@ -2640,27 +2640,19 @@ $ytLinks = andison_get_youtube_links();
         /* Mini popover — mobile overrides */
         @media (max-width: 768px) {
             .mini-popover {
-                border-radius: 0 16px 16px 0 !important;
-                box-shadow: 6px 12px 32px rgba(30, 136, 229, 0.35) !important;
-                width: auto !important;
-                max-width: calc(100vw - 70px) !important;
-                margin-right: 20px !important;
+                border-radius: 0 12px 12px 0 !important;
+                box-shadow: 4px 8px 24px rgba(0,0,0,0.28) !important;
                 overflow: hidden !important;
             }
             .mini-popover::before { display: none !important; }
             .mini-popover-header {
-                border-radius: 0 16px 0 0 !important;
-                padding: 12px 16px !important;
-                font-size: 15px !important;
-                background: linear-gradient(135deg, #1E88E5 0%, #00BCD4 100%) !important;
-                color: #fff !important;
-                text-transform: uppercase !important;
-                font-weight: 800 !important;
+                border-radius: 0 !important;
+                padding: 10px 14px !important;
+                font-size: 13px !important;
+                letter-spacing: 0.5px !important;
             }
             .mini-popover-body {
-                overflow: hidden !important;
-                padding: 12px 14px 14px 14px !important;
-                background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 100%) !important;
+                padding: 6px 8px 8px 8px !important;
             }
             .mini-popover-list {
                 padding: 0 !important;
@@ -2669,47 +2661,46 @@ $ytLinks = andison_get_youtube_links();
                 display: none !important;
             }
             .mini-popover-item {
-                margin: 3px 0 !important;
+                margin: 2px 0 !important;
                 min-height: auto !important;
-                padding-left: 0 !important;
+                padding-left: 4px !important;
                 align-items: center !important;
             }
             .mini-popover-item .square {
-                display: none !important;
+                width: 6px !important;
+                height: 6px !important;
+                min-width: 6px !important;
+                border-radius: 2px !important;
             }
             .mini-popover-item a {
-                font-size: 11px !important;
-                padding: 10px 12px !important;
-                line-height: 1.4 !important;
-                white-space: normal !important;
-                overflow: visible !important;
-                text-overflow: clip !important;
+                font-size: 12px !important;
+                padding: 8px 10px !important;
+                line-height: 1.2 !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
                 font-weight: 600 !important;
-                background: rgba(255,255,255,0.1) !important;
-                border-left: 3px solid transparent !important;
             }
             .mini-popover-item a:active {
-                background: rgba(255,255,255,0.25) !important;
-                transform: translateX(4px) !important;
-                border-left-color: rgba(255,255,255,0.6) !important;
+                background: rgba(255,255,255,0.18) !important;
             }
             .mini-popover-item.has-subitems {
-                padding-right: 28px !important;
+                padding-right: 30px !important;
             }
             .popover-expand-btn {
-                height: 32px !important;
-                width: 32px !important;
-                right: 6px !important;
-                background: rgba(255,255,255,0.12) !important;
-                border-radius: 8px !important;
-                transition: all 160ms cubic-bezier(0.34, 1.56, 0.64, 1) !important;
-            }
-            .popover-expand-btn:active {
-                background: rgba(255,255,255,0.25) !important;
-                transform: scale(0.9) !important;
+                height: 28px !important;
+                width: 28px !important;
+                right: 4px !important;
             }
             .popover-expand-btn .bi {
-                font-size: 16px !important;
+                font-size: 14px !important;
+            }
+            .popover-subitem {
+                padding: 5px 10px 5px 18px !important;
+                font-size: 11px !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
             }
         }
 
@@ -4160,11 +4151,19 @@ $ytLinks = andison_get_youtube_links();
             var isMobile = window.innerWidth <= 768;
 
             if (isMobile) {
-                // On mobile: size to content, not full height
-                var popLeft  = Math.round(lastIconRight);
-                var popTop   = Math.round(lastIconTop);
-                var maxAvailH = window.innerHeight - popTop - 8;
-                var contentH  = Math.min(finalHeight, maxAvailH);
+                // On mobile: align to icon top, but shift up if it would overflow the bottom
+                var popLeft   = Math.round(lastIconRight);
+                var headerMin = 90; // don't go above header
+                var bottomPad = 8;
+                var popTop    = Math.round(lastIconTop);
+                var maxH      = vh - headerMin - bottomPad;
+                var contentH  = Math.min(finalHeight, maxH);
+                // If it would overflow the bottom, shift top upward just enough
+                if (popTop + contentH > vh - bottomPad) {
+                    popTop = vh - contentH - bottomPad;
+                }
+                // Never overlap the header
+                if (popTop < headerMin) popTop = headerMin;
 
                 miniPopover.style.left   = popLeft + 'px';
                 miniPopover.style.right  = '0px';
