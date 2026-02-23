@@ -4229,11 +4229,11 @@ $current_category['description'] = 'Versatile working gloves for general industr
                             <h4>Featured Brands</h4>
                             <ul>
                                   <li><a href="../brand.php?name=Panasonic%20Connect"><img src="../assets/brands/PANASONIC.jpg" alt="Panasonic Connect" title="Panasonic Connect"></a></li>
-                                <li><a href="../brand.php?name=Robot%20Systems"><img src="../assets/brands/ROBOT%20SYSTEMS.jpg" alt="Robot Systems Peripherals" title="Robot Systems Peripherals"></a></li>
+                                <li><a href="../brand.php?name=Robot%20Systems"><img src="../assets/brands/ROBOT SYSTEMS.png" alt="Robot Systems Peripherals" title="Robot Systems Peripherals"></a></li>
                                 <li><a href="../brand.php?name=Kobelco"><img src="../assets/brands/KOBELCO.jpg" alt="Kobelco" title="Kobelco"></a></li>
                                 <li><a href="../brand.php?name=Metrode"><img src="../assets/brands/METRODE.jpg" alt="Metrode" title="Metrode"></a></li>
                                 <li><a href="../brand.php?name=DryRod.%20II"><img src="../assets/brands/DRYROD.jpg" alt="DryRod. II" title="DryRod. II"></a></li>
-                                <li><a href="../brand.php?name=Weldcraft"><img src="../assets/brands/WELDCRAFT.jpg" alt="Weldcraft" title="Weldcraft"></a></li>
+                                <li><a href="../brand.php?name=Weldcraft"><img src="../assets/brands/WELDCRAFT.png" alt="Weldcraft" title="Weldcraft"></a></li>
                                 <li><a href="../brand.php?name=Truweld"><img src="../assets/brands/TRUWELD.jpg" alt="Truweld" title="Truweld"></a></li>
                                 <li><a href="../brand.php?name=Arcair"><img src="../assets/brands/ARCAIR.jpg" alt="Arcair" title="Arcair"></a></li>
                                 <li><a href="../brand.php?name=MAGNAFLUX"><img src="../assets/brands/MAGNAFLUX.jpg" alt="Magnaflux" title="Magnaflux"></a></li>
