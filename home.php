@@ -2590,7 +2590,7 @@ $ytLinks = andison_get_youtube_links();
             visibility: hidden;
             transform: translateY(-6px);
             transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease;
-            z-index: 200;
+            z-index: 1300;
             display: flex;
             flex-direction: column;
             height: auto;
@@ -3817,6 +3817,7 @@ $ytLinks = andison_get_youtube_links();
         var popoverTitle = miniPopover ? miniPopover.querySelector('.mini-popover-title') : null;
         var popoverList = miniPopover ? miniPopover.querySelector('.mini-popover-list') : null;
         var currentPopoverKey = null;
+        var lastIconCenterY = 0; // track icon center Y for arrow realignment
 
         // Responsive function to show/hide browse toggle
         function updateBrowseToggleVisibility() {
@@ -3994,62 +3995,64 @@ $ytLinks = andison_get_youtube_links();
             });
             if (popoverTitle) popoverTitle.textContent = getCategoryTitle(key);
         }
+        /* Shared: compute top + arrow for a given height, centered on lastIconCenterY */
+        function _applyPosition(finalHeight) {
+            var vh = window.innerHeight;
+            var headerBottom = 140; // fixed header+nav height
+
+            // Center the card on the icon
+            var top = Math.round(lastIconCenterY - finalHeight / 2);
+
+            // Clamp: never hide behind the fixed header, never overflow bottom
+            if (top < headerBottom)                    top = headerBottom;
+            if (top + finalHeight > vh - 8)            top = vh - finalHeight - 8;
+            // If still above header after bottom clamp, lock to header bottom
+            if (top < headerBottom)                    top = headerBottom;
+
+            // Arrow: distance from card top to icon center, minus ::before base offset (26px)
+            var arrowOffset = Math.round(lastIconCenterY - top - 26);
+            arrowOffset = Math.max(8, Math.min(finalHeight - 44, arrowOffset));
+
+            miniPopover.style.top = top + 'px';
+            miniPopover.style.height = finalHeight + 'px';
+            miniPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+        }
         function adjustPopoverHeight() {
             if (!miniPopover) return;
-            // Get the body content height
-            var body = miniPopover.querySelector('.mini-popover-body');
+            var body   = miniPopover.querySelector('.mini-popover-body');
             var header = miniPopover.querySelector('.mini-popover-header');
             if (!body) return;
-            
-            // Allow the popover to grow naturally to fit content
-            miniPopover.style.maxHeight = 'none';
+
+            // Measure natural content height
             miniPopover.style.height = 'auto';
-            
-            // Get total content height
-            var headerHeight = header ? header.offsetHeight : 50;
-            var contentHeight = body.scrollHeight + headerHeight + 32; // Add padding + margins
-            var maxAllowedHeight = window.innerHeight * 0.9;
-            var finalHeight = Math.min(contentHeight, maxAllowedHeight);
-            
-            miniPopover.style.height = finalHeight + 'px';
-            miniPopover.style.maxHeight = maxAllowedHeight + 'px';
-            
-            // Re-position if needed to stay in viewport
-            var rect = miniPopover.getBoundingClientRect();
-            if (rect.bottom > window.innerHeight - 12) {
-                var currentTop = parseInt(miniPopover.style.top);
-                var newTop = window.innerHeight - finalHeight - 12;
-                miniPopover.style.top = Math.max(170, newTop) + 'px';
-            }
+            var naturalH = miniPopover.offsetHeight;
+            var finalH   = Math.min(naturalH, window.innerHeight * 0.88);
+
+            _applyPosition(finalH);
         }
         function positionPopoverForIcon(icon) {
             if (!miniPopover || !icon) return;
-            miniPopover.style.left = '-9999px';
-            miniPopover.style.top = '-9999px';
-            miniPopover.classList.add('show');
+
             var rect = icon.getBoundingClientRect();
-            var pw = miniPopover.offsetWidth;
-            var ph = miniPopover.offsetHeight;
-            var iconCenterY = rect.top + rect.height / 2;
+            lastIconCenterY = rect.top + rect.height / 2;
 
+            // Left: to the right of the sidebar icon
+            var pw   = miniPopover.offsetWidth;
             var left = Math.round(rect.right + 14);
-            var top = Math.round(iconCenterY - ph / 2);
-
             if (left + pw + 12 > window.innerWidth) {
                 left = Math.round(rect.left - pw - 14);
             }
-
-            var headerHeight = 170;
-            var minTop = headerHeight + 12;
-            var maxTop = window.innerHeight - ph - 12;
-            if (top < minTop) top = minTop;
-            if (top > maxTop) top = maxTop;
-
-            var arrowOffset = iconCenterY - top - 26;
-            miniPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
-
             miniPopover.style.left = left + 'px';
-            miniPopover.style.top = top + 'px';
+
+            // Measure true height off-screen, then position
+            miniPopover.style.height = 'auto';
+            miniPopover.style.top    = '-9999px';
+            miniPopover.classList.add('show');
+
+            var naturalH = miniPopover.offsetHeight;
+            var finalH   = Math.min(naturalH, window.innerHeight * 0.88);
+
+            _applyPosition(finalH);
         }
         function hidePopover() {
             if (!miniPopover) return;
@@ -4063,15 +4066,18 @@ $ytLinks = andison_get_youtube_links();
                 hidePopover();
                 return;
             }
+            // Reset while we measure new content
+            miniPopover.classList.remove('show');
+            miniPopover.style.left = '-9999px';
+            miniPopover.style.top  = '-9999px';
+            miniPopover.style.height = 'auto';
+
             renderPopover(key);
-            positionPopoverForIcon(icon);
-            // Adjust height after positioning to fit all content
-            setTimeout(function(){
-                adjustPopoverHeight();
-            }, 10);
-            miniPopover.classList.add('show');
-            miniPopover.setAttribute('aria-hidden', 'false');
             currentPopoverKey = key;
+
+            // positionPopoverForIcon makes it visible off-screen, measures, then places it
+            positionPopoverForIcon(icon);
+            miniPopover.setAttribute('aria-hidden', 'false');
         }
 
         // Close on outside click / Escape
