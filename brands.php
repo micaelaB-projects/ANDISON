@@ -1,20 +1,20 @@
-<?php require_once __DIR__ . '/andison/includes/analytics.php'; andison_track_visit('brands'); 
-// Set page title 
-$page_title = "Brands";
-$company_name = "ANDISON INDUSTRIAL";
+<?php
+require_once __DIR__ . '/andison/includes/analytics.php';
+andison_track_visit('brands');
+require_once __DIR__ . '/andison/includes/home_featured.php';
+require_once __DIR__ . '/andison/includes/home_slider.php';
+require_once __DIR__ . '/andison/includes/youtube_links.php';
 
-// Contact information
-$phone = "+1(234) 567 8900";
-$phone2 = "+1(234) 567 8900";
-$phone3 = "+1(639) 977 803 7398";
-$email = "info@andison-industrial.com";
+$featured = andison_get_home_featured();
+$slides = andison_get_home_slider();
+$ytLinks = andison_get_youtube_links();
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brands - ANDISON INDUSTRIAL</title>
+    <title>Our Premium Brands - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
         * {
@@ -100,6 +100,25 @@ $email = "info@andison-industrial.com";
             padding-bottom: 8px;
             white-space: nowrap;
             position: relative;
+            display: inline-block;
+        }
+
+        .contact-link::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            transform-origin: center;
+            width: 64px;
+            height: 3px;
+            background: rgba(255,255,255,0.18);
+            bottom: -6px;
+            border-radius: 2px;
+            transition: transform 220ms ease;
+        }
+
+        .contact-link:hover::after,
+        .contact-link:focus-visible::after {
             transform: translateX(-50%) scaleX(1);
         }
         /* Contact popover */
@@ -790,6 +809,122 @@ $email = "info@andison-industrial.com";
             font-weight: 500;
         }
 
+        /* Brands Section */
+        .brands-hero {
+            text-align: center;
+            padding: 60px 20px 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .brands-hero h2 {
+            margin-bottom: 16px;
+        }
+
+        .brands-hero h2 span {
+            background: linear-gradient(135deg, #2B11DB 0%, #00D7B3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brands-hero p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.8;
+            margin: 0;
+        }
+
+        .brands-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 24px;
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px 60px;
+        }
+
+        .brand-card {
+            background: #fff;
+            border: 2px solid #00BCD4;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .brand-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 32px rgba(0, 188, 212, 0.25);
+            border-color: #1976D2;
+        }
+
+        .brand-logo {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .brand-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 12px;
+        }
+
+        .brand-card h3 {
+            font-size: 14px;
+            font-weight: 800;
+            color: #1565C0;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 1024px) {
+            .brands-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .brands-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 16px;
+            }
+            .brands-hero {
+                padding: 40px 16px 30px;
+            }
+            .brands-hero h2 {
+                font-size: 32px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .brands-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            .brand-card {
+                padding: 16px;
+            }
+            .brand-logo {
+                height: 100px;
+            }
+            .brand-card h3 {
+                font-size: 12px;
+            }
+        }
+
         /* Product Highlights */
         .highlights-grid {
             display: grid;
@@ -1302,7 +1437,7 @@ $email = "info@andison-industrial.com";
             
             .hero {
                 aspect-ratio: auto;
-                min-height: 420px;
+                min-height: 260px;
                 padding: 20px 0;
                 display: flex;
                 align-items: center;
@@ -1318,10 +1453,32 @@ $email = "info@andison-industrial.com";
                 justify-content: center;
             }
 
+            .hero-slide {
+                width: 92% !important;
+                left: 50% !important;
+                transform: translateX(-50%) scale(1) !important;
+                filter: blur(0) !important;
+                opacity: 0 !important;
+            }
+
+            .hero-slide.active {
+                width: 92% !important;
+                left: 50% !important;
+                transform: translateX(-50%) scale(1) !important;
+                filter: blur(0) !important;
+                opacity: 1 !important;
+            }
+
+            .hero-slide.prev,
+            .hero-slide.next {
+                opacity: 0 !important;
+                pointer-events: none;
+            }
+
             .hero-thumb {
-                width: 85%;
+                width: 100%;
                 height: auto;
-                max-width: 95%;
+                max-width: 100%;
                 aspect-ratio: 16 / 9 !important;
             }
             
@@ -1380,24 +1537,76 @@ $email = "info@andison-industrial.com";
             }
 
             .sidebar-overlay {
-                width: 95%;
-                max-width: 100%;
-                max-height: 95vh;
-                padding: 28px 20px;
+                width: 75%;
+                max-width: 320px;
+                padding: 12px 0;
             }
 
             .sidebar-overlay h3 {
-                font-size: 16px;
-                margin-bottom: 20px;
+                font-size: 14px;
+                margin-bottom: 8px;
+                padding: 0 12px;
+            }
+
+            .sidebar-list { 
+                padding: 0;
+            }
+
+            .sidebar-list li { 
+                border-bottom: none;
             }
 
             .sidebar-list a {
-                font-size: 14px;
-                padding: 14px 10px;
+                font-size: 13px;
+                padding: 10px 14px;
+                gap: 12px;
+                min-height: 36px;
+                align-items: center;
+            }
+
+            .sidebar-list a:active {
+                background: rgba(43, 17, 219, 0.08);
+            }
+
+            .sidebar-icon {
+                width: 20px;
+                height: 20px;
+                font-size: 16px;
+            }
+
+            .sidebar-sublist {
+                background: #f8f9fa;
+                border-left: 3px solid #2B11DB;
+                margin: 2px 0;
+                padding: 4px 0 4px 12px;
             }
 
             .sidebar-sublist a {
-                font-size: 13px;
+                font-size: 12px;
+                padding: 8px 14px 8px 42px;
+                min-height: 32px;
+            }
+
+            .sidebar-nested-sublist {
+                margin: 4px 0;
+                padding: 6px 0 6px 14px;
+                background: rgba(43, 17, 219, 0.06);
+                border-left: 2px solid rgba(43, 17, 219, 0.3);
+            }
+
+            .sidebar-nested-sublist a {
+                font-size: 11px;
+                padding: 8px 14px 8px 36px;
+                color: #5a6b7d;
+                min-height: 30px;
+                margin: 0;
+            }
+
+            .sidebar-nested-sublist a:hover,
+            .sidebar-nested-sublist a:active {
+                background: rgba(43, 17, 219, 0.14);
+                color: #2B11DB;
+                padding-left: 44px;
             }
         }
 
@@ -1422,14 +1631,14 @@ $email = "info@andison-industrial.com";
             left: 0;
             top: calc(14px + 50px + 14px + 12px + 52px);
             bottom: 0;
-            width: 380px;
-            max-width: 90%;
+            width: 320px;
+            max-width: 80%;
             background: #fff;
             box-shadow: 4px 0 24px rgba(0,0,0,0.15);
             transform: translateX(-100%);
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 70;
-            padding: 28px 20px;
+            padding: 20px 12px;
             overflow-y: auto;
         }
 
@@ -1458,11 +1667,15 @@ $email = "info@andison-industrial.com";
             justify-content: space-between;
             transition: all 0.2s ease;
             font-size: 15px;
+            min-height: 48px;
         }
         .sidebar-list a:hover { 
             background: #f3f4f6; 
             color: #2B11DB;
             padding-left: 16px;
+        }
+        .sidebar-list a:active {
+            background: rgba(43, 17, 219, 0.08);
         }
         .sidebar-list li a.active {
             background: #f3f4f6;
@@ -1507,21 +1720,23 @@ $email = "info@andison-industrial.com";
 
 
         .sidebar-sublist li { 
-            padding: 4px 0; 
+            padding: 0; 
             border: none;
         }
         .sidebar-sublist a { 
             color: #4b5563; 
             font-size: 14px; 
-            padding: 6px 8px; 
+            padding: 10px 16px 10px 48px; 
             display: block; 
             text-decoration: none;
             justify-content: flex-start;
+            min-height: 42px;
+            align-items: center;
         }
         .sidebar-sublist a:hover { 
             color: #2B11DB; 
-            background: transparent;
-            padding-left: 12px;
+            background: rgba(43, 17, 219, 0.08);
+            padding-left: 52px;
         }
 
         /* Nested sublists */
@@ -1555,14 +1770,15 @@ $email = "info@andison-industrial.com";
         }
         .sidebar-nested-sublist a { 
             color: #5a6b7d; 
-            font-size: 13px; 
-            padding: 10px 12px 10px 28px; 
+            font-size: 11px; 
+            padding: 8px 10px 8px 32px; 
             display: block; 
             text-decoration: none;
             position: relative;
             transition: all 0.25s ease;
-            border-radius: 6px;
-            margin: 2px 0;
+            border-radius: 4px;
+            margin: 0;
+            min-height: 30px;
         }
 
         .sidebar-list li.has-sub { position: relative; }
@@ -1931,7 +2147,7 @@ $email = "info@andison-industrial.com";
             transform: translateX(-100%);
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 70;
-            padding: 28px 20px;
+            padding: 12px 8px;
             overflow-y: auto;
         }
 
@@ -1940,26 +2156,27 @@ $email = "info@andison-industrial.com";
         }
 
         .sidebar-overlay h3 {
-            font-size: 18px;
-            margin-bottom: 24px;
+            font-size: 14px;
+            margin-bottom: 10px;
             color: #222;
             font-weight: 700;
             letter-spacing: 0.5px;
         }
 
-        .sidebar-list { list-style: none; padding: 28px 20px 0 20px; margin: 0; }
+        .sidebar-list { list-style: none; padding: 8px 8px 0 8px; margin: 0; }
         .sidebar-list li { border-bottom: 1px solid #e5e7eb; }
         .sidebar-list li:last-child { border-bottom: none; }
         .sidebar-list a { 
             display: flex; 
             gap: 12px; 
-            padding: 16px 12px; 
+            padding: 10px 10px; 
             color: #1f2937; 
             text-decoration: none; 
             align-items: center;
             justify-content: space-between;
             transition: all 0.2s ease;
-            font-size: 15px;
+            font-size: 13px;
+            min-height: 36px;
         }
         .sidebar-list a:hover { 
             background: #f3f4f6; 
@@ -2009,19 +2226,15 @@ $email = "info@andison-industrial.com";
 
         .sidebar-sublist { 
             list-style: none; 
-            margin: 0; 
-            padding: 8px 0 8px 44px; 
-            background: #fafafa;
-            margin-left: 12px;
-            margin-right: 12px;
-            padding-left: 16px;
-            border-left: 2px solid #e5e7eb;
-            padding-top: 8px;
-            padding-bottom: 8px;
-            max-height: 1000px;
+            margin: 2px 0; 
+            padding: 4px 0 4px 12px;
+            background: #f8f9fa;
+            border-left: 3px solid #2B11DB;
+            max-height: 500px;
             overflow: hidden;
             transition: max-height 0.3s ease, opacity 0.3s ease;
             opacity: 1;
+            display: block;
         }
         
         .sidebar-sublist.collapsed {
@@ -2030,21 +2243,23 @@ $email = "info@andison-industrial.com";
             overflow: hidden;
         }
         .sidebar-sublist li { 
-            padding: 4px 0; 
+            padding: 0; 
             border: none;
         }
         .sidebar-sublist a { 
             color: #4b5563; 
-            font-size: 14px; 
-            padding: 6px 8px; 
+            font-size: 12px; 
+            padding: 8px 12px 8px 38px; 
             display: block; 
             text-decoration: none;
             justify-content: flex-start;
+            min-height: 32px;
+            align-items: center;
         }
         .sidebar-sublist a:hover { 
             color: #2B11DB; 
-            background: transparent;
-            padding-left: 12px;
+            background: rgba(43, 17, 219, 0.08);
+            padding-left: 52px;
         }
 
         /* Nested sublists */
@@ -2073,12 +2288,15 @@ $email = "info@andison-industrial.com";
 
         .sidebar-nested-sublist { 
             list-style: none; 
-            margin: 10px 0 10px -12px; 
-            padding: 0;
+            margin: 2px 0;
+            padding: 4px 0 4px 12px;
             max-height: 500px;
             overflow: hidden;
             transition: max-height 0.3s ease, opacity 0.3s ease;
             opacity: 1;
+            background: rgba(43, 17, 219, 0.05);
+            border-left: 2px solid rgba(43, 17, 219, 0.3);
+        }
         }
         
         .sidebar-nested-sublist.collapsed {
@@ -2092,32 +2310,34 @@ $email = "info@andison-industrial.com";
         }
         .sidebar-nested-sublist a { 
             color: #5a6b7d; 
-            font-size: 13px; 
-            padding: 10px 12px 10px 28px; 
+            font-size: 11px; 
+            padding: 8px 10px 8px 32px; 
             display: block; 
             text-decoration: none;
             position: relative;
             transition: all 0.25s ease;
-            border-radius: 6px;
-            margin: 2px 0;
+            border-radius: 4px;
+            margin: 0;
+            min-height: 30px;
+            align-items: center;
         }
         .sidebar-nested-sublist a::before {
             content: '';
             position: absolute;
-            left: 8px;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
             background: linear-gradient(135deg, #2B11DB 0%, #6d28d9 100%);
             border-radius: 50%;
             box-shadow: 0 2px 4px rgba(43, 17, 219, 0.2);
         }
         .sidebar-nested-sublist a:hover { 
             color: #2B11DB;
-            background: rgba(43, 17, 219, 0.08);
-            padding-left: 32px;
-            transform: translateX(4px);
+            background: rgba(43, 17, 219, 0.12);
+            padding-left: 36px;
+            transform: none;
         }
 
         .sidebar-list li.has-sub { position: relative; }
@@ -2274,7 +2494,7 @@ $email = "info@andison-industrial.com";
 
         .mini-sidebar-icon .label {
             display: none;
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 500;
             white-space: nowrap;
             flex: 1;
@@ -2533,27 +2753,99 @@ $email = "info@andison-industrial.com";
         .mobile-sidebar-fab.open { transform: translateY(-50%) translateX(56px); }
         .mobile-sidebar-fab.open.wide { transform: translateY(-50%) translateX(240px); }
 
+        /* Mini popover — mobile overrides */
+        @media (max-width: 768px) {
+            .mini-popover {
+                border-radius: 0 12px 12px 0 !important;
+                box-shadow: 4px 8px 24px rgba(0,0,0,0.28) !important;
+                overflow: hidden !important;
+            }
+            .mini-popover::before { display: none !important; }
+            .mini-popover-header {
+                border-radius: 0 !important;
+                padding: 10px 14px !important;
+                font-size: 13px !important;
+                letter-spacing: 0.5px !important;
+            }
+            .mini-popover-body {
+                padding: 6px 8px 8px 8px !important;
+            }
+            .mini-popover-list {
+                padding: 0 !important;
+            }
+            .mini-popover-list::before {
+                display: none !important;
+            }
+            .mini-popover-item {
+                margin: 2px 0 !important;
+                min-height: auto !important;
+                padding-left: 4px !important;
+                align-items: center !important;
+            }
+            .mini-popover-item .square {
+                width: 6px !important;
+                height: 6px !important;
+                min-width: 6px !important;
+                border-radius: 2px !important;
+            }
+            .mini-popover-item a {
+                font-size: 12px !important;
+                padding: 8px 10px !important;
+                line-height: 1.2 !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                font-weight: 600 !important;
+            }
+            .mini-popover-item a:active {
+                background: rgba(255,255,255,0.18) !important;
+            }
+            .mini-popover-item.has-subitems {
+                padding-right: 30px !important;
+            }
+            .popover-expand-btn {
+                height: 28px !important;
+                width: 28px !important;
+                right: 4px !important;
+            }
+            .popover-expand-btn .bi {
+                font-size: 14px !important;
+            }
+            .popover-subitem {
+                padding: 5px 10px 5px 18px !important;
+                font-size: 11px !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+        }
+
         /* Mini popover styles for subcategories */
         .mini-popover {
             position: fixed;
             top: -9999px;
             left: -9999px;
-            width: 320px;
-            max-width: calc(100vw - 32px);
-            background: linear-gradient(180deg, #1976D2FF 0%, #19D2B6FF 100%);
+            width: 380px;
+            max-width: calc(100vw - 40px);
+            background: linear-gradient(135deg, #1E88E5 0%, #00BCD4 100%);
             color: #fff;
             border-radius: 16px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+            box-shadow: 0 16px 40px rgba(30, 136, 229, 0.3), 0 2px 8px rgba(0,0,0,0.2);
             opacity: 0;
             visibility: hidden;
-            transform: translateY(-6px);
-            transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease;
-            z-index: 200;
+            transform: translateY(-8px) scale(0.95);
+            transition: opacity 180ms cubic-bezier(0.34, 1.56, 0.64, 1), transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1), visibility 180ms ease;
+            z-index: 1300;
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.15);
         }
         .mini-popover.show {
             opacity: 1;
             visibility: visible;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
         .mini-popover::before {
             content: '';
@@ -2567,25 +2859,27 @@ $email = "info@andison-industrial.com";
             filter: drop-shadow(-2px 2px 2px rgba(0,0,0,0.12));
         }
         .mini-popover-header {
-            background: #f5f9ff;
-            color: #0f5132;
+            background: linear-gradient(135deg, #1E88E5 0%, #1565C0 100%);
+            color: #ffffff;
             border-top-left-radius: 16px;
             border-top-right-radius: 16px;
-            padding: 12px 16px;
-            font-weight: 800;
-            font-size: 15px;
-            letter-spacing: 0.3px;
+            padding: 16px 20px;
+            font-weight: 700;
+            font-size: 16px;
+            letter-spacing: 0.4px;
+            line-height: 1.3;
         }
-        .mini-popover-title { color: #0f5132; }
+        .mini-popover-title { color: #ffffff; }
         .mini-popover-body {
-            padding: 12px 16px 16px 16px;
-            max-height: calc(100vh - 100px);
-            overflow-y: auto;
+            padding: 14px 16px 18px 16px;
+            overflow: visible;
+            flex: 1;
+            background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 100%);
         }
         .mini-popover-list {
             list-style: none;
             margin: 0;
-            padding: 6px 0 6px 0;
+            padding: 0;
             position: relative;
         }
         .mini-popover-list::before {
@@ -2597,14 +2891,15 @@ $email = "info@andison-industrial.com";
             width: 2px;
             background: rgba(255,255,255,0.35);
             border-radius: 2px;
+            display: none;
         }
         .mini-popover-item {
             position: relative;
-            padding-left: 42px;
-            margin: 12px 0;
+            padding-left: 0;
+            margin: 3px 0;
             display: flex;
             align-items: stretch;
-            min-height: 32px;
+            min-height: auto;
         }
         .mini-popover-item .square {
             position: absolute;
@@ -2618,439 +2913,112 @@ $email = "info@andison-industrial.com";
             box-shadow: 0 2px 6px rgba(0,0,0,0.18), inset 0 -1px 0 rgba(0,0,0,0.08);
             flex-shrink: 0;
             pointer-events: none;
+            display: none;
         }
         .mini-popover-item a {
             color: #ffffff;
             text-decoration: none;
             font-weight: 600;
             display: block;
-            padding: 8px 10px;
+            padding: 12px 14px;
             border-radius: 8px;
-            transition: background 140ms ease, transform 120ms ease;
+            transition: all 160ms cubic-bezier(0.34, 1.56, 0.64, 1);
             width: 100%;
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+            line-height: 1.4;
+            font-size: 14px;
+            background: rgba(255,255,255,0.06);
+            border-left: 3px solid transparent;
         }
         .mini-popover-item a:hover {
-            background: rgba(255,255,255,0.12);
-            transform: translateX(2px);
+            background: rgba(255,255,255,0.16);
+            transform: translateX(4px);
+            border-left-color: rgba(255,255,255,0.5);
         }
-
-        /* Brands Grid Styling - Premium Elegant Design */
-        #brands-list {
-            padding: 0;
-            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 50%, #ffffff 100%);
-            position: relative;
-            overflow: hidden;
+        
+        /* Expandable popover items */
+        .mini-popover-item.has-subitems {
+            flex-wrap: wrap;
+            padding-right: 36px;
         }
-
-        /* Animated background elements */
-        #brands-list::before {
-            content: '';
+        .popover-expand-btn {
             position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 1000px;
-            height: 1000px;
-            background: radial-gradient(circle, rgba(0, 102, 255, 0.08) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-        }
-
-        #brands-list::after {
-            content: '';
-            position: absolute;
-            bottom: -50%;
-            left: -50%;
-            width: 800px;
-            height: 800px;
-            background: radial-gradient(circle, rgba(0, 215, 179, 0.06) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 20px;
-            position: relative;
-            z-index: 1;
-        }
-
-        #brands-list h2 {
-            font-size: 72px;
-            font-weight: 900;
-            margin-bottom: 16px;
-            margin-top: 0;
-            padding-top: 80px;
-            background: linear-gradient(135deg, #00a884 0%, #0066ff 50%, #00a884 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            color: transparent;
-            text-align: center;
-            letter-spacing: -1px;
-            line-height: 1.1;
-            text-transform: capitalize;
-            filter: drop-shadow(0 0 30px rgba(0, 168, 132, 0.08));
-        }
-
-        #brands-list .section-description {
-            font-size: 18px;
-            color: #3f4a5e;
-            text-align: center;
-            margin-bottom: 100px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.8;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-        }
-
-        .brands-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 40px;
-            margin-top: 60px;
-            margin-bottom: 100px;
-            padding: 0 20px;
-        }
-
-        .brand-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 24px;
-            padding: 50px 32px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%);
-            border: 3px solid rgba(0, 215, 179, 0.35);
-            border-radius: 20px;
-            text-decoration: none;
-            color: #1f2937;
-            transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            min-height: 420px;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 0 1px rgba(0, 215, 179, 0.2);
-            border-top: 3px solid rgba(0, 215, 179, 0.6);
-        }
-
-        /* Animated background glow */
-        .brand-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(0, 215, 179, 0.15) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.7s ease;
-        }
-
-        .brand-card::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(0, 215, 179, 0.1) 0%, rgba(0, 102, 255, 0.08) 100%);
-            opacity: 0;
-            transition: opacity 0.7s ease;
-            pointer-events: none;
-        }
-
-        .brand-card:hover::before {
-            opacity: 1;
-        }
-
-        .brand-card:hover::after {
-            opacity: 1;
-        }
-
-        .brand-card:hover {
-            transform: translateY(-24px) scale(1.03);
-            border-color: rgba(0, 215, 179, 0.8);
-            box-shadow: 0 40px 100px rgba(0, 215, 179, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.8), inset 0 -1px 0 rgba(0, 215, 179, 0.1), 0 0 20px rgba(0, 215, 179, 0.15);
-            border-top-color: rgba(0, 215, 179, 0.9);
-        }
-
-        .brand-logo-container {
-            width: 220px;
-            height: 220px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, rgba(0, 215, 179, 0.12) 0%, rgba(0, 102, 255, 0.1) 100%);
-            border: 2.5px solid rgba(0, 215, 179, 0.4);
-            border-radius: 20px;
-            padding: 20px;
-            transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            flex-shrink: 0;
-            position: relative;
-            z-index: 2;
-            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.6), 0 4px 15px rgba(0, 215, 179, 0.1);
-        }
-
-        .brand-card:hover .brand-logo-container {
-            background: linear-gradient(135deg, rgba(0, 215, 179, 0.2) 0%, rgba(0, 102, 255, 0.15) 100%);
-            border-color: rgba(0, 215, 179, 0.75);
-            transform: scale(1.15) rotate(3deg);
-            box-shadow: 0 20px 50px rgba(0, 215, 179, 0.3), inset 0 1px 3px rgba(255, 255, 255, 0.8);
-        }
-
-        .brand-logo {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            display: block;
-            filter: brightness(1.05) saturate(1.1) contrast(1.1);
-            transition: all 0.7s ease;
-        }
-
-        .brand-card:hover .brand-logo {
-            filter: brightness(1.15) saturate(1.3) contrast(1.2) drop-shadow(0 0 15px rgba(0, 215, 179, 0.4));
-        }
-
-        .brand-card h3 {
-            font-size: 24px;
-            font-weight: 900;
-            text-align: center;
-            color: #2B11DB;
-            line-height: 1.2;
-            letter-spacing: 1.2px;
-            transition: all 0.7s ease;
-            position: relative;
-            z-index: 2;
-            text-transform: uppercase;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-        }
-
-        .brand-card:hover h3 {
-            color: #0066ff;
-            font-size: 24px;
-            letter-spacing: 1.5px;
-            font-weight: 800;
-            text-shadow: 0 4px 8px rgba(0, 102, 255, 0.2);
-        }
-
-        /* Decorative accent line - industrial metallic bottom stripe */
-        .brand-card::after {
-            content: '';
-            position: absolute;
+            right: 8px;
+            top: 0;
             bottom: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, transparent 0%, rgba(0, 215, 179, 0.8) 50%, transparent 100%);
-            opacity: 0;
-            transition: all 0.7s ease;
+            height: 32px;
+            width: 32px;
+            margin: auto;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 160ms cubic-bezier(0.34, 1.56, 0.64, 1);
+            flex-shrink: 0;
+            border-radius: 8px;
         }
-
-        .brand-card:hover::after {
+        .popover-expand-btn:hover {
+            background: rgba(255,255,255,0.22);
+            transform: scale(1.08);
+        }
+        .popover-expand-btn:active {
+            background: rgba(255,255,255,0.3);
+            transform: scale(0.95);
+        }
+        .popover-expand-btn .bi {
+            font-size: 18px;
+            transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .popover-expand-btn[aria-expanded="true"] .bi {
+            transform: rotate(90deg);
+        }
+        
+        .popover-subitems {
+            width: 100%;
+            margin-top: 8px;
+            max-height: none;
+            overflow: visible;
+            transition: opacity 250ms ease;
             opacity: 1;
+            padding-left: 0;
+        }
+        .popover-subitems.collapsed {
+            display: none;
+        }
+        
+        .popover-subitem {
+            color: rgba(255,255,255,0.85) !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            padding: 6px 10px 6px 28px !important;
+            display: block !important;
+            text-decoration: none !important;
+            border-radius: 6px !important;
+            transition: all 120ms ease !important;
+            position: relative;
+        }
+        .popover-subitem::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
             height: 4px;
-            box-shadow: 0 -2px 10px rgba(0, 215, 179, 0.3);
+            border-radius: 50%;
+            background: #ffffff;
+            opacity: 0.6;
         }
-
-        @media (max-width: 1200px) {
-            .brands-grid {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-                gap: 32px;
-            }
-
-            #brands-list h2 {
-                font-size: 56px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            #brands-list {
-                padding: 0;
-            }
-
-            #brands-list h2 {
-                font-size: 42px;
-                padding-top: 60px;
-                margin-bottom: 16px;
-            }
-
-            #brands-list .section-description {
-                font-size: 16px;
-                margin-bottom: 60px;
-            }
-
-            .brands-grid {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-                gap: 24px;
-                margin-top: 40px;
-                margin-bottom: 60px;
-                padding: 0 15px;
-            }
-
-            .brand-card {
-                padding: 32px 24px;
-                min-height: 260px;
-                gap: 16px;
-            }
-
-            .brand-logo-container {
-                width: 140px;
-                height: 140px;
-            }
-
-            .brand-card h3 {
-                font-size: 16px;
-                font-weight: 700;
-                color: #1a0080;
-            }
-
-            .brand-card:hover h3 {
-                font-size: 18px;
-                font-weight: 800;
-                color: #0066ff;
-            }
-        }
-
-        @media (max-width: 480px) {
-            #brands-list h2 {
-                font-size: 32px;
-                padding-top: 50px;
-            }
-
-            #brands-list .section-description {
-                font-size: 14px;
-                margin-bottom: 40px;
-            }
-
-            .brands-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 16px;
-                margin-bottom: 50px;
-            }
-
-            .brand-card {
-                padding: 24px 16px;
-                min-height: 220px;
-                gap: 12px;
-            }
-
-            .brand-logo-container {
-                width: 90px;
-                height: 90px;
-            }
-
-            .brand-card h3 {
-                font-size: 14px;
-                font-weight: 700;
-                color: #1a0080;
-            }
-
-            .brand-card:hover h3 {
-                font-size: 15px;
-                font-weight: 800;
-                color: #0066ff;
-            }
-        }
-
-        @media (max-width: 1200px) {
-            .brands-grid {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-                gap: 32px;
-            }
-
-            #brands-list h2 {
-                font-size: 56px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            #brands-list {
-                padding: 0;
-            }
-
-            #brands-list h2 {
-                font-size: 42px;
-                padding-top: 60px;
-                margin-bottom: 16px;
-            }
-
-            #brands-list .section-description {
-                font-size: 16px;
-                margin-bottom: 60px;
-            }
-
-            .brands-grid {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-                gap: 24px;
-                margin-top: 40px;
-                margin-bottom: 60px;
-                padding: 0 15px;
-            }
-
-            .brand-card {
-                padding: 32px 24px;
-                min-height: 260px;
-                gap: 16px;
-            }
-
-            .brand-logo-container {
-                width: 110px;
-                height: 110px;
-            }
-
-            .brand-card h3 {
-                font-size: 16px;
-                font-weight: 700;
-                color: #1a0080;
-            }
-
-            .brand-card:hover h3 {
-                font-size: 18px;
-                font-weight: 800;
-                color: #0066ff;
-            }
-        }
-
-        @media (max-width: 480px) {
-            #brands-list h2 {
-                font-size: 32px;
-                padding-top: 50px;
-            }
-
-            #brands-list .section-description {
-                font-size: 14px;
-                margin-bottom: 40px;
-            }
-
-            .brands-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 16px;
-                margin-bottom: 50px;
-            }
-
-            .brand-card {
-                padding: 24px 16px;
-                min-height: 220px;
-                gap: 12px;
-            }
-
-            .brand-logo-container {
-                width: 110px;
-                height: 110px;
-            }
-
-            .brand-card h3 {
-                font-size: 14px;
-                font-weight: 700;
-                color: #1a0080;
-            }
-
-            .brand-card:hover h3 {
-                font-size: 15px;
-                font-weight: 800;
-                color: #0066ff;
-            }
+        .popover-subitem:hover {
+            background: rgba(255,255,255,0.12) !important;
+            transform: translateX(2px) !important;
+            color: #ffffff !important;
         }
     </style>
 </head>
@@ -3126,7 +3094,7 @@ $email = "info@andison-industrial.com";
                         <div class="nav-dropdown">
                             <h4>Featured Brands</h4>
                             <ul>
-                                <li><a href="brand.php?name=Panasonic%20Connect"><img src="assets/brands/PANASONIC.jpg" alt="Panasonic Connect" title="Panasonic Connect"></a></li>
+                                 <li><a href="brand.php?name=Panasonic%20Connect"><img src="assets/brands/PANASONIC.jpg" alt="Panasonic Connect" title="Panasonic Connect"></a></li>
                                 <li><a href="brand.php?name=Robot%20Systems"><img src="assets/brands/ROBOT SYSTEMS.png" alt="Robot Systems Peripherals" title="Robot Systems Peripherals"></a></li>
                                 <li><a href="brand.php?name=Kobelco"><img src="assets/brands/KOBELCO.jpg" alt="Kobelco" title="Kobelco"></a></li>
                                 <li><a href="brand.php?name=Metrode"><img src="assets/brands/METRODE.jpg" alt="Metrode" title="Metrode"></a></li>
@@ -3161,7 +3129,6 @@ $email = "info@andison-industrial.com";
                                 <li><a href="brand.php?name=Spilfyter"><img src="assets/brands/SPILFYTER.jpg" alt="Spilfyter" title="Spilfyter"></a></li>
                                 <li><a href="brand.php?name=Dalo"><img src="assets/brands/DALO.jpg" alt="Dalo" title="Dalo"></a></li>
                                 <li><a href="brand.php?name=MOTOLITE"><img src="assets/brands/MOTOLITE.jpg" alt="Motolite" title="Motolite"></a></li>
-                                
                             </ul>
                         </div>
                     </li>
@@ -3219,6 +3186,7 @@ $email = "info@andison-industrial.com";
                 <button class="sub-toggle" aria-controls="sub-arc-welding" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
                     <li><a href="arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
+                    <li><a href="arc-welding-machine/accessories-and-consumables.php">Accessories and Consumables</a></li>
                     <li><a href="arc-welding-machine/co1-mag-welding-machine.php">CO2/MAG Welding Machine</a></li>
                     <li><a href="arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
                     <li><a href="arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
@@ -3249,7 +3217,17 @@ $email = "info@andison-industrial.com";
                 <button class="sub-toggle" aria-controls="sub-drilling-lifting" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
                     <li><a href="drilling-and-lifting/lifting.php">Lifting</a></li>
-                    <li><a href="drilling-and-lifting/magnetic-drill.php">Magnetic Drill</a></li>
+                    <li class="has-nested-sub">
+                        <a href="drilling-and-lifting/magnetic-drill.php">Magnetic Drill</a>
+                        <button class="nested-toggle" aria-controls="nested-magnetic-drill" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>
+                        <ul id="nested-magnetic-drill" class="sidebar-nested-sublist collapsed">
+                            <li><a href="drilling-and-lifting/magnetic-drill/b-line-series.php">B-Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/rl-e-line-series.php">RL-E Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/rbx-line-series.php">RBX-Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/sp-line-series.php">SP-Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/v-line-series.php">V-Line Series</a></li>
+                        </ul>
+                    </li>
                     <li><a href="drilling-and-lifting/cutters.php">Cutters</a></li>
                 </ul>
             </li>
@@ -3362,231 +3340,229 @@ $email = "info@andison-industrial.com";
         </div>
     </div>
 
-    <!-- Brands Listing -->
+    <!-- Brands Hero -->
     <div class="page-content">
-    <section id="brands-list">
-        <div class="container">
-            <h2>Our Premium Brands</h2>
-            <p class="section-description">
-                We partner with leading international brands to provide you with the highest quality industrial solutions and equipment.
-            </p>
+    <section id="brands-overview" style="padding: 0; background: #fff;">
+        <div class="brands-hero">
+            <h2>Our <span>Premium Brands</span></h2>
+            <p>We partner with leading international brands to provide you with the highest quality industrial solutions and equipment.</p>
+        </div>
 
-            <div class="brands-grid">
-                <a href="brand.php?name=Panasonic%20Connect" class="brand-card" title="Panasonic Connect">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/PANASONIC.jpg" alt="Panasonic Connect" class="brand-logo">
-                    </div>
-                    <h3>Panasonic Connect</h3>
-                </a>
-                <a href="brand.php?name=Robot%20Systems" class="brand-card" title="Robot Systems Peripherals">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/ROBOT SYSTEMS.png" alt="Robot Systems Peripherals" class="brand-logo">
-                    </div>
-                    <h3>Robot Systems Peripherals</h3>
-                </a>
-                <a href="brand.php?name=Kobelco" class="brand-card" title="Kobelco">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/KOBELCO.jpg" alt="Kobelco" class="brand-logo">
-                    </div>
-                    <h3>Kobelco</h3>
-                </a>
-                <a href="brand.php?name=Metrode" class="brand-card" title="Metrode">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/METRODE.jpg" alt="Metrode" class="brand-logo">
-                    </div>
-                    <h3>Metrode</h3>
-                </a>
-                <a href="brand.php?name=DryRod.%20II" class="brand-card" title="DryRod. II">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/DRYROD.jpg" alt="DryRod. II" class="brand-logo">
-                    </div>
-                    <h3>DryRod. II</h3>
-                </a>
-                <a href="brand.php?name=Weldcraft" class="brand-card" title="Weldcraft">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/WELDCRAFT.png" alt="Weldcraft" class="brand-logo">
-                    </div>
-                    <h3>Weldcraft</h3>
-                </a>
-                <a href="brand.php?name=Truweld" class="brand-card" title="Truweld">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/TRUWELD.jpg" alt="Truweld" class="brand-logo">
-                    </div>
-                    <h3>Truweld</h3>
-                </a>
-                <a href="brand.php?name=Arcair" class="brand-card" title="Arcair">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/ARCAIR.jpg" alt="Arcair" class="brand-logo">
-                    </div>
-                    <h3>Arcair</h3>
-                </a>
-                <a href="brand.php?name=MAGNAFLUX" class="brand-card" title="Magnaflux">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/MAGNAFLUX.jpg" alt="Magnaflux" class="brand-logo">
-                    </div>
-                    <h3>Magnaflux</h3>
-                </a>
-                <a href="brand.php?name=Tempilstik" class="brand-card" title="Tempilstik">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/TEMPILSTIK.jpg" alt="Tempilstik" class="brand-logo">
-                    </div>
-                    <h3>Tempilstik</h3>
-                </a>
-                <a href="brand.php?name=TANAKA" class="brand-card" title="Tanaka">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/TANAKA.jpg" alt="Tanaka" class="brand-logo">
-                    </div>
-                    <h3>Tanaka</h3>
-                </a>
-                <a href="brand.php?name=CHIYODA" class="brand-card" title="Chiyoda">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/CHIYODA.jpg" alt="Chiyoda" class="brand-logo">
-                    </div>
-                    <h3>Chiyoda</h3>
-                </a>
-                <a href="brand.php?name=Yutaka" class="brand-card" title="Yutaka">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/YUTAKA.jpg" alt="Yutaka" class="brand-logo">
-                    </div>
-                    <h3>Yutaka</h3>
-                </a>
-                <a href="brand.php?name=HARDWORKER" class="brand-card" title="Hard Workers">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/HARDWORKER.jpg" alt="Hard Workers" class="brand-logo">
-                    </div>
-                    <h3>Hard Workers</h3>
-                </a>
-                <a href="brand.php?name=Soyer" class="brand-card" title="Soyer">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/SOYER.jpg" alt="Soyer" class="brand-logo">
-                    </div>
-                    <h3>Soyer</h3>
-                </a>
-                <a href="brand.php?name=Aquasol" class="brand-card" title="Aquasol">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/AQUASOL.jpg" alt="Aquasol" class="brand-logo">
-                    </div>
-                    <h3>Aquasol</h3>
-                </a>
-                <a href="brand.php?name=SK%20And%20GAL%20GAGE" class="brand-card" title="SK And GAL GAGE">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/SK%20AND%20GAL%20GAGE.jpg" alt="SK And GAL GAGE" class="brand-logo">
-                    </div>
-                    <h3>SK And GAL GAGE</h3>
-                </a>
-                <a href="brand.php?name=COPPUS" class="brand-card" title="Coppus">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/COPPUS.jpg" alt="Coppus" class="brand-logo">
-                    </div>
-                    <h3>Coppus</h3>
-                </a>
-                <a href="brand.php?name=BW%20Technologies" class="brand-card" title="BW Technologies">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/BW%20TECHNOLOGIES.jpg" alt="BW Technologies" class="brand-logo">
-                    </div>
-                    <h3>BW Technologies</h3>
-                </a>
-                <a href="brand.php?name=RAC" class="brand-card" title="RAE SYSTEMS">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/RAE%20SYSTEMS.jpg" alt="RAE SYSTEMS" class="brand-logo">
-                    </div>
-                    <h3>RAE SYSTEMS</h3>
-                </a>
-                <a href="brand.php?name=WELDAS" class="brand-card" title="Weldas">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/WELDAS.jpg" alt="Weldas" class="brand-logo">
-                    </div>
-                    <h3>Weldas</h3>
-                </a>
-                <a href="brand.php?name=UVEX" class="brand-card" title="Uvex">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/UVEX.jpg" alt="Uvex" class="brand-logo">
-                    </div>
-                    <h3>Uvex</h3>
-                </a>
-                <a href="brand.php?name=ACES" class="brand-card" title="Aces">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/ACES.jpg" alt="Aces" class="brand-logo">
-                    </div>
-                    <h3>Aces</h3>
-                </a>
-                <a href="brand.php?name=MICROGARD" class="brand-card" title="Microgard">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/MICROGARD.jpg" alt="Microgard" class="brand-logo">
-                    </div>
-                    <h3>Microgard</h3>
-                </a>
-                <a href="brand.php?name=ANSELL" class="brand-card" title="Ansell">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/ANSELL.jpg" alt="Ansell" class="brand-logo">
-                    </div>
-                    <h3>Ansell</h3>
-                </a>
-                <a href="brand.php?name=Alfra" class="brand-card" title="Alfra">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/ALFRA.jpg" alt="Alfra" class="brand-logo">
-                    </div>
-                    <h3>Alfra</h3>
-                </a>
-                <a href="brand.php?name=BOSCH" class="brand-card" title="Bosch">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/BOSCH.jpg" alt="Bosch" class="brand-logo">
-                    </div>
-                    <h3>Bosch</h3>
-                </a>
-                <a href="brand.php?name=Makita" class="brand-card" title="Makita">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/MAKITA.jpg" alt="Makita" class="brand-logo">
-                    </div>
-                    <h3>Makita</h3>
-                </a>
-                <a href="brand.php?name=Weller" class="brand-card" title="Weller">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/WEILER.jpg" alt="Weller" class="brand-logo">
-                    </div>
-                    <h3>Weller</h3>
-                </a>
-                <a href="brand.php?name=Garryson" class="brand-card" title="Garryson">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/GARRYSON.jpg" alt="Garryson" class="brand-logo">
-                    </div>
-                    <h3>Garryson</h3>
-                </a>
+        <div class="brands-grid">
+            <!-- Row 1 -->
+            <div class="brand-card" data-brand="Panasonic Connect">
+                <div class="brand-logo">
+                    <img src="assets/brands/PANASONIC.jpg" alt="Panasonic Connect">
+                </div>
+                <h3>Panasonic Connect</h3>
+            </div>
 
-                <a href="brand.php?name=REVOLT" class="brand-card" title="Revolt">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/REVOLT.png" alt="Revolt" class="brand-logo">
-                    </div>
-                    <h3>REVOLT</h3>
-                </a>
+            <div class="brand-card" data-brand="Robot Systems Peripherals">
+                <div class="brand-logo">
+                    <img src="assets/brands/ROBOT SYSTEMS.png" alt="Robot Systems Peripherals">
+                </div>
+                <h3>Robot Systems Peripherals</h3>
+            </div>
 
-                 <a href="brand.php?name=Technotex" class="brand-card" title="Technotex">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/TECHNOTEX.png" alt="Technotex" class="brand-logo">
-                    </div>
-                    <h3>TECHNOTEX</h3>
-                </a>
+            <div class="brand-card" data-brand="Kobelco">
+                <div class="brand-logo">
+                    <img src="assets/brands/KOBELCO.jpg" alt="Kobelco">
+                </div>
+                <h3>Kobelco</h3>
+            </div>
 
-                <a href="brand.php?name=Spilfyter" class="brand-card" title="Spilfyter">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/SPILFYTER.jpg" alt="Spilfyter" class="brand-logo">
-                    </div>
-                    <h3>Spilfyter</h3>
-                </a>
-                <a href="brand.php?name=Dalo" class="brand-card" title="Dalo">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/DALO.jpg" alt="Dalo" class="brand-logo">
-                    </div>
-                    <h3>Dalo</h3>
-                </a>
-                <a href="brand.php?name=MOTOLITE" class="brand-card" title="Motolite">
-                    <div class="brand-logo-container">
-                        <img src="assets/brands/MOTOLITE.jpg" alt="Motolite" class="brand-logo">
-                    </div>
-                    <h3>Motolite</h3>
-                </a>
+            <div class="brand-card" data-brand="Metrode">
+                <div class="brand-logo">
+                    <img src="assets/brands/METRODE.jpg" alt="Metrode">
+                </div>
+                <h3>Metrode</h3>
+            </div>
 
-               
+            <div class="brand-card" data-brand="DryRod. II">
+                <div class="brand-logo">
+                    <img src="assets/brands/DRYROD.jpg" alt="DryRod. II">
+                </div>
+                <h3>DryRod. II</h3>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="brand-card" data-brand="Weldcraft">
+                <div class="brand-logo">
+                    <img src="assets/brands/WELDCRAFT.png" alt="Weldcraft">
+                </div>
+                <h3>Weldcraft</h3>
+            </div>
+
+            <div class="brand-card" data-brand="Truweld">
+                <div class="brand-logo">
+                    <img src="assets/brands/TRUWELD.jpg" alt="Truweld">
+                </div>
+                <h3>Truweld</h3>
+            </div>
+
+            <div class="brand-card" data-brand="Arcair">
+                <div class="brand-logo">
+                    <img src="assets/brands/ARCAIR.jpg" alt="Arcair">
+                </div>
+                <h3>Arcair</h3>
+            </div>
+
+            <div class="brand-card" data-brand="Magnaflux">
+                <div class="brand-logo">
+                    <img src="assets/brands/MAGNAFLUX.jpg" alt="Magnaflux">
+                </div>
+                <h3>Magnaflux</h3>
+            </div>
+
+            <div class="brand-card" data-brand="Tempilstik">
+                <div class="brand-logo">
+                    <img src="assets/brands/TEMPILSTIK.jpg" alt="Tempilstik">
+                </div>
+                <h3>Tempilstik</h3>
+            </div>
+
+            <!-- Row 3 -->
+            <div class="brand-card" data-brand="Aquasol">
+                <div class="brand-logo">
+                    <img src="assets/brands/AQUASOL.jpg" alt="Aquasol">
+                </div>
+                <h3>Aquasol</h3>
+            </div>
+
+            <div class="brand-card" data-brand="SK and Gal Gage">
+                <div class="brand-logo">
+                    <img src="assets/brands/SK AND GAL GAGE.jpg" alt="SK and Gal Gage">
+                </div>
+                <h3>SK and Gal Gage</h3>
+            </div>
+
+            <div class="brand-card" data-brand="Coppus">
+                <div class="brand-logo">
+                    <img src="assets/brands/COPPUS.jpg" alt="Coppus">
+                </div>
+                <h3>Coppus</h3>
+            </div>
+
+            <div class="brand-card" data-brand="BW Technologies">
+                <div class="brand-logo">
+                    <img src="assets/brands/BW TECHNOLOGIES.jpg" alt="BW Technologies">
+                </div>
+                <h3>BW Technologies</h3>
+            </div>
+
+            <div class="brand-card" data-brand="RAE Systems">
+                <div class="brand-logo">
+                    <img src="assets/brands/RAE SYSTEMS.jpg" alt="RAE Systems">
+                </div>
+                <h3>RAE Systems</h3>
+            </div>
+
+            <!-- Row 4 -->
+            <div class="brand-card" data-brand="Weldas">
+                <div class="brand-logo">
+                    <img src="assets/brands/WELDAS.jpg" alt="Weldas">
+                </div>
+                <h3>Weldas</h3>
+            </div>
+
+            <div class="brand-card" data-brand="Uvex">
+                <div class="brand-logo">
+                    <img src="assets/brands/UVEX.jpg" alt="Uvex">
+                </div>
+                <h3>Uvex</h3>
+            </div>
+
+            <div class="brand-card" data-brand="ACES">
+                <div class="brand-logo">
+                    <img src="assets/brands/ACES.jpg" alt="ACES">
+                </div>
+                <h3>ACES</h3>
+            </div>
+
+            <div class="brand-card" data-brand="Microgard">
+                <div class="brand-logo">
+                    <img src="assets/brands/MICROGARD.jpg" alt="Microgard">
+                </div>
+                <h3>Microgard</h3>
+            </div>
+
+            <div class="brand-card" data-brand="Ansell">
+                <div class="brand-logo">
+                    <img src="assets/brands/ANSELL.jpg" alt="Ansell">
+                </div>
+                <h3>Ansell</h3>
+            </div>
+
+            <!-- Row 5 -->
+            <div class="brand-card" data-brand="Alfra">
+                <div class="brand-logo">
+                    <img src="assets/brands/ALFRA.jpg" alt="Alfra">
+                </div>
+                <h3>Alfra</h3>
+            </div>
+
+            <div class="brand-card" data-brand="Bosch">
+                <div class="brand-logo">
+                    <img src="assets/brands/BOSCH.jpg" alt="Bosch">
+                </div>
+                <h3>Bosch</h3>
+            </div>
+
+            <div class="brand-card" data-brand="Makita">
+                <div class="brand-logo">
+                    <img src="assets/brands/MAKITA.jpg" alt="Makita">
+                </div>
+                <h3>Makita</h3>
+            </div>
+
+            <div class="brand-card" data-brand="Weiler">
+                <div class="brand-logo">
+                    <img src="assets/brands/WEILER.jpg" alt="Weiler">
+                </div>
+                <h3>Weiler</h3>
+            </div>
+
+            <div class="brand-card" data-brand="Garryson">
+                <div class="brand-logo">
+                    <img src="assets/brands/GARRYSON.jpg" alt="Garryson">
+                </div>
+                <h3>Garryson</h3>
+            </div>
+
+            <!-- Row 6 -->
+            <div class="brand-card" data-brand="Revolt">
+                <div class="brand-logo">
+                    <img src="assets/brands/REVOLT.png" alt="Revolt">
+                </div>
+                <h3>Revolt</h3>
+            </div>
+
+            <div class="brand-card" data-brand="Technotex">
+                <div class="brand-logo">
+                    <img src="assets/brands/TECHNOTEX.png" alt="Technotex">
+                </div>
+                <h3>Technotex</h3>
+            </div>
+
+            <div class="brand-card" data-brand="Spilfyter">
+                <div class="brand-logo">
+                    <img src="assets/brands/SPILFYTER.jpg" alt="Spilfyter">
+                </div>
+                <h3>Spilfyter</h3>
+            </div>
+
+            <div class="brand-card" data-brand="Dalo">
+                <div class="brand-logo">
+                    <img src="assets/brands/DALO.jpg" alt="Dalo">
+                </div>
+                <h3>Dalo</h3>
+            </div>
+
+            <div class="brand-card" data-brand="Motolite">
+                <div class="brand-logo">
+                    <img src="assets/brands/MOTOLITE.jpg" alt="Motolite">
+                </div>
+                <h3>Motolite</h3>
             </div>
         </div>
     </section>
@@ -4006,18 +3982,113 @@ $email = "info@andison-industrial.com";
                 });
             }
             
-            // Sidebar sub-toggle functionality
+            // Sidebar sub-toggle functionality - Show popover card
+            var mainSidebarPopover = document.getElementById('miniPopover');
+            var popoverTitle = mainSidebarPopover ? mainSidebarPopover.querySelector('.mini-popover-title') : null;
+            var popoverList = mainSidebarPopover ? mainSidebarPopover.querySelector('.mini-popover-list') : null;
+            var currentMainSidebarKey = null;
+            
+            function showMainSidebarPopover(toggle) {
+                if (!mainSidebarPopover || !popoverList || !popoverTitle) return;
+                
+                var sublistId = toggle.getAttribute('aria-controls');
+                var sublist = document.getElementById(sublistId);
+                if (!sublist) return;
+                
+                // Extract title from parent li's main link
+                var parentLi = toggle.closest('.has-sub');
+                var mainLink = parentLi ? parentLi.querySelector(':scope > a:not([class])') : null;
+                var title = mainLink ? mainLink.textContent.trim() : 'Items';
+                
+                // Extract items from the sublist
+                var items = [];
+                var listItems = sublist.querySelectorAll('li > a');
+                listItems.forEach(function(link) {
+                    items.push({
+                        text: link.textContent.trim(),
+                        href: link.getAttribute('href') || '#'
+                    });
+                });
+                
+                // Populate popover
+                popoverTitle.textContent = title;
+                popoverList.innerHTML = '';
+                items.forEach(function(item) {
+                    var li = document.createElement('li');
+                    li.className = 'mini-popover-item';
+                    li.innerHTML = '<span class="square"></span><a href="' + item.href + '">' + item.text + '</a>';
+                    popoverList.appendChild(li);
+                });
+                
+                // Position popover next to toggle button
+                setTimeout(function() {
+                    mainSidebarPopover.style.left = '-9999px';
+                    mainSidebarPopover.style.top = '-9999px';
+                    mainSidebarPopover.classList.add('show');
+                    
+                    var toggleRect = toggle.getBoundingClientRect();
+                    var pw = mainSidebarPopover.offsetWidth;
+                    var ph = mainSidebarPopover.offsetHeight;
+                    var toggleCenterY = toggleRect.top + toggleRect.height / 2;
+                    
+                    // Position to the right of the toggle button
+                    var left = Math.round(toggleRect.right + 14);
+                    var top = Math.round(toggleCenterY - ph / 2);
+                    
+                    // Adjust if off-screen horizontally
+                    if (left + pw + 12 > window.innerWidth) {
+                        left = Math.round(toggleRect.left - pw - 14);
+                    }
+                    
+                    // Adjust if off-screen vertically
+                    var headerHeight = 100;
+                    var minTop = headerHeight + 12;
+                    var maxTop = window.innerHeight - ph - 12;
+                    if (top < minTop) top = minTop;
+                    if (top > maxTop) top = maxTop;
+                    
+                    var arrowOffset = toggleCenterY - top - 26;
+                    mainSidebarPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+                    
+                    mainSidebarPopover.style.left = left + 'px';
+                    mainSidebarPopover.style.top = top + 'px';
+                    mainSidebarPopover.setAttribute('aria-hidden', 'false');
+                    currentMainSidebarKey = sublistId;
+                }, 5);
+            }
+            
+            function hideMainSidebarPopover() {
+                if (!mainSidebarPopover) return;
+                mainSidebarPopover.classList.remove('show');
+                mainSidebarPopover.setAttribute('aria-hidden', 'true');
+                currentMainSidebarKey = null;
+            }
+            
             var subToggles = document.querySelectorAll('.sub-toggle');
             subToggles.forEach(function(toggle) {
                 toggle.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    var sublist = document.getElementById(toggle.getAttribute('aria-controls'));
-                    if(sublist) {
-                        sublist.classList.toggle('collapsed');
-                        toggle.setAttribute('aria-expanded', sublist.classList.contains('collapsed') ? 'false' : 'true');
+                    
+                    if (currentMainSidebarKey === toggle.getAttribute('aria-controls') && mainSidebarPopover.classList.contains('show')) {
+                        hideMainSidebarPopover();
+                    } else {
+                        showMainSidebarPopover(toggle);
                     }
                 });
+            });
+            
+            // Close popover on outside click
+            document.addEventListener('click', function(e) {
+                if (!mainSidebarPopover) return;
+                if (!mainSidebarPopover.classList.contains('show')) return;
+                if (e.target.closest('.mini-popover') || e.target.closest('.sub-toggle')) return;
+                hideMainSidebarPopover();
+            });
+            
+            // Close popover on Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') hideMainSidebarPopover();
             });
             
             // Nested toggle functionality
@@ -4094,6 +4165,9 @@ $email = "info@andison-industrial.com";
         var popoverTitle = miniPopover ? miniPopover.querySelector('.mini-popover-title') : null;
         var popoverList = miniPopover ? miniPopover.querySelector('.mini-popover-list') : null;
         var currentPopoverKey = null;
+        var lastIconCenterY = 0; // track icon center Y for arrow realignment
+        var lastIconRight   = 0; // track icon right edge for mobile popover left
+        var lastIconTop     = 0; // track icon top for mobile popover start
 
         // Responsive function to show/hide browse toggle
         function updateBrowseToggleVisibility() {
@@ -4146,6 +4220,11 @@ $email = "info@andison-industrial.com";
                 ],
                 'arc-welding-machine': [
                     { label: 'MIG Welding Machine', href: base + '/arc-welding-machine/mig-welding-machine.php' },
+                    { label: 'Accessories and Consumables', href: base + '/arc-welding-machine/accessories-and-consumables.php', subitems: [
+                        { label: 'Welding Torch / Gun', href: base + '/arc-welding-machine/accessories-and-consumables/welding-torch-gun.php' },
+                        { label: 'Torch Consumables', href: base + '/arc-welding-machine/accessories-and-consumables/torch-consumables.php' },
+                        { label: 'Accessories', href: base + '/arc-welding-machine/accessories-and-consumables/accessories.php' }
+                    ]},
                     { label: 'CO2/MAG Welding Machine', href: base + '/arc-welding-machine/co1-mag-welding-machine.php' },
                     { label: 'STUD Welding Machine', href: base + '/arc-welding-machine/stud-welding-machine.php' },
                     { label: 'TIG Welding Machine', href: base + '/arc-welding-machine/tig-welding-machine.php' },
@@ -4158,7 +4237,13 @@ $email = "info@andison-industrial.com";
                 ],
                 'drilling-and-lifting': [
                     { label: 'Lifting', href: base + '/drilling-and-lifting/lifting.php' },
-                    { label: 'Magnetic Drill', href: base + '/drilling-and-lifting/magnetic-drill.php' },
+                    { label: 'Magnetic Drill', href: base + '/drilling-and-lifting/magnetic-drill.php', subitems: [
+                        { label: 'B-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/b-line-series.php' },
+                        { label: 'RL-E Line Series', href: base + '/drilling-and-lifting/magnetic-drill/rl-e-line-series.php' },
+                        { label: 'RBX-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/rbx-line-series.php' },
+                        { label: 'SP-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/sp-line-series.php' },
+                        { label: 'V-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/v-line-series.php' }
+                    ]},
                     { label: 'Cutters', href: base + '/drilling-and-lifting/cutters.php' }
                 ],
                 'gas-detectors': [
@@ -4181,10 +4266,19 @@ $email = "info@andison-industrial.com";
                 ],
                 'protection': [
                     { label: 'Eye Protection', href: base + '/protection/eye-protection.php' },
-                    { label: 'Hand Protection', href: base + '/protection/hand-protection.php' },
+                    { label: 'Hand Protection', href: base + '/protection/hand-protection.php', subitems: [
+                        { label: 'Welding Gloves', href: base + '/protection/welding-gloves.php' },
+                        { label: 'Working Gloves', href: base + '/protection/working-gloves.php' },
+                        { label: 'Chemical and Liquid Protection Gloves', href: base + '/protection/chemical-liquid-protection-gloves.php' },
+                        { label: 'Disposable Gloves', href: base + '/protection/disposable-gloves.php' }
+                    ]},
                     { label: 'Hearing & Respiratory Protection', href: base + '/protection/hearing-respiratory-protection.php' },
                     { label: 'Welding Head and Face Protection', href: base + '/protection/welding-head-and-face-protection.php' },
-                    { label: 'Body Protection', href: base + '/protection/body-protection.php' }
+                    { label: 'Body Protection', href: base + '/protection/body-protection.php', subitems: [
+                        { label: 'Particulate and Low Hazard', href: base + '/protection/particulate-low-hazard.php' },
+                        { label: 'Liquid Spray and Splash', href: base + '/protection/liquid-spray-splash.php' },
+                        { label: 'Chemical and Flame Retardant', href: base + '/protection/chemical-flame-retardant.php' }
+                    ]}
                 ],
                 'welding-accessories': [
                     { label: 'Welding Electrode Oven', href: base + '/welding-accessories/welding-electrode-oven.php' },
@@ -4209,44 +4303,143 @@ $email = "info@andison-industrial.com";
             items.forEach(function(it){
                 var li = document.createElement('li');
                 li.className = 'mini-popover-item';
-                li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a>';
+                
+                if (it.subitems && it.subitems.length > 0) {
+                    // Item with subitems - add container for expanded view
+                    li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a><button class="popover-expand-btn" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>';
+                    li.className += ' has-subitems';
+                    
+                    // Create subitems container
+                    var subContainer = document.createElement('div');
+                    subContainer.className = 'popover-subitems collapsed';
+                    subContainer.innerHTML = it.subitems.map(function(sub){
+                        return '<a href="'+ sub.href +'" class="popover-subitem">'+ sub.label +'</a>';
+                    }).join('');
+                    
+                    li.appendChild(subContainer);
+                    
+                    // Add expand/collapse handler
+                    var expandBtn = li.querySelector('.popover-expand-btn');
+                    expandBtn.addEventListener('click', function(e){
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var isExpanded = expandBtn.getAttribute('aria-expanded') === 'true';
+                        if (isExpanded) {
+                            expandBtn.setAttribute('aria-expanded', 'false');
+                            subContainer.classList.add('collapsed');
+                        } else {
+                            expandBtn.setAttribute('aria-expanded', 'true');
+                            subContainer.classList.remove('collapsed');
+                        }
+                        // Adjust popover height after expanding/collapsing
+                        setTimeout(function(){
+                            adjustPopoverHeight();
+                        }, 10);
+                    });
+                } else {
+                    // Regular item
+                    li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a>';
+                }
+                
                 popoverList.appendChild(li);
             });
             if (popoverTitle) popoverTitle.textContent = getCategoryTitle(key);
         }
+        /* Shared: compute top + arrow for a given height, centered on lastIconCenterY */
+        function _applyPosition(finalHeight) {
+            var vh = window.innerHeight;
+            var isMobile = window.innerWidth <= 768;
+
+            if (isMobile) {
+                // On mobile: align to icon top, but shift up if it would overflow the bottom
+                var popLeft   = Math.round(lastIconRight);
+                var headerMin = 90; // don't go above header
+                var bottomPad = 8;
+                var popTop    = Math.round(lastIconTop);
+                var maxH      = vh - headerMin - bottomPad;
+                var contentH  = Math.min(finalHeight, maxH);
+                // If it would overflow the bottom, shift top upward just enough
+                if (popTop + contentH > vh - bottomPad) {
+                    popTop = vh - contentH - bottomPad;
+                }
+                // Never overlap the header
+                if (popTop < headerMin) popTop = headerMin;
+
+                miniPopover.style.left   = popLeft + 'px';
+                miniPopover.style.right  = '0px';
+                miniPopover.style.width  = 'auto';
+                miniPopover.style.top    = popTop + 'px';
+                miniPopover.style.height = contentH + 'px';
+                miniPopover.style.setProperty('--arrow-offset', '-9999px');
+            } else {
+                // Desktop: center on icon
+                var headerBottom = 140;
+                var top = Math.round(lastIconCenterY - finalHeight / 2);
+                if (top < headerBottom)                top = headerBottom;
+                if (top + finalHeight > vh - 8)        top = vh - finalHeight - 8;
+                if (top < headerBottom)                top = headerBottom;
+
+                miniPopover.style.right  = '';
+                miniPopover.style.width  = '';
+                var arrowOffset = Math.round(lastIconCenterY - top - 26);
+                arrowOffset = Math.max(8, Math.min(finalHeight - 44, arrowOffset));
+
+                miniPopover.style.top    = top + 'px';
+                miniPopover.style.height = finalHeight + 'px';
+                miniPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+            }
+        }
+        function adjustPopoverHeight() {
+            if (!miniPopover) return;
+            var isMobile = window.innerWidth <= 768;
+
+            miniPopover.style.height = 'auto';
+            var naturalH = miniPopover.offsetHeight; 
+            var finalH   = Math.min(naturalH, window.innerHeight * 0.88);
+            _applyPosition(finalH);
+        }
         function positionPopoverForIcon(icon) {
             if (!miniPopover || !icon) return;
-            miniPopover.style.left = '-9999px';
-            miniPopover.style.top = '-9999px';
-            miniPopover.classList.add('show');
+
+            // Always reset mobile-specific styles first so they don't bleed into desktop
+            miniPopover.style.right = '';
+            miniPopover.style.width = '';
+
             var rect = icon.getBoundingClientRect();
-            var pw = miniPopover.offsetWidth;
-            var ph = miniPopover.offsetHeight;
-            var iconCenterY = rect.top + rect.height / 2;
+            lastIconCenterY = rect.top + rect.height / 2;
+            lastIconRight   = rect.right;
+            lastIconTop     = rect.top;
 
-            var left = Math.round(rect.right + 14);
-            var top = Math.round(iconCenterY - ph / 2);
+            var isMobile = window.innerWidth <= 768;
 
-            if (left + pw + 12 > window.innerWidth) {
-                left = Math.round(rect.left - pw - 14);
+            if (!isMobile) {
+                // Desktop: position to the right of the icon
+                var pw   = miniPopover.offsetWidth;
+                var left = Math.round(rect.right + 14);
+                if (left + pw + 12 > window.innerWidth) {
+                    left = Math.round(rect.left - pw - 14);
+                }
+                miniPopover.style.left = left + 'px';
             }
 
-            var headerHeight = 170;
-            var minTop = headerHeight + 12;
-            var maxTop = window.innerHeight - ph - 12;
-            if (top < minTop) top = minTop;
-            if (top > maxTop) top = maxTop;
+            // Measure true height off-screen, then position
+            miniPopover.style.height = 'auto';
+            miniPopover.style.top    = '-9999px';
+            miniPopover.classList.add('show');
 
-            var arrowOffset = iconCenterY - top - 26;
-            miniPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+            var naturalH = miniPopover.offsetHeight;
+            var finalH   = Math.min(naturalH, window.innerHeight * 0.88);
 
-            miniPopover.style.left = left + 'px';
-            miniPopover.style.top = top + 'px';
+            _applyPosition(finalH);
         }
         function hidePopover() {
             if (!miniPopover) return;
             miniPopover.classList.remove('show');
             miniPopover.setAttribute('aria-hidden', 'true');
+            // Reset all inline styles so next open starts clean
+            miniPopover.style.right  = '';
+            miniPopover.style.width  = '';
+            miniPopover.style.height = '';
             currentPopoverKey = null;
         }
         function showPopoverForKey(key, icon) {
@@ -4255,11 +4448,18 @@ $email = "info@andison-industrial.com";
                 hidePopover();
                 return;
             }
+            // Reset while we measure new content
+            miniPopover.classList.remove('show');
+            miniPopover.style.left = '-9999px';
+            miniPopover.style.top  = '-9999px';
+            miniPopover.style.height = 'auto';
+
             renderPopover(key);
-            positionPopoverForIcon(icon);
-            miniPopover.classList.add('show');
-            miniPopover.setAttribute('aria-hidden', 'false');
             currentPopoverKey = key;
+
+            // positionPopoverForIcon makes it visible off-screen, measures, then places it
+            positionPopoverForIcon(icon);
+            miniPopover.setAttribute('aria-hidden', 'false');
         }
 
         // Close on outside click / Escape
@@ -4270,6 +4470,23 @@ $email = "info@andison-industrial.com";
             hidePopover();
         });
         document.addEventListener('keydown', function(e){ if (e.key === 'Escape') hidePopover(); });
+
+        // On resize, force-close and fully reset the popover so mobile styles never bleed into desktop
+        var _resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(_resizeTimer);
+            _resizeTimer = setTimeout(function() {
+                if (!miniPopover) return;
+                miniPopover.classList.remove('show');
+                miniPopover.setAttribute('aria-hidden', 'true');
+                miniPopover.style.right  = '';
+                miniPopover.style.width  = '';
+                miniPopover.style.height = '';
+                miniPopover.style.top    = '';
+                miniPopover.style.left   = '';
+                currentPopoverKey = null;
+            }, 150);
+        });
 
         // Browse toggle click
         if(browseToggle) {
@@ -4441,6 +4658,18 @@ $email = "info@andison-industrial.com";
 
             window.addEventListener('resize', syncFab);
         })();
+    </script>
+
+    <script>
+        // Brand cards - navigate to brand.php with brand name parameter
+        document.querySelectorAll('.brand-card').forEach(function(card) {
+            card.addEventListener('click', function() {
+                var brandName = card.getAttribute('data-brand');
+                if (brandName) {
+                    window.location.href = 'brand.php?name=' + encodeURIComponent(brandName);
+                }
+            });
+        });
     </script>
 </body>
 </html>

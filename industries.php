@@ -3071,84 +3071,302 @@ $ytLinks = andison_get_youtube_links();
             display: grid;
             grid-template-columns: 1fr 1fr;
             border: 1px solid #d8e8f5;
+            border-left: 5px solid #1565C0;
+            border-top: none;
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            box-shadow: 0 2px 16px rgba(0,0,0,0.06);
             background: #fff;
-            transition: box-shadow 0.25s ease, transform 0.25s ease;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
         }
         .industry-card:hover {
-            box-shadow: 0 8px 28px rgba(43,17,219,0.13);
+            box-shadow: 0 12px 36px rgba(21, 101, 192, 0.12);
             transform: translateY(-3px);
         }
 
+        .industry-card.expanded {
+            grid-template-columns: 1fr 1.1fr;
+            box-shadow: 0 16px 48px rgba(21, 101, 192, 0.15);
+        }
+
         .industry-card-body {
-            padding: 28px 28px 24px;
+            padding: 36px 40px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             gap: 12px;
-            border-top: 4px solid #00D7B3;
+            position: relative;
+            z-index: 2;
+        }
+
+        .industry-card.expanded .industry-card-body {
+            padding: 48px;
+            justify-content: flex-start;
+        }
+
+        .industry-card.expanded .industry-card-body > h3,
+        .industry-card.expanded .industry-card-body > p:first-of-type {
+            display: none;
         }
 
         .industry-card-body h3 {
-            font-size: 20px;
+            font-size: 24px;
             font-weight: 800;
             color: #1565C0;
-            text-align: center;
+            text-align: left;
             line-height: 1.3;
+            margin-bottom: 4px;
         }
 
-        .industry-card-body p {
+        .industry-card-body > p {
             font-size: 13px;
-            color: #555;
-            line-height: 1.75;
+            color: #666;
+            line-height: 1.8;
             margin: 0;
+            text-align: left;
         }
 
         .industry-read-more {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            background: linear-gradient(135deg, #2B11DB 0%, #00D7B3 100%);
+            gap: 8px;
+            background: linear-gradient(135deg, #1565C0 0%, #1e88e5 100%);
             color: #fff;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-top: 12px;
+            align-self: flex-start;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(21, 101, 192, 0.3);
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+        }
+        .industry-read-more:hover {
+            background: linear-gradient(135deg, #1e88e5 0%, #1976D2 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(21, 101, 192, 0.4);
+            color: #fff;
+        }
+        .industry-read-more:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(21, 101, 192, 0.2);
+        }
+
+        .industry-card-expanded {
+            display: none;
+            margin-top: 20px;
+            padding-top: 24px;
+            border-top: 2px solid #e8eef7;
+        }
+
+        .industry-card.expanded .industry-card-expanded {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .industry-card.expanded .industry-read-more {
+            display: none;
+        }
+
+        .industry-expanded-content h4 {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1565C0;
+            margin-bottom: 20px;
+            line-height: 1.3;
+            letter-spacing: -0.3px;
+        }
+
+        .industry-expanded-content > p:first-of-type {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.9;
+            margin-bottom: 24px;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .industry-expanded-content p {
+            font-size: 13px;
+            color: #777;
+            line-height: 1.8;
+            margin-bottom: 14px;
+        }
+
+        .industry-expanded-content strong {
+            display: block;
+            color: #1565C0;
             font-size: 12px;
             font-weight: 700;
             letter-spacing: 0.5px;
-            padding: 8px 16px;
+            margin-bottom: 14px;
+            margin-top: 22px;
+            text-transform: uppercase;
+        }
+
+        .industry-expanded-content ul {
+            margin: 14px 0 28px 0;
+            padding-left: 24px;
+        }
+
+        .industry-expanded-content ul li {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.9;
+            margin-bottom: 10px;
+            list-style: disc;
+            list-style-type: none;
+            position: relative;
+            padding-left: 16px;
+        }
+
+        .industry-expanded-content ul li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #1565C0;
+            font-weight: 800;
+            font-size: 18px;
+            line-height: 1;
+            top: -2px;
+        }
+
+        .industry-expanded-content > p:last-child {
+            margin-top: 20px;
+            margin-bottom: 24px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .industry-close-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #1565C0 0%, #1e88e5 100%);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            padding: 12px 28px;
             border-radius: 6px;
             text-decoration: none;
-            margin-top: 4px;
-            align-self: flex-start;
-            transition: opacity 0.2s ease, transform 0.2s ease;
+            margin-top: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 16px rgba(21, 101, 192, 0.3);
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
         }
-        .industry-read-more:hover {
-            opacity: 0.88;
-            transform: translateY(-1px);
-            color: #fff;
+
+        .industry-close-btn:hover {
+            background: linear-gradient(135deg, #1e88e5 0%, #1976D2 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(21, 101, 192, 0.4);
         }
 
         .industry-card-image {
             position: relative;
-            min-height: 220px;
-            background: #e9eef7;
+            height: 300px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 16px rgba(21, 101, 192, 0.1);
+            order: 2;
         }
+
+        .industry-card.expanded .industry-card-image {
+            height: 420px;
+            border-radius: 12px;
+            box-shadow: 0 16px 48px rgba(21, 101, 192, 0.2);
+            transform: scale(1.02);
+            order: 1;
+        }
+
         .industry-card-image img {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
+            object-position: center;
             display: block;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .industry-card.expanded .industry-card-image img {
+            transform: scale(1.08);
+        }
+
+        .industry-card-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(30, 136, 229, 0.05) 0%, rgba(0, 188, 212, 0.05) 100%);
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .industry-card.expanded .industry-card-image::before {
+            opacity: 0;
+        }
+
+        .industry-card-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 6px;
+            box-shadow: inset 0 0 0 1px rgba(21, 101, 192, 0.15);
+            pointer-events: none;
+        }
+
+        .industry-card.expanded .industry-card-image::after {
+            border-radius: 12px;
+            box-shadow: inset 0 0 0 2px rgba(21, 101, 192, 0.25);
         }
 
         @media (max-width: 768px) {
             .industry-card {
                 grid-template-columns: 1fr;
             }
+            .industry-card.expanded {
+                grid-template-columns: 1fr;
+            }
             .industry-card-image {
-                min-height: 180px;
-                position: relative;
+                height: 240px;
+                min-height: 240px;
+                order: 2 !important;
+            }
+            .industry-card.expanded .industry-card-image {
+                height: 280px;
+                margin-top: 24px;
+                order: 2 !important;
+            }
+            .industry-card-body {
+                order: 1;
             }
             .industries-hero h2 { font-size: 28px; }
         }
@@ -3485,11 +3703,30 @@ $ytLinks = andison_get_youtube_links();
         <div class="industry-cards">
 
             <!-- Motor Vehicle Industry -->
-            <div class="industry-card">
+            <div class="industry-card" data-industry="motor-vehicle">
                 <div class="industry-card-body">
                     <h3>Motor Vehicle Industry</h3>
                     <p>This industry manufactures automobiles, motorcycles, buses, and truck vans. They have a growing presence in the Philippine market, especially with the high market for motorcycles. We offer a wide assortment of welding equipment and consumables necessary to produce world-class products.</p>
                     <a href="#" class="industry-read-more">READ MORE &#9660;</a>
+                    
+                    <div class="industry-card-expanded">
+                        <div class="industry-expanded-content">
+                            <h4>Motor Vehicle Industry</h4>
+                            <p>Top multinational and domestic automotive companies choose our Panasonic Welding Systems to significantly improve weld quality and boost efficiency while reducing production costs. We provide consultation, training, maintenance, and reliable after-sales service to satisfy our customers' expectations.</p>
+                            
+                            <strong style="color: #1565C0; font-size: 13px;">Some of our products used in this industry are:</strong>
+                            <ul>
+                                <li>Arc Welding Robot with Power Source</li>
+                                <li>Arc Welding Equipment and Filler Metals</li>
+                                <li>Power Tools and Hand Tools</li>
+                                <li>Personal Protective Equipment (PPEs)</li>
+                            </ul>
+                            
+                            <p style="margin-top: 14px; font-size: 13px; color: #666;">For items not found on our website, kindly see our <a href="contact.php" style="color: #1565C0; text-decoration: none; font-weight: 600;">contact details</a> and send us an inquiry.</p>
+                            
+                            <button class="industry-close-btn">CLOSE &#9652;</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="industry-card-image">
                     <img src="assets/HOME/MOTOR VEHICLE.jpg" alt="Motor Vehicle Industry">
@@ -3497,11 +3734,31 @@ $ytLinks = andison_get_youtube_links();
             </div>
 
             <!-- Metal Fabrication -->
-            <div class="industry-card">
+            <div class="industry-card" data-industry="metal-fabrication">
                 <div class="industry-card-body">
                     <h3>Metal Fabrication and Industrial</h3>
                     <p>Bridges, railways, refineries, shipyards, transmission lines, and other large-scale projects require steel frames and other metals to support the large infrastructures. Workers in the metal fabrication industry do welding, metal cutting, and fastening to assemble metal parts.</p>
                     <a href="#" class="industry-read-more">READ MORE &#9660;</a>
+                    
+                    <div class="industry-card-expanded">
+                        <div class="industry-expanded-content">
+                            <h4>Metal Fabrication and Industrial</h4>
+                            <p>We supply our clients with equipment that makes quality welds in a short time. Our safety products protect workers from hazards such as working from heights, sparks, glaring lights, and hazardous gases.</p>
+                            
+                            <strong style="color: #1565C0; font-size: 13px;">Some of our products used in this industry are:</strong>
+                            <ul>
+                                <li>Arc Welding Equipment and Filler Metals</li>
+                                <li>Plate Cutting and Beveling Equipment</li>
+                                <li>Gas Welding and Cutting Equipment</li>
+                                <li>Power Tools and Hand Tools</li>
+                                <li>Personal Protective Equipment (PPEs)</li>
+                            </ul>
+                            
+                            <p style="margin-top: 14px; font-size: 13px; color: #666;">For items not found on our website, kindly see our <a href="contact.php" style="color: #1565C0; text-decoration: none; font-weight: 600;">contact details</a> and send us an inquiry.</p>
+                            
+                            <button class="industry-close-btn">CLOSE &#9652;</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="industry-card-image">
                     <img src="assets/HOME/METAL FABRICATION.jpg" alt="Metal Fabrication and Industrial">
@@ -3509,11 +3766,31 @@ $ytLinks = andison_get_youtube_links();
             </div>
 
             <!-- Power Generation -->
-            <div class="industry-card">
+            <div class="industry-card" data-industry="power-generation">
                 <div class="industry-card-body">
                     <h3>Power Generation</h3>
                     <p>The Power Generation Industry is vital in a country's growth. They must be a reliable partner in meeting the Philippine Energy Market's ever-growing demands.</p>
                     <a href="#" class="industry-read-more">READ MORE &#9660;</a>
+                    
+                    <div class="industry-card-expanded">
+                        <div class="industry-expanded-content">
+                            <h4>Power Generation</h4>
+                            <p>From plant maintenance, shutdown, building power transmission lines, and other infrastructures, we work closely with our clients and supply them finish their projects on schedule.</p>
+                            
+                            <strong style="color: #1565C0; font-size: 13px;">Some of our products used in this industry are:</strong>
+                            <ul>
+                                <li>Arc Welding Equipment and Filler Metals</li>
+                                <li>Power Tools and Hand Tools</li>
+                                <li>Grinders, Maintenance Tools and Equipment</li>
+                                <li>Bearings, Maintenance Tools and Equipment</li>
+                                <li>Height Protection Equipment and other PPEs</li>
+                            </ul>
+                            
+                            <p style="margin-top: 14px; font-size: 13px; color: #666;">For items not found on our website, kindly see our <a href="contact.php" style="color: #1565C0; text-decoration: none; font-weight: 600;">contact details</a> and send us an inquiry.</p>
+                            
+                            <button class="industry-close-btn">CLOSE &#9652;</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="industry-card-image">
                     <img src="assets/HOME/POWER GENERATION.jpg" alt="Power Generation">
@@ -3521,11 +3798,33 @@ $ytLinks = andison_get_youtube_links();
             </div>
 
             <!-- Oil and Petrochemical -->
-            <div class="industry-card">
+            <div class="industry-card" data-industry="oil-petrochemical">
                 <div class="industry-card-body">
                     <h3>Oil and Petrochemical Industry</h3>
                     <p>Oil refineries use fractional distillation and other methods to process crude oil into more useful products like petroleum, gasoline, and other fuels. During the distillation, heavier by-products settle at the bottom. Petrochemical plants crack the by-products and further process them into more useful chemicals. Other industries use these petrochemicals to create different products.</p>
                     <a href="#" class="industry-read-more">READ MORE &#9660;</a>
+                    
+                    <div class="industry-card-expanded">
+                        <div class="industry-expanded-content">
+                            <h4>Oil and Petrochemical Industry</h4>
+                            <p>Oil and petrochemical industries regularly perform industrial works (projects) that require maintenance, shutdowns, and expanding facilities and pipelines. We provide our clients with safety products, equipment and consumables for maintaining the facilities and building industrial projects.</p>
+                            
+                            <strong style="color: #1565C0; font-size: 13px;">Some of our products used in this industry are:</strong>
+                            <ul>
+                                <li>Arc Welding Equipment and Filler Metals</li>
+                                <li>Portable Gas Detectors</li>
+                                <li>Air Movers and Industrial Ventilators</li>
+                                <li>Bearings, Maintenance Tools and Equipment</li>
+                                <li>Pipe Cutting and Beveling Machine</li>
+                                <li>Power Tools and Hand Tools</li>
+                                <li>Personal Protective Equipment (PPEs)</li>
+                            </ul>
+                            
+                            <p style="margin-top: 14px; font-size: 13px; color: #666;">For items not found on our website, kindly see our <a href="contact.php" style="color: #1565C0; text-decoration: none; font-weight: 600;">contact details</a> and send us an inquiry.</p>
+                            
+                            <button class="industry-close-btn">CLOSE &#9652;</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="industry-card-image">
                     <img src="assets/HOME/OIL AND PETROCHEMICAL.jpg" alt="Oil and Petrochemical Industry">
@@ -3533,11 +3832,32 @@ $ytLinks = andison_get_youtube_links();
             </div>
 
             <!-- Mining Industry -->
-            <div class="industry-card">
+            <div class="industry-card" data-industry="mining">
                 <div class="industry-card-body">
                     <h3>Mining Industry</h3>
                     <p>This industry extracts coal, oil, metals, and other raw materials from the earth. These resources are processed by other industries to create products such as fuel, jewelry, construction materials, and everyday items. Mining is vital to the economy.</p>
                     <a href="#" class="industry-read-more">READ MORE &#9660;</a>
+                    
+                    <div class="industry-card-expanded">
+                        <div class="industry-expanded-content">
+                            <h4>Mining Industry</h4>
+                            <p>However, digging deep into the ground could pose a safety risk to workers without the proper equipment. We at Andison promote safety by providing high-quality PPEs. Our portfolio includes various single and multi-gas detectors including maintenance-free gas detection. We provide clients with training on the proper use of the equipment to fully use its functions and ensure a safe working environment. We also do recalibration for the gas detection.</p>
+                            
+                            <strong style="color: #1565C0; font-size: 13px;">Some of our products used in this industry are:</strong>
+                            <ul>
+                                <li>Portable and Multi-Gas Detectors</li>
+                                <li>PPEs and other Safety Products</li>
+                                <li>Air Movers and Ventilation Equipment</li>
+                                <li>Bearings, Maintenance Tools and Equipment</li>
+                                <li>Cordless Power Tools</li>
+                                <li>Floodlights and other Light Sources</li>
+                            </ul>
+                            
+                            <p style="margin-top: 14px; font-size: 13px; color: #666;">For items not found on our website, kindly see our <a href="contact.php" style="color: #1565C0; text-decoration: none; font-weight: 600;">contact details</a> and send us an inquiry.</p>
+                            
+                            <button class="industry-close-btn">CLOSE &#9652;</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="industry-card-image">
                     <img src="assets/HOME/MINING.jpg" alt="Mining Industry">
@@ -3545,11 +3865,33 @@ $ytLinks = andison_get_youtube_links();
             </div>
 
             <!-- Shipyard -->
-            <div class="industry-card">
+            <div class="industry-card" data-industry="shipyard">
                 <div class="industry-card-body">
                     <h3>Shipyard</h3>
                     <p>World trade relies heavily on freight ships because it offers a high capacity at a low cost in transporting goods. Being an archipelago, the Philippines also uses ships to ferry people to the country's many islands. Shipyards play a critical role in maintaining ships, ensuring they are seaworthy and safe.</p>
                     <a href="#" class="industry-read-more">READ MORE &#9660;</a>
+                    
+                    <div class="industry-card-expanded">
+                        <div class="industry-expanded-content">
+                            <h4>Shipyard</h4>
+                            <p>Metal fabrication is an integral part of the shipbuilding industry. Andison has a wide product catalog for working with metal fabrication, providing clients with equipment ready for the job.</p>
+                            
+                            <strong style="color: #1565C0; font-size: 13px;">Some of our products used in this industry are:</strong>
+                            <ul>
+                                <li>Arc Welding Equipment and Filler Metals</li>
+                                <li>Gas Welding and Cutting Equipment</li>
+                                <li>Air Movers and Industrial Ventilators</li>
+                                <li>Power Tools and Hand Tools</li>
+                                <li>Pipe Cutting and Beveling Machine</li>
+                                <li>Personal Protective Equipment (PPEs)</li>
+                                <li>Portable Gas Detectors</li>
+                            </ul>
+                            
+                            <p style="margin-top: 14px; font-size: 13px; color: #666;">For items not found on our website, kindly see our <a href="contact.php" style="color: #1565C0; text-decoration: none; font-weight: 600;">contact details</a> and send us an inquiry.</p>
+                            
+                            <button class="industry-close-btn">CLOSE &#9652;</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="industry-card-image">
                     <img src="assets/HOME/shipyard.jpg" alt="Shipyard">
@@ -4649,6 +4991,40 @@ $ytLinks = andison_get_youtube_links();
             observer.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
 
             window.addEventListener('resize', syncFab);
+        })();
+    </script>
+
+    <script>
+        // Industry Card Expand/Collapse Functionality
+        (function(){
+            var readMoreButtons = document.querySelectorAll('.industry-read-more');
+            var closeButtons = document.querySelectorAll('.industry-close-btn');
+
+            // Handle READ MORE clicks
+            readMoreButtons.forEach(function(button){
+                button.addEventListener('click', function(e){
+                    e.preventDefault();
+                    var card = button.closest('.industry-card');
+                    if(card){
+                        card.classList.add('expanded');
+                        // Scroll to card
+                        setTimeout(function(){
+                            card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }, 100);
+                    }
+                });
+            });
+
+            // Handle CLOSE clicks
+            closeButtons.forEach(function(button){
+                button.addEventListener('click', function(e){
+                    e.preventDefault();
+                    var card = button.closest('.industry-card');
+                    if(card){
+                        card.classList.remove('expanded');
+                    }
+                });
+            });
         })();
     </script>
 </body>
