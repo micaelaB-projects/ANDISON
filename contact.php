@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/andison/includes/analytics.php'; andison_track_visit('contact');
+require_once __DIR__ . '/andison/includes/analytics.php';
+andison_track_visit('services');
 require_once __DIR__ . '/andison/includes/home_featured.php';
 require_once __DIR__ . '/andison/includes/home_slider.php';
 require_once __DIR__ . '/andison/includes/youtube_links.php';
@@ -13,7 +14,7 @@ $ytLinks = andison_get_youtube_links();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Industrial Solutions Inc. - Homepage Redesign</title>
+    <title>Our Services - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
         * {
@@ -788,7 +789,7 @@ $ytLinks = andison_get_youtube_links();
             margin-bottom: 16px;
             color: #2B11DB;
             width: 100%;
-            background: linear-gradient(135deg, #2B11DB 0%, #00D7B3 100%);
+            background: linear-gradient(90deg, #1565C0 0%, #00BCD4 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -799,12 +800,12 @@ $ytLinks = andison_get_youtube_links();
             text-align: center;
             max-width: 750px;
             margin: 0 auto 60px;
-            color: #555;
+            color: #8B4513;
             line-height: 1.9;
             width: 100%;
             box-sizing: border-box;
             padding: 0 20px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 500;
         }
 
@@ -912,6 +913,98 @@ $ytLinks = andison_get_youtube_links();
             color: #666;
             line-height: 1.7;
             margin: 0;
+        }
+
+        /* Service Cards - Old Layout */
+        .services-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            width: 100%;
+            max-width: 1050px;
+        }
+
+        .service-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            background: white;
+            border-radius: 16px;
+            padding: 48px 44px;
+            border: 1px solid #E0E3FF;
+            box-shadow: 0 4px 16px rgba(30, 136, 229, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .service-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 32px rgba(30, 136, 229, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .service-card.reverse {
+            direction: rtl;
+        }
+
+        .service-card.reverse > * {
+            direction: ltr;
+        }
+
+        .service-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 24px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            box-shadow: 0 4px 12px rgba(30, 136, 229, 0.25);
+        }
+
+        .service-card.teal .service-badge {
+            background: linear-gradient(135deg, #00bcd4 0%, #00897b 100%);
+            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.25);
+        }
+
+        .service-content h3 {
+            font-size: 26px;
+            font-weight: 800;
+            color: #1e88e5;
+            margin-bottom: 18px;
+            line-height: 1.3;
+            letter-spacing: -0.3px;
+        }
+
+        .service-card.teal .service-content h3 {
+            color: #00bcd4;
+        }
+
+        .service-content p {
+            font-size: 14px;
+            color: #8B4513;
+            line-height: 1.85;
+            margin: 0;
+        }
+
+        .service-icon-box {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #1e88e5 0%, #00bcd4 100%);
+            font-size: 68px;
+            color: white;
+            box-shadow: 0 8px 24px rgba(30, 136, 229, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .service-card.teal .service-icon-box {
+            background: linear-gradient(135deg, #00bcd4 0%, #00897b 100%);
+            box-shadow: 0 8px 24px rgba(0, 188, 212, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
 
         /* Featured Section */
@@ -1320,7 +1413,7 @@ $ytLinks = andison_get_youtube_links();
             
             .hero {
                 aspect-ratio: auto;
-                min-height: 420px;
+                min-height: 260px;
                 padding: 20px 0;
                 display: flex;
                 align-items: center;
@@ -1336,10 +1429,32 @@ $ytLinks = andison_get_youtube_links();
                 justify-content: center;
             }
 
+            .hero-slide {
+                width: 92% !important;
+                left: 50% !important;
+                transform: translateX(-50%) scale(1) !important;
+                filter: blur(0) !important;
+                opacity: 0 !important;
+            }
+
+            .hero-slide.active {
+                width: 92% !important;
+                left: 50% !important;
+                transform: translateX(-50%) scale(1) !important;
+                filter: blur(0) !important;
+                opacity: 1 !important;
+            }
+
+            .hero-slide.prev,
+            .hero-slide.next {
+                opacity: 0 !important;
+                pointer-events: none;
+            }
+
             .hero-thumb {
-                width: 85%;
+                width: 100%;
                 height: auto;
-                max-width: 95%;
+                max-width: 100%;
                 aspect-ratio: 16 / 9 !important;
             }
             
@@ -1388,6 +1503,40 @@ $ytLinks = andison_get_youtube_links();
                 gap: 24px;
             }
 
+            .services-grid {
+                gap: 24px;
+            }
+
+            .service-card {
+                grid-template-columns: 1fr;
+                gap: 24px;
+                padding: 24px;
+            }
+
+            .service-card.reverse {
+                direction: ltr;
+            }
+
+            .service-badge {
+                margin-bottom: 8px;
+                font-size: 11px;
+            }
+
+            .service-content h3 {
+                font-size: 20px;
+                margin-bottom: 12px;
+            }
+
+            .service-content p {
+                font-size: 14px;
+                line-height: 1.7;
+            }
+
+            .service-icon-box {
+                aspect-ratio: 1 / 1;
+                font-size: 48px;
+            }
+
             section h2 {
                 font-size: 28px;
             }
@@ -1398,24 +1547,76 @@ $ytLinks = andison_get_youtube_links();
             }
 
             .sidebar-overlay {
-                width: 95%;
-                max-width: 100%;
-                max-height: 95vh;
-                padding: 28px 20px;
+                width: 75%;
+                max-width: 320px;
+                padding: 12px 0;
             }
 
             .sidebar-overlay h3 {
-                font-size: 16px;
-                margin-bottom: 20px;
+                font-size: 14px;
+                margin-bottom: 8px;
+                padding: 0 12px;
+            }
+
+            .sidebar-list { 
+                padding: 0;
+            }
+
+            .sidebar-list li { 
+                border-bottom: none;
             }
 
             .sidebar-list a {
-                font-size: 14px;
-                padding: 14px 10px;
+                font-size: 13px;
+                padding: 10px 14px;
+                gap: 12px;
+                min-height: 36px;
+                align-items: center;
+            }
+
+            .sidebar-list a:active {
+                background: rgba(43, 17, 219, 0.08);
+            }
+
+            .sidebar-icon {
+                width: 20px;
+                height: 20px;
+                font-size: 16px;
+            }
+
+            .sidebar-sublist {
+                background: #f8f9fa;
+                border-left: 3px solid #2B11DB;
+                margin: 2px 0;
+                padding: 4px 0 4px 12px;
             }
 
             .sidebar-sublist a {
-                font-size: 13px;
+                font-size: 12px;
+                padding: 8px 14px 8px 42px;
+                min-height: 32px;
+            }
+
+            .sidebar-nested-sublist {
+                margin: 4px 0;
+                padding: 6px 0 6px 14px;
+                background: rgba(43, 17, 219, 0.06);
+                border-left: 2px solid rgba(43, 17, 219, 0.3);
+            }
+
+            .sidebar-nested-sublist a {
+                font-size: 11px;
+                padding: 8px 14px 8px 36px;
+                color: #5a6b7d;
+                min-height: 30px;
+                margin: 0;
+            }
+
+            .sidebar-nested-sublist a:hover,
+            .sidebar-nested-sublist a:active {
+                background: rgba(43, 17, 219, 0.14);
+                color: #2B11DB;
+                padding-left: 44px;
             }
         }
 
@@ -1440,14 +1641,14 @@ $ytLinks = andison_get_youtube_links();
             left: 0;
             top: calc(14px + 50px + 14px + 12px + 52px);
             bottom: 0;
-            width: 380px;
-            max-width: 90%;
+            width: 320px;
+            max-width: 80%;
             background: #fff;
             box-shadow: 4px 0 24px rgba(0,0,0,0.15);
             transform: translateX(-100%);
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 70;
-            padding: 28px 20px;
+            padding: 20px 12px;
             overflow-y: auto;
         }
 
@@ -1476,11 +1677,15 @@ $ytLinks = andison_get_youtube_links();
             justify-content: space-between;
             transition: all 0.2s ease;
             font-size: 15px;
+            min-height: 48px;
         }
         .sidebar-list a:hover { 
             background: #f3f4f6; 
             color: #2B11DB;
             padding-left: 16px;
+        }
+        .sidebar-list a:active {
+            background: rgba(43, 17, 219, 0.08);
         }
         .sidebar-list li a.active {
             background: #f3f4f6;
@@ -1525,21 +1730,23 @@ $ytLinks = andison_get_youtube_links();
 
 
         .sidebar-sublist li { 
-            padding: 4px 0; 
+            padding: 0; 
             border: none;
         }
         .sidebar-sublist a { 
             color: #4b5563; 
             font-size: 14px; 
-            padding: 6px 8px; 
+            padding: 10px 16px 10px 48px; 
             display: block; 
             text-decoration: none;
             justify-content: flex-start;
+            min-height: 42px;
+            align-items: center;
         }
         .sidebar-sublist a:hover { 
             color: #2B11DB; 
-            background: transparent;
-            padding-left: 12px;
+            background: rgba(43, 17, 219, 0.08);
+            padding-left: 52px;
         }
 
         /* Nested sublists */
@@ -1573,14 +1780,15 @@ $ytLinks = andison_get_youtube_links();
         }
         .sidebar-nested-sublist a { 
             color: #5a6b7d; 
-            font-size: 13px; 
-            padding: 10px 12px 10px 28px; 
+            font-size: 11px; 
+            padding: 8px 10px 8px 32px; 
             display: block; 
             text-decoration: none;
             position: relative;
             transition: all 0.25s ease;
-            border-radius: 6px;
-            margin: 2px 0;
+            border-radius: 4px;
+            margin: 0;
+            min-height: 30px;
         }
 
         .sidebar-list li.has-sub { position: relative; }
@@ -1949,7 +2157,7 @@ $ytLinks = andison_get_youtube_links();
             transform: translateX(-100%);
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 70;
-            padding: 28px 20px;
+            padding: 12px 8px;
             overflow-y: auto;
         }
 
@@ -1958,26 +2166,27 @@ $ytLinks = andison_get_youtube_links();
         }
 
         .sidebar-overlay h3 {
-            font-size: 18px;
-            margin-bottom: 24px;
+            font-size: 14px;
+            margin-bottom: 10px;
             color: #222;
             font-weight: 700;
             letter-spacing: 0.5px;
         }
 
-        .sidebar-list { list-style: none; padding: 28px 20px 0 20px; margin: 0; }
+        .sidebar-list { list-style: none; padding: 8px 8px 0 8px; margin: 0; }
         .sidebar-list li { border-bottom: 1px solid #e5e7eb; }
         .sidebar-list li:last-child { border-bottom: none; }
         .sidebar-list a { 
             display: flex; 
             gap: 12px; 
-            padding: 16px 12px; 
+            padding: 10px 10px; 
             color: #1f2937; 
             text-decoration: none; 
             align-items: center;
             justify-content: space-between;
             transition: all 0.2s ease;
-            font-size: 15px;
+            font-size: 13px;
+            min-height: 36px;
         }
         .sidebar-list a:hover { 
             background: #f3f4f6; 
@@ -2027,19 +2236,15 @@ $ytLinks = andison_get_youtube_links();
 
         .sidebar-sublist { 
             list-style: none; 
-            margin: 0; 
-            padding: 8px 0 8px 44px; 
-            background: #fafafa;
-            margin-left: 12px;
-            margin-right: 12px;
-            padding-left: 16px;
-            border-left: 2px solid #e5e7eb;
-            padding-top: 8px;
-            padding-bottom: 8px;
-            max-height: 1000px;
+            margin: 2px 0; 
+            padding: 4px 0 4px 12px;
+            background: #f8f9fa;
+            border-left: 3px solid #2B11DB;
+            max-height: 500px;
             overflow: hidden;
             transition: max-height 0.3s ease, opacity 0.3s ease;
             opacity: 1;
+            display: block;
         }
         
         .sidebar-sublist.collapsed {
@@ -2048,21 +2253,23 @@ $ytLinks = andison_get_youtube_links();
             overflow: hidden;
         }
         .sidebar-sublist li { 
-            padding: 4px 0; 
+            padding: 0; 
             border: none;
         }
         .sidebar-sublist a { 
             color: #4b5563; 
-            font-size: 14px; 
-            padding: 6px 8px; 
+            font-size: 12px; 
+            padding: 8px 12px 8px 38px; 
             display: block; 
             text-decoration: none;
             justify-content: flex-start;
+            min-height: 32px;
+            align-items: center;
         }
         .sidebar-sublist a:hover { 
             color: #2B11DB; 
-            background: transparent;
-            padding-left: 12px;
+            background: rgba(43, 17, 219, 0.08);
+            padding-left: 52px;
         }
 
         /* Nested sublists */
@@ -2091,12 +2298,15 @@ $ytLinks = andison_get_youtube_links();
 
         .sidebar-nested-sublist { 
             list-style: none; 
-            margin: 10px 0 10px -12px; 
-            padding: 0;
+            margin: 2px 0;
+            padding: 4px 0 4px 12px;
             max-height: 500px;
             overflow: hidden;
             transition: max-height 0.3s ease, opacity 0.3s ease;
             opacity: 1;
+            background: rgba(43, 17, 219, 0.05);
+            border-left: 2px solid rgba(43, 17, 219, 0.3);
+        }
         }
         
         .sidebar-nested-sublist.collapsed {
@@ -2110,32 +2320,34 @@ $ytLinks = andison_get_youtube_links();
         }
         .sidebar-nested-sublist a { 
             color: #5a6b7d; 
-            font-size: 13px; 
-            padding: 10px 12px 10px 28px; 
+            font-size: 11px; 
+            padding: 8px 10px 8px 32px; 
             display: block; 
             text-decoration: none;
             position: relative;
             transition: all 0.25s ease;
-            border-radius: 6px;
-            margin: 2px 0;
+            border-radius: 4px;
+            margin: 0;
+            min-height: 30px;
+            align-items: center;
         }
         .sidebar-nested-sublist a::before {
             content: '';
             position: absolute;
-            left: 8px;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
             background: linear-gradient(135deg, #2B11DB 0%, #6d28d9 100%);
             border-radius: 50%;
             box-shadow: 0 2px 4px rgba(43, 17, 219, 0.2);
         }
         .sidebar-nested-sublist a:hover { 
             color: #2B11DB;
-            background: rgba(43, 17, 219, 0.08);
-            padding-left: 32px;
-            transform: translateX(4px);
+            background: rgba(43, 17, 219, 0.12);
+            padding-left: 36px;
+            transform: none;
         }
 
         .sidebar-list li.has-sub { position: relative; }
@@ -2292,7 +2504,7 @@ $ytLinks = andison_get_youtube_links();
 
         .mini-sidebar-icon .label {
             display: none;
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 500;
             white-space: nowrap;
             flex: 1;
@@ -2551,27 +2763,99 @@ $ytLinks = andison_get_youtube_links();
         .mobile-sidebar-fab.open { transform: translateY(-50%) translateX(56px); }
         .mobile-sidebar-fab.open.wide { transform: translateY(-50%) translateX(240px); }
 
+        /* Mini popover — mobile overrides */
+        @media (max-width: 768px) {
+            .mini-popover {
+                border-radius: 0 12px 12px 0 !important;
+                box-shadow: 4px 8px 24px rgba(0,0,0,0.28) !important;
+                overflow: hidden !important;
+            }
+            .mini-popover::before { display: none !important; }
+            .mini-popover-header {
+                border-radius: 0 !important;
+                padding: 10px 14px !important;
+                font-size: 13px !important;
+                letter-spacing: 0.5px !important;
+            }
+            .mini-popover-body {
+                padding: 6px 8px 8px 8px !important;
+            }
+            .mini-popover-list {
+                padding: 0 !important;
+            }
+            .mini-popover-list::before {
+                display: none !important;
+            }
+            .mini-popover-item {
+                margin: 2px 0 !important;
+                min-height: auto !important;
+                padding-left: 4px !important;
+                align-items: center !important;
+            }
+            .mini-popover-item .square {
+                width: 6px !important;
+                height: 6px !important;
+                min-width: 6px !important;
+                border-radius: 2px !important;
+            }
+            .mini-popover-item a {
+                font-size: 12px !important;
+                padding: 8px 10px !important;
+                line-height: 1.2 !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                font-weight: 600 !important;
+            }
+            .mini-popover-item a:active {
+                background: rgba(255,255,255,0.18) !important;
+            }
+            .mini-popover-item.has-subitems {
+                padding-right: 30px !important;
+            }
+            .popover-expand-btn {
+                height: 28px !important;
+                width: 28px !important;
+                right: 4px !important;
+            }
+            .popover-expand-btn .bi {
+                font-size: 14px !important;
+            }
+            .popover-subitem {
+                padding: 5px 10px 5px 18px !important;
+                font-size: 11px !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+        }
+
         /* Mini popover styles for subcategories */
         .mini-popover {
             position: fixed;
             top: -9999px;
             left: -9999px;
-            width: 320px;
-            max-width: calc(100vw - 32px);
-            background: linear-gradient(180deg, #1976D2FF 0%, #19D2B6FF 100%);
+            width: 380px;
+            max-width: calc(100vw - 40px);
+            background: linear-gradient(135deg, #1E88E5 0%, #00BCD4 100%);
             color: #fff;
             border-radius: 16px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+            box-shadow: 0 16px 40px rgba(30, 136, 229, 0.3), 0 2px 8px rgba(0,0,0,0.2);
             opacity: 0;
             visibility: hidden;
-            transform: translateY(-6px);
-            transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease;
-            z-index: 200;
+            transform: translateY(-8px) scale(0.95);
+            transition: opacity 180ms cubic-bezier(0.34, 1.56, 0.64, 1), transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1), visibility 180ms ease;
+            z-index: 1300;
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.15);
         }
         .mini-popover.show {
             opacity: 1;
             visibility: visible;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
         .mini-popover::before {
             content: '';
@@ -2585,25 +2869,27 @@ $ytLinks = andison_get_youtube_links();
             filter: drop-shadow(-2px 2px 2px rgba(0,0,0,0.12));
         }
         .mini-popover-header {
-            background: #f5f9ff;
-            color: #0f5132;
+            background: linear-gradient(135deg, #1E88E5 0%, #1565C0 100%);
+            color: #ffffff;
             border-top-left-radius: 16px;
             border-top-right-radius: 16px;
-            padding: 12px 16px;
-            font-weight: 800;
-            font-size: 15px;
-            letter-spacing: 0.3px;
+            padding: 16px 20px;
+            font-weight: 700;
+            font-size: 16px;
+            letter-spacing: 0.4px;
+            line-height: 1.3;
         }
-        .mini-popover-title { color: #0f5132; }
+        .mini-popover-title { color: #ffffff; }
         .mini-popover-body {
-            padding: 12px 16px 16px 16px;
-            max-height: calc(100vh - 100px);
-            overflow-y: auto;
+            padding: 14px 16px 18px 16px;
+            overflow: visible;
+            flex: 1;
+            background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 100%);
         }
         .mini-popover-list {
             list-style: none;
             margin: 0;
-            padding: 6px 0 6px 0;
+            padding: 0;
             position: relative;
         }
         .mini-popover-list::before {
@@ -2615,14 +2901,15 @@ $ytLinks = andison_get_youtube_links();
             width: 2px;
             background: rgba(255,255,255,0.35);
             border-radius: 2px;
+            display: none;
         }
         .mini-popover-item {
             position: relative;
-            padding-left: 42px;
-            margin: 12px 0;
+            padding-left: 0;
+            margin: 3px 0;
             display: flex;
             align-items: stretch;
-            min-height: 32px;
+            min-height: auto;
         }
         .mini-popover-item .square {
             position: absolute;
@@ -2636,524 +2923,259 @@ $ytLinks = andison_get_youtube_links();
             box-shadow: 0 2px 6px rgba(0,0,0,0.18), inset 0 -1px 0 rgba(0,0,0,0.08);
             flex-shrink: 0;
             pointer-events: none;
+            display: none;
         }
         .mini-popover-item a {
             color: #ffffff;
             text-decoration: none;
             font-weight: 600;
             display: block;
-            padding: 8px 10px;
+            padding: 12px 14px;
             border-radius: 8px;
-            transition: background 140ms ease, transform 120ms ease;
+            transition: all 160ms cubic-bezier(0.34, 1.56, 0.64, 1);
             width: 100%;
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+            line-height: 1.4;
+            font-size: 14px;
+            background: rgba(255,255,255,0.06);
+            border-left: 3px solid transparent;
         }
         .mini-popover-item a:hover {
-            background: rgba(255,255,255,0.12);
-            transform: translateX(2px);
+            background: rgba(255,255,255,0.16);
+            transform: translateX(4px);
+            border-left-color: rgba(255,255,255,0.5);
         }
-
-        /* ====================================
-           DRAMATIC CONTACT PAGE STYLING
-           ==================================== */
-
-        .main-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 80px 20px;
-            background: white;
-            position: relative;
+        
+        /* Expandable popover items */
+        .mini-popover-item.has-subitems {
+            flex-wrap: wrap;
+            padding-right: 36px;
+        }
+        .popover-expand-btn {
+            position: absolute;
+            right: 8px;
+            top: 0;
+            bottom: 0;
+            height: 32px;
+            width: 32px;
+            margin: auto;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 160ms cubic-bezier(0.34, 1.56, 0.64, 1);
+            flex-shrink: 0;
+            border-radius: 8px;
+        }
+        .popover-expand-btn:hover {
+            background: rgba(255,255,255,0.22);
+            transform: scale(1.08);
+        }
+        .popover-expand-btn:active {
+            background: rgba(255,255,255,0.3);
+            transform: scale(0.95);
+        }
+        .popover-expand-btn .bi {
+            font-size: 18px;
+            transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .popover-expand-btn[aria-expanded="true"] .bi {
+            transform: rotate(90deg);
+        }
+        
+        .popover-subitems {
+            width: 100%;
+            margin-top: 8px;
+            max-height: none;
             overflow: visible;
+            transition: opacity 250ms ease;
+            opacity: 1;
+            padding-left: 0;
         }
-
-        .page-title {
-            text-align: center;
-            font-size: 48px;
-            font-weight: 800;
-            margin-bottom: 60px;
-            color: #2B11DB;
-            width: 100%;
-            background: linear-gradient(135deg, #2B11DB 0%, #00D7B3 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.5px;
+        .popover-subitems.collapsed {
+            display: none;
+        }
+        
+        .popover-subitem {
+            color: rgba(255,255,255,0.85) !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            padding: 6px 10px 6px 28px !important;
+            display: block !important;
+            text-decoration: none !important;
+            border-radius: 6px !important;
+            transition: all 120ms ease !important;
             position: relative;
-            z-index: 1;
         }
-
-        .locations-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 50px;
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .location-card {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.4s ease;
-            border: 1px solid #e8eef7;
-            position: relative;
-            background: white;
-        }
-
-        .location-card::before {
+        .popover-subitem::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
             height: 4px;
-            background: linear-gradient(135deg, #2B11DB 0%, #00D7B3 100%);
-            z-index: 10;
+            border-radius: 50%;
+            background: #ffffff;
+            opacity: 0.6;
+        }
+        .popover-subitem:hover {
+            background: rgba(255,255,255,0.12) !important;
+            transform: translateX(2px) !important;
+            color: #ffffff !important;
         }
 
-        .location-card:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 20px 40px rgba(43, 17, 219, 0.15);
+        /* ============ CONTACT PAGE STYLES ============ */
+        .contact-page-title {
+            text-align: center;
+            font-size: 42px;
+            font-weight: 800;
+            color: #2B11DB;
+            padding: 50px 20px 30px;
+            letter-spacing: -0.5px;
         }
 
-        .location-map {
-            width: 100%;
-            height: 100%;
-            min-height: 450px;
-            border: none;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            filter: brightness(1);
-        }
-
-        .location-card:hover .location-map {
-            transform: scale(1.04);
-            filter: brightness(1.08);
-        }
-
-        .location-info {
-            padding: 50px 45px;
-            background: linear-gradient(135deg, #ffffff 0%, #f9fafb 40%, #f0f5ff 100%);
+        .contact-locations-grid {
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .location-info::before {
-            content: '';
-            position: absolute;
-            top: -30%;
-            right: -10%;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(0, 215, 179, 0.15) 0%, transparent 70%);
-            border-radius: 50%;
-            z-index: 0;
-            filter: blur(40px);
-        }
-
-        .location-name {
-            font-size: 40px;
-            font-weight: 900;
-            background: linear-gradient(135deg, #2B11DB 0%, #0052cc 30%, #00a8a8 65%, #00ff88 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 35px;
-            position: relative;
-            z-index: 2;
-            letter-spacing: -0.5px;
-            text-transform: uppercase;
-            color: #2B11DB;
-        }
-
-        @keyframes nameGlow {
-            0%, 100% { text-shadow: 0 0 25px rgba(0, 215, 179, 0.3), 0 0 50px rgba(43, 17, 219, 0.2); }
-            50% { text-shadow: 0 0 40px rgba(0, 215, 179, 0.5), 0 0 80px rgba(43, 17, 219, 0.4), 0 0 120px rgba(0, 255, 136, 0.2); }
-        }
-
-        @keyframes nameFlow {
-            0% { background-position: 0% 0%; }
-            50% { background-position: 100% 0%; }
-            100% { background-position: 0% 0%; }
-        }
-
-        .info-item {
-            margin-bottom: 28px;
-            position: relative;
-            z-index: 1;
-            padding-left: 38px;
-            transition: all 0.3s ease;
-        }
-
-        .info-item:hover {
-            transform: translateX(6px);
-        }
-
-        .info-item::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 4px;
-            width: 11px;
-            height: 11px;
-            background: linear-gradient(135deg, #2B11DB 0%, #00a8a8 50%, #00ff88 100%);
-            border-radius: 50%;
-            box-shadow: 0 0 18px rgba(43, 17, 219, 0.7), 0 0 36px rgba(0, 215, 179, 0.5), 0 0 54px rgba(0, 255, 136, 0.3);
-        }
-
-        @keyframes dotPulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 18px rgba(43, 17, 219, 0.6), 0 0 36px rgba(0, 215, 179, 0.4); }
-            50% { transform: scale(1.5); box-shadow: 0 0 30px rgba(43, 17, 219, 0.9), 0 0 60px rgba(0, 215, 179, 0.7), 0 0 90px rgba(0, 255, 136, 0.4); }
-        }
-
-        @keyframes dotGlow {
-            0%, 100% { filter: brightness(1); }
-            50% { filter: brightness(1.3); }
-        }
-
-        .info-label {
-            font-weight: 900;
-            color: #2B11DB;
-            margin-bottom: 8px;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            text-shadow: 0 2px 4px rgba(43, 17, 219, 0.1);
-        }
-
-        .info-value {
-            color: #222;
-            font-size: 15px;
-            line-height: 1.7;
-            font-weight: 600;
-        }
-
-        .info-value a {
-            color: #2B11DB;
-            text-decoration: none;
-            font-weight: 800;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
-            display: inline-block;
-            background: linear-gradient(90deg, #2B11DB 0%, #00a8a8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .info-value a::after {
-            content: '';
-            position: absolute;
-            bottom: -6px;
-            left: 0;
-            width: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #2B11DB 0%, #00a8a8 50%, #00ff88 100%);
-            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            border-radius: 2px;
-            box-shadow: 0 0 15px rgba(0, 215, 179, 0.5), 0 0 30px rgba(0, 255, 136, 0.3);
-        }
-
-        .info-value a::before {
-            content: '';
-            position: absolute;
-            inset: -4px;
-            background: linear-gradient(90deg, rgba(0, 215, 179, 0.1), rgba(0, 255, 136, 0.05));
-            border-radius: 4px;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            z-index: -1;
-            filter: blur(8px);
-        }
-
-        .info-value a:hover {
-            color: #00a8a8;
-            transform: scale(1.1) translateY(-2px);
-            text-shadow: 0 0 20px rgba(0, 215, 179, 0.6), 0 0 40px rgba(0, 255, 136, 0.3);
-        }
-
-        .info-value a:hover::after {
-            width: 100%;
-            box-shadow: 0 0 25px rgba(0, 215, 179, 0.8), 0 0 50px rgba(0, 255, 136, 0.5);
-        }
-
-        .info-value a:hover::before {
-            opacity: 1;
-        }
-
-        .contact-note {
-            background: linear-gradient(135deg, #f0f5ff 0%, #e8f0ff 30%, #f0e8ff 60%, #fff0f5 100%);
-            padding: 28px 32px;
-            border-radius: 14px;
-            margin-top: 32px;
-            font-size: 14px;
-            color: #222;
-            position: relative;
-            z-index: 2;
-            border-left: 6px solid;
-            border-image: linear-gradient(180deg, #2B11DB 0%, #00a8a8 50%, #00ff88 100%) 1;
-            box-shadow: 0 12px 50px rgba(43, 17, 219, 0.15), 0 0 30px rgba(0, 215, 179, 0.1), inset 0 0 30px rgba(255, 255, 255, 0.6);
-            line-height: 1.7;
-            font-weight: 600;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        @keyframes noteGlow {
-            0%, 100% { box-shadow: 0 12px 50px rgba(43, 17, 219, 0.15), 0 0 30px rgba(0, 215, 179, 0.1); }
-            50% { box-shadow: 0 16px 60px rgba(43, 17, 219, 0.25), 0 0 45px rgba(0, 215, 179, 0.2), 0 0 60px rgba(0, 255, 136, 0.1); }
-        }
-
-        .contact-note:hover {
-            box-shadow: 0 20px 70px rgba(43, 17, 219, 0.3), 0 0 50px rgba(0, 215, 179, 0.25), 0 0 80px rgba(0, 255, 136, 0.15), inset 0 0 30px rgba(255, 255, 255, 0.9);
-            transform: translateX(8px) translateY(-4px);
-        }
-
-        /* Footer */
-        footer {
-            background: linear-gradient(135deg, #2B11DB 0%, #1a0aa8 50%, #0d0359 100%);
-            color: white;
-            padding: 50px 0;
-            margin-top: auto;
-            width: 100vw;
-            position: relative;
-            left: 0;
-            right: 0;
-            margin-left: 0;
-            margin-right: 0;
-            box-shadow: 0 -15px 50px rgba(43, 17, 219, 0.3);
-            overflow: hidden;
-        }
-
-        footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 200%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 215, 179, 0.1), transparent);
-            animation: footerShine 3s ease-in-out infinite;
-            z-index: 0;
-        }
-
-        @keyframes footerShine {
-            0% { left: -100%; }
-            50% { left: 100%; }
-            100% { left: -100%; }
-        }
-
-        .footer-content {
-            width: 100%;
-            margin: 0;
-            padding: 0 20px;
+            gap: 28px;
+            max-width: 900px;
             margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-            max-width: 1400px;
-            margin-left: auto;
-            margin-right: auto;
+        }
+
+        .contact-location-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .contact-map {
             position: relative;
-            z-index: 1;
+            min-height: 280px;
         }
 
-        .footer-copyright {
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 30px;
-        }
-
-        .footer-links a {
-            color: rgba(255,255,255,0.85);
-            text-decoration: none;
-            font-size: 13px;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            font-weight: 700;
-            position: relative;
-            letter-spacing: 0.5px;
-        }
-
-        .footer-links a::before {
-            content: '';
+        .contact-map iframe {
             position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, #00D7B3 0%, #00a8a8 100%);
-            transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border: none;
+            display: block;
         }
 
-        .footer-links a:hover {
-            color: #00d4aa;
-            transform: translateX(4px);
+        .contact-info {
+            padding: 28px 28px 24px;
+            border-left: 4px solid #00D7B3;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
         }
 
-        .footer-links a:hover::before {
-            width: 100%;
+        .contact-city {
+            font-size: 26px;
+            font-weight: 800;
+            color: #2B11DB;
+            margin-bottom: 18px;
+            letter-spacing: 1px;
         }
 
-        /* Responsive Design */
+        .contact-details-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .contact-details-list li {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .ci-marker {
+            color: #00D7B3;
+            font-size: 14px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .ci-block {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .ci-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #2B11DB;
+            letter-spacing: 0.8px;
+        }
+
+        .ci-value {
+            font-size: 13px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .ci-value a {
+            color: #e67e22;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .ci-value a:hover {
+            text-decoration: underline;
+        }
+
+        .contact-cta-note {
+            margin-top: 18px;
+            background: #fff8f0;
+            border-left: 3px solid #e67e22;
+            padding: 12px 14px;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.65;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .contact-cta-note a {
+            color: #e67e22;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .contact-cta-note a:hover { text-decoration: underline; }
+
         @media (max-width: 768px) {
-            .main-content {
-                padding: 60px 20px;
-            }
-
-            .page-title {
-                font-size: 40px;
-                margin-bottom: 55px;
-            }
-
-            .page-title::after {
-                width: 130px;
-                height: 4px;
-            }
-
-            .locations-container {
-                gap: 50px;
-            }
-
-            .location-card {
+            .contact-location-card {
                 grid-template-columns: 1fr;
-                gap: 0;
-                border-radius: 16px;
             }
-
-            .location-card::before {
-                height: 5px;
+            .contact-map {
+                min-height: 220px;
+                position: relative;
             }
-
-            .location-map {
-                min-height: 350px;
-                order: 1;
-            }
-
-            .location-info {
-                padding: 40px 30px;
-                order: 2;
-            }
-
-            .location-name {
-                font-size: 32px;
-                margin-bottom: 28px;
-            }
-
-            .info-item {
-                margin-bottom: 22px;
-                padding-left: 35px;
-            }
-
-            .info-label {
-                font-size: 11px;
-                letter-spacing: 1.2px;
-            }
-
-            .info-value {
-                font-size: 14px;
-            }
-
-            .contact-note {
-                font-size: 13px;
-                padding: 22px 26px;
-                margin-top: 28px;
-                border-left-width: 4px;
-            }
-
-            .footer-content {
-                flex-direction: column;
-                text-align: center;
-                gap: 16px;
-            }
-
-            .footer-links {
-                justify-content: center;
-                gap: 18px;
-                flex-wrap: wrap;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .page-title {
-                font-size: 32px;
-                margin-bottom: 40px;
-                letter-spacing: -0.5px;
-            }
-
-            .page-title::after {
-                width: 100px;
-                height: 3px;
-                margin: 15px auto 0;
-            }
-
-            .locations-container {
-                gap: 35px;
-            }
-
-            .location-name {
-                font-size: 26px;
-                margin-bottom: 20px;
-            }
-
-            .info-item {
-                margin-bottom: 18px;
-                padding-left: 30px;
-            }
-
-            .location-info {
-                padding: 28px 20px;
-            }
-
-            .main-content {
-                padding: 45px 15px;
-            }
-
-            .location-card {
-                border-radius: 14px;
-            }
-
-            .contact-note {
-                font-size: 13px;
-                padding: 20px 22px;
-                margin-top: 24px;
-            }
-
-            footer {
-                padding: 35px 0;
-            }
-
-            .footer-copyright {
-                font-size: 12px;
-            }
-
-            .footer-links {
-                gap: 12px;
-            }
-
-            .footer-links a {
-                font-size: 11px;
-            }
+            .contact-city { font-size: 20px; }
+            .contact-page-title { font-size: 30px; padding: 30px 16px 20px; }
+            .contact-info { padding: 20px 18px; }
         }
     </style>
 </head>
 <body>
         <?php
         // Set page title
-        $page_title = "Home";
+        $page_title = "Contact Us";
         $company_name = "ANDISON INDUSTRIAL";
         
         // Contact information
@@ -3222,12 +3244,12 @@ $ytLinks = andison_get_youtube_links();
                         <div class="nav-dropdown">
                             <h4>Featured Brands</h4>
                             <ul>
-                                <li><a href="brand.php?name=Panasonic%20Connect"><img src="assets/brands/PANASONIC.jpg" alt="Panasonic Connect" title="Panasonic Connect"></a></li>
-                                <li><a href="brand.php?name=Robot%20Systems"><img src="assets/brands/ROBOT SYSTEMS.png" alt="Robot Systems Peripherals" title="Robot Systems Peripherals"></a></li>
+                               <li><a href="brand.php?name=Panasonic%20Connect"><img src="assets/brands/PANASONIC.jpg" alt="Panasonic Connect" title="Panasonic Connect"></a></li>
+                                <li><a href="/brand.php?name=Robot%20Systems"><img src="/assets/brands/ROBOT SYSTEMS.png" alt="Robot Systems Peripherals" title="Robot Systems Peripherals"></a></li>
                                 <li><a href="brand.php?name=Kobelco"><img src="assets/brands/KOBELCO.jpg" alt="Kobelco" title="Kobelco"></a></li>
                                 <li><a href="brand.php?name=Metrode"><img src="assets/brands/METRODE.jpg" alt="Metrode" title="Metrode"></a></li>
                                 <li><a href="brand.php?name=DryRod.%20II"><img src="assets/brands/DRYROD.jpg" alt="DryRod. II" title="DryRod. II"></a></li>
-                                <li><a href="brand.php?name=Weldcraft"><img src="assets/brands/WELDCRAFT.jpg" alt="Weldcraft" title="Weldcraft"></a></li>
+                                <li><a href="brand.php?name=Weldcraft"><img src="assets/brands/WELDCRAFT.png" alt="Weldcraft" title="Weldcraft"></a></li>
                                 <li><a href="brand.php?name=Truweld"><img src="assets/brands/TRUWELD.jpg" alt="Truweld" title="Truweld"></a></li>
                                 <li><a href="brand.php?name=Arcair"><img src="assets/brands/ARCAIR.jpg" alt="Arcair" title="Arcair"></a></li>
                                 <li><a href="brand.php?name=MAGNAFLUX"><img src="assets/brands/MAGNAFLUX.jpg" alt="Magnaflux" title="Magnaflux"></a></li>
@@ -3314,6 +3336,7 @@ $ytLinks = andison_get_youtube_links();
                 <button class="sub-toggle" aria-controls="sub-arc-welding" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
                     <li><a href="arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
+                    <li><a href="arc-welding-machine/accessories-and-consumables.php">Accessories and Consumables</a></li>
                     <li><a href="arc-welding-machine/co1-mag-welding-machine.php">CO2/MAG Welding Machine</a></li>
                     <li><a href="arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
                     <li><a href="arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
@@ -3344,7 +3367,17 @@ $ytLinks = andison_get_youtube_links();
                 <button class="sub-toggle" aria-controls="sub-drilling-lifting" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
                     <li><a href="drilling-and-lifting/lifting.php">Lifting</a></li>
-                    <li><a href="drilling-and-lifting/magnetic-drill.php">Magnetic Drill</a></li>
+                    <li class="has-nested-sub">
+                        <a href="drilling-and-lifting/magnetic-drill.php">Magnetic Drill</a>
+                        <button class="nested-toggle" aria-controls="nested-magnetic-drill" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>
+                        <ul id="nested-magnetic-drill" class="sidebar-nested-sublist collapsed">
+                            <li><a href="drilling-and-lifting/magnetic-drill/b-line-series.php">B-Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/rl-e-line-series.php">RL-E Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/rbx-line-series.php">RBX-Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/sp-line-series.php">SP-Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/v-line-series.php">V-Line Series</a></li>
+                        </ul>
+                    </li>
                     <li><a href="drilling-and-lifting/cutters.php">Cutters</a></li>
                 </ul>
             </li>
@@ -3457,103 +3490,127 @@ $ytLinks = andison_get_youtube_links();
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <h1 class="page-title">Contact Us</h1>
-        
-        <div class="locations-container">
-            <!-- Manila Location -->
-            <div class="location-card">
-                <iframe 
-                    class="location-map"
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3860.8757799830987!2d120.9751084745731!3d14.606151376941842!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397ca0674eb2fa7%3A0xc2c12bedb9ad32b!2sAndison%20Industrial%20Sales%20Incorporated!5e0!3m2!1sen!2sph!4v1770104430928!5m2!1sen!2sph" 
-                    allowfullscreen=""
-                    loading="lazy">
-                </iframe>
-                <div class="location-info">
-                    <h2 class="location-name">MANILA</h2>
-                    <div class="info-item">
-                        <div class="info-label">Address:</div>
-                        <div class="info-value">917-919 Luzon Street, Barangay 260 Zone 024 1012 Tondo Ⅰ/Ⅱ NCR, City of Manila, First District, Philippines</div>
+    <!-- Services Content -->
+    <div class="page-content">
+
+    <!-- Contact Us -->
+    <section id="contact-us" style="padding: 0 20px 60px; background: #fff;">
+        <div class="container">
+            <h2 class="contact-page-title">Contact Us</h2>
+
+            <div class="contact-locations-grid">
+
+                <!-- Manila -->
+                <div class="contact-location-card">
+                    <div class="contact-map">
+                        <iframe
+                            src="https://maps.google.com/maps?q=917-919+Luzon+Street,+Tondo,+Manila,+Philippines&output=embed"
+                            allowfullscreen
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
                     </div>
-                    <div class="info-item">
-                        <div class="info-label">Phone:</div>
-                        <div class="info-value">
-                            <a href="tel:+6328584958">(+632) 8584-4958</a><br>
-                            <a href="tel:+6328243287">(+632) 8243-2873</a>
-                        </div>
+                    <div class="contact-info">
+                        <h3 class="contact-city">MANILA</h3>
+                        <ul class="contact-details-list">
+                            <li>
+                                <span class="ci-marker"><i class="bi bi-geo-alt-fill"></i></span>
+                                <span class="ci-block">
+                                    <span class="ci-label">ADDRESS:</span>
+                                    <span class="ci-value">917-919 Luzon Street, Barangay 260 Zone 024 1012 Tondo I/II NCR,<br>City of Manila, First District, Philippines</span>
+                                </span>
+                            </li>
+                            <li>
+                                <span class="ci-marker"><i class="bi bi-telephone-fill"></i></span>
+                                <span class="ci-block">
+                                    <span class="ci-label">PHONE:</span>
+                                    <span class="ci-value">(+632) 8394-4953<br>(+632) 8243-2873</span>
+                                </span>
+                            </li>
+                            <li>
+                                <span class="ci-marker"><i class="bi bi-printer-fill"></i></span>
+                                <span class="ci-block">
+                                    <span class="ci-label">FAX:</span>
+                                    <span class="ci-value">(+632) 8394-4953<br>(+632) 8252-9224</span>
+                                </span>
+                            </li>
+                            <li>
+                                <span class="ci-marker"><i class="bi bi-envelope-fill"></i></span>
+                                <span class="ci-block">
+                                    <span class="ci-label">EMAIL:</span>
+                                    <span class="ci-value"><a href="mailto:info@andison-industrial.com">info@andison-industrial.com</a></span>
+                                </span>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="info-item">
-                        <div class="info-label">Fax:</div>
-                        <div class="info-value">
-                            <a href="tel:+6328584958">(+632) 8584-4958</a><br>
-                            <a href="tel:+6328252922">(+632) 8252-9224</a>
-                        </div>
+                </div>
+
+                <!-- Calabarzon -->
+                <div class="contact-location-card">
+                    <div class="contact-map">
+                        <iframe
+                            src="https://maps.google.com/maps?q=298+P.+Zamora+Street,+Batangas+City,+Batangas,+Philippines&output=embed"
+                            allowfullscreen
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
                     </div>
-                    <div class="info-item">
-                        <div class="info-label">Email:</div>
-                        <div class="info-value">
-                            <a href="mailto:<?php echo $email; ?>"><?php echo $email; ?></a>
+                    <div class="contact-info">
+                        <h3 class="contact-city">CALABARZON</h3>
+                        <ul class="contact-details-list">
+                            <li>
+                                <span class="ci-marker"><i class="bi bi-geo-alt-fill"></i></span>
+                                <span class="ci-block">
+                                    <span class="ci-label">ADDRESS:</span>
+                                    <span class="ci-value">298 P. Zamora Street, Barangay 16, 4200 Batangas City, Batangas Philippines</span>
+                                </span>
+                            </li>
+                            <li>
+                                <span class="ci-marker"><i class="bi bi-telephone-fill"></i></span>
+                                <span class="ci-block">
+                                    <span class="ci-label">PHONE:</span>
+                                    <span class="ci-value">(+6343) 425 4128</span>
+                                </span>
+                            </li>
+                            <li>
+                                <span class="ci-marker"><i class="bi bi-printer-fill"></i></span>
+                                <span class="ci-block">
+                                    <span class="ci-label">FAX:</span>
+                                    <span class="ci-value">(+6343) 723 3198</span>
+                                </span>
+                            </li>
+                            <li>
+                                <span class="ci-marker"><i class="bi bi-envelope-fill"></i></span>
+                                <span class="ci-block">
+                                    <span class="ci-label">EMAIL:</span>
+                                    <span class="ci-value"><a href="mailto:info@andison-industrial.com">info@andison-industrial.com</a></span>
+                                </span>
+                            </li>
+                        </ul>
+                        <div class="contact-cta-note">
+                            Do you have questions about how we can help your company? Send us an <a href="mailto:info@andison-industrial.com">email</a> and we&rsquo;ll get in touch shortly.
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Calabarzon Location -->
-            <div class="location-card">
-                <iframe 
-                    class="location-map"
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3875.360155465704!2d121.05461077455868!3d13.757141397170837!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33bd0507ab7e208b%3A0x83becc02b32349e7!2sAndison%20Industrial%20Sales%20Inc.!5e0!3m2!1sen!2sph!4v1770104315437!5m2!1sen!2sph"
-                    allowfullscreen=""
-                    loading="lazy">
-                </iframe>
-                <div class="location-info">
-                    <h2 class="location-name">CALABARZON</h2>
-                    <div class="info-item">
-                        <div class="info-label">Address:</div>
-                        <div class="info-value">29B P. Zamora Street, Barangay 16, 4200 Batangas City, Batangas Philippines</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Phone:</div>
-                        <div class="info-value">
-                            <a href="tel:+63434254126">(+6343) 425 4126</a><br>
-
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Fax:</div>
-                        <div class="info-value">
-                            <a href="tel:+63437233198">(+6343) 723 3198</a>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Email:</div>
-                        <div class="info-value">
-                            <a href="mailto:<?php echo $email; ?>"><?php echo $email; ?></a>
-                        </div>
-                    </div>
-                   
-                    <div class="contact-note">
-                        Do you have questions about how we can help your company? Send us an email and we'll get in touch shortly.
-                    </div>
-                </div>
             </div>
         </div>
-    </div>
+    </section>
 
     <!-- Footer -->
     <footer>
         <div class="footer-content">
-            <div class="footer-copyright">
-                <p>&copy; 2026 <?php echo $company_name; ?>. All rights reserved.</p>
-            </div>
             <div class="footer-links">
                 <a href="#privacy">Privacy Policy</a>
                 <a href="#terms">Terms of Service</a>
                 <a href="#sitemap">Sitemap</a>
             </div>
+            <div class="footer-copyright">
+                <p>&copy; 2026 <?php echo $company_name; ?>. All rights reserved.</p>
+            </div>
         </div>
     </footer>
+    </div><!-- /.page-content -->
     <script>
         (function(){
             var browseToggle = document.getElementById('browseToggle');
@@ -3955,18 +4012,113 @@ $ytLinks = andison_get_youtube_links();
                 });
             }
             
-            // Sidebar sub-toggle functionality
+            // Sidebar sub-toggle functionality - Show popover card
+            var mainSidebarPopover = document.getElementById('miniPopover');
+            var popoverTitle = mainSidebarPopover ? mainSidebarPopover.querySelector('.mini-popover-title') : null;
+            var popoverList = mainSidebarPopover ? mainSidebarPopover.querySelector('.mini-popover-list') : null;
+            var currentMainSidebarKey = null;
+            
+            function showMainSidebarPopover(toggle) {
+                if (!mainSidebarPopover || !popoverList || !popoverTitle) return;
+                
+                var sublistId = toggle.getAttribute('aria-controls');
+                var sublist = document.getElementById(sublistId);
+                if (!sublist) return;
+                
+                // Extract title from parent li's main link
+                var parentLi = toggle.closest('.has-sub');
+                var mainLink = parentLi ? parentLi.querySelector(':scope > a:not([class])') : null;
+                var title = mainLink ? mainLink.textContent.trim() : 'Items';
+                
+                // Extract items from the sublist
+                var items = [];
+                var listItems = sublist.querySelectorAll('li > a');
+                listItems.forEach(function(link) {
+                    items.push({
+                        text: link.textContent.trim(),
+                        href: link.getAttribute('href') || '#'
+                    });
+                });
+                
+                // Populate popover
+                popoverTitle.textContent = title;
+                popoverList.innerHTML = '';
+                items.forEach(function(item) {
+                    var li = document.createElement('li');
+                    li.className = 'mini-popover-item';
+                    li.innerHTML = '<span class="square"></span><a href="' + item.href + '">' + item.text + '</a>';
+                    popoverList.appendChild(li);
+                });
+                
+                // Position popover next to toggle button
+                setTimeout(function() {
+                    mainSidebarPopover.style.left = '-9999px';
+                    mainSidebarPopover.style.top = '-9999px';
+                    mainSidebarPopover.classList.add('show');
+                    
+                    var toggleRect = toggle.getBoundingClientRect();
+                    var pw = mainSidebarPopover.offsetWidth;
+                    var ph = mainSidebarPopover.offsetHeight;
+                    var toggleCenterY = toggleRect.top + toggleRect.height / 2;
+                    
+                    // Position to the right of the toggle button
+                    var left = Math.round(toggleRect.right + 14);
+                    var top = Math.round(toggleCenterY - ph / 2);
+                    
+                    // Adjust if off-screen horizontally
+                    if (left + pw + 12 > window.innerWidth) {
+                        left = Math.round(toggleRect.left - pw - 14);
+                    }
+                    
+                    // Adjust if off-screen vertically
+                    var headerHeight = 100;
+                    var minTop = headerHeight + 12;
+                    var maxTop = window.innerHeight - ph - 12;
+                    if (top < minTop) top = minTop;
+                    if (top > maxTop) top = maxTop;
+                    
+                    var arrowOffset = toggleCenterY - top - 26;
+                    mainSidebarPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+                    
+                    mainSidebarPopover.style.left = left + 'px';
+                    mainSidebarPopover.style.top = top + 'px';
+                    mainSidebarPopover.setAttribute('aria-hidden', 'false');
+                    currentMainSidebarKey = sublistId;
+                }, 5);
+            }
+            
+            function hideMainSidebarPopover() {
+                if (!mainSidebarPopover) return;
+                mainSidebarPopover.classList.remove('show');
+                mainSidebarPopover.setAttribute('aria-hidden', 'true');
+                currentMainSidebarKey = null;
+            }
+            
             var subToggles = document.querySelectorAll('.sub-toggle');
             subToggles.forEach(function(toggle) {
                 toggle.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    var sublist = document.getElementById(toggle.getAttribute('aria-controls'));
-                    if(sublist) {
-                        sublist.classList.toggle('collapsed');
-                        toggle.setAttribute('aria-expanded', sublist.classList.contains('collapsed') ? 'false' : 'true');
+                    
+                    if (currentMainSidebarKey === toggle.getAttribute('aria-controls') && mainSidebarPopover.classList.contains('show')) {
+                        hideMainSidebarPopover();
+                    } else {
+                        showMainSidebarPopover(toggle);
                     }
                 });
+            });
+            
+            // Close popover on outside click
+            document.addEventListener('click', function(e) {
+                if (!mainSidebarPopover) return;
+                if (!mainSidebarPopover.classList.contains('show')) return;
+                if (e.target.closest('.mini-popover') || e.target.closest('.sub-toggle')) return;
+                hideMainSidebarPopover();
+            });
+            
+            // Close popover on Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') hideMainSidebarPopover();
             });
             
             // Nested toggle functionality
@@ -4043,6 +4195,9 @@ $ytLinks = andison_get_youtube_links();
         var popoverTitle = miniPopover ? miniPopover.querySelector('.mini-popover-title') : null;
         var popoverList = miniPopover ? miniPopover.querySelector('.mini-popover-list') : null;
         var currentPopoverKey = null;
+        var lastIconCenterY = 0; // track icon center Y for arrow realignment
+        var lastIconRight   = 0; // track icon right edge for mobile popover left
+        var lastIconTop     = 0; // track icon top for mobile popover start
 
         // Responsive function to show/hide browse toggle
         function updateBrowseToggleVisibility() {
@@ -4095,6 +4250,11 @@ $ytLinks = andison_get_youtube_links();
                 ],
                 'arc-welding-machine': [
                     { label: 'MIG Welding Machine', href: base + '/arc-welding-machine/mig-welding-machine.php' },
+                    { label: 'Accessories and Consumables', href: base + '/arc-welding-machine/accessories-and-consumables.php', subitems: [
+                        { label: 'Welding Torch / Gun', href: base + '/arc-welding-machine/accessories-and-consumables/welding-torch-gun.php' },
+                        { label: 'Torch Consumables', href: base + '/arc-welding-machine/accessories-and-consumables/torch-consumables.php' },
+                        { label: 'Accessories', href: base + '/arc-welding-machine/accessories-and-consumables/accessories.php' }
+                    ]},
                     { label: 'CO2/MAG Welding Machine', href: base + '/arc-welding-machine/co1-mag-welding-machine.php' },
                     { label: 'STUD Welding Machine', href: base + '/arc-welding-machine/stud-welding-machine.php' },
                     { label: 'TIG Welding Machine', href: base + '/arc-welding-machine/tig-welding-machine.php' },
@@ -4107,7 +4267,13 @@ $ytLinks = andison_get_youtube_links();
                 ],
                 'drilling-and-lifting': [
                     { label: 'Lifting', href: base + '/drilling-and-lifting/lifting.php' },
-                    { label: 'Magnetic Drill', href: base + '/drilling-and-lifting/magnetic-drill.php' },
+                    { label: 'Magnetic Drill', href: base + '/drilling-and-lifting/magnetic-drill.php', subitems: [
+                        { label: 'B-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/b-line-series.php' },
+                        { label: 'RL-E Line Series', href: base + '/drilling-and-lifting/magnetic-drill/rl-e-line-series.php' },
+                        { label: 'RBX-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/rbx-line-series.php' },
+                        { label: 'SP-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/sp-line-series.php' },
+                        { label: 'V-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/v-line-series.php' }
+                    ]},
                     { label: 'Cutters', href: base + '/drilling-and-lifting/cutters.php' }
                 ],
                 'gas-detectors': [
@@ -4130,10 +4296,19 @@ $ytLinks = andison_get_youtube_links();
                 ],
                 'protection': [
                     { label: 'Eye Protection', href: base + '/protection/eye-protection.php' },
-                    { label: 'Hand Protection', href: base + '/protection/hand-protection.php' },
+                    { label: 'Hand Protection', href: base + '/protection/hand-protection.php', subitems: [
+                        { label: 'Welding Gloves', href: base + '/protection/welding-gloves.php' },
+                        { label: 'Working Gloves', href: base + '/protection/working-gloves.php' },
+                        { label: 'Chemical and Liquid Protection Gloves', href: base + '/protection/chemical-liquid-protection-gloves.php' },
+                        { label: 'Disposable Gloves', href: base + '/protection/disposable-gloves.php' }
+                    ]},
                     { label: 'Hearing & Respiratory Protection', href: base + '/protection/hearing-respiratory-protection.php' },
                     { label: 'Welding Head and Face Protection', href: base + '/protection/welding-head-and-face-protection.php' },
-                    { label: 'Body Protection', href: base + '/protection/body-protection.php' }
+                    { label: 'Body Protection', href: base + '/protection/body-protection.php', subitems: [
+                        { label: 'Particulate and Low Hazard', href: base + '/protection/particulate-low-hazard.php' },
+                        { label: 'Liquid Spray and Splash', href: base + '/protection/liquid-spray-splash.php' },
+                        { label: 'Chemical and Flame Retardant', href: base + '/protection/chemical-flame-retardant.php' }
+                    ]}
                 ],
                 'welding-accessories': [
                     { label: 'Welding Electrode Oven', href: base + '/welding-accessories/welding-electrode-oven.php' },
@@ -4158,44 +4333,143 @@ $ytLinks = andison_get_youtube_links();
             items.forEach(function(it){
                 var li = document.createElement('li');
                 li.className = 'mini-popover-item';
-                li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a>';
+                
+                if (it.subitems && it.subitems.length > 0) {
+                    // Item with subitems - add container for expanded view
+                    li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a><button class="popover-expand-btn" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>';
+                    li.className += ' has-subitems';
+                    
+                    // Create subitems container
+                    var subContainer = document.createElement('div');
+                    subContainer.className = 'popover-subitems collapsed';
+                    subContainer.innerHTML = it.subitems.map(function(sub){
+                        return '<a href="'+ sub.href +'" class="popover-subitem">'+ sub.label +'</a>';
+                    }).join('');
+                    
+                    li.appendChild(subContainer);
+                    
+                    // Add expand/collapse handler
+                    var expandBtn = li.querySelector('.popover-expand-btn');
+                    expandBtn.addEventListener('click', function(e){
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var isExpanded = expandBtn.getAttribute('aria-expanded') === 'true';
+                        if (isExpanded) {
+                            expandBtn.setAttribute('aria-expanded', 'false');
+                            subContainer.classList.add('collapsed');
+                        } else {
+                            expandBtn.setAttribute('aria-expanded', 'true');
+                            subContainer.classList.remove('collapsed');
+                        }
+                        // Adjust popover height after expanding/collapsing
+                        setTimeout(function(){
+                            adjustPopoverHeight();
+                        }, 10);
+                    });
+                } else {
+                    // Regular item
+                    li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a>';
+                }
+                
                 popoverList.appendChild(li);
             });
             if (popoverTitle) popoverTitle.textContent = getCategoryTitle(key);
         }
+        /* Shared: compute top + arrow for a given height, centered on lastIconCenterY */
+        function _applyPosition(finalHeight) {
+            var vh = window.innerHeight;
+            var isMobile = window.innerWidth <= 768;
+
+            if (isMobile) {
+                // On mobile: align to icon top, but shift up if it would overflow the bottom
+                var popLeft   = Math.round(lastIconRight);
+                var headerMin = 90; // don't go above header
+                var bottomPad = 8;
+                var popTop    = Math.round(lastIconTop);
+                var maxH      = vh - headerMin - bottomPad;
+                var contentH  = Math.min(finalHeight, maxH);
+                // If it would overflow the bottom, shift top upward just enough
+                if (popTop + contentH > vh - bottomPad) {
+                    popTop = vh - contentH - bottomPad;
+                }
+                // Never overlap the header
+                if (popTop < headerMin) popTop = headerMin;
+
+                miniPopover.style.left   = popLeft + 'px';
+                miniPopover.style.right  = '0px';
+                miniPopover.style.width  = 'auto';
+                miniPopover.style.top    = popTop + 'px';
+                miniPopover.style.height = contentH + 'px';
+                miniPopover.style.setProperty('--arrow-offset', '-9999px');
+            } else {
+                // Desktop: center on icon
+                var headerBottom = 140;
+                var top = Math.round(lastIconCenterY - finalHeight / 2);
+                if (top < headerBottom)                top = headerBottom;
+                if (top + finalHeight > vh - 8)        top = vh - finalHeight - 8;
+                if (top < headerBottom)                top = headerBottom;
+
+                miniPopover.style.right  = '';
+                miniPopover.style.width  = '';
+                var arrowOffset = Math.round(lastIconCenterY - top - 26);
+                arrowOffset = Math.max(8, Math.min(finalHeight - 44, arrowOffset));
+
+                miniPopover.style.top    = top + 'px';
+                miniPopover.style.height = finalHeight + 'px';
+                miniPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+            }
+        }
+        function adjustPopoverHeight() {
+            if (!miniPopover) return;
+            var isMobile = window.innerWidth <= 768;
+
+            miniPopover.style.height = 'auto';
+            var naturalH = miniPopover.offsetHeight; 
+            var finalH   = Math.min(naturalH, window.innerHeight * 0.88);
+            _applyPosition(finalH);
+        }
         function positionPopoverForIcon(icon) {
             if (!miniPopover || !icon) return;
-            miniPopover.style.left = '-9999px';
-            miniPopover.style.top = '-9999px';
-            miniPopover.classList.add('show');
+
+            // Always reset mobile-specific styles first so they don't bleed into desktop
+            miniPopover.style.right = '';
+            miniPopover.style.width = '';
+
             var rect = icon.getBoundingClientRect();
-            var pw = miniPopover.offsetWidth;
-            var ph = miniPopover.offsetHeight;
-            var iconCenterY = rect.top + rect.height / 2;
+            lastIconCenterY = rect.top + rect.height / 2;
+            lastIconRight   = rect.right;
+            lastIconTop     = rect.top;
 
-            var left = Math.round(rect.right + 14);
-            var top = Math.round(iconCenterY - ph / 2);
+            var isMobile = window.innerWidth <= 768;
 
-            if (left + pw + 12 > window.innerWidth) {
-                left = Math.round(rect.left - pw - 14);
+            if (!isMobile) {
+                // Desktop: position to the right of the icon
+                var pw   = miniPopover.offsetWidth;
+                var left = Math.round(rect.right + 14);
+                if (left + pw + 12 > window.innerWidth) {
+                    left = Math.round(rect.left - pw - 14);
+                }
+                miniPopover.style.left = left + 'px';
             }
 
-            var headerHeight = 170;
-            var minTop = headerHeight + 12;
-            var maxTop = window.innerHeight - ph - 12;
-            if (top < minTop) top = minTop;
-            if (top > maxTop) top = maxTop;
+            // Measure true height off-screen, then position
+            miniPopover.style.height = 'auto';
+            miniPopover.style.top    = '-9999px';
+            miniPopover.classList.add('show');
 
-            var arrowOffset = iconCenterY - top - 26;
-            miniPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+            var naturalH = miniPopover.offsetHeight;
+            var finalH   = Math.min(naturalH, window.innerHeight * 0.88);
 
-            miniPopover.style.left = left + 'px';
-            miniPopover.style.top = top + 'px';
+            _applyPosition(finalH);
         }
         function hidePopover() {
             if (!miniPopover) return;
             miniPopover.classList.remove('show');
             miniPopover.setAttribute('aria-hidden', 'true');
+            // Reset all inline styles so next open starts clean
+            miniPopover.style.right  = '';
+            miniPopover.style.width  = '';
+            miniPopover.style.height = '';
             currentPopoverKey = null;
         }
         function showPopoverForKey(key, icon) {
@@ -4204,11 +4478,18 @@ $ytLinks = andison_get_youtube_links();
                 hidePopover();
                 return;
             }
+            // Reset while we measure new content
+            miniPopover.classList.remove('show');
+            miniPopover.style.left = '-9999px';
+            miniPopover.style.top  = '-9999px';
+            miniPopover.style.height = 'auto';
+
             renderPopover(key);
-            positionPopoverForIcon(icon);
-            miniPopover.classList.add('show');
-            miniPopover.setAttribute('aria-hidden', 'false');
             currentPopoverKey = key;
+
+            // positionPopoverForIcon makes it visible off-screen, measures, then places it
+            positionPopoverForIcon(icon);
+            miniPopover.setAttribute('aria-hidden', 'false');
         }
 
         // Close on outside click / Escape
@@ -4219,6 +4500,23 @@ $ytLinks = andison_get_youtube_links();
             hidePopover();
         });
         document.addEventListener('keydown', function(e){ if (e.key === 'Escape') hidePopover(); });
+
+        // On resize, force-close and fully reset the popover so mobile styles never bleed into desktop
+        var _resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(_resizeTimer);
+            _resizeTimer = setTimeout(function() {
+                if (!miniPopover) return;
+                miniPopover.classList.remove('show');
+                miniPopover.setAttribute('aria-hidden', 'true');
+                miniPopover.style.right  = '';
+                miniPopover.style.width  = '';
+                miniPopover.style.height = '';
+                miniPopover.style.top    = '';
+                miniPopover.style.left   = '';
+                currentPopoverKey = null;
+            }, 150);
+        });
 
         // Browse toggle click
         if(browseToggle) {

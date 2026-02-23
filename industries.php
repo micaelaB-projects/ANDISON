@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/andison/includes/analytics.php';
+andison_track_visit('services');
 require_once __DIR__ . '/andison/includes/home_featured.php';
 require_once __DIR__ . '/andison/includes/home_slider.php';
 require_once __DIR__ . '/andison/includes/youtube_links.php';
@@ -12,7 +14,7 @@ $ytLinks = andison_get_youtube_links();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Industrial Solutions Inc. - Homepage Redesign</title>
+    <title>Our Services - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
         * {
@@ -787,7 +789,7 @@ $ytLinks = andison_get_youtube_links();
             margin-bottom: 16px;
             color: #2B11DB;
             width: 100%;
-            background: linear-gradient(135deg, #2B11DB 0%, #00D7B3 100%);
+            background: linear-gradient(90deg, #1565C0 0%, #00BCD4 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -798,12 +800,12 @@ $ytLinks = andison_get_youtube_links();
             text-align: center;
             max-width: 750px;
             margin: 0 auto 60px;
-            color: #555;
+            color: #8B4513;
             line-height: 1.9;
             width: 100%;
             box-sizing: border-box;
             padding: 0 20px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 500;
         }
 
@@ -911,6 +913,98 @@ $ytLinks = andison_get_youtube_links();
             color: #666;
             line-height: 1.7;
             margin: 0;
+        }
+
+        /* Service Cards - Old Layout */
+        .services-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            width: 100%;
+            max-width: 1050px;
+        }
+
+        .service-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            background: white;
+            border-radius: 16px;
+            padding: 48px 44px;
+            border: 1px solid #E0E3FF;
+            box-shadow: 0 4px 16px rgba(30, 136, 229, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .service-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 32px rgba(30, 136, 229, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .service-card.reverse {
+            direction: rtl;
+        }
+
+        .service-card.reverse > * {
+            direction: ltr;
+        }
+
+        .service-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 24px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            box-shadow: 0 4px 12px rgba(30, 136, 229, 0.25);
+        }
+
+        .service-card.teal .service-badge {
+            background: linear-gradient(135deg, #00bcd4 0%, #00897b 100%);
+            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.25);
+        }
+
+        .service-content h3 {
+            font-size: 26px;
+            font-weight: 800;
+            color: #1e88e5;
+            margin-bottom: 18px;
+            line-height: 1.3;
+            letter-spacing: -0.3px;
+        }
+
+        .service-card.teal .service-content h3 {
+            color: #00bcd4;
+        }
+
+        .service-content p {
+            font-size: 14px;
+            color: #8B4513;
+            line-height: 1.85;
+            margin: 0;
+        }
+
+        .service-icon-box {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #1e88e5 0%, #00bcd4 100%);
+            font-size: 68px;
+            color: white;
+            box-shadow: 0 8px 24px rgba(30, 136, 229, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .service-card.teal .service-icon-box {
+            background: linear-gradient(135deg, #00bcd4 0%, #00897b 100%);
+            box-shadow: 0 8px 24px rgba(0, 188, 212, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
 
         /* Featured Section */
@@ -1236,8 +1330,10 @@ $ytLinks = andison_get_youtube_links();
                 display: flex;
                 flex-direction: row;
                 align-items: center;
-                gap: 6px;
-                margin-left: 0;
+                gap: 8px;
+                margin-left: 8px;
+                margin-right: 8px;
+                padding-right: 8px;
             }
 
             .inquiry-btn,
@@ -1267,7 +1363,7 @@ $ytLinks = andison_get_youtube_links();
             .cart-badge.hidden { display: inline-flex !important; }
 
             .header-contact {
-                flex: 0 0 auto;
+                display: none;
             }
 
             nav ul {
@@ -1317,7 +1413,7 @@ $ytLinks = andison_get_youtube_links();
             
             .hero {
                 aspect-ratio: auto;
-                min-height: 420px;
+                min-height: 260px;
                 padding: 20px 0;
                 display: flex;
                 align-items: center;
@@ -1333,10 +1429,32 @@ $ytLinks = andison_get_youtube_links();
                 justify-content: center;
             }
 
+            .hero-slide {
+                width: 92% !important;
+                left: 50% !important;
+                transform: translateX(-50%) scale(1) !important;
+                filter: blur(0) !important;
+                opacity: 0 !important;
+            }
+
+            .hero-slide.active {
+                width: 92% !important;
+                left: 50% !important;
+                transform: translateX(-50%) scale(1) !important;
+                filter: blur(0) !important;
+                opacity: 1 !important;
+            }
+
+            .hero-slide.prev,
+            .hero-slide.next {
+                opacity: 0 !important;
+                pointer-events: none;
+            }
+
             .hero-thumb {
-                width: 85%;
+                width: 100%;
                 height: auto;
-                max-width: 95%;
+                max-width: 100%;
                 aspect-ratio: 16 / 9 !important;
             }
             
@@ -1385,6 +1503,40 @@ $ytLinks = andison_get_youtube_links();
                 gap: 24px;
             }
 
+            .services-grid {
+                gap: 24px;
+            }
+
+            .service-card {
+                grid-template-columns: 1fr;
+                gap: 24px;
+                padding: 24px;
+            }
+
+            .service-card.reverse {
+                direction: ltr;
+            }
+
+            .service-badge {
+                margin-bottom: 8px;
+                font-size: 11px;
+            }
+
+            .service-content h3 {
+                font-size: 20px;
+                margin-bottom: 12px;
+            }
+
+            .service-content p {
+                font-size: 14px;
+                line-height: 1.7;
+            }
+
+            .service-icon-box {
+                aspect-ratio: 1 / 1;
+                font-size: 48px;
+            }
+
             section h2 {
                 font-size: 28px;
             }
@@ -1395,25 +1547,113 @@ $ytLinks = andison_get_youtube_links();
             }
 
             .sidebar-overlay {
-                width: 95%;
-                max-width: 100%;
-                max-height: 95vh;
-                padding: 28px 20px;
+                width: 75%;
+                max-width: 320px;
+                padding: 12px 0;
             }
 
             .sidebar-overlay h3 {
-                font-size: 16px;
-                margin-bottom: 20px;
+                font-size: 14px;
+                margin-bottom: 8px;
+                padding: 0 12px;
+            }
+
+            .sidebar-list { 
+                padding: 0;
+            }
+
+            .sidebar-list li { 
+                border-bottom: none;
             }
 
             .sidebar-list a {
-                font-size: 14px;
-                padding: 14px 10px;
+                font-size: 13px;
+                padding: 10px 14px;
+                gap: 12px;
+                min-height: 36px;
+                align-items: center;
+            }
+
+            .sidebar-list a:active {
+                background: rgba(43, 17, 219, 0.08);
+            }
+
+            .sidebar-icon {
+                width: 20px;
+                height: 20px;
+                font-size: 16px;
+            }
+
+            .sidebar-sublist {
+                background: #f8f9fa;
+                border-left: 3px solid #2B11DB;
+                margin: 2px 0;
+                padding: 4px 0 4px 12px;
             }
 
             .sidebar-sublist a {
-                font-size: 13px;
+                font-size: 12px;
+                padding: 8px 14px 8px 42px;
+                min-height: 32px;
             }
+
+            .sidebar-nested-sublist {
+                margin: 4px 0;
+                padding: 6px 0 6px 14px;
+                background: rgba(43, 17, 219, 0.06);
+                border-left: 2px solid rgba(43, 17, 219, 0.3);
+            }
+
+            .sidebar-nested-sublist a {
+                font-size: 11px;
+                padding: 8px 14px 8px 36px;
+                color: #5a6b7d;
+                min-height: 30px;
+                margin: 0;
+            }
+
+            .sidebar-nested-sublist a:hover,
+            .sidebar-nested-sublist a:active {
+                background: rgba(43, 17, 219, 0.14);
+                color: #2B11DB;
+                padding-left: 44px;
+            }
+        }
+
+        /* Overlay sidebar (full-height left panel) */
+        .overlay-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s;
+            z-index: 60;
+        }
+
+        .overlay-backdrop.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            left: 0;
+            top: calc(14px + 50px + 14px + 12px + 52px);
+            bottom: 0;
+            width: 320px;
+            max-width: 80%;
+            background: #fff;
+            box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 70;
+            padding: 20px 12px;
+            overflow-y: auto;
+        }
+
+        .sidebar-overlay.active {
+            transform: translateX(0);
         }
 
         .sidebar-overlay h3 {
@@ -1422,418 +1662,6 @@ $ytLinks = andison_get_youtube_links();
             color: #222;
             font-weight: 700;
             letter-spacing: 0.5px;
-        }
-
-        /* Industries Section Styles */
-        .industries-section {
-            padding: 80px 20px;
-            background: linear-gradient(180deg, #ffffff 0%, #f5f9ff 50%, #f0f7ff 100%);
-            border-radius: 0;
-            margin: 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .industries-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 500px;
-            background: linear-gradient(135deg, rgba(0, 215, 179, 0.08) 0%, rgba(0, 102, 255, 0.08) 50%, rgba(0, 212, 170, 0.06) 100%);
-            pointer-events: none;
-            filter: blur(40px);
-        }
-
-        .industries-section::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(0, 215, 179, 0.08) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            filter: blur(60px);
-        }
-
-        .industries-header {
-            text-align: center;
-            margin-bottom: 60px;
-            position: relative;
-            z-index: 2;
-            padding: 0;
-            background: transparent;
-            border-radius: 0;
-            box-shadow: none;
-        }
-
-        .industries-header h1 {
-            font-size: 56px;
-            font-weight: 950;
-            margin-bottom: 18px;
-            letter-spacing: -2px;
-            line-height: 1.2;
-            white-space: normal;
-            text-shadow: 0 4px 20px rgba(0, 102, 255, 0.15);
-        }
-
-        .industries-header h1 .blue-part {
-            color: #0052cc;
-            text-shadow: 0 0 20px rgba(0, 102, 255, 0.3);
-        }
-
-        .industries-header h1 .teal-part {
-            color: #00a8a8;
-            text-shadow: 0 0 20px rgba(0, 168, 168, 0.3);
-        }
-
-        .industries-header p {
-            font-size: 17px;
-            color: #555;
-            max-width: 950px;
-            margin: 0 auto;
-            line-height: 1.85;
-            font-weight: 500;
-            animation: fadeInUp 0.9s ease 0.25s both;
-            letter-spacing: 0.3px;
-        }
-
-        .industries-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 40px;
-            position: relative;
-            z-index: 2;
-            max-width: 1300px;
-            margin: 0 auto;
-        }
-
-        .industry-card {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            background: linear-gradient(135deg, #ffffff 0%, #f8fbfe 50%, #f0f6ff 100%);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0, 102, 255, 0.15), 0 0 40px rgba(0, 168, 168, 0.1);
-            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            will-change: transform, box-shadow;
-            position: relative;
-            border: 2px solid rgba(0, 168, 168, 0.15);
-            min-height: 380px;
-            backdrop-filter: blur(10px);
-        }
-
-        .industry-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, #00a8a8 0%, #0052cc 50%, #0066ff 100%);
-            z-index: 1;
-            box-shadow: 0 0 20px rgba(0, 102, 255, 0.4);
-        }
-
-        .industry-card:nth-child(1)::before { background: linear-gradient(90deg, #2B11DB 0%, #1a0099 100%); }
-        .industry-card:nth-child(2)::before { background: linear-gradient(90deg, #00d7b3 0%, #00a889 100%); }
-        .industry-card:nth-child(3)::before { background: linear-gradient(90deg, #2B11DB 0%, #00d7b3 100%); }
-        .industry-card:nth-child(4)::before { background: linear-gradient(90deg, #00ACC1 0%, #00796B 100%); }
-        .industry-card:nth-child(5)::before { background: linear-gradient(90deg, #1a0099 0%, #2B11DB 100%); }
-        .industry-card:nth-child(6)::before { background: linear-gradient(90deg, #00d7b3 0%, #2B11DB 100%); }
-
-        .industry-card:hover {
-            transform: translateY(-12px) scale(1.02);
-            box-shadow: 0 40px 100px rgba(0, 102, 255, 0.2), 0 0 60px rgba(0, 168, 168, 0.15);
-            border-color: rgba(0, 168, 168, 0.3);
-        }
-
-        .industry-card.reverse {
-            direction: ltr;
-        }
-
-        .industry-card.reverse {
-            grid-template-columns: 1fr 1fr;
-        }
-
-        .industry-card.reverse .industry-image {
-            order: 2;
-        }
-
-        .industry-card.reverse .industry-content {
-            order: 1;
-        }
-
-        .industry-card.reverse > * {
-            direction: ltr;
-        }
-
-        .industry-content {
-            padding: 48px;
-            background: transparent;
-            border-radius: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            flex: 1;
-        }
-
-        .industry-content h2 {
-            font-size: 32px;
-            font-weight: 950;
-            margin-bottom: 16px;
-            background: linear-gradient(135deg, #0052cc 0%, #00a8a8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.8px;
-            line-height: 1.2;
-            text-shadow: 0 4px 20px rgba(0, 102, 255, 0.1);
-        }
-
-        .industry-content p {
-            color: #555;
-            margin-bottom: 20px;
-            line-height: 1.75;
-            font-size: 15px;
-            font-weight: 500;
-            flex-grow: 1;
-            letter-spacing: 0.3px;
-        }
-
-        .read-more-btn {
-            background: linear-gradient(135deg, #0052cc 0%, #00a8a8 100%);
-            color: #ffffff;
-            border: 2px solid rgba(0, 168, 168, 0.4);
-            font-size: 13px;
-            font-weight: 800;
-            cursor: pointer;
-            padding: 13px 28px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            border-radius: 8px;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 12px 30px rgba(0, 102, 255, 0.3), 0 0 20px rgba(0, 168, 168, 0.15);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 0;
-            position: relative;
-            overflow: hidden;
-            align-self: flex-start;
-        }
-
-        .read-more-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s ease, height 0.6s ease;
-            z-index: 0;
-        }
-
-        .read-more-btn:hover::before {
-            width: 200px;
-            height: 200px;
-        }
-
-        .read-more-btn:hover {
-            gap: 12px;
-            transform: translateY(-3px);
-            box-shadow: 0 18px 50px rgba(0, 102, 255, 0.4), 0 0 30px rgba(0, 168, 168, 0.3);
-            border-color: rgba(0, 168, 168, 0.7);
-        }
-
-        .read-more-btn::after {
-            content: '▼';
-            font-size: 9px;
-            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
-            z-index: 2;
-        }
-
-        .read-more-btn.active::after {
-            transform: rotate(180deg);
-        }
-
-        .expanded-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .expanded-content.show {
-            max-height: 1200px;
-        }
-
-        .expanded-content-inner {
-            padding: 0 48px 48px 48px;
-            border-top: 1px solid rgba(0, 168, 168, 0.15);
-            margin-top: 0;
-            animation: fadeInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .expanded-content p {
-            color: #555;
-            margin-bottom: 14px;
-            margin-top: 16px;
-            line-height: 1.75;
-            font-size: 15px;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-        }
-
-        .expanded-content strong {
-            color: #0052cc;
-            font-weight: 950;
-        }
-
-        .products-list {
-            margin: 12px 0 0 0;
-            padding: 16px 18px;
-            background: linear-gradient(135deg, rgba(0, 168, 168, 0.08) 0%, rgba(0, 102, 255, 0.08) 100%);
-            border-left: 4px solid #0052cc;
-            border-radius: 8px;
-            box-shadow: 0 8px 24px rgba(0, 102, 255, 0.1), inset 0 1px 0 rgba(0, 168, 168, 0.1);
-            position: relative;
-            backdrop-filter: blur(10px);
-        }
-
-        .products-list li {
-            color: #333;
-            margin-bottom: 7px;
-            list-style-type: disc;
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        .products-list li:last-child {
-            margin-bottom: 0;
-        }
-
-        .industry-image {
-            border-radius: 0;
-            overflow: hidden;
-            background: linear-gradient(135deg, #f5f9ff 0%, #eef5ff 100%);
-            height: 100%;
-            min-height: 380px;
-            position: relative;
-        }
-
-        .industry-image::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 30% 30%, rgba(0, 168, 168, 0.05) 0%, transparent 50%), radial-gradient(circle at 70% 70%, rgba(0, 102, 255, 0.05) 0%, transparent 50%);
-            pointer-events: none;
-        }
-
-        .industry-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 0;
-            box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.4);
-            transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.7s ease;
-            border: none;
-            filter: brightness(0.95) contrast(1.05);
-        }
-
-        .industry-card:hover .industry-image img {
-            transform: scale(1.1);
-            filter: brightness(1.15) contrast(1.1) saturate(1.2);
-        }
-
-        @media (max-width: 1024px) {
-            .industries-grid {
-                gap: 32px;
-            }
-
-            .industry-card {
-                grid-template-columns: 1fr;
-                min-height: auto;
-            }
-
-            .industry-card.reverse {
-                grid-template-columns: 1fr;
-            }
-
-            .industry-card.reverse .industry-image {
-                order: 1;
-            }
-
-            .industry-card.reverse .industry-content {
-                order: 2;
-            }
-
-            .industry-image {
-                height: 280px;
-                min-height: 280px;
-            }
-
-            .industry-content {
-                padding: 40px;
-            }
-
-            .industry-content h2 {
-                font-size: 28px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .industries-section {
-                padding: 60px 15px;
-            }
-
-            .industries-header h1 {
-                font-size: 36px;
-                letter-spacing: -1px;
-            }
-
-            .industries-header p {
-                font-size: 15px;
-            }
-
-            .industries-grid {
-                gap: 24px;
-            }
-
-            .industry-content {
-                padding: 32px;
-            }
-
-            .industry-content h2 {
-                font-size: 22px;
-            }
-
-            .industry-content p {
-                font-size: 14px;
-            }
-
-            .read-more-btn {
-                padding: 11px 22px;
-                font-size: 12px;
-            }
-
-            .industry-image {
-                height: 220px;
-                min-height: 220px;
-            }
-
-            .expanded-content-inner {
-                padding: 0 32px 32px 32px;
-            }
         }
 
         .sidebar-list { list-style: none; padding: 0; margin: 0; }
@@ -1849,11 +1677,15 @@ $ytLinks = andison_get_youtube_links();
             justify-content: space-between;
             transition: all 0.2s ease;
             font-size: 15px;
+            min-height: 48px;
         }
         .sidebar-list a:hover { 
             background: #f3f4f6; 
             color: #2B11DB;
             padding-left: 16px;
+        }
+        .sidebar-list a:active {
+            background: rgba(43, 17, 219, 0.08);
         }
         .sidebar-list li a.active {
             background: #f3f4f6;
@@ -1898,21 +1730,23 @@ $ytLinks = andison_get_youtube_links();
 
 
         .sidebar-sublist li { 
-            padding: 4px 0; 
+            padding: 0; 
             border: none;
         }
         .sidebar-sublist a { 
             color: #4b5563; 
             font-size: 14px; 
-            padding: 6px 8px; 
+            padding: 10px 16px 10px 48px; 
             display: block; 
             text-decoration: none;
             justify-content: flex-start;
+            min-height: 42px;
+            align-items: center;
         }
         .sidebar-sublist a:hover { 
             color: #2B11DB; 
-            background: transparent;
-            padding-left: 12px;
+            background: rgba(43, 17, 219, 0.08);
+            padding-left: 52px;
         }
 
         /* Nested sublists */
@@ -1946,14 +1780,15 @@ $ytLinks = andison_get_youtube_links();
         }
         .sidebar-nested-sublist a { 
             color: #5a6b7d; 
-            font-size: 13px; 
-            padding: 10px 12px 10px 28px; 
+            font-size: 11px; 
+            padding: 8px 10px 8px 32px; 
             display: block; 
             text-decoration: none;
             position: relative;
             transition: all 0.25s ease;
-            border-radius: 6px;
-            margin: 2px 0;
+            border-radius: 4px;
+            margin: 0;
+            min-height: 30px;
         }
 
         .sidebar-list li.has-sub { position: relative; }
@@ -2322,7 +2157,7 @@ $ytLinks = andison_get_youtube_links();
             transform: translateX(-100%);
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 70;
-            padding: 28px 20px;
+            padding: 12px 8px;
             overflow-y: auto;
         }
 
@@ -2331,26 +2166,27 @@ $ytLinks = andison_get_youtube_links();
         }
 
         .sidebar-overlay h3 {
-            font-size: 18px;
-            margin-bottom: 24px;
+            font-size: 14px;
+            margin-bottom: 10px;
             color: #222;
             font-weight: 700;
             letter-spacing: 0.5px;
         }
 
-        .sidebar-list { list-style: none; padding: 28px 20px 0 20px; margin: 0; }
+        .sidebar-list { list-style: none; padding: 8px 8px 0 8px; margin: 0; }
         .sidebar-list li { border-bottom: 1px solid #e5e7eb; }
         .sidebar-list li:last-child { border-bottom: none; }
         .sidebar-list a { 
             display: flex; 
             gap: 12px; 
-            padding: 16px 12px; 
+            padding: 10px 10px; 
             color: #1f2937; 
             text-decoration: none; 
             align-items: center;
             justify-content: space-between;
             transition: all 0.2s ease;
-            font-size: 15px;
+            font-size: 13px;
+            min-height: 36px;
         }
         .sidebar-list a:hover { 
             background: #f3f4f6; 
@@ -2400,19 +2236,15 @@ $ytLinks = andison_get_youtube_links();
 
         .sidebar-sublist { 
             list-style: none; 
-            margin: 0; 
-            padding: 8px 0 8px 44px; 
-            background: #fafafa;
-            margin-left: 12px;
-            margin-right: 12px;
-            padding-left: 16px;
-            border-left: 2px solid #e5e7eb;
-            padding-top: 8px;
-            padding-bottom: 8px;
-            max-height: 1000px;
+            margin: 2px 0; 
+            padding: 4px 0 4px 12px;
+            background: #f8f9fa;
+            border-left: 3px solid #2B11DB;
+            max-height: 500px;
             overflow: hidden;
             transition: max-height 0.3s ease, opacity 0.3s ease;
             opacity: 1;
+            display: block;
         }
         
         .sidebar-sublist.collapsed {
@@ -2421,21 +2253,23 @@ $ytLinks = andison_get_youtube_links();
             overflow: hidden;
         }
         .sidebar-sublist li { 
-            padding: 4px 0; 
+            padding: 0; 
             border: none;
         }
         .sidebar-sublist a { 
             color: #4b5563; 
-            font-size: 14px; 
-            padding: 6px 8px; 
+            font-size: 12px; 
+            padding: 8px 12px 8px 38px; 
             display: block; 
             text-decoration: none;
             justify-content: flex-start;
+            min-height: 32px;
+            align-items: center;
         }
         .sidebar-sublist a:hover { 
             color: #2B11DB; 
-            background: transparent;
-            padding-left: 12px;
+            background: rgba(43, 17, 219, 0.08);
+            padding-left: 52px;
         }
 
         /* Nested sublists */
@@ -2464,12 +2298,15 @@ $ytLinks = andison_get_youtube_links();
 
         .sidebar-nested-sublist { 
             list-style: none; 
-            margin: 10px 0 10px -12px; 
-            padding: 0;
+            margin: 2px 0;
+            padding: 4px 0 4px 12px;
             max-height: 500px;
             overflow: hidden;
             transition: max-height 0.3s ease, opacity 0.3s ease;
             opacity: 1;
+            background: rgba(43, 17, 219, 0.05);
+            border-left: 2px solid rgba(43, 17, 219, 0.3);
+        }
         }
         
         .sidebar-nested-sublist.collapsed {
@@ -2483,32 +2320,34 @@ $ytLinks = andison_get_youtube_links();
         }
         .sidebar-nested-sublist a { 
             color: #5a6b7d; 
-            font-size: 13px; 
-            padding: 10px 12px 10px 28px; 
+            font-size: 11px; 
+            padding: 8px 10px 8px 32px; 
             display: block; 
             text-decoration: none;
             position: relative;
             transition: all 0.25s ease;
-            border-radius: 6px;
-            margin: 2px 0;
+            border-radius: 4px;
+            margin: 0;
+            min-height: 30px;
+            align-items: center;
         }
         .sidebar-nested-sublist a::before {
             content: '';
             position: absolute;
-            left: 8px;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
             background: linear-gradient(135deg, #2B11DB 0%, #6d28d9 100%);
             border-radius: 50%;
             box-shadow: 0 2px 4px rgba(43, 17, 219, 0.2);
         }
         .sidebar-nested-sublist a:hover { 
             color: #2B11DB;
-            background: rgba(43, 17, 219, 0.08);
-            padding-left: 32px;
-            transform: translateX(4px);
+            background: rgba(43, 17, 219, 0.12);
+            padding-left: 36px;
+            transform: none;
         }
 
         .sidebar-list li.has-sub { position: relative; }
@@ -2665,7 +2504,7 @@ $ytLinks = andison_get_youtube_links();
 
         .mini-sidebar-icon .label {
             display: none;
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 500;
             white-space: nowrap;
             flex: 1;
@@ -2924,27 +2763,99 @@ $ytLinks = andison_get_youtube_links();
         .mobile-sidebar-fab.open { transform: translateY(-50%) translateX(56px); }
         .mobile-sidebar-fab.open.wide { transform: translateY(-50%) translateX(240px); }
 
+        /* Mini popover — mobile overrides */
+        @media (max-width: 768px) {
+            .mini-popover {
+                border-radius: 0 12px 12px 0 !important;
+                box-shadow: 4px 8px 24px rgba(0,0,0,0.28) !important;
+                overflow: hidden !important;
+            }
+            .mini-popover::before { display: none !important; }
+            .mini-popover-header {
+                border-radius: 0 !important;
+                padding: 10px 14px !important;
+                font-size: 13px !important;
+                letter-spacing: 0.5px !important;
+            }
+            .mini-popover-body {
+                padding: 6px 8px 8px 8px !important;
+            }
+            .mini-popover-list {
+                padding: 0 !important;
+            }
+            .mini-popover-list::before {
+                display: none !important;
+            }
+            .mini-popover-item {
+                margin: 2px 0 !important;
+                min-height: auto !important;
+                padding-left: 4px !important;
+                align-items: center !important;
+            }
+            .mini-popover-item .square {
+                width: 6px !important;
+                height: 6px !important;
+                min-width: 6px !important;
+                border-radius: 2px !important;
+            }
+            .mini-popover-item a {
+                font-size: 12px !important;
+                padding: 8px 10px !important;
+                line-height: 1.2 !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                font-weight: 600 !important;
+            }
+            .mini-popover-item a:active {
+                background: rgba(255,255,255,0.18) !important;
+            }
+            .mini-popover-item.has-subitems {
+                padding-right: 30px !important;
+            }
+            .popover-expand-btn {
+                height: 28px !important;
+                width: 28px !important;
+                right: 4px !important;
+            }
+            .popover-expand-btn .bi {
+                font-size: 14px !important;
+            }
+            .popover-subitem {
+                padding: 5px 10px 5px 18px !important;
+                font-size: 11px !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+        }
+
         /* Mini popover styles for subcategories */
         .mini-popover {
             position: fixed;
             top: -9999px;
             left: -9999px;
-            width: 320px;
-            max-width: calc(100vw - 32px);
-            background: linear-gradient(180deg, #1976D2FF 0%, #19D2B6FF 100%);
+            width: 380px;
+            max-width: calc(100vw - 40px);
+            background: linear-gradient(135deg, #1E88E5 0%, #00BCD4 100%);
             color: #fff;
             border-radius: 16px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+            box-shadow: 0 16px 40px rgba(30, 136, 229, 0.3), 0 2px 8px rgba(0,0,0,0.2);
             opacity: 0;
             visibility: hidden;
-            transform: translateY(-6px);
-            transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease;
-            z-index: 200;
+            transform: translateY(-8px) scale(0.95);
+            transition: opacity 180ms cubic-bezier(0.34, 1.56, 0.64, 1), transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1), visibility 180ms ease;
+            z-index: 1300;
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.15);
         }
         .mini-popover.show {
             opacity: 1;
             visibility: visible;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
         .mini-popover::before {
             content: '';
@@ -2958,25 +2869,27 @@ $ytLinks = andison_get_youtube_links();
             filter: drop-shadow(-2px 2px 2px rgba(0,0,0,0.12));
         }
         .mini-popover-header {
-            background: #f5f9ff;
-            color: #0f5132;
+            background: linear-gradient(135deg, #1E88E5 0%, #1565C0 100%);
+            color: #ffffff;
             border-top-left-radius: 16px;
             border-top-right-radius: 16px;
-            padding: 12px 16px;
-            font-weight: 800;
-            font-size: 15px;
-            letter-spacing: 0.3px;
+            padding: 16px 20px;
+            font-weight: 700;
+            font-size: 16px;
+            letter-spacing: 0.4px;
+            line-height: 1.3;
         }
-        .mini-popover-title { color: #0f5132; }
+        .mini-popover-title { color: #ffffff; }
         .mini-popover-body {
-            padding: 12px 16px 16px 16px;
-            max-height: calc(100vh - 100px);
-            overflow-y: auto;
+            padding: 14px 16px 18px 16px;
+            overflow: visible;
+            flex: 1;
+            background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 100%);
         }
         .mini-popover-list {
             list-style: none;
             margin: 0;
-            padding: 6px 0 6px 0;
+            padding: 0;
             position: relative;
         }
         .mini-popover-list::before {
@@ -2988,14 +2901,15 @@ $ytLinks = andison_get_youtube_links();
             width: 2px;
             background: rgba(255,255,255,0.35);
             border-radius: 2px;
+            display: none;
         }
         .mini-popover-item {
             position: relative;
-            padding-left: 42px;
-            margin: 12px 0;
+            padding-left: 0;
+            margin: 3px 0;
             display: flex;
             align-items: stretch;
-            min-height: 32px;
+            min-height: auto;
         }
         .mini-popover-item .square {
             position: absolute;
@@ -3009,20 +2923,234 @@ $ytLinks = andison_get_youtube_links();
             box-shadow: 0 2px 6px rgba(0,0,0,0.18), inset 0 -1px 0 rgba(0,0,0,0.08);
             flex-shrink: 0;
             pointer-events: none;
+            display: none;
         }
         .mini-popover-item a {
             color: #ffffff;
             text-decoration: none;
             font-weight: 600;
             display: block;
-            padding: 8px 10px;
+            padding: 12px 14px;
             border-radius: 8px;
-            transition: background 140ms ease, transform 120ms ease;
+            transition: all 160ms cubic-bezier(0.34, 1.56, 0.64, 1);
             width: 100%;
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+            line-height: 1.4;
+            font-size: 14px;
+            background: rgba(255,255,255,0.06);
+            border-left: 3px solid transparent;
         }
         .mini-popover-item a:hover {
-            background: rgba(255,255,255,0.12);
-            transform: translateX(2px);
+            background: rgba(255,255,255,0.16);
+            transform: translateX(4px);
+            border-left-color: rgba(255,255,255,0.5);
+        }
+        
+        /* Expandable popover items */
+        .mini-popover-item.has-subitems {
+            flex-wrap: wrap;
+            padding-right: 36px;
+        }
+        .popover-expand-btn {
+            position: absolute;
+            right: 8px;
+            top: 0;
+            bottom: 0;
+            height: 32px;
+            width: 32px;
+            margin: auto;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 160ms cubic-bezier(0.34, 1.56, 0.64, 1);
+            flex-shrink: 0;
+            border-radius: 8px;
+        }
+        .popover-expand-btn:hover {
+            background: rgba(255,255,255,0.22);
+            transform: scale(1.08);
+        }
+        .popover-expand-btn:active {
+            background: rgba(255,255,255,0.3);
+            transform: scale(0.95);
+        }
+        .popover-expand-btn .bi {
+            font-size: 18px;
+            transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .popover-expand-btn[aria-expanded="true"] .bi {
+            transform: rotate(90deg);
+        }
+        
+        .popover-subitems {
+            width: 100%;
+            margin-top: 8px;
+            max-height: none;
+            overflow: visible;
+            transition: opacity 250ms ease;
+            opacity: 1;
+            padding-left: 0;
+        }
+        .popover-subitems.collapsed {
+            display: none;
+        }
+        
+        .popover-subitem {
+            color: rgba(255,255,255,0.85) !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            padding: 6px 10px 6px 28px !important;
+            display: block !important;
+            text-decoration: none !important;
+            border-radius: 6px !important;
+            transition: all 120ms ease !important;
+            position: relative;
+        }
+        .popover-subitem::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #ffffff;
+            opacity: 0.6;
+        }
+        .popover-subitem:hover {
+            background: rgba(255,255,255,0.12) !important;
+            transform: translateX(2px) !important;
+            color: #ffffff !important;
+        }
+
+        /* ===== INDUSTRIES PAGE ===== */
+        .industries-hero {
+            text-align: center;
+            padding: 52px 20px 36px;
+            background: #fff;
+        }
+        .industries-hero h2 {
+            font-size: 40px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 14px;
+            color: #1a0aa8;
+        }
+        .industries-hero h2 span {
+            background: linear-gradient(90deg, #00D7B3, #2B11DB);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .industries-hero p {
+            max-width: 680px;
+            margin: 0 auto;
+            color: #555;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .industry-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+        }
+
+        .industry-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border: 1px solid #d8e8f5;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            background: #fff;
+            transition: box-shadow 0.25s ease, transform 0.25s ease;
+        }
+        .industry-card:hover {
+            box-shadow: 0 8px 28px rgba(43,17,219,0.13);
+            transform: translateY(-3px);
+        }
+
+        .industry-card-body {
+            padding: 28px 28px 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 12px;
+            border-top: 4px solid #00D7B3;
+        }
+
+        .industry-card-body h3 {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1565C0;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .industry-card-body p {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.75;
+            margin: 0;
+        }
+
+        .industry-read-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #2B11DB 0%, #00D7B3 100%);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-top: 4px;
+            align-self: flex-start;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        .industry-read-more:hover {
+            opacity: 0.88;
+            transform: translateY(-1px);
+            color: #fff;
+        }
+
+        .industry-card-image {
+            position: relative;
+            min-height: 220px;
+            background: #e9eef7;
+            overflow: hidden;
+        }
+        .industry-card-image img {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .industry-card {
+                grid-template-columns: 1fr;
+            }
+            .industry-card-image {
+                min-height: 180px;
+                position: relative;
+            }
+            .industries-hero h2 { font-size: 28px; }
         }
     </style>
 </head>
@@ -3076,7 +3204,7 @@ $ytLinks = andison_get_youtube_links();
             <div class="nav-inner">
                 <ul class="nav-list">
                     <li>
-                        <a href="home.php" class="active">Home</a>
+                        <a href="home.php">Home</a>
                         <div class="nav-dropdown">
                             <h4>Welcome</h4>
                             <p>Discover our complete range of industrial welding solutions and equipment.</p>
@@ -3099,7 +3227,7 @@ $ytLinks = andison_get_youtube_links();
                             <h4>Featured Brands</h4>
                             <ul>
                                <li><a href="brand.php?name=Panasonic%20Connect"><img src="assets/brands/PANASONIC.jpg" alt="Panasonic Connect" title="Panasonic Connect"></a></li>
-                                <li><a href="brand.php?name=Robot%20Systems"><img src="assets/brands/ROBOT SYSTEMS.png" alt="Robot Systems Peripherals" title="Robot Systems Peripherals"></a></li>
+                                <li><a href="/brand.php?name=Robot%20Systems"><img src="/assets/brands/ROBOT SYSTEMS.png" alt="Robot Systems Peripherals" title="Robot Systems Peripherals"></a></li>
                                 <li><a href="brand.php?name=Kobelco"><img src="assets/brands/KOBELCO.jpg" alt="Kobelco" title="Kobelco"></a></li>
                                 <li><a href="brand.php?name=Metrode"><img src="assets/brands/METRODE.jpg" alt="Metrode" title="Metrode"></a></li>
                                 <li><a href="brand.php?name=DryRod.%20II"><img src="assets/brands/DRYROD.jpg" alt="DryRod. II" title="DryRod. II"></a></li>
@@ -3129,7 +3257,7 @@ $ytLinks = andison_get_youtube_links();
                                 <li><a href="brand.php?name=Weller"><img src="assets/brands/WEILER.jpg" alt="Weller" title="Weller"></a></li>
                                 <li><a href="brand.php?name=Garryson"><img src="assets/brands/GARRYSON.jpg" alt="Garryson" title="Garryson"></a></li>
                                 <li><a href="brand.php?name=REVOLT"><img src="assets/brands/REVOLT.png" alt="REVOLT" title="REVOLT"></a></li>
-                                <li><a href="brand.php?name=Technotex"><img src="assets/brands/TECHNOTEX.jpg" alt="Technotex" title="Technotex"></a></li>
+                                <li><a href="brand.php?name=Technotex"><img src="assets/brands/TECHNOTEX.png" alt="Technotex" title="Technotex"></a></li>
                                 <li><a href="brand.php?name=Spilfyter"><img src="assets/brands/SPILFYTER.jpg" alt="Spilfyter" title="Spilfyter"></a></li>
                                 <li><a href="brand.php?name=Dalo"><img src="assets/brands/DALO.jpg" alt="Dalo" title="Dalo"></a></li>
                                 <li><a href="brand.php?name=MOTOLITE"><img src="assets/brands/MOTOLITE.jpg" alt="Motolite" title="Motolite"></a></li>
@@ -3137,16 +3265,14 @@ $ytLinks = andison_get_youtube_links();
                         </div>
                     </li>
                     <li>
-                        <a href="industries.php">Industries</a>
+                        <a href="industries.php" class="active">Industries</a>
                         <div class="nav-dropdown">
                             <h4>Industries We Serve</h4>
                             <ul>
-                                <li><a href="industries.php#motor-vehicle">Motor Vehicle Industry</a></li>
-                                <li><a href="industries.php#metal-fabrication">Metal Fabrication and Industrial</a></li>
-                                <li><a href="industries.php#power-generation">Power Generation</a></li>
-                                <li><a href="industries.php#oil-petrochemical">Oil and Petrochemical Industry</a></li>
-                                <li><a href="industries.php#mining">Mining Industry</a></li>
-                                <li><a href="industries.php#shipyard">Shipyard</a></li>
+                                <li><a href="industries.php#manufacturing">Manufacturing</a></li>
+                                <li><a href="industries.php#construction">Construction</a></li>
+                                <li><a href="industries.php#automotive">Automotive</a></li>
+                                <li><a href="industries.php#shipbuilding">Shipbuilding</a></li>
                             </ul>
                         </div>
                     </li>
@@ -3192,6 +3318,7 @@ $ytLinks = andison_get_youtube_links();
                 <button class="sub-toggle" aria-controls="sub-arc-welding" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
                     <li><a href="arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
+                    <li><a href="arc-welding-machine/accessories-and-consumables.php">Accessories and Consumables</a></li>
                     <li><a href="arc-welding-machine/co1-mag-welding-machine.php">CO2/MAG Welding Machine</a></li>
                     <li><a href="arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
                     <li><a href="arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
@@ -3222,7 +3349,17 @@ $ytLinks = andison_get_youtube_links();
                 <button class="sub-toggle" aria-controls="sub-drilling-lifting" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
                     <li><a href="drilling-and-lifting/lifting.php">Lifting</a></li>
-                    <li><a href="drilling-and-lifting/magnetic-drill.php">Magnetic Drill</a></li>
+                    <li class="has-nested-sub">
+                        <a href="drilling-and-lifting/magnetic-drill.php">Magnetic Drill</a>
+                        <button class="nested-toggle" aria-controls="nested-magnetic-drill" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>
+                        <ul id="nested-magnetic-drill" class="sidebar-nested-sublist collapsed">
+                            <li><a href="drilling-and-lifting/magnetic-drill/b-line-series.php">B-Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/rl-e-line-series.php">RL-E Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/rbx-line-series.php">RBX-Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/sp-line-series.php">SP-Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/v-line-series.php">V-Line Series</a></li>
+                        </ul>
+                    </li>
                     <li><a href="drilling-and-lifting/cutters.php">Cutters</a></li>
                 </ul>
             </li>
@@ -3335,173 +3472,92 @@ $ytLinks = andison_get_youtube_links();
         </div>
     </div>
 
-    <!-- Industries Section -->
-    <main class="container">
-        <section class="industries-section">
-            <div class="industries-header">
-                <h1><span class="blue-part">Our Industrial</span> <span class="teal-part">Expertise</span></h1>
-                <p>Andison Industrial proudly serves a diverse range of sectors, delivering precision, innovation, and reliability to drive progress in every industry we touch.</p>
-            </div>
+    <!-- Services Content -->
+    <div class="page-content">
 
-            <div class="industries-grid">
-                <!-- Motor Vehicle Industry -->
-                <div class="industry-card" id="motor-vehicle">
-                    <div class="industry-content">
-                        <h2>Motor Vehicle Industry</h2>
-                        <p>This industry manufactures automobiles, motorcycles, buses, and truck vans. They have a growing presence in the Philippine market, especially with the high demand for motorcycles. We offer a wide assortment of welding equipment and consumables necessary to produce world-class products.</p>
-                        <button class="read-more-btn" onclick="toggleExpanded(this)">Read More</button>
-                        <div class="expanded-content">
-                            <div class="expanded-content-inner">
-                                <p>Top multinational and domestic automotive companies choose our Panasonic Welding Systems to significantly improve weld quality and boost efficiency while reducing production costs. We provide consultation, training, maintenance, and reliable after-sales service to satisfy our customers' expectations.</p>
-                                <p><strong>Some of our products used in this industry are:</strong></p>
-                                <ul class="products-list">
-                                    <li>Arc Welding Robot with Power Source</li>
-                                    <li>Arc Welding Equipment and Filler Metals</li>
-                                    <li>Power Tools and Hand Tools</li>
-                                    <li>Personal Protective Equipment (PPEs)</li>
-                                </ul>
-                                <p>For items not found on our website, kindly see our contact details and send us an inquiry.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="industry-image">
-                        <img src="assets/HOME/photo_2026-02-03_10-30-46.jpg" alt="Motor Vehicle Industry">
-                    </div>
+    <!-- Industries Hero -->
+    <section id="industries-overview" style="padding: 0; background: #fff;">
+        <div class="industries-hero">
+            <h2>Our Industrial <span>Expertise</span></h2>
+            <p>Andison Industrial proudly serves a diverse range of sectors, delivering precision, innovation, and reliability to drive progress in every industry we touch.</p>
+        </div>
+
+        <div class="industry-cards">
+
+            <!-- Motor Vehicle Industry -->
+            <div class="industry-card">
+                <div class="industry-card-body">
+                    <h3>Motor Vehicle Industry</h3>
+                    <p>This industry manufactures automobiles, motorcycles, buses, and truck vans. They have a growing presence in the Philippine market, especially with the high market for motorcycles. We offer a wide assortment of welding equipment and consumables necessary to produce world-class products.</p>
+                    <a href="#" class="industry-read-more">READ MORE &#9660;</a>
                 </div>
-
-                <!-- Metal Fabrication and Industrial Projects -->
-                <div class="industry-card reverse" id="metal-fabrication">
-                    <div class="industry-content">
-                        <h2>Metal Fabrication and Industrial</h2>
-                        <p>Bridges, railways, refineries, shipyards, transmission lines, and other large-scale projects require steel frames and other metals to support the large infrastructures. Workers in the metal fabrication industry do welding, metal cutting, and fastening to assemble metal parts.</p>
-                        <button class="read-more-btn" onclick="toggleExpanded(this)">Read More</button>
-                        <div class="expanded-content">
-                            <div class="expanded-content-inner">
-                                <p>We supply our clients with equipment that makes quality welds in a short time. Our safety products protect workers from hazards such as working from heights, glaring lights, and hazardous gases.</p>
-                                <p><strong>Some of our products used in this industry are:</strong></p>
-                                <ul class="products-list">
-                                    <li>Arc Welding Equipment and Filler Metals</li>
-                                    <li>Pipe Cutting and Beveling Equipment</li>
-                                    <li>Gas Welding and Cutting Equipment</li>
-                                    <li>Power Tools and Hand Tools</li>
-                                    <li>Personal Protective Equipment (PPEs)</li>
-                                </ul>
-                                <p>For items not found on our website, kindly see our <a href="#contact">contact details</a> and send your inquiry.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="industry-image">
-                        <img src="assets/HOME/photo_2026-02-03_10-30-46 (2).jpg" alt="Metal Fabrication">
-                    </div>
-                </div>
-
-                <!-- Power Generation -->
-                <div class="industry-card" id="power-generation">
-                    <div class="industry-content">
-                        <h2>Power Generation</h2>
-                        <p>The Power Generation Industry is vital in a country's growth. They must be a reliable partner in meeting the Philippine Energy Market's ever-growing demands.</p>
-                        <button class="read-more-btn" onclick="toggleExpanded(this)">Read More</button>
-                        <div class="expanded-content">
-                            <div class="expanded-content-inner">
-                                <p>From plant maintenance, shutdown, building power transmission lines, and other infrastructures, we work closely with our clients and supply much-needed equipment, tools, and consumables to help finish their projects on schedule.</p>
-                                <p><strong>Some of our products used in this industry are:</strong></p>
-                                <ul class="products-list">
-                                    <li>Arc Welding Equipment and Filler Metal</li>
-                                    <li>Power Tools and Hand Tools</li>
-                                    <li>Bearings, Maintenance Tools and Equipment</li>
-                                    <li>Height Protection Equipment and other PPEs</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="industry-image">
-                        <img src="assets/HOME/photo_2026-02-03_10-30-47.jpg" alt="Power Generation">
-                    </div>
-                </div>
-
-                <!-- Oil and Petrochemical Industry -->
-                <div class="industry-card reverse" id="oil-petrochemical">
-                    <div class="industry-content">
-                        <h2>Oil and Petrochemical Industry</h2>
-                        <p>Oil refineries use fractional distillation and other methods to process crude oil into more useful products like petroleum, gasoline, and other fuels. During the distillation, heavier by-products settle at the bottom. Petrochemical plants crack the by-products and further process them into more useful chemicals. Other industries use these petrochemicals to create different products.</p>
-                        <button class="read-more-btn" onclick="toggleExpanded(this)">Read More</button>
-                        <div class="expanded-content">
-                            <div class="expanded-content-inner">
-                                <p>Oil refineries use fractional distillation and other methods to process crude oil into more useful products like petroleum, gasoline, and other fuels. During the distillation, heavier by-products settle at the bottom. Petrochemical plants crack the by-products and further process them into more useful chemicals. Other industries use these petrochemicals to create everyday items including deodorants, perfumes, plastics, fertilizer, and car tires.</p>
-                                <p><strong>Some of our products used in this industry are:</strong></p>
-                                <ul class="products-list">
-                                    <li>Arc Welding Equipment and Filler Metals</li>
-                                    <li>Portable and Area Hazardous Gas Detectors</li>
-                                    <li>Air Movers and Industrial Ventilators</li>
-                                    <li>Bearings, Maintenance Tools and Equipment</li>
-                                    <li>Pipe Cutting and Beveling Machine</li>
-                                    <li>Power Tools and Hand Tools</li>
-                                    <li>Personal Protective Equipment (PPEs)</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="industry-image">
-                        <img src="assets/HOME/photo_2026-02-03_10-30-47 (2).jpg" alt="Oil and Petrochemical">
-                    </div>
-                </div>
-
-                <!-- Mining Industry -->
-                <div class="industry-card" id="mining">
-                    <div class="industry-content">
-                        <h2>Mining Industry</h2>
-                        <p>This industry extracts coal, oil, metals, and other raw materials from the earth. These resources are processed by other industries to create products such as fuel, jewelry, construction materials, and everyday items. Mining is vital to the economy.</p>
-                        <button class="read-more-btn" onclick="toggleExpanded(this)">Read More</button>
-                        <div class="expanded-content">
-                            <div class="expanded-content-inner">
-                                <p>However, digging deep into the ground could pose a safety risk to workers without the proper equipment. We at Andison promote safety by providing high-quality PPEs. Our portfolio includes various <em>single and multi-gas detectors</em> including maintenance-free gas detectors. We provide clients with training on the proper use of the equipment to fully use its functions and ensure a safe working environment. We also do recalibration for the gas detectors.</p>
-                                <p><strong>Some of our products used in this industry are:</strong></p>
-                                <ul class="products-list">
-                                    <li>Portable and Area Hazardous Gas Detectors</li>
-                                    <li>PPEs and other Safety Products</li>
-                                    <li>Air Movers and Ventilators</li>
-                                    <li>Bearings, Maintenance Tools and Equipment</li>
-                                    <li>Cordless Power Tools</li>
-                                    <li>Floodlights and other Light Sources</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="industry-image">
-                        <img src="assets/HOME/photo_2026-02-03_10-30-47 (3).jpg" alt="Mining Industry">
-                    </div>
-                </div>
-
-                <!-- Shipyard -->
-                <div class="industry-card reverse" id="shipyard">
-                    <div class="industry-content">
-                        <h2>Shipyard</h2>
-                        <p>World trade relies heavily on freight ships because it offers a high capacity at a low cost in transporting goods. Being an archipelago, the Philippines also uses ships to ferry people to the country's many islands. Shipyards play a critical role in maintaining ships, ensuring they are seaworthy and safe.</p>
-                        <button class="read-more-btn" onclick="toggleExpanded(this)">Read More</button>
-                        <div class="expanded-content">
-                            <div class="expanded-content-inner">
-                                <p>Metal fabrication is an integral part of the shipbuilding industry. Andison has a wide product catalog for working with metal fabrication, providing clients with equipment ready for the job.</p>
-                                <p><strong>Some of our products used in this industry are:</strong></p>
-                                <ul class="products-list">
-                                    <li>Arc Welding Equipment and Filler Metals</li>
-                                    <li>Gas Welding and Cutting Equipment</li>
-                                    <li>Air Movers and Industrial Ventilators</li>
-                                    <li>Power Tools and Hand Tools</li>
-                                    <li>Pipe Cutting and Beveling Machine</li>
-                                    <li>Personal Protective Equipment (PPEs)</li>
-                                    <li>Portable Gas Detectors</li>
-                                </ul>
-                                <p>For items not found on our website, kindly see our <a href="#contact">contact details</a> and send your inquiry.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="industry-image">
-                        <img src="assets/HOME/photo_2026-02-03_10-30-47 (4).jpg" alt="Shipyard">
-                    </div>
+                <div class="industry-card-image">
+                    <img src="assets/industries/motor-vehicle.jpg" alt="Motor Vehicle Industry">
                 </div>
             </div>
-        </section>
-    </main>
+
+            <!-- Metal Fabrication -->
+            <div class="industry-card">
+                <div class="industry-card-body">
+                    <h3>Metal Fabrication and Industrial</h3>
+                    <p>Bridges, railways, refineries, shipyards, transmission lines, and other large-scale projects require steel frames and other metals to support the large infrastructures. Workers in the metal fabrication industry do welding, metal cutting, and fastening to assemble metal parts.</p>
+                    <a href="#" class="industry-read-more">READ MORE &#9660;</a>
+                </div>
+                <div class="industry-card-image">
+                    <img src="assets/industries/metal-fabrication.jpg" alt="Metal Fabrication and Industrial">
+                </div>
+            </div>
+
+            <!-- Power Generation -->
+            <div class="industry-card">
+                <div class="industry-card-body">
+                    <h3>Power Generation</h3>
+                    <p>The Power Generation Industry is vital in a country's growth. They must be a reliable partner in meeting the Philippine Energy Market's ever-growing demands.</p>
+                    <a href="#" class="industry-read-more">READ MORE &#9660;</a>
+                </div>
+                <div class="industry-card-image">
+                    <img src="assets/industries/power-generation.jpg" alt="Power Generation">
+                </div>
+            </div>
+
+            <!-- Oil and Petrochemical -->
+            <div class="industry-card">
+                <div class="industry-card-body">
+                    <h3>Oil and Petrochemical Industry</h3>
+                    <p>Oil refineries use fractional distillation and other methods to process crude oil into more useful products like petroleum, gasoline, and other fuels. During the distillation, heavier by-products settle at the bottom. Petrochemical plants crack the by-products and further process them into more useful chemicals. Other industries use these petrochemicals to create different products.</p>
+                    <a href="#" class="industry-read-more">READ MORE &#9660;</a>
+                </div>
+                <div class="industry-card-image">
+                    <img src="assets/industries/oil-petrochemical.jpg" alt="Oil and Petrochemical Industry">
+                </div>
+            </div>
+
+            <!-- Mining Industry -->
+            <div class="industry-card">
+                <div class="industry-card-body">
+                    <h3>Mining Industry</h3>
+                    <p>This industry extracts coal, oil, metals, and other raw materials from the earth. These resources are processed by other industries to create products such as fuel, jewelry, construction materials, and everyday items. Mining is vital to the economy.</p>
+                    <a href="#" class="industry-read-more">READ MORE &#9660;</a>
+                </div>
+                <div class="industry-card-image">
+                    <img src="assets/industries/mining.jpg" alt="Mining Industry">
+                </div>
+            </div>
+
+            <!-- Shipyard -->
+            <div class="industry-card">
+                <div class="industry-card-body">
+                    <h3>Shipyard</h3>
+                    <p>World trade relies heavily on freight ships because it offers a high capacity at a low cost in transporting goods. Being an archipelago, the Philippines also uses ships to ferry people to the country's many islands. Shipyards play a critical role in maintaining ships, ensuring they are seaworthy and safe.</p>
+                    <a href="#" class="industry-read-more">READ MORE &#9660;</a>
+                </div>
+                <div class="industry-card-image">
+                    <img src="assets/industries/shipyard.jpg" alt="Shipyard">
+                </div>
+            </div>
+
+        </div>
+    </section>
 
     <!-- Footer -->
     <footer>
@@ -3516,18 +3572,13 @@ $ytLinks = andison_get_youtube_links();
             </div>
         </div>
     </footer>
+    </div><!-- /.page-content -->
     <script>
-        function toggleExpanded(button) {
-            const expandedContent = button.nextElementSibling;
-            button.classList.toggle('active');
-            expandedContent.classList.toggle('show');
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const browseToggle = document.getElementById('browseToggle');
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            const closeBtn = document.getElementById('closeSidebar');
+        (function(){
+            var browseToggle = document.getElementById('browseToggle');
+            var sidebar = document.getElementById('sidebar');
+            var overlay = document.getElementById('overlay');
+            var closeBtn = document.getElementById('closeSidebar');
 
             function openSidebar(){
                 sidebar.classList.add('active');
@@ -3549,16 +3600,7 @@ $ytLinks = andison_get_youtube_links();
             if(closeBtn) closeBtn.addEventListener('click', closeSidebar);
             if(overlay) overlay.addEventListener('click', closeSidebar);
             document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeSidebar(); });
-            
-            // Set active nav link for Industries page
-            const currentPage = 'industries.php';
-            document.querySelectorAll('.nav-list > li > a').forEach(link => {
-                link.classList.remove('active');
-                if (link.href.includes(currentPage) && link.textContent.includes('Industries')) {
-                    link.classList.add('active');
-                }
-            });
-        });
+        })();
         // Sidebar sublist toggle behavior with persistent state
         (function(){
             var toggles = document.querySelectorAll('.sub-toggle');
@@ -3932,18 +3974,113 @@ $ytLinks = andison_get_youtube_links();
                 });
             }
             
-            // Sidebar sub-toggle functionality
+            // Sidebar sub-toggle functionality - Show popover card
+            var mainSidebarPopover = document.getElementById('miniPopover');
+            var popoverTitle = mainSidebarPopover ? mainSidebarPopover.querySelector('.mini-popover-title') : null;
+            var popoverList = mainSidebarPopover ? mainSidebarPopover.querySelector('.mini-popover-list') : null;
+            var currentMainSidebarKey = null;
+            
+            function showMainSidebarPopover(toggle) {
+                if (!mainSidebarPopover || !popoverList || !popoverTitle) return;
+                
+                var sublistId = toggle.getAttribute('aria-controls');
+                var sublist = document.getElementById(sublistId);
+                if (!sublist) return;
+                
+                // Extract title from parent li's main link
+                var parentLi = toggle.closest('.has-sub');
+                var mainLink = parentLi ? parentLi.querySelector(':scope > a:not([class])') : null;
+                var title = mainLink ? mainLink.textContent.trim() : 'Items';
+                
+                // Extract items from the sublist
+                var items = [];
+                var listItems = sublist.querySelectorAll('li > a');
+                listItems.forEach(function(link) {
+                    items.push({
+                        text: link.textContent.trim(),
+                        href: link.getAttribute('href') || '#'
+                    });
+                });
+                
+                // Populate popover
+                popoverTitle.textContent = title;
+                popoverList.innerHTML = '';
+                items.forEach(function(item) {
+                    var li = document.createElement('li');
+                    li.className = 'mini-popover-item';
+                    li.innerHTML = '<span class="square"></span><a href="' + item.href + '">' + item.text + '</a>';
+                    popoverList.appendChild(li);
+                });
+                
+                // Position popover next to toggle button
+                setTimeout(function() {
+                    mainSidebarPopover.style.left = '-9999px';
+                    mainSidebarPopover.style.top = '-9999px';
+                    mainSidebarPopover.classList.add('show');
+                    
+                    var toggleRect = toggle.getBoundingClientRect();
+                    var pw = mainSidebarPopover.offsetWidth;
+                    var ph = mainSidebarPopover.offsetHeight;
+                    var toggleCenterY = toggleRect.top + toggleRect.height / 2;
+                    
+                    // Position to the right of the toggle button
+                    var left = Math.round(toggleRect.right + 14);
+                    var top = Math.round(toggleCenterY - ph / 2);
+                    
+                    // Adjust if off-screen horizontally
+                    if (left + pw + 12 > window.innerWidth) {
+                        left = Math.round(toggleRect.left - pw - 14);
+                    }
+                    
+                    // Adjust if off-screen vertically
+                    var headerHeight = 100;
+                    var minTop = headerHeight + 12;
+                    var maxTop = window.innerHeight - ph - 12;
+                    if (top < minTop) top = minTop;
+                    if (top > maxTop) top = maxTop;
+                    
+                    var arrowOffset = toggleCenterY - top - 26;
+                    mainSidebarPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+                    
+                    mainSidebarPopover.style.left = left + 'px';
+                    mainSidebarPopover.style.top = top + 'px';
+                    mainSidebarPopover.setAttribute('aria-hidden', 'false');
+                    currentMainSidebarKey = sublistId;
+                }, 5);
+            }
+            
+            function hideMainSidebarPopover() {
+                if (!mainSidebarPopover) return;
+                mainSidebarPopover.classList.remove('show');
+                mainSidebarPopover.setAttribute('aria-hidden', 'true');
+                currentMainSidebarKey = null;
+            }
+            
             var subToggles = document.querySelectorAll('.sub-toggle');
             subToggles.forEach(function(toggle) {
                 toggle.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    var sublist = document.getElementById(toggle.getAttribute('aria-controls'));
-                    if(sublist) {
-                        sublist.classList.toggle('collapsed');
-                        toggle.setAttribute('aria-expanded', sublist.classList.contains('collapsed') ? 'false' : 'true');
+                    
+                    if (currentMainSidebarKey === toggle.getAttribute('aria-controls') && mainSidebarPopover.classList.contains('show')) {
+                        hideMainSidebarPopover();
+                    } else {
+                        showMainSidebarPopover(toggle);
                     }
                 });
+            });
+            
+            // Close popover on outside click
+            document.addEventListener('click', function(e) {
+                if (!mainSidebarPopover) return;
+                if (!mainSidebarPopover.classList.contains('show')) return;
+                if (e.target.closest('.mini-popover') || e.target.closest('.sub-toggle')) return;
+                hideMainSidebarPopover();
+            });
+            
+            // Close popover on Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') hideMainSidebarPopover();
             });
             
             // Nested toggle functionality
@@ -4020,6 +4157,9 @@ $ytLinks = andison_get_youtube_links();
         var popoverTitle = miniPopover ? miniPopover.querySelector('.mini-popover-title') : null;
         var popoverList = miniPopover ? miniPopover.querySelector('.mini-popover-list') : null;
         var currentPopoverKey = null;
+        var lastIconCenterY = 0; // track icon center Y for arrow realignment
+        var lastIconRight   = 0; // track icon right edge for mobile popover left
+        var lastIconTop     = 0; // track icon top for mobile popover start
 
         // Responsive function to show/hide browse toggle
         function updateBrowseToggleVisibility() {
@@ -4072,6 +4212,11 @@ $ytLinks = andison_get_youtube_links();
                 ],
                 'arc-welding-machine': [
                     { label: 'MIG Welding Machine', href: base + '/arc-welding-machine/mig-welding-machine.php' },
+                    { label: 'Accessories and Consumables', href: base + '/arc-welding-machine/accessories-and-consumables.php', subitems: [
+                        { label: 'Welding Torch / Gun', href: base + '/arc-welding-machine/accessories-and-consumables/welding-torch-gun.php' },
+                        { label: 'Torch Consumables', href: base + '/arc-welding-machine/accessories-and-consumables/torch-consumables.php' },
+                        { label: 'Accessories', href: base + '/arc-welding-machine/accessories-and-consumables/accessories.php' }
+                    ]},
                     { label: 'CO2/MAG Welding Machine', href: base + '/arc-welding-machine/co1-mag-welding-machine.php' },
                     { label: 'STUD Welding Machine', href: base + '/arc-welding-machine/stud-welding-machine.php' },
                     { label: 'TIG Welding Machine', href: base + '/arc-welding-machine/tig-welding-machine.php' },
@@ -4084,7 +4229,13 @@ $ytLinks = andison_get_youtube_links();
                 ],
                 'drilling-and-lifting': [
                     { label: 'Lifting', href: base + '/drilling-and-lifting/lifting.php' },
-                    { label: 'Magnetic Drill', href: base + '/drilling-and-lifting/magnetic-drill.php' },
+                    { label: 'Magnetic Drill', href: base + '/drilling-and-lifting/magnetic-drill.php', subitems: [
+                        { label: 'B-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/b-line-series.php' },
+                        { label: 'RL-E Line Series', href: base + '/drilling-and-lifting/magnetic-drill/rl-e-line-series.php' },
+                        { label: 'RBX-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/rbx-line-series.php' },
+                        { label: 'SP-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/sp-line-series.php' },
+                        { label: 'V-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/v-line-series.php' }
+                    ]},
                     { label: 'Cutters', href: base + '/drilling-and-lifting/cutters.php' }
                 ],
                 'gas-detectors': [
@@ -4107,10 +4258,19 @@ $ytLinks = andison_get_youtube_links();
                 ],
                 'protection': [
                     { label: 'Eye Protection', href: base + '/protection/eye-protection.php' },
-                    { label: 'Hand Protection', href: base + '/protection/hand-protection.php' },
+                    { label: 'Hand Protection', href: base + '/protection/hand-protection.php', subitems: [
+                        { label: 'Welding Gloves', href: base + '/protection/welding-gloves.php' },
+                        { label: 'Working Gloves', href: base + '/protection/working-gloves.php' },
+                        { label: 'Chemical and Liquid Protection Gloves', href: base + '/protection/chemical-liquid-protection-gloves.php' },
+                        { label: 'Disposable Gloves', href: base + '/protection/disposable-gloves.php' }
+                    ]},
                     { label: 'Hearing & Respiratory Protection', href: base + '/protection/hearing-respiratory-protection.php' },
                     { label: 'Welding Head and Face Protection', href: base + '/protection/welding-head-and-face-protection.php' },
-                    { label: 'Body Protection', href: base + '/protection/body-protection.php' }
+                    { label: 'Body Protection', href: base + '/protection/body-protection.php', subitems: [
+                        { label: 'Particulate and Low Hazard', href: base + '/protection/particulate-low-hazard.php' },
+                        { label: 'Liquid Spray and Splash', href: base + '/protection/liquid-spray-splash.php' },
+                        { label: 'Chemical and Flame Retardant', href: base + '/protection/chemical-flame-retardant.php' }
+                    ]}
                 ],
                 'welding-accessories': [
                     { label: 'Welding Electrode Oven', href: base + '/welding-accessories/welding-electrode-oven.php' },
@@ -4135,44 +4295,143 @@ $ytLinks = andison_get_youtube_links();
             items.forEach(function(it){
                 var li = document.createElement('li');
                 li.className = 'mini-popover-item';
-                li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a>';
+                
+                if (it.subitems && it.subitems.length > 0) {
+                    // Item with subitems - add container for expanded view
+                    li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a><button class="popover-expand-btn" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>';
+                    li.className += ' has-subitems';
+                    
+                    // Create subitems container
+                    var subContainer = document.createElement('div');
+                    subContainer.className = 'popover-subitems collapsed';
+                    subContainer.innerHTML = it.subitems.map(function(sub){
+                        return '<a href="'+ sub.href +'" class="popover-subitem">'+ sub.label +'</a>';
+                    }).join('');
+                    
+                    li.appendChild(subContainer);
+                    
+                    // Add expand/collapse handler
+                    var expandBtn = li.querySelector('.popover-expand-btn');
+                    expandBtn.addEventListener('click', function(e){
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var isExpanded = expandBtn.getAttribute('aria-expanded') === 'true';
+                        if (isExpanded) {
+                            expandBtn.setAttribute('aria-expanded', 'false');
+                            subContainer.classList.add('collapsed');
+                        } else {
+                            expandBtn.setAttribute('aria-expanded', 'true');
+                            subContainer.classList.remove('collapsed');
+                        }
+                        // Adjust popover height after expanding/collapsing
+                        setTimeout(function(){
+                            adjustPopoverHeight();
+                        }, 10);
+                    });
+                } else {
+                    // Regular item
+                    li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a>';
+                }
+                
                 popoverList.appendChild(li);
             });
             if (popoverTitle) popoverTitle.textContent = getCategoryTitle(key);
         }
+        /* Shared: compute top + arrow for a given height, centered on lastIconCenterY */
+        function _applyPosition(finalHeight) {
+            var vh = window.innerHeight;
+            var isMobile = window.innerWidth <= 768;
+
+            if (isMobile) {
+                // On mobile: align to icon top, but shift up if it would overflow the bottom
+                var popLeft   = Math.round(lastIconRight);
+                var headerMin = 90; // don't go above header
+                var bottomPad = 8;
+                var popTop    = Math.round(lastIconTop);
+                var maxH      = vh - headerMin - bottomPad;
+                var contentH  = Math.min(finalHeight, maxH);
+                // If it would overflow the bottom, shift top upward just enough
+                if (popTop + contentH > vh - bottomPad) {
+                    popTop = vh - contentH - bottomPad;
+                }
+                // Never overlap the header
+                if (popTop < headerMin) popTop = headerMin;
+
+                miniPopover.style.left   = popLeft + 'px';
+                miniPopover.style.right  = '0px';
+                miniPopover.style.width  = 'auto';
+                miniPopover.style.top    = popTop + 'px';
+                miniPopover.style.height = contentH + 'px';
+                miniPopover.style.setProperty('--arrow-offset', '-9999px');
+            } else {
+                // Desktop: center on icon
+                var headerBottom = 140;
+                var top = Math.round(lastIconCenterY - finalHeight / 2);
+                if (top < headerBottom)                top = headerBottom;
+                if (top + finalHeight > vh - 8)        top = vh - finalHeight - 8;
+                if (top < headerBottom)                top = headerBottom;
+
+                miniPopover.style.right  = '';
+                miniPopover.style.width  = '';
+                var arrowOffset = Math.round(lastIconCenterY - top - 26);
+                arrowOffset = Math.max(8, Math.min(finalHeight - 44, arrowOffset));
+
+                miniPopover.style.top    = top + 'px';
+                miniPopover.style.height = finalHeight + 'px';
+                miniPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+            }
+        }
+        function adjustPopoverHeight() {
+            if (!miniPopover) return;
+            var isMobile = window.innerWidth <= 768;
+
+            miniPopover.style.height = 'auto';
+            var naturalH = miniPopover.offsetHeight; 
+            var finalH   = Math.min(naturalH, window.innerHeight * 0.88);
+            _applyPosition(finalH);
+        }
         function positionPopoverForIcon(icon) {
             if (!miniPopover || !icon) return;
-            miniPopover.style.left = '-9999px';
-            miniPopover.style.top = '-9999px';
-            miniPopover.classList.add('show');
+
+            // Always reset mobile-specific styles first so they don't bleed into desktop
+            miniPopover.style.right = '';
+            miniPopover.style.width = '';
+
             var rect = icon.getBoundingClientRect();
-            var pw = miniPopover.offsetWidth;
-            var ph = miniPopover.offsetHeight;
-            var iconCenterY = rect.top + rect.height / 2;
+            lastIconCenterY = rect.top + rect.height / 2;
+            lastIconRight   = rect.right;
+            lastIconTop     = rect.top;
 
-            var left = Math.round(rect.right + 14);
-            var top = Math.round(iconCenterY - ph / 2);
+            var isMobile = window.innerWidth <= 768;
 
-            if (left + pw + 12 > window.innerWidth) {
-                left = Math.round(rect.left - pw - 14);
+            if (!isMobile) {
+                // Desktop: position to the right of the icon
+                var pw   = miniPopover.offsetWidth;
+                var left = Math.round(rect.right + 14);
+                if (left + pw + 12 > window.innerWidth) {
+                    left = Math.round(rect.left - pw - 14);
+                }
+                miniPopover.style.left = left + 'px';
             }
 
-            var headerHeight = 170;
-            var minTop = headerHeight + 12;
-            var maxTop = window.innerHeight - ph - 12;
-            if (top < minTop) top = minTop;
-            if (top > maxTop) top = maxTop;
+            // Measure true height off-screen, then position
+            miniPopover.style.height = 'auto';
+            miniPopover.style.top    = '-9999px';
+            miniPopover.classList.add('show');
 
-            var arrowOffset = iconCenterY - top - 26;
-            miniPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+            var naturalH = miniPopover.offsetHeight;
+            var finalH   = Math.min(naturalH, window.innerHeight * 0.88);
 
-            miniPopover.style.left = left + 'px';
-            miniPopover.style.top = top + 'px';
+            _applyPosition(finalH);
         }
         function hidePopover() {
             if (!miniPopover) return;
             miniPopover.classList.remove('show');
             miniPopover.setAttribute('aria-hidden', 'true');
+            // Reset all inline styles so next open starts clean
+            miniPopover.style.right  = '';
+            miniPopover.style.width  = '';
+            miniPopover.style.height = '';
             currentPopoverKey = null;
         }
         function showPopoverForKey(key, icon) {
@@ -4181,11 +4440,18 @@ $ytLinks = andison_get_youtube_links();
                 hidePopover();
                 return;
             }
+            // Reset while we measure new content
+            miniPopover.classList.remove('show');
+            miniPopover.style.left = '-9999px';
+            miniPopover.style.top  = '-9999px';
+            miniPopover.style.height = 'auto';
+
             renderPopover(key);
-            positionPopoverForIcon(icon);
-            miniPopover.classList.add('show');
-            miniPopover.setAttribute('aria-hidden', 'false');
             currentPopoverKey = key;
+
+            // positionPopoverForIcon makes it visible off-screen, measures, then places it
+            positionPopoverForIcon(icon);
+            miniPopover.setAttribute('aria-hidden', 'false');
         }
 
         // Close on outside click / Escape
@@ -4196,6 +4462,23 @@ $ytLinks = andison_get_youtube_links();
             hidePopover();
         });
         document.addEventListener('keydown', function(e){ if (e.key === 'Escape') hidePopover(); });
+
+        // On resize, force-close and fully reset the popover so mobile styles never bleed into desktop
+        var _resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(_resizeTimer);
+            _resizeTimer = setTimeout(function() {
+                if (!miniPopover) return;
+                miniPopover.classList.remove('show');
+                miniPopover.setAttribute('aria-hidden', 'true');
+                miniPopover.style.right  = '';
+                miniPopover.style.width  = '';
+                miniPopover.style.height = '';
+                miniPopover.style.top    = '';
+                miniPopover.style.left   = '';
+                currentPopoverKey = null;
+            }, 150);
+        });
 
         // Browse toggle click
         if(browseToggle) {
