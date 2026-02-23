@@ -3156,9 +3156,12 @@ $email = "info@andison-industrial.com";
                                 <li><a href="brand.php?name=Makita"><img src="assets/brands/MAKITA.jpg" alt="Makita" title="Makita"></a></li>
                                 <li><a href="brand.php?name=Weller"><img src="assets/brands/WEILER.jpg" alt="Weller" title="Weller"></a></li>
                                 <li><a href="brand.php?name=Garryson"><img src="assets/brands/GARRYSON.jpg" alt="Garryson" title="Garryson"></a></li>
+                                <li><a href="brand.php?name=REVOLT"><img src="assets/brands/REVOLT.png" alt="REVOLT" title="REVOLT"></a></li>
+                                <li><a href="brand.php?name=Technotex"><img src="assets/brands/TECHNOTEX.png" alt="Technotex" title="Technotex"></a></li>
                                 <li><a href="brand.php?name=Spilfyter"><img src="assets/brands/SPILFYTER.jpg" alt="Spilfyter" title="Spilfyter"></a></li>
                                 <li><a href="brand.php?name=Dalo"><img src="assets/brands/DALO.jpg" alt="Dalo" title="Dalo"></a></li>
                                 <li><a href="brand.php?name=MOTOLITE"><img src="assets/brands/MOTOLITE.jpg" alt="Motolite" title="Motolite"></a></li>
+                                
                             </ul>
                         </div>
                     </li>
@@ -3549,6 +3552,21 @@ $email = "info@andison-industrial.com";
                     </div>
                     <h3>Garryson</h3>
                 </a>
+
+                <a href="brand.php?name=REVOLT" class="brand-card" title="Revolt">
+                    <div class="brand-logo-container">
+                        <img src="assets/brands/REVOLT.png" alt="Revolt" class="brand-logo">
+                    </div>
+                    <h3>REVOLT</h3>
+                </a>
+
+                 <a href="brand.php?name=Technotex" class="brand-card" title="Technotex">
+                    <div class="brand-logo-container">
+                        <img src="assets/brands/TECHNOTEX.png" alt="Technotex" class="brand-logo">
+                    </div>
+                    <h3>TECHNOTEX</h3>
+                </a>
+
                 <a href="brand.php?name=Spilfyter" class="brand-card" title="Spilfyter">
                     <div class="brand-logo-container">
                         <img src="assets/brands/SPILFYTER.jpg" alt="Spilfyter" class="brand-logo">
@@ -3567,6 +3585,8 @@ $email = "info@andison-industrial.com";
                     </div>
                     <h3>Motolite</h3>
                 </a>
+
+               
             </div>
         </div>
     </section>

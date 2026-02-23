@@ -27,7 +27,10 @@
         "Kobelco": 3,
         "PANASONIC": 2,
         "Magnaflux": 1,
-        "Tempilstik": 1
+        "Tempilstik": 1,
+        "Aquasol": 1,
+        "BOSCH": 1,
+        "Arcair": 1
     },
     "categories": {
         "Arc Welding Machine": 3,

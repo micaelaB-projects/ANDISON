@@ -292,7 +292,7 @@ $brand_info = isset($brands_info[$brand_name]) ? $brands_info[$brand_name] : [
 
         <div class="brand-header">
             <div class="brand-logo-section">
-                <img src="assets/brands/<?php echo htmlspecialchars(urlencode($logo_filename($brand_name))); ?>.jpg" 
+                <img src="../assets/brands/<?php echo htmlspecialchars(urlencode($logo_filename($brand_name))); ?>.jpg" 
                      alt="<?php echo $brand_name; ?>" 
                      class="brand-logo" 
                      onerror="this.style.display='none';">
