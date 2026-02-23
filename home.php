@@ -1421,24 +1421,76 @@ $ytLinks = andison_get_youtube_links();
             }
 
             .sidebar-overlay {
-                width: 95%;
-                max-width: 100%;
-                max-height: 95vh;
-                padding: 28px 20px;
+                width: 75%;
+                max-width: 320px;
+                padding: 12px 0;
             }
 
             .sidebar-overlay h3 {
-                font-size: 16px;
-                margin-bottom: 20px;
+                font-size: 14px;
+                margin-bottom: 8px;
+                padding: 0 12px;
+            }
+
+            .sidebar-list { 
+                padding: 0;
+            }
+
+            .sidebar-list li { 
+                border-bottom: none;
             }
 
             .sidebar-list a {
-                font-size: 14px;
-                padding: 14px 10px;
+                font-size: 13px;
+                padding: 10px 14px;
+                gap: 12px;
+                min-height: 36px;
+                align-items: center;
+            }
+
+            .sidebar-list a:active {
+                background: rgba(43, 17, 219, 0.08);
+            }
+
+            .sidebar-icon {
+                width: 20px;
+                height: 20px;
+                font-size: 16px;
+            }
+
+            .sidebar-sublist {
+                background: #f8f9fa;
+                border-left: 3px solid #2B11DB;
+                margin: 2px 0;
+                padding: 4px 0 4px 12px;
             }
 
             .sidebar-sublist a {
-                font-size: 13px;
+                font-size: 12px;
+                padding: 8px 14px 8px 42px;
+                min-height: 32px;
+            }
+
+            .sidebar-nested-sublist {
+                margin: 4px 0;
+                padding: 6px 0 6px 14px;
+                background: rgba(43, 17, 219, 0.06);
+                border-left: 2px solid rgba(43, 17, 219, 0.3);
+            }
+
+            .sidebar-nested-sublist a {
+                font-size: 11px;
+                padding: 8px 14px 8px 36px;
+                color: #5a6b7d;
+                min-height: 30px;
+                margin: 0;
+            }
+
+            .sidebar-nested-sublist a:hover,
+            .sidebar-nested-sublist a:active {
+                background: rgba(43, 17, 219, 0.14);
+                color: #2B11DB;
+                padding-left: 44px;
             }
         }
 
@@ -1463,14 +1515,14 @@ $ytLinks = andison_get_youtube_links();
             left: 0;
             top: calc(14px + 50px + 14px + 12px + 52px);
             bottom: 0;
-            width: 380px;
-            max-width: 90%;
+            width: 320px;
+            max-width: 80%;
             background: #fff;
             box-shadow: 4px 0 24px rgba(0,0,0,0.15);
             transform: translateX(-100%);
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 70;
-            padding: 28px 20px;
+            padding: 20px 12px;
             overflow-y: auto;
         }
 
@@ -1499,11 +1551,15 @@ $ytLinks = andison_get_youtube_links();
             justify-content: space-between;
             transition: all 0.2s ease;
             font-size: 15px;
+            min-height: 48px;
         }
         .sidebar-list a:hover { 
             background: #f3f4f6; 
             color: #2B11DB;
             padding-left: 16px;
+        }
+        .sidebar-list a:active {
+            background: rgba(43, 17, 219, 0.08);
         }
         .sidebar-list li a.active {
             background: #f3f4f6;
@@ -1548,21 +1604,23 @@ $ytLinks = andison_get_youtube_links();
 
 
         .sidebar-sublist li { 
-            padding: 4px 0; 
+            padding: 0; 
             border: none;
         }
         .sidebar-sublist a { 
             color: #4b5563; 
             font-size: 14px; 
-            padding: 6px 8px; 
+            padding: 10px 16px 10px 48px; 
             display: block; 
             text-decoration: none;
             justify-content: flex-start;
+            min-height: 42px;
+            align-items: center;
         }
         .sidebar-sublist a:hover { 
             color: #2B11DB; 
-            background: transparent;
-            padding-left: 12px;
+            background: rgba(43, 17, 219, 0.08);
+            padding-left: 52px;
         }
 
         /* Nested sublists */
@@ -1596,14 +1654,15 @@ $ytLinks = andison_get_youtube_links();
         }
         .sidebar-nested-sublist a { 
             color: #5a6b7d; 
-            font-size: 13px; 
-            padding: 10px 12px 10px 28px; 
+            font-size: 11px; 
+            padding: 8px 10px 8px 32px; 
             display: block; 
             text-decoration: none;
             position: relative;
             transition: all 0.25s ease;
-            border-radius: 6px;
-            margin: 2px 0;
+            border-radius: 4px;
+            margin: 0;
+            min-height: 30px;
         }
 
         .sidebar-list li.has-sub { position: relative; }
@@ -1972,7 +2031,7 @@ $ytLinks = andison_get_youtube_links();
             transform: translateX(-100%);
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 70;
-            padding: 28px 20px;
+            padding: 12px 8px;
             overflow-y: auto;
         }
 
@@ -1981,26 +2040,27 @@ $ytLinks = andison_get_youtube_links();
         }
 
         .sidebar-overlay h3 {
-            font-size: 18px;
-            margin-bottom: 24px;
+            font-size: 14px;
+            margin-bottom: 10px;
             color: #222;
             font-weight: 700;
             letter-spacing: 0.5px;
         }
 
-        .sidebar-list { list-style: none; padding: 28px 20px 0 20px; margin: 0; }
+        .sidebar-list { list-style: none; padding: 8px 8px 0 8px; margin: 0; }
         .sidebar-list li { border-bottom: 1px solid #e5e7eb; }
         .sidebar-list li:last-child { border-bottom: none; }
         .sidebar-list a { 
             display: flex; 
             gap: 12px; 
-            padding: 16px 12px; 
+            padding: 10px 10px; 
             color: #1f2937; 
             text-decoration: none; 
             align-items: center;
             justify-content: space-between;
             transition: all 0.2s ease;
-            font-size: 15px;
+            font-size: 13px;
+            min-height: 36px;
         }
         .sidebar-list a:hover { 
             background: #f3f4f6; 
@@ -2050,20 +2110,15 @@ $ytLinks = andison_get_youtube_links();
 
         .sidebar-sublist { 
             list-style: none; 
-            margin: 0; 
-            padding: 8px 0 8px 44px; 
-            background: #fafafa;
-            margin-left: 12px;
-            margin-right: 12px;
-            padding-left: 16px;
-            border-left: 2px solid #e5e7eb;
-            padding-top: 8px;
-            padding-bottom: 8px;
-            max-height: 0;
+            margin: 2px 0; 
+            padding: 4px 0 4px 12px;
+            background: #f8f9fa;
+            border-left: 3px solid #2B11DB;
+            max-height: 500px;
             overflow: hidden;
             transition: max-height 0.3s ease, opacity 0.3s ease;
-            opacity: 0;
-            display: none;
+            opacity: 1;
+            display: block;
         }
         
         .sidebar-sublist.collapsed {
@@ -2072,21 +2127,23 @@ $ytLinks = andison_get_youtube_links();
             overflow: hidden;
         }
         .sidebar-sublist li { 
-            padding: 4px 0; 
+            padding: 0; 
             border: none;
         }
         .sidebar-sublist a { 
             color: #4b5563; 
-            font-size: 14px; 
-            padding: 6px 8px; 
+            font-size: 12px; 
+            padding: 8px 12px 8px 38px; 
             display: block; 
             text-decoration: none;
             justify-content: flex-start;
+            min-height: 32px;
+            align-items: center;
         }
         .sidebar-sublist a:hover { 
             color: #2B11DB; 
-            background: transparent;
-            padding-left: 12px;
+            background: rgba(43, 17, 219, 0.08);
+            padding-left: 52px;
         }
 
         /* Nested sublists */
@@ -2115,12 +2172,15 @@ $ytLinks = andison_get_youtube_links();
 
         .sidebar-nested-sublist { 
             list-style: none; 
-            margin: 10px 0 10px -12px; 
-            padding: 0;
+            margin: 2px 0;
+            padding: 4px 0 4px 12px;
             max-height: 500px;
             overflow: hidden;
             transition: max-height 0.3s ease, opacity 0.3s ease;
             opacity: 1;
+            background: rgba(43, 17, 219, 0.05);
+            border-left: 2px solid rgba(43, 17, 219, 0.3);
+        }
         }
         
         .sidebar-nested-sublist.collapsed {
@@ -2134,32 +2194,34 @@ $ytLinks = andison_get_youtube_links();
         }
         .sidebar-nested-sublist a { 
             color: #5a6b7d; 
-            font-size: 13px; 
-            padding: 10px 12px 10px 28px; 
+            font-size: 11px; 
+            padding: 8px 10px 8px 32px; 
             display: block; 
             text-decoration: none;
             position: relative;
             transition: all 0.25s ease;
-            border-radius: 6px;
-            margin: 2px 0;
+            border-radius: 4px;
+            margin: 0;
+            min-height: 30px;
+            align-items: center;
         }
         .sidebar-nested-sublist a::before {
             content: '';
             position: absolute;
-            left: 8px;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
             background: linear-gradient(135deg, #2B11DB 0%, #6d28d9 100%);
             border-radius: 50%;
             box-shadow: 0 2px 4px rgba(43, 17, 219, 0.2);
         }
         .sidebar-nested-sublist a:hover { 
             color: #2B11DB;
-            background: rgba(43, 17, 219, 0.08);
-            padding-left: 32px;
-            transform: translateX(4px);
+            background: rgba(43, 17, 219, 0.12);
+            padding-left: 36px;
+            transform: none;
         }
 
         .sidebar-list li.has-sub { position: relative; }
@@ -2578,43 +2640,58 @@ $ytLinks = andison_get_youtube_links();
         /* Mini popover — mobile overrides */
         @media (max-width: 768px) {
             .mini-popover {
-                border-radius: 0 12px 12px 0 !important;
-                box-shadow: 4px 8px 24px rgba(0,0,0,0.3) !important;
+                border-radius: 0 16px 16px 0 !important;
+                box-shadow: 6px 12px 32px rgba(30, 136, 229, 0.35) !important;
                 width: auto !important;
-                max-width: none !important;
+                max-width: calc(100vw - 70px) !important;
+                margin-right: 20px !important;
                 overflow: hidden !important;
             }
             .mini-popover::before { display: none !important; }
             .mini-popover-header {
-                border-radius: 0 12px 0 0 !important;
-                padding: 8px 12px !important;
-                font-size: 13px !important;
+                border-radius: 0 16px 0 0 !important;
+                padding: 12px 16px !important;
+                font-size: 15px !important;
+                background: linear-gradient(135deg, #1E88E5 0%, #00BCD4 100%) !important;
+                color: #fff !important;
+                text-transform: uppercase !important;
+                font-weight: 800 !important;
             }
             .mini-popover-body {
                 overflow: hidden !important;
-                padding: 6px 10px 8px 10px !important;
+                padding: 12px 14px 14px 14px !important;
+                background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 100%) !important;
             }
             .mini-popover-list {
-                padding: 2px 0 !important;
+                padding: 0 !important;
             }
             .mini-popover-list::before {
-                left: 18px !important;
+                display: none !important;
             }
             .mini-popover-item {
-                margin: 4px 0 !important;
-                min-height: 24px !important;
-                padding-left: 34px !important;
+                margin: 3px 0 !important;
+                min-height: auto !important;
+                padding-left: 0 !important;
                 align-items: center !important;
             }
             .mini-popover-item .square {
-                left: 10px !important;
-                width: 11px !important;
-                height: 11px !important;
+                display: none !important;
             }
             .mini-popover-item a {
-                font-size: 12px !important;
-                padding: 4px 8px !important;
-                white-space: nowrap !important;
+                font-size: 13px !important;
+                padding: 10px 12px !important;
+                line-height: 1.4 !important;
+                white-space: normal !important;
+                overflow: visible !important;
+                text-overflow: clip !important;
+                font-weight: 600 !important;
+                background: rgba(255,255,255,0.1) !important;
+                border-left: 3px solid transparent !important;
+            }
+            .mini-popover-item a:active {
+                background: rgba(255,255,255,0.25) !important;
+                transform: translateX(4px) !important;
+                border-left-color: rgba(255,255,255,0.6) !important;
             }
             .mini-popover-item.has-subitems {
                 padding-right: 28px !important;
@@ -2634,25 +2711,27 @@ $ytLinks = andison_get_youtube_links();
             position: fixed;
             top: -9999px;
             left: -9999px;
-            width: 320px;
-            max-width: calc(100vw - 32px);
-            background: linear-gradient(180deg, #1976D2FF 0%, #19D2B6FF 100%);
+            width: 380px;
+            max-width: calc(100vw - 40px);
+            background: linear-gradient(135deg, #1E88E5 0%, #00BCD4 100%);
             color: #fff;
             border-radius: 16px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+            box-shadow: 0 16px 40px rgba(30, 136, 229, 0.3), 0 2px 8px rgba(0,0,0,0.2);
             opacity: 0;
             visibility: hidden;
-            transform: translateY(-6px);
-            transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease;
+            transform: translateY(-8px) scale(0.95);
+            transition: opacity 180ms cubic-bezier(0.34, 1.56, 0.64, 1), transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1), visibility 180ms ease;
             z-index: 1300;
             display: flex;
             flex-direction: column;
             height: auto;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.15);
         }
         .mini-popover.show {
             opacity: 1;
             visibility: visible;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
         .mini-popover::before {
             content: '';
@@ -2666,25 +2745,27 @@ $ytLinks = andison_get_youtube_links();
             filter: drop-shadow(-2px 2px 2px rgba(0,0,0,0.12));
         }
         .mini-popover-header {
-            background: #f5f9ff;
-            color: #0f5132;
+            background: linear-gradient(135deg, #1E88E5 0%, #1565C0 100%);
+            color: #ffffff;
             border-top-left-radius: 16px;
             border-top-right-radius: 16px;
-            padding: 12px 16px;
-            font-weight: 800;
-            font-size: 15px;
-            letter-spacing: 0.3px;
+            padding: 16px 20px;
+            font-weight: 700;
+            font-size: 16px;
+            letter-spacing: 0.4px;
+            line-height: 1.3;
         }
-        .mini-popover-title { color: #0f5132; }
+        .mini-popover-title { color: #ffffff; }
         .mini-popover-body {
-            padding: 12px 16px 16px 16px;
+            padding: 14px 16px 18px 16px;
             overflow: visible;
             flex: 1;
+            background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 100%);
         }
         .mini-popover-list {
             list-style: none;
             margin: 0;
-            padding: 6px 0 6px 0;
+            padding: 0;
             position: relative;
         }
         .mini-popover-list::before {
@@ -2696,14 +2777,15 @@ $ytLinks = andison_get_youtube_links();
             width: 2px;
             background: rgba(255,255,255,0.35);
             border-radius: 2px;
+            display: none;
         }
         .mini-popover-item {
             position: relative;
-            padding-left: 42px;
-            margin: 12px 0;
+            padding-left: 0;
+            margin: 3px 0;
             display: flex;
             align-items: stretch;
-            min-height: 32px;
+            min-height: auto;
         }
         .mini-popover-item .square {
             position: absolute;
@@ -2717,20 +2799,29 @@ $ytLinks = andison_get_youtube_links();
             box-shadow: 0 2px 6px rgba(0,0,0,0.18), inset 0 -1px 0 rgba(0,0,0,0.08);
             flex-shrink: 0;
             pointer-events: none;
+            display: none;
         }
         .mini-popover-item a {
             color: #ffffff;
             text-decoration: none;
             font-weight: 600;
             display: block;
-            padding: 8px 10px;
+            padding: 12px 14px;
             border-radius: 8px;
-            transition: background 140ms ease, transform 120ms ease;
+            transition: all 160ms cubic-bezier(0.34, 1.56, 0.64, 1);
             width: 100%;
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+            line-height: 1.4;
+            font-size: 14px;
+            background: rgba(255,255,255,0.06);
+            border-left: 3px solid transparent;
         }
         .mini-popover-item a:hover {
-            background: rgba(255,255,255,0.12);
-            transform: translateX(2px);
+            background: rgba(255,255,255,0.16);
+            transform: translateX(4px);
+            border-left-color: rgba(255,255,255,0.5);
         }
         
         /* Expandable popover items */
