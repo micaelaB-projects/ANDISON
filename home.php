@@ -2378,7 +2378,7 @@ $ytLinks = andison_get_youtube_links();
 
         .mini-sidebar-icon .label {
             display: none;
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 500;
             white-space: nowrap;
             flex: 1;
@@ -2678,7 +2678,7 @@ $ytLinks = andison_get_youtube_links();
                 display: none !important;
             }
             .mini-popover-item a {
-                font-size: 13px !important;
+                font-size: 11px !important;
                 padding: 10px 12px !important;
                 line-height: 1.4 !important;
                 white-space: normal !important;
@@ -2697,12 +2697,19 @@ $ytLinks = andison_get_youtube_links();
                 padding-right: 28px !important;
             }
             .popover-expand-btn {
-                height: 24px !important;
-                width: 24px !important;
-                right: 4px !important;
+                height: 32px !important;
+                width: 32px !important;
+                right: 6px !important;
+                background: rgba(255,255,255,0.12) !important;
+                border-radius: 8px !important;
+                transition: all 160ms cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            }
+            .popover-expand-btn:active {
+                background: rgba(255,255,255,0.25) !important;
+                transform: scale(0.9) !important;
             }
             .popover-expand-btn .bi {
-                font-size: 13px !important;
+                font-size: 16px !important;
             }
         }
 
@@ -2837,7 +2844,7 @@ $ytLinks = andison_get_youtube_links();
             height: 32px;
             width: 32px;
             margin: auto;
-            background: transparent;
+            background: rgba(255,255,255,0.1);
             border: none;
             color: #ffffff;
             cursor: pointer;
@@ -2845,16 +2852,21 @@ $ytLinks = andison_get_youtube_links();
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 200ms ease;
+            transition: all 160ms cubic-bezier(0.34, 1.56, 0.64, 1);
             flex-shrink: 0;
+            border-radius: 8px;
         }
         .popover-expand-btn:hover {
-            background: rgba(255,255,255,0.15);
-            border-radius: 6px;
+            background: rgba(255,255,255,0.22);
+            transform: scale(1.08);
+        }
+        .popover-expand-btn:active {
+            background: rgba(255,255,255,0.3);
+            transform: scale(0.95);
         }
         .popover-expand-btn .bi {
-            font-size: 16px;
-            transition: transform 200ms ease;
+            font-size: 18px;
+            transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .popover-expand-btn[aria-expanded="true"] .bi {
             transform: rotate(90deg);
