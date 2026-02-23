@@ -2591,6 +2591,9 @@ $ytLinks = andison_get_youtube_links();
             transform: translateY(-6px);
             transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease;
             z-index: 200;
+            display: flex;
+            flex-direction: column;
+            height: auto;
         }
         .mini-popover.show {
             opacity: 1;
@@ -2621,8 +2624,8 @@ $ytLinks = andison_get_youtube_links();
         .mini-popover-title { color: #0f5132; }
         .mini-popover-body {
             padding: 12px 16px 16px 16px;
-            max-height: calc(100vh - 100px);
-            overflow-y: auto;
+            overflow: visible;
+            flex: 1;
         }
         .mini-popover-list {
             list-style: none;
@@ -2674,6 +2677,84 @@ $ytLinks = andison_get_youtube_links();
         .mini-popover-item a:hover {
             background: rgba(255,255,255,0.12);
             transform: translateX(2px);
+        }
+        
+        /* Expandable popover items */
+        .mini-popover-item.has-subitems {
+            flex-wrap: wrap;
+            padding-right: 36px;
+        }
+        .popover-expand-btn {
+            position: absolute;
+            right: 8px;
+            top: 0;
+            bottom: 0;
+            height: 32px;
+            width: 32px;
+            margin: auto;
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 200ms ease;
+            flex-shrink: 0;
+        }
+        .popover-expand-btn:hover {
+            background: rgba(255,255,255,0.15);
+            border-radius: 6px;
+        }
+        .popover-expand-btn .bi {
+            font-size: 16px;
+            transition: transform 200ms ease;
+        }
+        .popover-expand-btn[aria-expanded="true"] .bi {
+            transform: rotate(90deg);
+        }
+        
+        .popover-subitems {
+            width: 100%;
+            margin-top: 8px;
+            max-height: none;
+            overflow: visible;
+            transition: opacity 250ms ease;
+            opacity: 1;
+            padding-left: 0;
+        }
+        .popover-subitems.collapsed {
+            display: none;
+        }
+        
+        .popover-subitem {
+            color: rgba(255,255,255,0.85) !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            padding: 6px 10px 6px 28px !important;
+            display: block !important;
+            text-decoration: none !important;
+            border-radius: 6px !important;
+            transition: all 120ms ease !important;
+            position: relative;
+        }
+        .popover-subitem::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #ffffff;
+            opacity: 0.6;
+        }
+        .popover-subitem:hover {
+            background: rgba(255,255,255,0.12) !important;
+            transform: translateX(2px) !important;
+            color: #ffffff !important;
         }
     </style>
 </head>
@@ -2839,6 +2920,7 @@ $ytLinks = andison_get_youtube_links();
                 <button class="sub-toggle" aria-controls="sub-arc-welding" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
                     <li><a href="arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
+                    <li><a href="arc-welding-machine/accessories-and-consumables.php">Accessories and Consumables</a></li>
                     <li><a href="arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
                     <li><a href="arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
                     <li><a href="arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
@@ -2869,7 +2951,17 @@ $ytLinks = andison_get_youtube_links();
                 <button class="sub-toggle" aria-controls="sub-drilling-lifting" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
                     <li><a href="drilling-and-lifting/lifting.php">Lifting</a></li>
-                    <li><a href="drilling-and-lifting/magnetic-drill.php">Magnetic Drill</a></li>
+                    <li class="has-nested-sub">
+                        <a href="drilling-and-lifting/magnetic-drill.php">Magnetic Drill</a>
+                        <button class="nested-toggle" aria-controls="nested-magnetic-drill" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>
+                        <ul id="nested-magnetic-drill" class="sidebar-nested-sublist collapsed">
+                            <li><a href="drilling-and-lifting/magnetic-drill/b-line-series.php">B-Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/rl-e-line-series.php">RL-E Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/rbx-line-series.php">RBX-Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/sp-line-series.php">SP-Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/v-line-series.php">V-Line Series</a></li>
+                        </ul>
+                    </li>
                     <li><a href="drilling-and-lifting/cutters.php">Cutters</a></li>
                 </ul>
             </li>
@@ -3777,6 +3869,11 @@ $ytLinks = andison_get_youtube_links();
                 ],
                 'arc-welding-machine': [
                     { label: 'MIG Welding Machine', href: base + '/arc-welding-machine/mig-welding-machine.php' },
+                    { label: 'Accessories and Consumables', href: base + '/arc-welding-machine/accessories-and-consumables.php', subitems: [
+                        { label: 'Welding Torch / Gun', href: base + '/arc-welding-machine/accessories-and-consumables/welding-torch-gun.php' },
+                        { label: 'Torch Consumables', href: base + '/arc-welding-machine/accessories-and-consumables/torch-consumables.php' },
+                        { label: 'Accessories', href: base + '/arc-welding-machine/accessories-and-consumables/accessories.php' }
+                    ]},
                     { label: 'CO1/MAG Welding Machine', href: base + '/arc-welding-machine/co1-mag-welding-machine.php' },
                     { label: 'STUD Welding Machine', href: base + '/arc-welding-machine/stud-welding-machine.php' },
                     { label: 'TIG Welding Machine', href: base + '/arc-welding-machine/tig-welding-machine.php' },
@@ -3789,7 +3886,13 @@ $ytLinks = andison_get_youtube_links();
                 ],
                 'drilling-and-lifting': [
                     { label: 'Lifting', href: base + '/drilling-and-lifting/lifting.php' },
-                    { label: 'Magnetic Drill', href: base + '/drilling-and-lifting/magnetic-drill.php' },
+                    { label: 'Magnetic Drill', href: base + '/drilling-and-lifting/magnetic-drill.php', subitems: [
+                        { label: 'B-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/b-line-series.php' },
+                        { label: 'RL-E Line Series', href: base + '/drilling-and-lifting/magnetic-drill/rl-e-line-series.php' },
+                        { label: 'RBX-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/rbx-line-series.php' },
+                        { label: 'SP-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/sp-line-series.php' },
+                        { label: 'V-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/v-line-series.php' }
+                    ]},
                     { label: 'Cutters', href: base + '/drilling-and-lifting/cutters.php' }
                 ],
                 'gas-detectors': [
@@ -3812,10 +3915,19 @@ $ytLinks = andison_get_youtube_links();
                 ],
                 'protection': [
                     { label: 'Eye Protection', href: base + '/protection/eye-protection.php' },
-                    { label: 'Hand Protection', href: base + '/protection/hand-protection.php' },
+                    { label: 'Hand Protection', href: base + '/protection/hand-protection.php', subitems: [
+                        { label: 'Welding Gloves', href: base + '/protection/welding-gloves.php' },
+                        { label: 'Working Gloves', href: base + '/protection/working-gloves.php' },
+                        { label: 'Chemical and Liquid Protection Gloves', href: base + '/protection/chemical-liquid-protection-gloves.php' },
+                        { label: 'Disposable Gloves', href: base + '/protection/disposable-gloves.php' }
+                    ]},
                     { label: 'Hearing & Respiratory Protection', href: base + '/protection/hearing-respiratory-protection.php' },
                     { label: 'Welding Head and Face Protection', href: base + '/protection/welding-head-and-face-protection.php' },
-                    { label: 'Body Protection', href: base + '/protection/body-protection.php' }
+                    { label: 'Body Protection', href: base + '/protection/body-protection.php', subitems: [
+                        { label: 'Particulate and Low Hazard', href: base + '/protection/particulate-low-hazard.php' },
+                        { label: 'Liquid Spray and Splash', href: base + '/protection/liquid-spray-splash.php' },
+                        { label: 'Chemical and Flame Retardant', href: base + '/protection/chemical-flame-retardant.php' }
+                    ]}
                 ],
                 'welding-accessories': [
                     { label: 'Welding Electrode Oven', href: base + '/welding-accessories/welding-electrode-oven.php' },
@@ -3840,10 +3952,75 @@ $ytLinks = andison_get_youtube_links();
             items.forEach(function(it){
                 var li = document.createElement('li');
                 li.className = 'mini-popover-item';
-                li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a>';
+                
+                if (it.subitems && it.subitems.length > 0) {
+                    // Item with subitems - add container for expanded view
+                    li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a><button class="popover-expand-btn" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>';
+                    li.className += ' has-subitems';
+                    
+                    // Create subitems container
+                    var subContainer = document.createElement('div');
+                    subContainer.className = 'popover-subitems collapsed';
+                    subContainer.innerHTML = it.subitems.map(function(sub){
+                        return '<a href="'+ sub.href +'" class="popover-subitem">'+ sub.label +'</a>';
+                    }).join('');
+                    
+                    li.appendChild(subContainer);
+                    
+                    // Add expand/collapse handler
+                    var expandBtn = li.querySelector('.popover-expand-btn');
+                    expandBtn.addEventListener('click', function(e){
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var isExpanded = expandBtn.getAttribute('aria-expanded') === 'true';
+                        if (isExpanded) {
+                            expandBtn.setAttribute('aria-expanded', 'false');
+                            subContainer.classList.add('collapsed');
+                        } else {
+                            expandBtn.setAttribute('aria-expanded', 'true');
+                            subContainer.classList.remove('collapsed');
+                        }
+                        // Adjust popover height after expanding/collapsing
+                        setTimeout(function(){
+                            adjustPopoverHeight();
+                        }, 10);
+                    });
+                } else {
+                    // Regular item
+                    li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a>';
+                }
+                
                 popoverList.appendChild(li);
             });
             if (popoverTitle) popoverTitle.textContent = getCategoryTitle(key);
+        }
+        function adjustPopoverHeight() {
+            if (!miniPopover) return;
+            // Get the body content height
+            var body = miniPopover.querySelector('.mini-popover-body');
+            var header = miniPopover.querySelector('.mini-popover-header');
+            if (!body) return;
+            
+            // Allow the popover to grow naturally to fit content
+            miniPopover.style.maxHeight = 'none';
+            miniPopover.style.height = 'auto';
+            
+            // Get total content height
+            var headerHeight = header ? header.offsetHeight : 50;
+            var contentHeight = body.scrollHeight + headerHeight + 32; // Add padding + margins
+            var maxAllowedHeight = window.innerHeight * 0.9;
+            var finalHeight = Math.min(contentHeight, maxAllowedHeight);
+            
+            miniPopover.style.height = finalHeight + 'px';
+            miniPopover.style.maxHeight = maxAllowedHeight + 'px';
+            
+            // Re-position if needed to stay in viewport
+            var rect = miniPopover.getBoundingClientRect();
+            if (rect.bottom > window.innerHeight - 12) {
+                var currentTop = parseInt(miniPopover.style.top);
+                var newTop = window.innerHeight - finalHeight - 12;
+                miniPopover.style.top = Math.max(170, newTop) + 'px';
+            }
         }
         function positionPopoverForIcon(icon) {
             if (!miniPopover || !icon) return;
@@ -3888,6 +4065,10 @@ $ytLinks = andison_get_youtube_links();
             }
             renderPopover(key);
             positionPopoverForIcon(icon);
+            // Adjust height after positioning to fit all content
+            setTimeout(function(){
+                adjustPopoverHeight();
+            }, 10);
             miniPopover.classList.add('show');
             miniPopover.setAttribute('aria-hidden', 'false');
             currentPopoverKey = key;

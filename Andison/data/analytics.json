@@ -1,21 +1,22 @@
 {
-    "total_pageviews": 6,
-    "unique_sessions": 6,
-    "today_pageviews": 4,
-    "today_unique": 4,
-    "today_date": "2026-02-20",
-    "week_pageviews": 6,
-    "week_unique": 6,
-    "week_start": "2026-02-16",
-    "month_pageviews": 6,
-    "month_unique": 6,
+    "total_pageviews": 7,
+    "unique_sessions": 7,
+    "today_pageviews": 1,
+    "today_unique": 1,
+    "today_date": "2026-02-23",
+    "week_pageviews": 1,
+    "week_unique": 1,
+    "week_start": "2026-02-23",
+    "month_pageviews": 7,
+    "month_unique": 7,
     "month_key": "2026-02",
     "daily": {
         "2026-02-19": 2,
-        "2026-02-20": 4
+        "2026-02-20": 4,
+        "2026-02-23": 1
     },
     "pages": {
-        "home": 2,
+        "home": 3,
         "industries": 1,
         "brand": 3
     },
