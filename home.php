@@ -2575,6 +2575,60 @@ $ytLinks = andison_get_youtube_links();
         .mobile-sidebar-fab.open { transform: translateY(-50%) translateX(56px); }
         .mobile-sidebar-fab.open.wide { transform: translateY(-50%) translateX(240px); }
 
+        /* Mini popover — mobile overrides */
+        @media (max-width: 768px) {
+            .mini-popover {
+                border-radius: 0 12px 12px 0 !important;
+                box-shadow: 4px 8px 24px rgba(0,0,0,0.3) !important;
+                width: auto !important;
+                max-width: none !important;
+                overflow: hidden !important;
+            }
+            .mini-popover::before { display: none !important; }
+            .mini-popover-header {
+                border-radius: 0 12px 0 0 !important;
+                padding: 8px 12px !important;
+                font-size: 13px !important;
+            }
+            .mini-popover-body {
+                overflow: hidden !important;
+                padding: 6px 10px 8px 10px !important;
+            }
+            .mini-popover-list {
+                padding: 2px 0 !important;
+            }
+            .mini-popover-list::before {
+                left: 18px !important;
+            }
+            .mini-popover-item {
+                margin: 4px 0 !important;
+                min-height: 24px !important;
+                padding-left: 34px !important;
+                align-items: center !important;
+            }
+            .mini-popover-item .square {
+                left: 10px !important;
+                width: 11px !important;
+                height: 11px !important;
+            }
+            .mini-popover-item a {
+                font-size: 12px !important;
+                padding: 4px 8px !important;
+                white-space: nowrap !important;
+            }
+            .mini-popover-item.has-subitems {
+                padding-right: 28px !important;
+            }
+            .popover-expand-btn {
+                height: 24px !important;
+                width: 24px !important;
+                right: 4px !important;
+            }
+            .popover-expand-btn .bi {
+                font-size: 13px !important;
+            }
+        }
+
         /* Mini popover styles for subcategories */
         .mini-popover {
             position: fixed;
@@ -3818,6 +3872,8 @@ $ytLinks = andison_get_youtube_links();
         var popoverList = miniPopover ? miniPopover.querySelector('.mini-popover-list') : null;
         var currentPopoverKey = null;
         var lastIconCenterY = 0; // track icon center Y for arrow realignment
+        var lastIconRight   = 0; // track icon right edge for mobile popover left
+        var lastIconTop     = 0; // track icon top for mobile popover start
 
         // Responsive function to show/hide browse toggle
         function updateBrowseToggleVisibility() {
@@ -3998,36 +4054,46 @@ $ytLinks = andison_get_youtube_links();
         /* Shared: compute top + arrow for a given height, centered on lastIconCenterY */
         function _applyPosition(finalHeight) {
             var vh = window.innerHeight;
-            var headerBottom = 140; // fixed header+nav height
+            var isMobile = window.innerWidth <= 768;
 
-            // Center the card on the icon
-            var top = Math.round(lastIconCenterY - finalHeight / 2);
+            if (isMobile) {
+                // On mobile: size to content, not full height
+                var popLeft  = Math.round(lastIconRight);
+                var popTop   = Math.round(lastIconTop);
+                var maxAvailH = window.innerHeight - popTop - 8;
+                var contentH  = Math.min(finalHeight, maxAvailH);
 
-            // Clamp: never hide behind the fixed header, never overflow bottom
-            if (top < headerBottom)                    top = headerBottom;
-            if (top + finalHeight > vh - 8)            top = vh - finalHeight - 8;
-            // If still above header after bottom clamp, lock to header bottom
-            if (top < headerBottom)                    top = headerBottom;
+                miniPopover.style.left   = popLeft + 'px';
+                miniPopover.style.right  = '0px';
+                miniPopover.style.width  = 'auto';
+                miniPopover.style.top    = popTop + 'px';
+                miniPopover.style.height = contentH + 'px';
+                miniPopover.style.setProperty('--arrow-offset', '-9999px');
+            } else {
+                // Desktop: center on icon
+                var headerBottom = 140;
+                var top = Math.round(lastIconCenterY - finalHeight / 2);
+                if (top < headerBottom)                top = headerBottom;
+                if (top + finalHeight > vh - 8)        top = vh - finalHeight - 8;
+                if (top < headerBottom)                top = headerBottom;
 
-            // Arrow: distance from card top to icon center, minus ::before base offset (26px)
-            var arrowOffset = Math.round(lastIconCenterY - top - 26);
-            arrowOffset = Math.max(8, Math.min(finalHeight - 44, arrowOffset));
+                miniPopover.style.right  = '';
+                miniPopover.style.width  = '';
+                var arrowOffset = Math.round(lastIconCenterY - top - 26);
+                arrowOffset = Math.max(8, Math.min(finalHeight - 44, arrowOffset));
 
-            miniPopover.style.top = top + 'px';
-            miniPopover.style.height = finalHeight + 'px';
-            miniPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+                miniPopover.style.top    = top + 'px';
+                miniPopover.style.height = finalHeight + 'px';
+                miniPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+            }
         }
         function adjustPopoverHeight() {
             if (!miniPopover) return;
-            var body   = miniPopover.querySelector('.mini-popover-body');
-            var header = miniPopover.querySelector('.mini-popover-header');
-            if (!body) return;
+            var isMobile = window.innerWidth <= 768;
 
-            // Measure natural content height
             miniPopover.style.height = 'auto';
             var naturalH = miniPopover.offsetHeight;
             var finalH   = Math.min(naturalH, window.innerHeight * 0.88);
-
             _applyPosition(finalH);
         }
         function positionPopoverForIcon(icon) {
@@ -4035,14 +4101,20 @@ $ytLinks = andison_get_youtube_links();
 
             var rect = icon.getBoundingClientRect();
             lastIconCenterY = rect.top + rect.height / 2;
+            lastIconRight   = rect.right;   // right edge of the icon (CSS-transform-aware)
+            lastIconTop     = rect.top;     // top edge of the icon
 
-            // Left: to the right of the sidebar icon
-            var pw   = miniPopover.offsetWidth;
-            var left = Math.round(rect.right + 14);
-            if (left + pw + 12 > window.innerWidth) {
-                left = Math.round(rect.left - pw - 14);
+            var isMobile = window.innerWidth <= 768;
+
+            if (!isMobile) {
+                // Desktop: position to the right of the icon
+                var pw   = miniPopover.offsetWidth;
+                var left = Math.round(rect.right + 14);
+                if (left + pw + 12 > window.innerWidth) {
+                    left = Math.round(rect.left - pw - 14);
+                }
+                miniPopover.style.left = left + 'px';
             }
-            miniPopover.style.left = left + 'px';
 
             // Measure true height off-screen, then position
             miniPopover.style.height = 'auto';
