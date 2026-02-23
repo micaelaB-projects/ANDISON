@@ -3492,7 +3492,7 @@ $ytLinks = andison_get_youtube_links();
                     <a href="#" class="industry-read-more">READ MORE &#9660;</a>
                 </div>
                 <div class="industry-card-image">
-                    <img src="assets/industries/motor-vehicle.jpg" alt="Motor Vehicle Industry">
+                    <img src="assets/HOME/MOTOR VEHICLE.jpg" alt="Motor Vehicle Industry">
                 </div>
             </div>
 
@@ -3504,7 +3504,7 @@ $ytLinks = andison_get_youtube_links();
                     <a href="#" class="industry-read-more">READ MORE &#9660;</a>
                 </div>
                 <div class="industry-card-image">
-                    <img src="assets/industries/metal-fabrication.jpg" alt="Metal Fabrication and Industrial">
+                    <img src="assets/HOME/METAL FABRICATION.jpg" alt="Metal Fabrication and Industrial">
                 </div>
             </div>
 
@@ -3516,7 +3516,7 @@ $ytLinks = andison_get_youtube_links();
                     <a href="#" class="industry-read-more">READ MORE &#9660;</a>
                 </div>
                 <div class="industry-card-image">
-                    <img src="assets/industries/power-generation.jpg" alt="Power Generation">
+                    <img src="assets/HOME/POWER GENERATION.jpg" alt="Power Generation">
                 </div>
             </div>
 
@@ -3528,7 +3528,7 @@ $ytLinks = andison_get_youtube_links();
                     <a href="#" class="industry-read-more">READ MORE &#9660;</a>
                 </div>
                 <div class="industry-card-image">
-                    <img src="assets/industries/oil-petrochemical.jpg" alt="Oil and Petrochemical Industry">
+                    <img src="assets/HOME/OIL AND PETROCHEMICAL.jpg" alt="Oil and Petrochemical Industry">
                 </div>
             </div>
 
@@ -3540,7 +3540,7 @@ $ytLinks = andison_get_youtube_links();
                     <a href="#" class="industry-read-more">READ MORE &#9660;</a>
                 </div>
                 <div class="industry-card-image">
-                    <img src="assets/industries/mining.jpg" alt="Mining Industry">
+                    <img src="assets/HOME/MINING.jpg" alt="Mining Industry">
                 </div>
             </div>
 
@@ -3552,7 +3552,7 @@ $ytLinks = andison_get_youtube_links();
                     <a href="#" class="industry-read-more">READ MORE &#9660;</a>
                 </div>
                 <div class="industry-card-image">
-                    <img src="assets/industries/shipyard.jpg" alt="Shipyard">
+                    <img src="assets/HOME/shipyard.jpg" alt="Shipyard">
                 </div>
             </div>
 
