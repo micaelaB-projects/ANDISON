@@ -4183,17 +4183,21 @@ $ytLinks = andison_get_youtube_links();
             var isMobile = window.innerWidth <= 768;
 
             miniPopover.style.height = 'auto';
-            var naturalH = miniPopover.offsetHeight;
+            var naturalH = miniPopover.offsetHeight; 
             var finalH   = Math.min(naturalH, window.innerHeight * 0.88);
             _applyPosition(finalH);
         }
         function positionPopoverForIcon(icon) {
             if (!miniPopover || !icon) return;
 
+            // Always reset mobile-specific styles first so they don't bleed into desktop
+            miniPopover.style.right = '';
+            miniPopover.style.width = '';
+
             var rect = icon.getBoundingClientRect();
             lastIconCenterY = rect.top + rect.height / 2;
-            lastIconRight   = rect.right;   // right edge of the icon (CSS-transform-aware)
-            lastIconTop     = rect.top;     // top edge of the icon
+            lastIconRight   = rect.right;
+            lastIconTop     = rect.top;
 
             var isMobile = window.innerWidth <= 768;
 
@@ -4221,6 +4225,10 @@ $ytLinks = andison_get_youtube_links();
             if (!miniPopover) return;
             miniPopover.classList.remove('show');
             miniPopover.setAttribute('aria-hidden', 'true');
+            // Reset all inline styles so next open starts clean
+            miniPopover.style.right  = '';
+            miniPopover.style.width  = '';
+            miniPopover.style.height = '';
             currentPopoverKey = null;
         }
         function showPopoverForKey(key, icon) {
@@ -4251,6 +4259,23 @@ $ytLinks = andison_get_youtube_links();
             hidePopover();
         });
         document.addEventListener('keydown', function(e){ if (e.key === 'Escape') hidePopover(); });
+
+        // On resize, force-close and fully reset the popover so mobile styles never bleed into desktop
+        var _resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(_resizeTimer);
+            _resizeTimer = setTimeout(function() {
+                if (!miniPopover) return;
+                miniPopover.classList.remove('show');
+                miniPopover.setAttribute('aria-hidden', 'true');
+                miniPopover.style.right  = '';
+                miniPopover.style.width  = '';
+                miniPopover.style.height = '';
+                miniPopover.style.top    = '';
+                miniPopover.style.left   = '';
+                currentPopoverKey = null;
+            }, 150);
+        });
 
         // Browse toggle click
         if(browseToggle) {
