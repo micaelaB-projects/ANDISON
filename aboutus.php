@@ -1,4 +1,6 @@
-<?php require_once __DIR__ . '/andison/includes/analytics.php'; andison_track_visit('about'); 
+<?php
+require_once __DIR__ . '/andison/includes/analytics.php';
+andison_track_visit('services');
 require_once __DIR__ . '/andison/includes/home_featured.php';
 require_once __DIR__ . '/andison/includes/home_slider.php';
 require_once __DIR__ . '/andison/includes/youtube_links.php';
@@ -787,7 +789,7 @@ $ytLinks = andison_get_youtube_links();
             margin-bottom: 16px;
             color: #2B11DB;
             width: 100%;
-            background: linear-gradient(135deg, #2B11DB 0%, #00D7B3 100%);
+            background: linear-gradient(90deg, #1565C0 0%, #00BCD4 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -798,12 +800,12 @@ $ytLinks = andison_get_youtube_links();
             text-align: center;
             max-width: 750px;
             margin: 0 auto 60px;
-            color: #555;
+            color: #8B4513;
             line-height: 1.9;
             width: 100%;
             box-sizing: border-box;
             padding: 0 20px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 500;
         }
 
@@ -888,43 +890,140 @@ $ytLinks = andison_get_youtube_links();
         }
 
         .product-info {
-            padding: 18px 20px 20px;
+            padding: 28px 24px;
             background: white;
             width: 100%;
             box-sizing: border-box;
             border-top: 1px solid #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .product-info h3 {
-            font-size: 15px;
+            font-size: 18px;
             font-weight: 700;
-            margin-bottom: 8px;
-            color: #1a1a1a;
+            margin-bottom: 6px;
+            color: #2B11DB;
+            line-height: 1.4;
         }
 
         .product-info p {
-            font-size: 13px;
-            color: #6b7280;
-            line-height: 1.6;
+            font-size: 15px;
+            color: #666;
+            line-height: 1.7;
             margin: 0;
         }
 
-        /* Featured Section */
-        .featured-section {
-            background: linear-gradient(135deg, #c8f0ed 0%, #a8e6e1 100%);
-            padding: 60px 50px;
-            border-radius: 16px;
+        /* Service Cards - Old Layout */
+        .services-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            width: 100%;
+            max-width: 1050px;
+        }
+
+        .service-card {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 50px;
             align-items: center;
-            box-shadow: 0 8px 32px rgba(0, 212, 170, 0.12);
+            background: white;
+            border-radius: 16px;
+            padding: 48px 44px;
+            border: 1px solid #E0E3FF;
+            box-shadow: 0 4px 16px rgba(30, 136, 229, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .service-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 32px rgba(30, 136, 229, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .service-card.reverse {
+            direction: rtl;
+        }
+
+        .service-card.reverse > * {
+            direction: ltr;
+        }
+
+        .service-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 24px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            box-shadow: 0 4px 12px rgba(30, 136, 229, 0.25);
+        }
+
+        .service-card.teal .service-badge {
+            background: linear-gradient(135deg, #00bcd4 0%, #00897b 100%);
+            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.25);
+        }
+
+        .service-content h3 {
+            font-size: 26px;
+            font-weight: 800;
+            color: #1e88e5;
+            margin-bottom: 18px;
+            line-height: 1.3;
+            letter-spacing: -0.3px;
+        }
+
+        .service-card.teal .service-content h3 {
+            color: #00bcd4;
+        }
+
+        .service-content p {
+            font-size: 14px;
+            color: #8B4513;
+            line-height: 1.85;
+            margin: 0;
+        }
+
+        .service-icon-box {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #1e88e5 0%, #00bcd4 100%);
+            font-size: 68px;
+            color: white;
+            box-shadow: 0 8px 24px rgba(30, 136, 229, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .service-card.teal .service-icon-box {
+            background: linear-gradient(135deg, #00bcd4 0%, #00897b 100%);
+            box-shadow: 0 8px 24px rgba(0, 188, 212, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        /* Featured Section */
+        .featured-section {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            padding: 70px 60px;
+            border-radius: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 70px;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(43, 17, 219, 0.08);
             overflow: hidden;
             position: relative;
             max-width: 1100px;
             margin: 0 auto;
             width: 100%;
             box-sizing: border-box;
+            border: 1px solid #e8eef7;
         }
 
         .featured-section::before {
@@ -945,24 +1044,25 @@ $ytLinks = andison_get_youtube_links();
 
         .featured-badge {
             display: inline-block;
-            background: #00d4aa;
+            background: linear-gradient(135deg, #00D7B3 0%, #00C99A 100%);
             color: white;
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-size: 11px;
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 13px;
             font-weight: 700;
-            letter-spacing: 1px;
-            margin-bottom: 20px;
+            letter-spacing: 1.2px;
+            margin-bottom: 24px;
             text-transform: uppercase;
-            box-shadow: 0 4px 12px rgba(0, 212, 170, 0.25);
+            box-shadow: 0 4px 12px rgba(0, 215, 179, 0.3);
         }
 
         .featured-content h3 {
-            font-size: 36px;
-            margin-bottom: 8px;
-            color: #1a1a1a;
+            font-size: 40px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: #2B11DB;
             font-weight: 700;
-            line-height: 1.3;
+            line-height: 1.2;
             letter-spacing: -0.5px;
         }
 
@@ -1036,53 +1136,55 @@ $ytLinks = andison_get_youtube_links();
 
         .featured-content p {
             color: #555;
-            margin-bottom: 24px;
-            line-height: 1.8;
-            font-size: 15px;
+            margin-bottom: 32px;
+            line-height: 1.9;
+            font-size: 16px;
+            font-weight: 500;
         }
 
         .featured-btn {
-            background: linear-gradient(135deg, #00D7B3 0%, #00b8a0 100%);
+            background: linear-gradient(135deg, #2B11DB 0%, #1e0aa3 100%);
             color: white;
-            padding: 14px 36px;
+            padding: 14px 42px;
             border: none;
-            border-radius: 6px;
+            border-radius: 10px;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 15px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
             text-decoration: none;
             display: inline-block;
-            box-shadow: 0 6px 20px rgba(0, 215, 179, 0.35);
+            box-shadow: 0 4px 15px rgba(43, 17, 219, 0.3);
             letter-spacing: 0.5px;
         }
 
         .featured-btn:hover {
-            background: linear-gradient(135deg, #00E6FF 0%, #00d4aa 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 28px rgba(0, 215, 179, 0.45);
+            background: linear-gradient(135deg, #3d1ffa 0%, #2B11DB 100%);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(43, 17, 219, 0.4);
         }
 
         .featured-btn:active {
-            transform: translateY(0);
+            transform: translateY(-1px);
         }
 
         .featured-image {
             width: 100%;
             aspect-ratio: 16 / 9;
-            min-height: 280px;
-            background: linear-gradient(135deg, #0066cc 0%, #82a2c9 100%);
-            border-radius: 12px;
+            min-height: 400px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-size: 60px;
-            box-shadow: 0 12px 40px rgba(0, 102, 204, 0.25);
+            box-shadow: 0 20px 40px rgba(43, 17, 219, 0.15);
             position: relative;
             z-index: 2;
             overflow: hidden;
             flex-shrink: 0;
+            border: 1px solid #e8eef7;
         }
 
         .featured-image img {
@@ -1311,7 +1413,7 @@ $ytLinks = andison_get_youtube_links();
             
             .hero {
                 aspect-ratio: auto;
-                min-height: 420px;
+                min-height: 260px;
                 padding: 20px 0;
                 display: flex;
                 align-items: center;
@@ -1327,10 +1429,32 @@ $ytLinks = andison_get_youtube_links();
                 justify-content: center;
             }
 
+            .hero-slide {
+                width: 92% !important;
+                left: 50% !important;
+                transform: translateX(-50%) scale(1) !important;
+                filter: blur(0) !important;
+                opacity: 0 !important;
+            }
+
+            .hero-slide.active {
+                width: 92% !important;
+                left: 50% !important;
+                transform: translateX(-50%) scale(1) !important;
+                filter: blur(0) !important;
+                opacity: 1 !important;
+            }
+
+            .hero-slide.prev,
+            .hero-slide.next {
+                opacity: 0 !important;
+                pointer-events: none;
+            }
+
             .hero-thumb {
-                width: 85%;
+                width: 100%;
                 height: auto;
-                max-width: 95%;
+                max-width: 100%;
                 aspect-ratio: 16 / 9 !important;
             }
             
@@ -1344,21 +1468,16 @@ $ytLinks = andison_get_youtube_links();
                 min-height: 260px;
             }
 
-            /* Responsive image hero section */
-            .hero-section {
-                aspect-ratio: 16 / 12 !important;
-                min-height: 220px;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-
             .featured-section {
                 grid-template-columns: 1fr;
-                padding: 40px 24px;
+                padding: 40px 28px;
+                gap: 40px;
+                border-radius: 16px;
             }
 
             .featured-content h3 {
-                font-size: 24px;
+                font-size: 28px;
+                font-weight: 800;
             }
 
             .featured-meta {
@@ -1374,26 +1493,48 @@ $ytLinks = andison_get_youtube_links();
                 font-size: 13px;
             }
 
-            .footer-links {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            section {
-                padding: 40px 16px;
-                text-align: center;
-            }
-
-            .container {
-                padding: 0 12px;
-                margin: 0 auto;
-                width: 100%;
-                box-sizing: border-box;
+            .featured-btn {
+                padding: 12px 32px;
+                font-size: 14px;
             }
 
             .highlights-grid {
                 grid-template-columns: 1fr;
-                gap: 20px;
+                gap: 24px;
+            }
+
+            .services-grid {
+                gap: 24px;
+            }
+
+            .service-card {
+                grid-template-columns: 1fr;
+                gap: 24px;
+                padding: 24px;
+            }
+
+            .service-card.reverse {
+                direction: ltr;
+            }
+
+            .service-badge {
+                margin-bottom: 8px;
+                font-size: 11px;
+            }
+
+            .service-content h3 {
+                font-size: 20px;
+                margin-bottom: 12px;
+            }
+
+            .service-content p {
+                font-size: 14px;
+                line-height: 1.7;
+            }
+
+            .service-icon-box {
+                aspect-ratio: 1 / 1;
+                font-size: 48px;
             }
 
             section h2 {
@@ -1406,24 +1547,76 @@ $ytLinks = andison_get_youtube_links();
             }
 
             .sidebar-overlay {
-                width: 95%;
-                max-width: 100%;
-                max-height: 95vh;
-                padding: 28px 20px;
+                width: 75%;
+                max-width: 320px;
+                padding: 12px 0;
             }
 
             .sidebar-overlay h3 {
-                font-size: 16px;
-                margin-bottom: 20px;
+                font-size: 14px;
+                margin-bottom: 8px;
+                padding: 0 12px;
+            }
+
+            .sidebar-list { 
+                padding: 0;
+            }
+
+            .sidebar-list li { 
+                border-bottom: none;
             }
 
             .sidebar-list a {
-                font-size: 14px;
-                padding: 14px 10px;
+                font-size: 13px;
+                padding: 10px 14px;
+                gap: 12px;
+                min-height: 36px;
+                align-items: center;
+            }
+
+            .sidebar-list a:active {
+                background: rgba(43, 17, 219, 0.08);
+            }
+
+            .sidebar-icon {
+                width: 20px;
+                height: 20px;
+                font-size: 16px;
+            }
+
+            .sidebar-sublist {
+                background: #f8f9fa;
+                border-left: 3px solid #2B11DB;
+                margin: 2px 0;
+                padding: 4px 0 4px 12px;
             }
 
             .sidebar-sublist a {
-                font-size: 13px;
+                font-size: 12px;
+                padding: 8px 14px 8px 42px;
+                min-height: 32px;
+            }
+
+            .sidebar-nested-sublist {
+                margin: 4px 0;
+                padding: 6px 0 6px 14px;
+                background: rgba(43, 17, 219, 0.06);
+                border-left: 2px solid rgba(43, 17, 219, 0.3);
+            }
+
+            .sidebar-nested-sublist a {
+                font-size: 11px;
+                padding: 8px 14px 8px 36px;
+                color: #5a6b7d;
+                min-height: 30px;
+                margin: 0;
+            }
+
+            .sidebar-nested-sublist a:hover,
+            .sidebar-nested-sublist a:active {
+                background: rgba(43, 17, 219, 0.14);
+                color: #2B11DB;
+                padding-left: 44px;
             }
         }
 
@@ -1448,14 +1641,14 @@ $ytLinks = andison_get_youtube_links();
             left: 0;
             top: calc(14px + 50px + 14px + 12px + 52px);
             bottom: 0;
-            width: 380px;
-            max-width: 90%;
+            width: 320px;
+            max-width: 80%;
             background: #fff;
             box-shadow: 4px 0 24px rgba(0,0,0,0.15);
             transform: translateX(-100%);
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 70;
-            padding: 28px 20px;
+            padding: 20px 12px;
             overflow-y: auto;
         }
 
@@ -1484,11 +1677,15 @@ $ytLinks = andison_get_youtube_links();
             justify-content: space-between;
             transition: all 0.2s ease;
             font-size: 15px;
+            min-height: 48px;
         }
         .sidebar-list a:hover { 
             background: #f3f4f6; 
             color: #2B11DB;
             padding-left: 16px;
+        }
+        .sidebar-list a:active {
+            background: rgba(43, 17, 219, 0.08);
         }
         .sidebar-list li a.active {
             background: #f3f4f6;
@@ -1533,21 +1730,23 @@ $ytLinks = andison_get_youtube_links();
 
 
         .sidebar-sublist li { 
-            padding: 4px 0; 
+            padding: 0; 
             border: none;
         }
         .sidebar-sublist a { 
             color: #4b5563; 
             font-size: 14px; 
-            padding: 6px 8px; 
+            padding: 10px 16px 10px 48px; 
             display: block; 
             text-decoration: none;
             justify-content: flex-start;
+            min-height: 42px;
+            align-items: center;
         }
         .sidebar-sublist a:hover { 
             color: #2B11DB; 
-            background: transparent;
-            padding-left: 12px;
+            background: rgba(43, 17, 219, 0.08);
+            padding-left: 52px;
         }
 
         /* Nested sublists */
@@ -1581,14 +1780,15 @@ $ytLinks = andison_get_youtube_links();
         }
         .sidebar-nested-sublist a { 
             color: #5a6b7d; 
-            font-size: 13px; 
-            padding: 10px 12px 10px 28px; 
+            font-size: 11px; 
+            padding: 8px 10px 8px 32px; 
             display: block; 
             text-decoration: none;
             position: relative;
             transition: all 0.25s ease;
-            border-radius: 6px;
-            margin: 2px 0;
+            border-radius: 4px;
+            margin: 0;
+            min-height: 30px;
         }
 
         .sidebar-list li.has-sub { position: relative; }
@@ -1957,7 +2157,7 @@ $ytLinks = andison_get_youtube_links();
             transform: translateX(-100%);
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 70;
-            padding: 28px 20px;
+            padding: 12px 8px;
             overflow-y: auto;
         }
 
@@ -1966,26 +2166,27 @@ $ytLinks = andison_get_youtube_links();
         }
 
         .sidebar-overlay h3 {
-            font-size: 18px;
-            margin-bottom: 24px;
+            font-size: 14px;
+            margin-bottom: 10px;
             color: #222;
             font-weight: 700;
             letter-spacing: 0.5px;
         }
 
-        .sidebar-list { list-style: none; padding: 28px 20px 0 20px; margin: 0; }
+        .sidebar-list { list-style: none; padding: 8px 8px 0 8px; margin: 0; }
         .sidebar-list li { border-bottom: 1px solid #e5e7eb; }
         .sidebar-list li:last-child { border-bottom: none; }
         .sidebar-list a { 
             display: flex; 
             gap: 12px; 
-            padding: 16px 12px; 
+            padding: 10px 10px; 
             color: #1f2937; 
             text-decoration: none; 
             align-items: center;
             justify-content: space-between;
             transition: all 0.2s ease;
-            font-size: 15px;
+            font-size: 13px;
+            min-height: 36px;
         }
         .sidebar-list a:hover { 
             background: #f3f4f6; 
@@ -2035,19 +2236,15 @@ $ytLinks = andison_get_youtube_links();
 
         .sidebar-sublist { 
             list-style: none; 
-            margin: 0; 
-            padding: 8px 0 8px 44px; 
-            background: #fafafa;
-            margin-left: 12px;
-            margin-right: 12px;
-            padding-left: 16px;
-            border-left: 2px solid #e5e7eb;
-            padding-top: 8px;
-            padding-bottom: 8px;
-            max-height: 1000px;
+            margin: 2px 0; 
+            padding: 4px 0 4px 12px;
+            background: #f8f9fa;
+            border-left: 3px solid #2B11DB;
+            max-height: 500px;
             overflow: hidden;
             transition: max-height 0.3s ease, opacity 0.3s ease;
             opacity: 1;
+            display: block;
         }
         
         .sidebar-sublist.collapsed {
@@ -2056,21 +2253,23 @@ $ytLinks = andison_get_youtube_links();
             overflow: hidden;
         }
         .sidebar-sublist li { 
-            padding: 4px 0; 
+            padding: 0; 
             border: none;
         }
         .sidebar-sublist a { 
             color: #4b5563; 
-            font-size: 14px; 
-            padding: 6px 8px; 
+            font-size: 12px; 
+            padding: 8px 12px 8px 38px; 
             display: block; 
             text-decoration: none;
             justify-content: flex-start;
+            min-height: 32px;
+            align-items: center;
         }
         .sidebar-sublist a:hover { 
             color: #2B11DB; 
-            background: transparent;
-            padding-left: 12px;
+            background: rgba(43, 17, 219, 0.08);
+            padding-left: 52px;
         }
 
         /* Nested sublists */
@@ -2099,12 +2298,15 @@ $ytLinks = andison_get_youtube_links();
 
         .sidebar-nested-sublist { 
             list-style: none; 
-            margin: 10px 0 10px -12px; 
-            padding: 0;
+            margin: 2px 0;
+            padding: 4px 0 4px 12px;
             max-height: 500px;
             overflow: hidden;
             transition: max-height 0.3s ease, opacity 0.3s ease;
             opacity: 1;
+            background: rgba(43, 17, 219, 0.05);
+            border-left: 2px solid rgba(43, 17, 219, 0.3);
+        }
         }
         
         .sidebar-nested-sublist.collapsed {
@@ -2118,32 +2320,34 @@ $ytLinks = andison_get_youtube_links();
         }
         .sidebar-nested-sublist a { 
             color: #5a6b7d; 
-            font-size: 13px; 
-            padding: 10px 12px 10px 28px; 
+            font-size: 11px; 
+            padding: 8px 10px 8px 32px; 
             display: block; 
             text-decoration: none;
             position: relative;
             transition: all 0.25s ease;
-            border-radius: 6px;
-            margin: 2px 0;
+            border-radius: 4px;
+            margin: 0;
+            min-height: 30px;
+            align-items: center;
         }
         .sidebar-nested-sublist a::before {
             content: '';
             position: absolute;
-            left: 8px;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
             background: linear-gradient(135deg, #2B11DB 0%, #6d28d9 100%);
             border-radius: 50%;
             box-shadow: 0 2px 4px rgba(43, 17, 219, 0.2);
         }
         .sidebar-nested-sublist a:hover { 
             color: #2B11DB;
-            background: rgba(43, 17, 219, 0.08);
-            padding-left: 32px;
-            transform: translateX(4px);
+            background: rgba(43, 17, 219, 0.12);
+            padding-left: 36px;
+            transform: none;
         }
 
         .sidebar-list li.has-sub { position: relative; }
@@ -2300,7 +2504,7 @@ $ytLinks = andison_get_youtube_links();
 
         .mini-sidebar-icon .label {
             display: none;
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 500;
             white-space: nowrap;
             flex: 1;
@@ -2559,27 +2763,99 @@ $ytLinks = andison_get_youtube_links();
         .mobile-sidebar-fab.open { transform: translateY(-50%) translateX(56px); }
         .mobile-sidebar-fab.open.wide { transform: translateY(-50%) translateX(240px); }
 
+        /* Mini popover — mobile overrides */
+        @media (max-width: 768px) {
+            .mini-popover {
+                border-radius: 0 12px 12px 0 !important;
+                box-shadow: 4px 8px 24px rgba(0,0,0,0.28) !important;
+                overflow: hidden !important;
+            }
+            .mini-popover::before { display: none !important; }
+            .mini-popover-header {
+                border-radius: 0 !important;
+                padding: 10px 14px !important;
+                font-size: 13px !important;
+                letter-spacing: 0.5px !important;
+            }
+            .mini-popover-body {
+                padding: 6px 8px 8px 8px !important;
+            }
+            .mini-popover-list {
+                padding: 0 !important;
+            }
+            .mini-popover-list::before {
+                display: none !important;
+            }
+            .mini-popover-item {
+                margin: 2px 0 !important;
+                min-height: auto !important;
+                padding-left: 4px !important;
+                align-items: center !important;
+            }
+            .mini-popover-item .square {
+                width: 6px !important;
+                height: 6px !important;
+                min-width: 6px !important;
+                border-radius: 2px !important;
+            }
+            .mini-popover-item a {
+                font-size: 12px !important;
+                padding: 8px 10px !important;
+                line-height: 1.2 !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                font-weight: 600 !important;
+            }
+            .mini-popover-item a:active {
+                background: rgba(255,255,255,0.18) !important;
+            }
+            .mini-popover-item.has-subitems {
+                padding-right: 30px !important;
+            }
+            .popover-expand-btn {
+                height: 28px !important;
+                width: 28px !important;
+                right: 4px !important;
+            }
+            .popover-expand-btn .bi {
+                font-size: 14px !important;
+            }
+            .popover-subitem {
+                padding: 5px 10px 5px 18px !important;
+                font-size: 11px !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+        }
+
         /* Mini popover styles for subcategories */
         .mini-popover {
             position: fixed;
             top: -9999px;
             left: -9999px;
-            width: 320px;
-            max-width: calc(100vw - 32px);
-            background: linear-gradient(180deg, #1976D2FF 0%, #19D2B6FF 100%);
+            width: 380px;
+            max-width: calc(100vw - 40px);
+            background: linear-gradient(135deg, #1E88E5 0%, #00BCD4 100%);
             color: #fff;
             border-radius: 16px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+            box-shadow: 0 16px 40px rgba(30, 136, 229, 0.3), 0 2px 8px rgba(0,0,0,0.2);
             opacity: 0;
             visibility: hidden;
-            transform: translateY(-6px);
-            transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease;
-            z-index: 200;
+            transform: translateY(-8px) scale(0.95);
+            transition: opacity 180ms cubic-bezier(0.34, 1.56, 0.64, 1), transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1), visibility 180ms ease;
+            z-index: 1300;
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.15);
         }
         .mini-popover.show {
             opacity: 1;
             visibility: visible;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
         .mini-popover::before {
             content: '';
@@ -2593,25 +2869,27 @@ $ytLinks = andison_get_youtube_links();
             filter: drop-shadow(-2px 2px 2px rgba(0,0,0,0.12));
         }
         .mini-popover-header {
-            background: #f5f9ff;
-            color: #0f5132;
+            background: linear-gradient(135deg, #1E88E5 0%, #1565C0 100%);
+            color: #ffffff;
             border-top-left-radius: 16px;
             border-top-right-radius: 16px;
-            padding: 12px 16px;
-            font-weight: 800;
-            font-size: 15px;
-            letter-spacing: 0.3px;
+            padding: 16px 20px;
+            font-weight: 700;
+            font-size: 16px;
+            letter-spacing: 0.4px;
+            line-height: 1.3;
         }
-        .mini-popover-title { color: #0f5132; }
+        .mini-popover-title { color: #ffffff; }
         .mini-popover-body {
-            padding: 12px 16px 16px 16px;
-            max-height: calc(100vh - 100px);
-            overflow-y: auto;
+            padding: 14px 16px 18px 16px;
+            overflow: visible;
+            flex: 1;
+            background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 100%);
         }
         .mini-popover-list {
             list-style: none;
             margin: 0;
-            padding: 6px 0 6px 0;
+            padding: 0;
             position: relative;
         }
         .mini-popover-list::before {
@@ -2623,14 +2901,15 @@ $ytLinks = andison_get_youtube_links();
             width: 2px;
             background: rgba(255,255,255,0.35);
             border-radius: 2px;
+            display: none;
         }
         .mini-popover-item {
             position: relative;
-            padding-left: 42px;
-            margin: 12px 0;
+            padding-left: 0;
+            margin: 3px 0;
             display: flex;
             align-items: stretch;
-            min-height: 32px;
+            min-height: auto;
         }
         .mini-popover-item .square {
             position: absolute;
@@ -2644,27 +2923,346 @@ $ytLinks = andison_get_youtube_links();
             box-shadow: 0 2px 6px rgba(0,0,0,0.18), inset 0 -1px 0 rgba(0,0,0,0.08);
             flex-shrink: 0;
             pointer-events: none;
+            display: none;
         }
         .mini-popover-item a {
             color: #ffffff;
             text-decoration: none;
             font-weight: 600;
             display: block;
-            padding: 8px 10px;
+            padding: 12px 14px;
             border-radius: 8px;
-            transition: background 140ms ease, transform 120ms ease;
+            transition: all 160ms cubic-bezier(0.34, 1.56, 0.64, 1);
             width: 100%;
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+            line-height: 1.4;
+            font-size: 14px;
+            background: rgba(255,255,255,0.06);
+            border-left: 3px solid transparent;
         }
         .mini-popover-item a:hover {
-            background: rgba(255,255,255,0.12);
-            transform: translateX(2px);
+            background: rgba(255,255,255,0.16);
+            transform: translateX(4px);
+            border-left-color: rgba(255,255,255,0.5);
+        }
+        
+        /* Expandable popover items */
+        .mini-popover-item.has-subitems {
+            flex-wrap: wrap;
+            padding-right: 36px;
+        }
+        .popover-expand-btn {
+            position: absolute;
+            right: 8px;
+            top: 0;
+            bottom: 0;
+            height: 32px;
+            width: 32px;
+            margin: auto;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 160ms cubic-bezier(0.34, 1.56, 0.64, 1);
+            flex-shrink: 0;
+            border-radius: 8px;
+        }
+        .popover-expand-btn:hover {
+            background: rgba(255,255,255,0.22);
+            transform: scale(1.08);
+        }
+        .popover-expand-btn:active {
+            background: rgba(255,255,255,0.3);
+            transform: scale(0.95);
+        }
+        .popover-expand-btn .bi {
+            font-size: 18px;
+            transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .popover-expand-btn[aria-expanded="true"] .bi {
+            transform: rotate(90deg);
+        }
+        
+        .popover-subitems {
+            width: 100%;
+            margin-top: 8px;
+            max-height: none;
+            overflow: visible;
+            transition: opacity 250ms ease;
+            opacity: 1;
+            padding-left: 0;
+        }
+        .popover-subitems.collapsed {
+            display: none;
+        }
+        
+        .popover-subitem {
+            color: rgba(255,255,255,0.85) !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            padding: 6px 10px 6px 28px !important;
+            display: block !important;
+            text-decoration: none !important;
+            border-radius: 6px !important;
+            transition: all 120ms ease !important;
+            position: relative;
+        }
+        .popover-subitem::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #ffffff;
+            opacity: 0.6;
+        }
+        .popover-subitem:hover {
+            background: rgba(255,255,255,0.12) !important;
+            transform: translateX(2px) !important;
+            color: #ffffff !important;
+        }
+
+        /* ===== ABOUT US PAGE STYLES ===== */
+        .about-hero {
+            background: linear-gradient(135deg, #2B11DB 0%, #1a0da3 100%);
+            color: white;
+            text-align: center;
+            padding: 80px 20px 70px;
+            position: relative;
+            overflow: hidden;
+        }
+        .about-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 70% 30%, rgba(0,215,179,0.18) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .about-hero h1 {
+            font-size: 46px;
+            font-weight: 800;
+            margin-bottom: 14px;
+            letter-spacing: -0.5px;
+            position: relative;
+            z-index: 1;
+        }
+        .about-hero p {
+            font-size: 17px;
+            color: rgba(255,255,255,0.88);
+            margin-bottom: 0;
+            position: relative;
+            z-index: 1;
+        }
+        .about-hero .hero-tagline {
+            font-size: 16px;
+            font-weight: 600;
+            color: #00D7B3;
+            margin-top: 6px;
+            position: relative;
+            z-index: 1;
+        }
+        .about-building-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 20px 20px;
+            background: white;
+        }
+        .about-building-inner {
+            position: relative;
+            max-width: 650px;
+            width: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(43,17,219,0.13);
+        }
+        .about-building-inner::before,
+        .about-building-inner::after {
+            content: '';
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: 3px solid #2B11DB;
+            opacity: 0.35;
+            z-index: 2;
+        }
+        .about-building-inner::before { top: 14px; left: 14px; border-right: none; border-bottom: none; }
+        .about-building-inner::after  { bottom: 14px; right: 14px; border-left: none; border-top: none; }
+        .about-building-inner img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        /* Company Overview */
+        .about-company-section {
+            background: white;
+            padding: 50px 20px 60px;
+            display: flex;
+            justify-content: center;
+        }
+        .about-company-inner {
+            max-width: 820px;
+            width: 100%;
+        }
+        .about-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .about-eyebrow-bar {
+            width: 4px;
+            height: 22px;
+            background: #2B11DB;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+        .about-eyebrow-text {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #2B11DB;
+        }
+        .about-section-title {
+            font-size: 36px;
+            font-weight: 800;
+            color: #2B11DB;
+            margin-bottom: 28px;
+            letter-spacing: -0.3px;
+        }
+        .about-company-card {
+            background: #f8faff;
+            border-radius: 14px;
+            padding: 36px 40px;
+            border: 1px solid #e4e9f8;
+            box-shadow: 0 4px 18px rgba(43,17,219,0.06);
+        }
+        .about-company-card p {
+            font-size: 14.5px;
+            line-height: 1.85;
+            color: #444;
+            margin-bottom: 18px;
+        }
+        .about-company-card p:last-child { margin-bottom: 0; }
+        .about-company-card strong { color: #2B11DB; font-weight: 700; }
+        .about-inline-link {
+            color: #00897b;
+            font-weight: 700;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+        .about-highlight-pill {
+            display: inline-block;
+            background: #EEF1FF;
+            color: #2B11DB;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 13.5px;
+        }
+        /* Mission Vision Values */
+        .about-mvv-section {
+            background: #ffffff;
+            padding: 60px 20px 70px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .about-mvv-inner {
+            max-width: 820px;
+            width: 100%;
+        }
+        .about-mvv-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+            margin-top: 36px;
+        }
+        @media (max-width: 640px) {
+            .about-mvv-grid { grid-template-columns: 1fr; }
+            .about-hero h1 { font-size: 30px; }
+            .about-company-card { padding: 24px 20px; }
+            .about-section-title { font-size: 26px; }
+        }
+        .about-mvv-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #e4e9f8;
+            box-shadow: 0 4px 18px rgba(43,17,219,0.07);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .about-mvv-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 40px rgba(43,17,219,0.14);
+        }
+        .about-mvv-img {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            display: block;
+            filter: saturate(1.1);
+        }
+        .about-mvv-img-overlay {
+            position: relative;
+        }
+        .about-mvv-img-overlay::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(43,17,219,0.18) 0%, rgba(0,215,179,0.22) 100%);
+            pointer-events: none;
+        }
+        .about-mvv-body {
+            padding: 22px 24px 26px;
+        }
+        .about-mvv-icon-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        .about-mvv-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+            flex-shrink: 0;
+        }
+        .about-mvv-icon.blue { background: linear-gradient(135deg, #2B11DB 0%, #4a2ff7 100%); }
+        .about-mvv-icon.teal { background: linear-gradient(135deg, #00D7B3 0%, #00897b 100%); }
+        .about-mvv-body h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #1a1a2e;
+        }
+        .about-mvv-body p {
+            font-size: 13.5px;
+            line-height: 1.8;
+            color: #555;
+            margin: 0;
         }
     </style>
 </head>
 <body>
         <?php
         // Set page title
-        $page_title = "About Us";
+        $page_title = "Services";
         $company_name = "ANDISON INDUSTRIAL";
         
         // Contact information
@@ -2733,11 +3331,12 @@ $ytLinks = andison_get_youtube_links();
                         <div class="nav-dropdown">
                             <h4>Featured Brands</h4>
                             <ul>
-                                <li><a href="brand.php?name=Panasonic%20Connect"><img src="assets/brands/PANASONIC.jpg" alt="Panasonic Connect" title="Panasonic Connect"></a></li>
+                               <li><a href="brand.php?name=Panasonic%20Connect"><img src="assets/brands/PANASONIC.jpg" alt="Panasonic Connect" title="Panasonic Connect"></a></li>
+                                <li><a href="brand.php?name=Robot%20Systems"><img src="assets/brands/ROBOT SYSTEMS.png" alt="Robot Systems Peripherals" title="Robot Systems Peripherals"></a></li>
                                 <li><a href="brand.php?name=Kobelco"><img src="assets/brands/KOBELCO.jpg" alt="Kobelco" title="Kobelco"></a></li>
                                 <li><a href="brand.php?name=Metrode"><img src="assets/brands/METRODE.jpg" alt="Metrode" title="Metrode"></a></li>
                                 <li><a href="brand.php?name=DryRod.%20II"><img src="assets/brands/DRYROD.jpg" alt="DryRod. II" title="DryRod. II"></a></li>
-                                <li><a href="brand.php?name=Weldcraft"><img src="assets/brands/WELDCRAFT.jpg" alt="Weldcraft" title="Weldcraft"></a></li>
+                                <li><a href="brand.php?name=Weldcraft"><img src="assets/brands/WELDCRAFT.png" alt="Weldcraft" title="Weldcraft"></a></li>
                                 <li><a href="brand.php?name=Truweld"><img src="assets/brands/TRUWELD.jpg" alt="Truweld" title="Truweld"></a></li>
                                 <li><a href="brand.php?name=Arcair"><img src="assets/brands/ARCAIR.jpg" alt="Arcair" title="Arcair"></a></li>
                                 <li><a href="brand.php?name=MAGNAFLUX"><img src="assets/brands/MAGNAFLUX.jpg" alt="Magnaflux" title="Magnaflux"></a></li>
@@ -2751,7 +3350,7 @@ $ytLinks = andison_get_youtube_links();
                                 <li><a href="brand.php?name=SK%20And%20GAL%20GAGE"><img src="assets/brands/SK%20AND%20GAL%20GAGE.jpg" alt="SK And GAL GAGE" title="SK And GAL GAGE"></a></li>
                                 <li><a href="brand.php?name=COPPUS"><img src="assets/brands/COPPUS.jpg" alt="Coppus" title="Coppus"></a></li>
                                 <li><a href="brand.php?name=BW%20Technologies"><img src="assets/brands/BW%20TECHNOLOGIES.jpg" alt="BW Technologies" title="BW Technologies"></a></li>
-                                <li><a href="brand.php?name=RAC"><img src="assets/brands/RAE%20SYSTEMS.jpg" alt="RAC" title="RAC"></a></li>
+                                <li><a href="brand.php?name=RAC"><img src="assets/brands/RAE%20SYSTEMS.jpg" alt="RAE Systems" title="RAE Systems"></a></li>
                                 <li><a href="brand.php?name=WELDAS"><img src="assets/brands/WELDAS.jpg" alt="Weldas" title="Weldas"></a></li>
                                 <li><a href="brand.php?name=UVEX"><img src="assets/brands/UVEX.jpg" alt="Uvex" title="Uvex"></a></li>
                                 <li><a href="brand.php?name=ACES"><img src="assets/brands/ACES.jpg" alt="Aces" title="Aces"></a></li>
@@ -2762,6 +3361,8 @@ $ytLinks = andison_get_youtube_links();
                                 <li><a href="brand.php?name=Makita"><img src="assets/brands/MAKITA.jpg" alt="Makita" title="Makita"></a></li>
                                 <li><a href="brand.php?name=Weller"><img src="assets/brands/WEILER.jpg" alt="Weller" title="Weller"></a></li>
                                 <li><a href="brand.php?name=Garryson"><img src="assets/brands/GARRYSON.jpg" alt="Garryson" title="Garryson"></a></li>
+                                <li><a href="brand.php?name=REVOLT"><img src="assets/brands/REVOLT.png" alt="REVOLT" title="REVOLT"></a></li>
+                                <li><a href="brand.php?name=Technotex"><img src="assets/brands/TECHNOTEX.png" alt="Technotex" title="Technotex"></a></li>
                                 <li><a href="brand.php?name=Spilfyter"><img src="assets/brands/SPILFYTER.jpg" alt="Spilfyter" title="Spilfyter"></a></li>
                                 <li><a href="brand.php?name=Dalo"><img src="assets/brands/DALO.jpg" alt="Dalo" title="Dalo"></a></li>
                                 <li><a href="brand.php?name=MOTOLITE"><img src="assets/brands/MOTOLITE.jpg" alt="Motolite" title="Motolite"></a></li>
@@ -2822,7 +3423,8 @@ $ytLinks = andison_get_youtube_links();
                 <button class="sub-toggle" aria-controls="sub-arc-welding" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
                     <li><a href="arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
-                    <li><a href="arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
+                    <li><a href="arc-welding-machine/accessories-and-consumables.php">Accessories and Consumables</a></li>
+                    <li><a href="arc-welding-machine/co1-mag-welding-machine.php">CO2/MAG Welding Machine</a></li>
                     <li><a href="arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
                     <li><a href="arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
                     <li><a href="arc-welding-machine/plasma-cutting-machine.php">Plasma Cutting Machine</a></li>
@@ -2852,7 +3454,17 @@ $ytLinks = andison_get_youtube_links();
                 <button class="sub-toggle" aria-controls="sub-drilling-lifting" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
                     <li><a href="drilling-and-lifting/lifting.php">Lifting</a></li>
-                    <li><a href="drilling-and-lifting/magnetic-drill.php">Magnetic Drill</a></li>
+                    <li class="has-nested-sub">
+                        <a href="drilling-and-lifting/magnetic-drill.php">Magnetic Drill</a>
+                        <button class="nested-toggle" aria-controls="nested-magnetic-drill" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>
+                        <ul id="nested-magnetic-drill" class="sidebar-nested-sublist collapsed">
+                            <li><a href="drilling-and-lifting/magnetic-drill/b-line-series.php">B-Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/rl-e-line-series.php">RL-E Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/rbx-line-series.php">RBX-Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/sp-line-series.php">SP-Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/v-line-series.php">V-Line Series</a></li>
+                        </ul>
+                    </li>
                     <li><a href="drilling-and-lifting/cutters.php">Cutters</a></li>
                 </ul>
             </li>
@@ -2965,119 +3577,375 @@ $ytLinks = andison_get_youtube_links();
         </div>
     </div>
 
-    <!-- Main Content -->
+    <!-- About Us Content -->
     <div class="page-content">
-    <!-- Hero Section with Gradient Overlay -->
-    <section style="background: linear-gradient(135deg, #1e0b99 0%, #003d99 50%, #003d99 100%); padding: 120px 20px; position: relative; z-index: 10; overflow: hidden; box-shadow: inset 0 -2px 20px rgba(0, 0, 0, 0.1);">
-        <!-- Animated background elements -->
-        <div style="position: absolute; top: -50px; right: -100px; width: 500px; height: 500px; background: rgba(0, 212, 170, 0.12); border-radius: 50%; filter: blur(100px); pointer-events: none;"></div>
-        <div style="position: absolute; bottom: -100px; left: -50px; width: 400px; height: 400px; background: rgba(255, 255, 255, 0.08); border-radius: 50%; filter: blur(80px); pointer-events: none;"></div>
-        
-        <div class="container" style="max-width: 1000px; margin: 0 auto; padding: 0 20px; width: 100%; box-sizing: border-box; position: relative; z-index: 1; text-align: center;">
-            <!-- Main heading -->
-            <h1 style="font-size: 64px; font-weight: 900; color: white; margin: 0 0 24px; letter-spacing: -2px; line-height: 1.15;">About Andison Industrial</h1>
-            
-            <!-- Subtitle -->
-            <p style="font-size: 22px; font-weight: 500; color: rgba(255, 255, 255, 0.95); margin: 0; line-height: 1.6; max-width: 900px; margin-left: auto; margin-right: auto;">Leading provider of high-quality industrial solutions and equipment <br/><span style="font-weight: 700; color: #00d4aa;">serving the Philippines for over two decades</span></p>
-        </div>
-    </section>
 
-    <!-- Hero Image Section -->
-    <section style="background: white; padding: 0; position: relative; z-index: 10;">
-        <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 60px 20px 40px; width: 100%; box-sizing: border-box;">
-            <!-- Image container with frame and overlay effects -->
-            <div style="position: relative; margin-bottom: 0; width: 100%; box-sizing: border-box; display: flex; justify-content: center;">
-                <!-- Decorative background elements -->
-                <div style="position: absolute; top: -30px; right: -30px; width: 300px; height: 300px; background: linear-gradient(135deg, rgba(0, 212, 170, 0.1) 0%, rgba(30, 11, 153, 0.05) 100%); border-radius: 50%; filter: blur(60px); pointer-events: none; z-index: -1;"></div>
-                <div style="position: absolute; bottom: -40px; left: -40px; width: 280px; height: 280px; background: linear-gradient(135deg, rgba(30, 11, 153, 0.08) 0%, rgba(0, 212, 170, 0.04) 100%); border-radius: 50%; filter: blur(70px); pointer-events: none; z-index: -1;"></div>
-                
-                <!-- Main image with frame -->
-                <div class="hero-section" style="position: relative; width: 100%; max-width: 900px; box-sizing: border-box; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 24px rgba(43, 17, 219, 0.12), 0 16px 40px rgba(0, 0, 0, 0.08), 0 24px 60px rgba(30, 11, 153, 0.15); border: 2px solid rgba(0, 212, 170, 0.2); aspect-ratio: 16/10; display: flex; align-items: center; justify-content: center;">
-                    <img src="assets/about%20us/Andison%20Manila%20Picture%20-%20Edited.jpg" alt="Andison Industrial Facility" style="width: 100%; height: 100%; object-fit: cover; display: block;">
-                    <!-- Subtle gradient overlay -->
-                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(30, 11, 153, 0.08) 0%, rgba(0, 212, 170, 0.04) 100%); pointer-events: none;"></div>
-                </div>
-                
-                <!-- Corner accent decorations -->
-                <div style="position: absolute; top: -12px; left: -12px; width: 60px; height: 60px; border: 2px solid #00d4aa; border-right: none; border-bottom: none; border-radius: 20px; opacity: 0.4; pointer-events: none;"></div>
-                <div style="position: absolute; bottom: -12px; right: -12px; width: 60px; height: 60px; border: 2px solid #00d4aa; border-left: none; border-top: none; border-radius: 20px; opacity: 0.4; pointer-events: none;"></div>
+    <!-- Hero Banner -->
+    <div class="about-hero">
+        <h1>About Andison Industrial</h1>
+        <p>Leading provider of high-quality industrial solutions and equipment</p>
+        <p class="hero-tagline">serving the Philippines for over two decades</p>
+    </div>
+
+    <!-- Building Photo -->
+    <div class="about-building-wrap">
+        <div class="about-building-inner">
+            <img src="assets/about us/Andison Manila Picture - Edited.jpg" alt="Andison Industrial Sales Inc. — Head Office" loading="lazy" />
+        </div>
+    </div>
+
+    <!-- Our Company -->
+    <div class="about-company-section" id="mission">
+        <div class="about-company-inner">
+            <div class="about-eyebrow">
+                <div class="about-eyebrow-bar"></div>
+                <span class="about-eyebrow-text">About Our Business</span>
+            </div>
+            <h2 class="about-section-title">Our Company</h2>
+            <div class="about-company-card">
+                <p>
+                    <strong>Andison Industrial Sales Inc.</strong> stands as a significant industrial supplier for leading companies across the Philippines. Strategically situated amidst the expansive industrial landscape south of Metro Manila, Andison serves multi-national and export giants within
+                    <a class="about-inline-link" href="industries.php">automotive and motorcycle assembly factories, power generation, oil refineries</a>,
+                    petrochemical plants, metal fabrications, mining operations, shipyards, and other top contractors.
+                </p>
+                <p>
+                    With specialized knowledge, Andison embraces the evolution of technology and consistently adopts new trends. We offer various solutions to our clientele by providing
+                    <span class="about-highlight-pill">high-quality products</span>,
+                    technical solutions, comprehensive support, and export services to meet the evolving needs of our clients.
+                </p>
+                <p>
+                    Today, as representatives of various world-class brands, Andison has one of the industry's broadest portfolios of products, including
+                    <span class="about-highlight-pill">Robotic &amp; Automated Welding Systems, Cutting Machines, Industrial Equipment, Tools &amp; Supplies, Gas Detection Devices, Safety Products, and PPE</span>
+                    solutions.
+                </p>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Main Content Area -->
-    <section style="background: white; padding: 80px 20px; position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; width: 100%; box-sizing: border-box;">
-        <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px; width: 100%; box-sizing: border-box;">
-            
-            <!-- Company Overview Section -->
-            <div class="about-section" style="margin-bottom: 100px;">
-                <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 40px;">
-                    <div style="width: 6px; height: 100px; background: linear-gradient(180deg, #1e0b99 0%, #00d4aa 100%); border-radius: 6px; box-shadow: 0 4px 12px rgba(30, 11, 153, 0.25); margin-top: 4px;"></div>
-                    <div>
-                        <span style="display: inline-block; background: linear-gradient(135deg, #f0f5ff 0%, #f0fffb 100%); color: #1e0b99; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(30, 11, 153, 0.12);\">About Our Business</span>
-                        <h2 class="section-title" style="font-size: 42px; font-weight: 900; color: #1e0b99; margin: 0; border: none; padding: 0;">Our Company</h2>
-                    </div>
-                </div>
-                <div style="background: linear-gradient(135deg, rgba(30, 11, 153, 0.08) 0%, rgba(0, 212, 170, 0.06) 100%); padding: 50px; border-radius: 16px; border: 1px solid rgba(43, 17, 219, 0.12); box-shadow: 0 4px 16px rgba(43, 17, 219, 0.08), inset 0 1px 2px rgba(255, 255, 255, 0.4);">
-                    <p class="section-content" style="font-size: 17px; color: #555; line-height: 2; margin-bottom: 26px;">
-                        <span style="font-weight: 700; color: #1e0b99; font-size: 18px;\">Andison Industrial Sales Inc.</span> stands as a significant industrial supplier for leading companies across the Philippines. Strategically situated amidst the expansive industrial landscape south of Metro Manila, Andison serves multi-national and export giants within <span style="background: linear-gradient(135deg, rgba(0, 212, 170, 0.25) 0%, rgba(0, 212, 170, 0.1) 100%); padding: 2px 6px; border-radius: 4px; font-weight: 700; color: #00a885;\">automotive and motorcycle assembly factories, power generation, oil refineries</span>, petrochemical plants, metal fabrications, mining operations, shipyards, and other top contractors.
-                    </p>
-                    <p class="section-content" style="font-size: 17px; color: #555; line-height: 2; margin-bottom: 26px;">
-                        With specialized knowledge, Andison embraces the evolution of technology and consistently adopts new trends. We offer various solutions to our clientele by providing <span style="font-weight: 700; color: #009976; background: linear-gradient(135deg, rgba(0, 212, 170, 0.2) 0%, rgba(0, 212, 170, 0.08) 100%); padding: 2px 6px; border-radius: 4px;\">high-quality products</span>, technical solutions, comprehensive support, and expert services to meet the evolving needs of our clients.
-                    </p>
-                    <p class="section-content" style="font-size: 17px; color: #555; line-height: 2; margin-bottom: 0;\">
-                        Today, as representatives of various world-class brands, Andison has one of the industry's broadest portfolios of products, including <span style="font-weight: 700; color: #1e0b99; background: linear-gradient(135deg, rgba(30, 11, 153, 0.15) 0%, rgba(30, 11, 153, 0.08) 100%); padding: 2px 6px; border-radius: 4px;\">Robotic & Automated Welding Systems, Cutting Machines, Industrial Equipment, Tools & Supplies, Gas Detection Devices, Safety Products, and PPE</span> solutions.
-                    </p>
-                </div>
+    <!-- Mission, Vision & Values -->
+    <div class="about-mvv-section" id="history">
+        <div class="about-mvv-inner">
+            <div class="about-eyebrow">
+                <div class="about-eyebrow-bar"></div>
+                <span class="about-eyebrow-text">Our Core</span>
             </div>
-
-            <!-- Mission, Vision & Values Section -->
-            <div class="about-section" id="mission" style="margin-bottom: 100px;">
-                <div style="display: flex; align-items: flex-start; gap: 16px; margin-bottom: 50px;">
-                    <div style="width: 6px; height: 56px; background: linear-gradient(180deg, #00d4aa 0%, #1e0b99 100%); border-radius: 6px; box-shadow: 0 4px 12px rgba(0, 212, 170, 0.25); margin-top: 4px;"></div>
-                    <div>
-                        <span style="display: inline-block; background: linear-gradient(135deg, #f0fffb 0%, #f0f5ff 100%); color: #00a885; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(0, 212, 170, 0.12);\">Our Core</span>
-                        <h2 class="section-title" style="font-size: 42px; font-weight: 900; color: #1e0b99; margin: 0; border: none; padding: 0;\">Mission, Vision & Values</h2>
+            <h2 class="about-section-title">Mission, Vision &amp; Values</h2>
+            <div class="about-mvv-grid">
+                <!-- Our Mission -->
+                <div class="about-mvv-card">
+                    <div class="about-mvv-img-overlay">
+                        <img class="about-mvv-img" src="assets/about us/Welding Machines.JPG" alt="Our Mission — Welding Machines" loading="lazy" />
+                    </div>
+                    <div class="about-mvv-body">
+                        <div class="about-mvv-icon-row">
+                            <div class="about-mvv-icon blue"><i class="bi bi-bullseye"></i></div>
+                            <h3>Our Mission</h3>
+                        </div>
+                        <p>To deliver innovative solutions and high-quality products to businesses across the Philippines at cost-effective prices while cultivating lasting relationships with our industrial clients.</p>
                     </div>
                 </div>
-
-                <!-- Mission & Vision Cards -->
-                <div class="features-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-bottom: 50px; width: 100%; max-width: 1200px; margin-left: auto; margin-right: auto; box-sizing: border-box;">
-                    <!-- Mission Card -->
-                    <div class="feature-card" style="background: white; padding: 0; border-radius: 16px; border: 1px solid #e0e7f1; overflow: hidden; transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94); box-shadow: 0 4px 12px rgba(30, 11, 153, 0.08), 0 2px 4px rgba(0,0,0,0.04); display: flex; flex-direction: column; hover-transform: translateY(-8px); hover-shadow: 0 12px 32px rgba(30, 11, 153, 0.18), 0 4px 8px rgba(0,0,0,0.06);">
-                        <div style="width: 100%; height: 260px; background: linear-gradient(135deg, #1e0b99 0%, #003d99 100%); display: flex; align-items: center; justify-content: center; font-size: 60px; color: white; overflow: hidden; position: relative;">
-                            <img src="assets/about%20us/Welding%20Robots.JPG" alt="Welding Robots" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.85;">
-                            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(30, 11, 153, 0.55) 0%, rgba(0, 102, 204, 0.35) 100%);"></div>
-                        </div>
-                        <div style="padding: 40px 30px; display: flex; flex-direction: column; flex-grow: 1;">
-                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-                                <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #1e0b99 0%, #00d4aa 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; box-shadow: 0 4px 12px rgba(30, 11, 153, 0.3);\"><i class="bi bi-bullseye"></i></div>
-                                <div class="feature-title" style="font-size: 24px; font-weight: 900; color: #1e0b99; margin: 0;\">Our Mission</div>
-                            </div>
-                            <p class="feature-text" style="font-size: 15px; color: #555; line-height: 1.8; margin: 0; flex-grow: 1;\">To deliver innovative solutions and high-quality products to businesses across the Philippines at cost-effective prices while cultivating lasting relationships with our industrial clients.</p>
-                        </div>
+                <!-- Our Vision -->
+                <div class="about-mvv-card">
+                    <div class="about-mvv-img-overlay">
+                        <img class="about-mvv-img" src="assets/about us/Welding Robots.JPG" alt="Our Vision — Welding Robots" loading="lazy" />
                     </div>
-
-                    <!-- Vision Card -->
-                    <div class="feature-card" style="background: white; padding: 0; border-radius: 16px; border: 1px solid #e0f4f1; overflow: hidden; transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94); box-shadow: 0 4px 12px rgba(0, 212, 170, 0.08), 0 2px 4px rgba(0,0,0,0.04); display: flex; flex-direction: column; hover-transform: translateY(-8px); hover-shadow: 0 12px 32px rgba(0, 212, 170, 0.16), 0 4px 8px rgba(0,0,0,0.06);">
-                        <div style="width: 100%; height: 260px; background: linear-gradient(135deg, #00d4aa 0%, #00a885 100%); display: flex; align-items: center; justify-content: center; font-size: 60px; color: white; overflow: hidden; position: relative;">
-                            <img src="assets/about%20us/Welding%20Machines.JPG" alt="Welding Machines" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.85;">
-                            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(0, 212, 170, 0.55) 0%, rgba(0, 168, 133, 0.35) 100%);"></div>
+                    <div class="about-mvv-body">
+                        <div class="about-mvv-icon-row">
+                            <div class="about-mvv-icon teal"><i class="bi bi-eye"></i></div>
+                            <h3>Our Vision</h3>
                         </div>
-                        <div style="padding: 40px 30px; display: flex; flex-direction: column; flex-grow: 1;">
-                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-                                <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #00d4aa 0%, #009976 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; box-shadow: 0 4px 12px rgba(0, 212, 170, 0.3);\"><i class="bi bi-rocket"></i></div>
-                                <div class="feature-title" style="font-size: 24px; font-weight: 900; color: #00a885; margin: 0;\">Our Vision</div>
-                            </div>
-                            <p class="feature-text" style="font-size: 15px; color: #555; line-height: 1.8; margin: 0; flex-grow: 1;\">To be the premier supplier of industrial solutions in the Philippines, contributing significantly to national industrialization and being the trusted partner for manufacturing excellence.</p>
-                        </div>
+                        <p>To be the premier supplier of industrial solutions in the Philippines, contributing significantly to national industrialization and being the trusted partner for manufacturing excellence.</p>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Brands Carousel Slider -->
+    <section class="brands-carousel-section">
+        <div class="brands-carousel-heading">Our Trusted Brands</div>
+        <div class="brands-carousel-outer">
+            <button class="brands-carousel-btn brands-carousel-prev" id="brandsPrev" aria-label="Previous">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+            <div class="brands-carousel-viewport" id="brandsViewport">
+                <div class="brands-carousel-track" id="brandsTrack">
+                    <a href="brand.php?name=Panasonic%20Connect" class="brands-carousel-item"><img src="assets/brands/PANASONIC.jpg" alt="Panasonic Connect"></a>
+                    <a href="brand.php?name=Robot%20Systems" class="brands-carousel-item"><img src="assets/brands/ROBOT SYSTEMS.png" alt="Robot Systems"></a>
+                    <a href="brand.php?name=Kobelco" class="brands-carousel-item"><img src="assets/brands/KOBELCO.jpg" alt="Kobelco"></a>
+                    <a href="brand.php?name=Metrode" class="brands-carousel-item"><img src="assets/brands/METRODE.jpg" alt="Metrode"></a>
+                    <a href="brand.php?name=DryRod.%20II" class="brands-carousel-item"><img src="assets/brands/DRYROD.jpg" alt="DryRod. II"></a>
+                    <a href="brand.php?name=Weldcraft" class="brands-carousel-item"><img src="assets/brands/WELDCRAFT.png" alt="Weldcraft"></a>
+                    <a href="brand.php?name=Truweld" class="brands-carousel-item"><img src="assets/brands/TRUWELD.jpg" alt="Truweld"></a>
+                    <a href="brand.php?name=Arcair" class="brands-carousel-item"><img src="assets/brands/ARCAIR.jpg" alt="Arcair"></a>
+                    <a href="brand.php?name=MAGNAFLUX" class="brands-carousel-item"><img src="assets/brands/MAGNAFLUX.jpg" alt="Magnaflux"></a>
+                    <a href="brand.php?name=Tempilstik" class="brands-carousel-item"><img src="assets/brands/TEMPILSTIK.jpg" alt="Tempilstik"></a>
+                    <a href="brand.php?name=TANAKA" class="brands-carousel-item"><img src="assets/brands/TANAKA.jpg" alt="Tanaka"></a>
+                    <a href="brand.php?name=CHIYODA" class="brands-carousel-item"><img src="assets/brands/CHIYODA.jpg" alt="Chiyoda"></a>
+                    <a href="brand.php?name=Yutaka" class="brands-carousel-item"><img src="assets/brands/YUTAKA.jpg" alt="Yutaka"></a>
+                    <a href="brand.php?name=HARDWORKER" class="brands-carousel-item"><img src="assets/brands/HARDWORKER.jpg" alt="Hard Workers"></a>
+                    <a href="brand.php?name=Soyer" class="brands-carousel-item"><img src="assets/brands/SOYER.jpg" alt="Soyer"></a>
+                    <a href="brand.php?name=Aquasol" class="brands-carousel-item"><img src="assets/brands/AQUASOL.jpg" alt="Aquasol"></a>
+                    <a href="brand.php?name=SK%20And%20GAL%20GAGE" class="brands-carousel-item"><img src="assets/brands/SK%20AND%20GAL%20GAGE.jpg" alt="SK And GAL GAGE"></a>
+                    <a href="brand.php?name=COPPUS" class="brands-carousel-item"><img src="assets/brands/COPPUS.jpg" alt="Coppus"></a>
+                    <a href="brand.php?name=BW%20Technologies" class="brands-carousel-item"><img src="assets/brands/BW%20TECHNOLOGIES.jpg" alt="BW Technologies"></a>
+                    <a href="brand.php?name=RAC" class="brands-carousel-item"><img src="assets/brands/RAE%20SYSTEMS.jpg" alt="RAE Systems"></a>
+                    <a href="brand.php?name=WELDAS" class="brands-carousel-item"><img src="assets/brands/WELDAS.jpg" alt="Weldas"></a>
+                    <a href="brand.php?name=UVEX" class="brands-carousel-item"><img src="assets/brands/UVEX.jpg" alt="Uvex"></a>
+                    <a href="brand.php?name=ACES" class="brands-carousel-item"><img src="assets/brands/ACES.jpg" alt="Aces"></a>
+                    <a href="brand.php?name=MICROGARD" class="brands-carousel-item"><img src="assets/brands/MICROGARD.jpg" alt="Microgard"></a>
+                    <a href="brand.php?name=ANSELL" class="brands-carousel-item"><img src="assets/brands/ANSELL.jpg" alt="Ansell"></a>
+                    <a href="brand.php?name=Alfra" class="brands-carousel-item"><img src="assets/brands/ALFRA.jpg" alt="Alfra"></a>
+                    <a href="brand.php?name=BOSCH" class="brands-carousel-item"><img src="assets/brands/BOSCH.jpg" alt="Bosch"></a>
+                    <a href="brand.php?name=Makita" class="brands-carousel-item"><img src="assets/brands/MAKITA.jpg" alt="Makita"></a>
+                    <a href="brand.php?name=Weller" class="brands-carousel-item"><img src="assets/brands/WEILER.jpg" alt="Weller"></a>
+                    <a href="brand.php?name=Garryson" class="brands-carousel-item"><img src="assets/brands/GARRYSON.jpg" alt="Garryson"></a>
+                    <a href="brand.php?name=REVOLT" class="brands-carousel-item"><img src="assets/brands/REVOLT.png" alt="REVOLT"></a>
+                    <a href="brand.php?name=Technotex" class="brands-carousel-item"><img src="assets/brands/TECHNOTEX.png" alt="Technotex"></a>
+                    <a href="brand.php?name=Spilfyter" class="brands-carousel-item"><img src="assets/brands/SPILFYTER.jpg" alt="Spilfyter"></a>
+                    <a href="brand.php?name=Dalo" class="brands-carousel-item"><img src="assets/brands/DALO.jpg" alt="Dalo"></a>
+                    <a href="brand.php?name=MOTOLITE" class="brands-carousel-item"><img src="assets/brands/MOTOLITE.jpg" alt="Motolite"></a>
+                </div>
+            </div>
+            <button class="brands-carousel-btn brands-carousel-next" id="brandsNext" aria-label="Next">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
+        <div class="brands-carousel-dots" id="brandsDots"></div>
     </section>
+    <style>
+        .brands-carousel-section {
+            background: #f9f9f9;
+            padding: 40px 0 36px;
+            border-top: 1px solid #e8e8e8;
+        }
+        .brands-carousel-heading {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #3f3e3e;
+            margin-bottom: 24px;
+        }
+        .brands-carousel-outer {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .brands-carousel-viewport {
+            overflow: hidden;
+            flex: 1;
+            min-width: 0;
+        }
+        .brands-carousel-track {
+            display: flex;
+            gap: 16px;
+            transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: transform;
+        }
+        .brands-carousel-item {
+            flex-shrink: 0;
+            width: 130px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            border: 1px solid #efefef;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            padding: 10px 14px;
+            transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+            text-decoration: none;
+        }
+        .brands-carousel-item:hover {
+            box-shadow: 0 8px 24px rgba(0, 215, 179, 0.22);
+            transform: translateY(-4px);
+            border-color: #00D7B3;
+        }
+        .brands-carousel-item img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: grayscale(25%);
+            transition: filter 0.25s ease;
+            pointer-events: none;
+        }
+        .brands-carousel-item:hover img {
+            filter: grayscale(0%);
+        }
+        .brands-carousel-btn {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            background: #fff;
+            color: #444;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .brands-carousel-btn:hover {
+            background: #2B11DB;
+            border-color: #2B11DB;
+            color: #fff;
+            transform: scale(1.1);
+        }
+        .brands-carousel-btn:active {
+            transform: scale(0.95);
+        }
+        .brands-carousel-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .brands-carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+        .brands-carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ddd;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: background 0.2s ease, transform 0.2s ease, width 0.2s ease;
+        }
+        .brands-carousel-dot.active {
+            background: #2B11DB;
+            width: 22px;
+            border-radius: 4px;
+        }
+        @media (max-width: 600px) {
+            .brands-carousel-item { width: 90px; height: 60px; padding: 8px 10px; }
+            .brands-carousel-track { gap: 10px; }
+            .brands-carousel-outer { gap: 8px; padding: 0 8px; }
+        }
+    </style>
+    <script>
+    (function(){
+        var track    = document.getElementById('brandsTrack');
+        var viewport = document.getElementById('brandsViewport');
+        var prevBtn  = document.getElementById('brandsPrev');
+        var nextBtn  = document.getElementById('brandsNext');
+        var dotsWrap = document.getElementById('brandsDots');
+        if(!track || !viewport) return;
+
+        var items      = track.querySelectorAll('.brands-carousel-item');
+        var totalItems = items.length;
+        var currentPage = 0;
+        var autoTimer;
+
+        function getVisible() {
+            var w = viewport.offsetWidth;
+            if(w >= 1000) return 7;
+            if(w >= 800)  return 6;
+            if(w >= 600)  return 5;
+            if(w >= 420)  return 3;
+            return 2;
+        }
+
+        function itemWidth() {
+            if(items.length === 0) return 130;
+            var style = window.getComputedStyle(track);
+            var gap = parseFloat(style.gap) || 16;
+            var vis = getVisible();
+            return (viewport.offsetWidth - gap * (vis - 1)) / vis;
+        }
+
+        function totalPages() {
+            return Math.ceil(totalItems / getVisible());
+        }
+
+        function buildDots() {
+            dotsWrap.innerHTML = '';
+            var pages = totalPages();
+            for(var i = 0; i < pages; i++){
+                var btn = document.createElement('button');
+                btn.className = 'brands-carousel-dot' + (i === currentPage ? ' active' : '');
+                btn.setAttribute('aria-label', 'Page ' + (i+1));
+                (function(idx){ btn.addEventListener('click', function(){ goTo(idx); resetAuto(); }); })(i);
+                dotsWrap.appendChild(btn);
+            }
+        }
+
+        function updateDots() {
+            var dots = dotsWrap.querySelectorAll('.brands-carousel-dot');
+            dots.forEach(function(d, i){ d.classList.toggle('active', i === currentPage); });
+        }
+
+        function updateButtons() {
+            prevBtn.disabled = currentPage === 0;
+            nextBtn.disabled = currentPage >= totalPages() - 1;
+        }
+
+        function goTo(page) {
+            var pages = totalPages();
+            if(page < 0) page = 0;
+            if(page >= pages) page = pages - 1;
+            currentPage = page;
+
+            var vis  = getVisible();
+            var gap  = parseFloat(window.getComputedStyle(track).gap) || 16;
+            var iw   = (viewport.offsetWidth - gap * (vis - 1)) / vis;
+            var offset = currentPage * vis * (iw + gap);
+            var maxOffset = (totalItems - vis) * (iw + gap);
+            if(offset > maxOffset) offset = maxOffset;
+
+            track.style.transform = 'translateX(-' + offset + 'px)';
+            updateDots();
+            updateButtons();
+        }
+
+        function resetAuto() {
+            clearInterval(autoTimer);
+            autoTimer = setInterval(function(){
+                var next = currentPage + 1;
+                if(next >= totalPages()) next = 0;
+                goTo(next);
+            }, 3500);
+        }
+
+        // Resize handler
+        var resizeTimer;
+        window.addEventListener('resize', function(){
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function(){
+                buildDots();
+                goTo(currentPage);
+            }, 150);
+        });
+
+        prevBtn.addEventListener('click', function(){ goTo(currentPage - 1); resetAuto(); });
+        nextBtn.addEventListener('click', function(){ goTo(currentPage + 1); resetAuto(); });
+
+        // Init
+        buildDots();
+        goTo(0);
+        resetAuto();
+
+        // Pause autoplay on hover
+        viewport.addEventListener('mouseenter', function(){ clearInterval(autoTimer); });
+        viewport.addEventListener('mouseleave', resetAuto);
+    })();
+    </script>
+
 
     <!-- Footer -->
+
     <footer>
         <div class="footer-content">
             <div class="footer-links">
@@ -3492,18 +4360,113 @@ $ytLinks = andison_get_youtube_links();
                 });
             }
             
-            // Sidebar sub-toggle functionality
+            // Sidebar sub-toggle functionality - Show popover card
+            var mainSidebarPopover = document.getElementById('miniPopover');
+            var popoverTitle = mainSidebarPopover ? mainSidebarPopover.querySelector('.mini-popover-title') : null;
+            var popoverList = mainSidebarPopover ? mainSidebarPopover.querySelector('.mini-popover-list') : null;
+            var currentMainSidebarKey = null;
+            
+            function showMainSidebarPopover(toggle) {
+                if (!mainSidebarPopover || !popoverList || !popoverTitle) return;
+                
+                var sublistId = toggle.getAttribute('aria-controls');
+                var sublist = document.getElementById(sublistId);
+                if (!sublist) return;
+                
+                // Extract title from parent li's main link
+                var parentLi = toggle.closest('.has-sub');
+                var mainLink = parentLi ? parentLi.querySelector(':scope > a:not([class])') : null;
+                var title = mainLink ? mainLink.textContent.trim() : 'Items';
+                
+                // Extract items from the sublist
+                var items = [];
+                var listItems = sublist.querySelectorAll('li > a');
+                listItems.forEach(function(link) {
+                    items.push({
+                        text: link.textContent.trim(),
+                        href: link.getAttribute('href') || '#'
+                    });
+                });
+                
+                // Populate popover
+                popoverTitle.textContent = title;
+                popoverList.innerHTML = '';
+                items.forEach(function(item) {
+                    var li = document.createElement('li');
+                    li.className = 'mini-popover-item';
+                    li.innerHTML = '<span class="square"></span><a href="' + item.href + '">' + item.text + '</a>';
+                    popoverList.appendChild(li);
+                });
+                
+                // Position popover next to toggle button
+                setTimeout(function() {
+                    mainSidebarPopover.style.left = '-9999px';
+                    mainSidebarPopover.style.top = '-9999px';
+                    mainSidebarPopover.classList.add('show');
+                    
+                    var toggleRect = toggle.getBoundingClientRect();
+                    var pw = mainSidebarPopover.offsetWidth;
+                    var ph = mainSidebarPopover.offsetHeight;
+                    var toggleCenterY = toggleRect.top + toggleRect.height / 2;
+                    
+                    // Position to the right of the toggle button
+                    var left = Math.round(toggleRect.right + 14);
+                    var top = Math.round(toggleCenterY - ph / 2);
+                    
+                    // Adjust if off-screen horizontally
+                    if (left + pw + 12 > window.innerWidth) {
+                        left = Math.round(toggleRect.left - pw - 14);
+                    }
+                    
+                    // Adjust if off-screen vertically
+                    var headerHeight = 100;
+                    var minTop = headerHeight + 12;
+                    var maxTop = window.innerHeight - ph - 12;
+                    if (top < minTop) top = minTop;
+                    if (top > maxTop) top = maxTop;
+                    
+                    var arrowOffset = toggleCenterY - top - 26;
+                    mainSidebarPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+                    
+                    mainSidebarPopover.style.left = left + 'px';
+                    mainSidebarPopover.style.top = top + 'px';
+                    mainSidebarPopover.setAttribute('aria-hidden', 'false');
+                    currentMainSidebarKey = sublistId;
+                }, 5);
+            }
+            
+            function hideMainSidebarPopover() {
+                if (!mainSidebarPopover) return;
+                mainSidebarPopover.classList.remove('show');
+                mainSidebarPopover.setAttribute('aria-hidden', 'true');
+                currentMainSidebarKey = null;
+            }
+            
             var subToggles = document.querySelectorAll('.sub-toggle');
             subToggles.forEach(function(toggle) {
                 toggle.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    var sublist = document.getElementById(toggle.getAttribute('aria-controls'));
-                    if(sublist) {
-                        sublist.classList.toggle('collapsed');
-                        toggle.setAttribute('aria-expanded', sublist.classList.contains('collapsed') ? 'false' : 'true');
+                    
+                    if (currentMainSidebarKey === toggle.getAttribute('aria-controls') && mainSidebarPopover.classList.contains('show')) {
+                        hideMainSidebarPopover();
+                    } else {
+                        showMainSidebarPopover(toggle);
                     }
                 });
+            });
+            
+            // Close popover on outside click
+            document.addEventListener('click', function(e) {
+                if (!mainSidebarPopover) return;
+                if (!mainSidebarPopover.classList.contains('show')) return;
+                if (e.target.closest('.mini-popover') || e.target.closest('.sub-toggle')) return;
+                hideMainSidebarPopover();
+            });
+            
+            // Close popover on Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') hideMainSidebarPopover();
             });
             
             // Nested toggle functionality
@@ -3580,6 +4543,9 @@ $ytLinks = andison_get_youtube_links();
         var popoverTitle = miniPopover ? miniPopover.querySelector('.mini-popover-title') : null;
         var popoverList = miniPopover ? miniPopover.querySelector('.mini-popover-list') : null;
         var currentPopoverKey = null;
+        var lastIconCenterY = 0; // track icon center Y for arrow realignment
+        var lastIconRight   = 0; // track icon right edge for mobile popover left
+        var lastIconTop     = 0; // track icon top for mobile popover start
 
         // Responsive function to show/hide browse toggle
         function updateBrowseToggleVisibility() {
@@ -3632,7 +4598,12 @@ $ytLinks = andison_get_youtube_links();
                 ],
                 'arc-welding-machine': [
                     { label: 'MIG Welding Machine', href: base + '/arc-welding-machine/mig-welding-machine.php' },
-                    { label: 'CO1/MAG Welding Machine', href: base + '/arc-welding-machine/co1-mag-welding-machine.php' },
+                    { label: 'Accessories and Consumables', href: base + '/arc-welding-machine/accessories-and-consumables.php', subitems: [
+                        { label: 'Welding Torch / Gun', href: base + '/arc-welding-machine/accessories-and-consumables/welding-torch-gun.php' },
+                        { label: 'Torch Consumables', href: base + '/arc-welding-machine/accessories-and-consumables/torch-consumables.php' },
+                        { label: 'Accessories', href: base + '/arc-welding-machine/accessories-and-consumables/accessories.php' }
+                    ]},
+                    { label: 'CO2/MAG Welding Machine', href: base + '/arc-welding-machine/co1-mag-welding-machine.php' },
                     { label: 'STUD Welding Machine', href: base + '/arc-welding-machine/stud-welding-machine.php' },
                     { label: 'TIG Welding Machine', href: base + '/arc-welding-machine/tig-welding-machine.php' },
                     { label: 'Plasma Cutting Machine', href: base + '/arc-welding-machine/plasma-cutting-machine.php' }
@@ -3644,7 +4615,13 @@ $ytLinks = andison_get_youtube_links();
                 ],
                 'drilling-and-lifting': [
                     { label: 'Lifting', href: base + '/drilling-and-lifting/lifting.php' },
-                    { label: 'Magnetic Drill', href: base + '/drilling-and-lifting/magnetic-drill.php' },
+                    { label: 'Magnetic Drill', href: base + '/drilling-and-lifting/magnetic-drill.php', subitems: [
+                        { label: 'B-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/b-line-series.php' },
+                        { label: 'RL-E Line Series', href: base + '/drilling-and-lifting/magnetic-drill/rl-e-line-series.php' },
+                        { label: 'RBX-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/rbx-line-series.php' },
+                        { label: 'SP-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/sp-line-series.php' },
+                        { label: 'V-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/v-line-series.php' }
+                    ]},
                     { label: 'Cutters', href: base + '/drilling-and-lifting/cutters.php' }
                 ],
                 'gas-detectors': [
@@ -3667,10 +4644,19 @@ $ytLinks = andison_get_youtube_links();
                 ],
                 'protection': [
                     { label: 'Eye Protection', href: base + '/protection/eye-protection.php' },
-                    { label: 'Hand Protection', href: base + '/protection/hand-protection.php' },
+                    { label: 'Hand Protection', href: base + '/protection/hand-protection.php', subitems: [
+                        { label: 'Welding Gloves', href: base + '/protection/welding-gloves.php' },
+                        { label: 'Working Gloves', href: base + '/protection/working-gloves.php' },
+                        { label: 'Chemical and Liquid Protection Gloves', href: base + '/protection/chemical-liquid-protection-gloves.php' },
+                        { label: 'Disposable Gloves', href: base + '/protection/disposable-gloves.php' }
+                    ]},
                     { label: 'Hearing & Respiratory Protection', href: base + '/protection/hearing-respiratory-protection.php' },
                     { label: 'Welding Head and Face Protection', href: base + '/protection/welding-head-and-face-protection.php' },
-                    { label: 'Body Protection', href: base + '/protection/body-protection.php' }
+                    { label: 'Body Protection', href: base + '/protection/body-protection.php', subitems: [
+                        { label: 'Particulate and Low Hazard', href: base + '/protection/particulate-low-hazard.php' },
+                        { label: 'Liquid Spray and Splash', href: base + '/protection/liquid-spray-splash.php' },
+                        { label: 'Chemical and Flame Retardant', href: base + '/protection/chemical-flame-retardant.php' }
+                    ]}
                 ],
                 'welding-accessories': [
                     { label: 'Welding Electrode Oven', href: base + '/welding-accessories/welding-electrode-oven.php' },
@@ -3695,44 +4681,143 @@ $ytLinks = andison_get_youtube_links();
             items.forEach(function(it){
                 var li = document.createElement('li');
                 li.className = 'mini-popover-item';
-                li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a>';
+                
+                if (it.subitems && it.subitems.length > 0) {
+                    // Item with subitems - add container for expanded view
+                    li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a><button class="popover-expand-btn" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>';
+                    li.className += ' has-subitems';
+                    
+                    // Create subitems container
+                    var subContainer = document.createElement('div');
+                    subContainer.className = 'popover-subitems collapsed';
+                    subContainer.innerHTML = it.subitems.map(function(sub){
+                        return '<a href="'+ sub.href +'" class="popover-subitem">'+ sub.label +'</a>';
+                    }).join('');
+                    
+                    li.appendChild(subContainer);
+                    
+                    // Add expand/collapse handler
+                    var expandBtn = li.querySelector('.popover-expand-btn');
+                    expandBtn.addEventListener('click', function(e){
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var isExpanded = expandBtn.getAttribute('aria-expanded') === 'true';
+                        if (isExpanded) {
+                            expandBtn.setAttribute('aria-expanded', 'false');
+                            subContainer.classList.add('collapsed');
+                        } else {
+                            expandBtn.setAttribute('aria-expanded', 'true');
+                            subContainer.classList.remove('collapsed');
+                        }
+                        // Adjust popover height after expanding/collapsing
+                        setTimeout(function(){
+                            adjustPopoverHeight();
+                        }, 10);
+                    });
+                } else {
+                    // Regular item
+                    li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a>';
+                }
+                
                 popoverList.appendChild(li);
             });
             if (popoverTitle) popoverTitle.textContent = getCategoryTitle(key);
         }
+        /* Shared: compute top + arrow for a given height, centered on lastIconCenterY */
+        function _applyPosition(finalHeight) {
+            var vh = window.innerHeight;
+            var isMobile = window.innerWidth <= 768;
+
+            if (isMobile) {
+                // On mobile: align to icon top, but shift up if it would overflow the bottom
+                var popLeft   = Math.round(lastIconRight);
+                var headerMin = 90; // don't go above header
+                var bottomPad = 8;
+                var popTop    = Math.round(lastIconTop);
+                var maxH      = vh - headerMin - bottomPad;
+                var contentH  = Math.min(finalHeight, maxH);
+                // If it would overflow the bottom, shift top upward just enough
+                if (popTop + contentH > vh - bottomPad) {
+                    popTop = vh - contentH - bottomPad;
+                }
+                // Never overlap the header
+                if (popTop < headerMin) popTop = headerMin;
+
+                miniPopover.style.left   = popLeft + 'px';
+                miniPopover.style.right  = '0px';
+                miniPopover.style.width  = 'auto';
+                miniPopover.style.top    = popTop + 'px';
+                miniPopover.style.height = contentH + 'px';
+                miniPopover.style.setProperty('--arrow-offset', '-9999px');
+            } else {
+                // Desktop: center on icon
+                var headerBottom = 140;
+                var top = Math.round(lastIconCenterY - finalHeight / 2);
+                if (top < headerBottom)                top = headerBottom;
+                if (top + finalHeight > vh - 8)        top = vh - finalHeight - 8;
+                if (top < headerBottom)                top = headerBottom;
+
+                miniPopover.style.right  = '';
+                miniPopover.style.width  = '';
+                var arrowOffset = Math.round(lastIconCenterY - top - 26);
+                arrowOffset = Math.max(8, Math.min(finalHeight - 44, arrowOffset));
+
+                miniPopover.style.top    = top + 'px';
+                miniPopover.style.height = finalHeight + 'px';
+                miniPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+            }
+        }
+        function adjustPopoverHeight() {
+            if (!miniPopover) return;
+            var isMobile = window.innerWidth <= 768;
+
+            miniPopover.style.height = 'auto';
+            var naturalH = miniPopover.offsetHeight; 
+            var finalH   = Math.min(naturalH, window.innerHeight * 0.88);
+            _applyPosition(finalH);
+        }
         function positionPopoverForIcon(icon) {
             if (!miniPopover || !icon) return;
-            miniPopover.style.left = '-9999px';
-            miniPopover.style.top = '-9999px';
-            miniPopover.classList.add('show');
+
+            // Always reset mobile-specific styles first so they don't bleed into desktop
+            miniPopover.style.right = '';
+            miniPopover.style.width = '';
+
             var rect = icon.getBoundingClientRect();
-            var pw = miniPopover.offsetWidth;
-            var ph = miniPopover.offsetHeight;
-            var iconCenterY = rect.top + rect.height / 2;
+            lastIconCenterY = rect.top + rect.height / 2;
+            lastIconRight   = rect.right;
+            lastIconTop     = rect.top;
 
-            var left = Math.round(rect.right + 14);
-            var top = Math.round(iconCenterY - ph / 2);
+            var isMobile = window.innerWidth <= 768;
 
-            if (left + pw + 12 > window.innerWidth) {
-                left = Math.round(rect.left - pw - 14);
+            if (!isMobile) {
+                // Desktop: position to the right of the icon
+                var pw   = miniPopover.offsetWidth;
+                var left = Math.round(rect.right + 14);
+                if (left + pw + 12 > window.innerWidth) {
+                    left = Math.round(rect.left - pw - 14);
+                }
+                miniPopover.style.left = left + 'px';
             }
 
-            var headerHeight = 170;
-            var minTop = headerHeight + 12;
-            var maxTop = window.innerHeight - ph - 12;
-            if (top < minTop) top = minTop;
-            if (top > maxTop) top = maxTop;
+            // Measure true height off-screen, then position
+            miniPopover.style.height = 'auto';
+            miniPopover.style.top    = '-9999px';
+            miniPopover.classList.add('show');
 
-            var arrowOffset = iconCenterY - top - 26;
-            miniPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+            var naturalH = miniPopover.offsetHeight;
+            var finalH   = Math.min(naturalH, window.innerHeight * 0.88);
 
-            miniPopover.style.left = left + 'px';
-            miniPopover.style.top = top + 'px';
+            _applyPosition(finalH);
         }
         function hidePopover() {
             if (!miniPopover) return;
             miniPopover.classList.remove('show');
             miniPopover.setAttribute('aria-hidden', 'true');
+            // Reset all inline styles so next open starts clean
+            miniPopover.style.right  = '';
+            miniPopover.style.width  = '';
+            miniPopover.style.height = '';
             currentPopoverKey = null;
         }
         function showPopoverForKey(key, icon) {
@@ -3741,11 +4826,18 @@ $ytLinks = andison_get_youtube_links();
                 hidePopover();
                 return;
             }
+            // Reset while we measure new content
+            miniPopover.classList.remove('show');
+            miniPopover.style.left = '-9999px';
+            miniPopover.style.top  = '-9999px';
+            miniPopover.style.height = 'auto';
+
             renderPopover(key);
-            positionPopoverForIcon(icon);
-            miniPopover.classList.add('show');
-            miniPopover.setAttribute('aria-hidden', 'false');
             currentPopoverKey = key;
+
+            // positionPopoverForIcon makes it visible off-screen, measures, then places it
+            positionPopoverForIcon(icon);
+            miniPopover.setAttribute('aria-hidden', 'false');
         }
 
         // Close on outside click / Escape
@@ -3756,6 +4848,23 @@ $ytLinks = andison_get_youtube_links();
             hidePopover();
         });
         document.addEventListener('keydown', function(e){ if (e.key === 'Escape') hidePopover(); });
+
+        // On resize, force-close and fully reset the popover so mobile styles never bleed into desktop
+        var _resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(_resizeTimer);
+            _resizeTimer = setTimeout(function() {
+                if (!miniPopover) return;
+                miniPopover.classList.remove('show');
+                miniPopover.setAttribute('aria-hidden', 'true');
+                miniPopover.style.right  = '';
+                miniPopover.style.width  = '';
+                miniPopover.style.height = '';
+                miniPopover.style.top    = '';
+                miniPopover.style.left   = '';
+                currentPopoverKey = null;
+            }, 150);
+        });
 
         // Browse toggle click
         if(browseToggle) {
