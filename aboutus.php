@@ -3290,41 +3290,41 @@ $brands_info = andison_get_brands_info();
             
             <div class="brands-slider-wrapper">
                 <div class="brands-slider" id="brandsSlider">
-                    <?php 
-                    if(!empty($brands_info)) {
-                        foreach($brands_info as $brand_name => $brand_data) {
-                            // Map brand name to logo filename (exact match with assets/brands/ directory)
-                            $logo_map = [
-                                'Panasonic Connect' => 'PANASONIC',
-                                'Robot Systems Peripherals ' => 'ROBOT SYSTEMS',
-                                'BW Technologies' => 'BW TECHNOLOGIES',
-                                'Weldcraft' => 'WELDCRAFT',
-                                'Soyer' => 'SOYER',
-                                'Alfra' => 'ALFRA',
-                                'ACES' => 'ACES',
-                                'UVEX' => 'UVEX',
-                                'ANSELL' => 'ANSELL',
-                                'MICROGARD' => 'MICROGARD',
-                                'WELDAS' => 'WELDAS',
-                                'TANAKA' => 'TANAKA',
-                                'CHIYODA' => 'CHIYODA',
-                                'HARDWORKER' => 'HARDWORKER',
-                                'MAGNAFLUX' => 'MAGNAFLUX',
-                                'COPPUS' => 'COPPUS',
-                                'BOSCH' => 'BOSCH',
-                                'MOTOLITE' => 'MOTOLITE',
-                                'Dryrod' => 'DRYROD',
-                                'Weiler' => 'WEILER'
-                            ];
-                            
-                            $logo_file = isset($logo_map[$brand_name]) ? $logo_map[$brand_name] : $brand_name;
-                            
-                            echo '<div class="brand-slide" title="' . htmlspecialchars($brand_name) . '">';
-                            echo '<img src="assets/brands/' . htmlspecialchars($logo_file) . '.jpg" alt="' . htmlspecialchars($brand_name) . '" onerror="this.style.opacity=\'0.5\'; this.title=\'Logo not found\';">';
-                            echo '</div>';
-                        }
-                    }
-                    ?>
+                    <div class="brand-slide" title="Panasonic Connect"><a href="brand.php?name=Panasonic%20Connect"><img src="assets/brands/PANASONIC.jpg" alt="Panasonic Connect" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Robot Systems Peripherals"><a href="brand.php?name=Robot%20Systems"><img src="assets/brands/ROBOT SYSTEMS.png" alt="Robot Systems Peripherals" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Kobelco"><a href="brand.php?name=Kobelco"><img src="assets/brands/KOBELCO.jpg" alt="Kobelco" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Metrode"><a href="brand.php?name=Metrode"><img src="assets/brands/METRODE.jpg" alt="Metrode" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="DryRod. II"><a href="brand.php?name=DryRod.%20II"><img src="assets/brands/DRYROD.jpg" alt="DryRod. II" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Weldcraft"><a href="brand.php?name=Weldcraft"><img src="assets/brands/WELDCRAFT.png" alt="Weldcraft" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Truweld"><a href="brand.php?name=Truweld"><img src="assets/brands/TRUWELD.jpg" alt="Truweld" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Arcair"><a href="brand.php?name=Arcair"><img src="assets/brands/ARCAIR.jpg" alt="Arcair" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Magnaflux"><a href="brand.php?name=MAGNAFLUX"><img src="assets/brands/MAGNAFLUX.jpg" alt="Magnaflux" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Tempilstik"><a href="brand.php?name=Tempilstik"><img src="assets/brands/TEMPILSTIK.jpg" alt="Tempilstik" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Tanaka"><a href="brand.php?name=TANAKA"><img src="assets/brands/TANAKA.jpg" alt="Tanaka" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Chiyoda"><a href="brand.php?name=CHIYODA"><img src="assets/brands/CHIYODA.jpg" alt="Chiyoda" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Yutaka"><a href="brand.php?name=Yutaka"><img src="assets/brands/YUTAKA.jpg" alt="Yutaka" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Hard Workers"><a href="brand.php?name=HARDWORKER"><img src="assets/brands/HARDWORKER.jpg" alt="Hard Workers" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Soyer"><a href="brand.php?name=Soyer"><img src="assets/brands/SOYER.jpg" alt="Soyer" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Aquasol"><a href="brand.php?name=Aquasol"><img src="assets/brands/AQUASOL.jpg" alt="Aquasol" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="SK And GAL GAGE"><a href="brand.php?name=SK%20And%20GAL%20GAGE"><img src="assets/brands/SK%20AND%20GAL%20GAGE.jpg" alt="SK And GAL GAGE" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Coppus"><a href="brand.php?name=COPPUS"><img src="assets/brands/COPPUS.jpg" alt="Coppus" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="BW Technologies"><a href="brand.php?name=BW%20Technologies"><img src="assets/brands/BW%20TECHNOLOGIES.jpg" alt="BW Technologies" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="RAE Systems"><a href="brand.php?name=RAC"><img src="assets/brands/RAE%20SYSTEMS.jpg" alt="RAE Systems" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Weldas"><a href="brand.php?name=WELDAS"><img src="assets/brands/WELDAS.jpg" alt="Weldas" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Uvex"><a href="brand.php?name=UVEX"><img src="assets/brands/UVEX.jpg" alt="Uvex" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Aces"><a href="brand.php?name=ACES"><img src="assets/brands/ACES.jpg" alt="Aces" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Microgard"><a href="brand.php?name=MICROGARD"><img src="assets/brands/MICROGARD.jpg" alt="Microgard" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Ansell"><a href="brand.php?name=ANSELL"><img src="assets/brands/ANSELL.jpg" alt="Ansell" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Alfra"><a href="brand.php?name=Alfra"><img src="assets/brands/ALFRA.jpg" alt="Alfra" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Bosch"><a href="brand.php?name=BOSCH"><img src="assets/brands/BOSCH.jpg" alt="Bosch" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Makita"><a href="brand.php?name=Makita"><img src="assets/brands/MAKITA.jpg" alt="Makita" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Weller"><a href="brand.php?name=Weller"><img src="assets/brands/WEILER.jpg" alt="Weller" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Garryson"><a href="brand.php?name=Garryson"><img src="assets/brands/GARRYSON.jpg" alt="Garryson" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="REVOLT"><a href="brand.php?name=REVOLT"><img src="assets/brands/REVOLT.png" alt="REVOLT" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Technotex"><a href="brand.php?name=Technotex"><img src="assets/brands/TECHNOTEX.png" alt="Technotex" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Spilfyter"><a href="brand.php?name=Spilfyter"><img src="assets/brands/SPILFYTER.jpg" alt="Spilfyter" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Dalo"><a href="brand.php?name=Dalo"><img src="assets/brands/DALO.jpg" alt="Dalo" onerror="this.style.opacity='0.5';"></a></div>
+                    <div class="brand-slide" title="Motolite"><a href="brand.php?name=MOTOLITE"><img src="assets/brands/MOTOLITE.jpg" alt="Motolite" onerror="this.style.opacity='0.5';"></a></div>
                 </div>
             </div>
 
