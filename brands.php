@@ -863,7 +863,7 @@ $ytLinks = andison_get_youtube_links();
         .brand-logo {
             width: 100%;
             height: 140px;
-            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+            background: #fff;
             border-radius: 12px;
             display: flex;
             align-items: center;
