@@ -1,28 +1,29 @@
 {
-    "total_pageviews": 8,
-    "unique_sessions": 8,
-    "today_pageviews": 1,
-    "today_unique": 1,
+    "total_pageviews": 9,
+    "unique_sessions": 9,
+    "today_pageviews": 2,
+    "today_unique": 2,
     "today_date": "2026-02-24",
-    "week_pageviews": 2,
-    "week_unique": 2,
+    "week_pageviews": 3,
+    "week_unique": 3,
     "week_start": "2026-02-23",
-    "month_pageviews": 8,
-    "month_unique": 8,
+    "month_pageviews": 9,
+    "month_unique": 9,
     "month_key": "2026-02",
     "daily": {
         "2026-02-19": 2,
         "2026-02-20": 4,
         "2026-02-23": 1,
-        "2026-02-24": 1
+        "2026-02-24": 2
     },
     "pages": {
         "home": 4,
         "industries": 1,
-        "brand": 3
+        "brand": 3,
+        "about": 1
     },
     "brands": {
-        "Metrode": 4,
+        "Metrode": 5,
         "DryRod. II": 3,
         "Panasonic Connect": 4,
         "Kobelco": 3,
