@@ -2,12 +2,10 @@
 require_once __DIR__ . '/andison/includes/home_featured.php';
 require_once __DIR__ . '/andison/includes/home_slider.php';
 require_once __DIR__ . '/andison/includes/youtube_links.php';
-require_once __DIR__ . '/includes/brands_info.php';
 
 $featured = andison_get_home_featured();
 $slides = andison_get_home_slider();
 $ytLinks = andison_get_youtube_links();
-$brands_info = andison_get_brands_info();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -2661,206 +2659,6 @@ $brands_info = andison_get_brands_info();
             background: rgba(255,255,255,0.12);
             transform: translateX(2px);
         }
-
-        /* Brand Slider Section */
-        .brands-slider-section {
-            background: linear-gradient(135deg, rgba(43, 17, 219, 0.05) 0%, rgba(0, 215, 179, 0.05) 100%);
-            padding: 80px 20px;
-            position: relative;
-            z-index: 10;
-            overflow: hidden;
-        }
-
-        .brands-slider-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .brands-slider-title {
-            font-size: 32px;
-            font-weight: 900;
-            color: #2B11DB;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .brands-slider-subtitle {
-            font-size: 16px;
-            color: #666;
-            margin-bottom: 48px;
-            font-weight: 500;
-        }
-
-        .brands-slider-wrapper {
-            position: relative;
-            overflow: hidden;
-            border-radius: 16px;
-            background: white;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-        }
-
-        .brands-slider {
-            display: flex;
-            gap: 20px;
-            padding: 40px 20px;
-            scroll-behavior: smooth;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .brands-slider::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        .brands-slider::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.05);
-            border-radius: 4px;
-        }
-
-        .brands-slider::-webkit-scrollbar-thumb {
-            background: rgba(0, 215, 179, 0.4);
-            border-radius: 4px;
-            transition: background 0.3s ease;
-        }
-
-        .brands-slider::-webkit-scrollbar-thumb:hover {
-            background: rgba(0, 215, 179, 0.7);
-        }
-
-        .brand-slide {
-            flex: 0 0 auto;
-            width: 160px;
-            height: 160px;
-            background: white;
-            border: 2px solid rgba(0, 215, 179, 0.2);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            scroll-snap-align: center;
-            cursor: pointer;
-        }
-
-        .brand-slide:hover {
-            border-color: rgba(0, 215, 179, 0.6);
-            transform: translateY(-8px) scale(1.05);
-            box-shadow: 0 12px 32px rgba(0, 215, 179, 0.25);
-            background: linear-gradient(135deg, rgba(0, 215, 179, 0.05) 0%, rgba(43, 17, 219, 0.05) 100%);
-        }
-
-        .brand-slide img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            filter: brightness(1) contrast(1) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
-            transition: filter 0.3s ease;
-        }
-
-        .brand-slide:hover img {
-            filter: brightness(1.1) contrast(1.1) drop-shadow(0 4px 16px rgba(0, 215, 179, 0.3));
-        }
-
-        .brands-slider-nav {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin-top: 32px;
-            align-items: center;
-        }
-
-        .slider-nav-btn {
-            width: 44px;
-            height: 44px;
-            border: 2px solid rgba(0, 215, 179, 0.3);
-            background: white;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #2B11DB;
-            font-size: 18px;
-            transition: all 0.3s ease;
-            font-weight: 700;
-        }
-
-        .slider-nav-btn:hover {
-            border-color: #00D7B3;
-            background: linear-gradient(135deg, rgba(0, 215, 179, 0.1) 0%, rgba(43, 17, 219, 0.05) 100%);
-            color: #00D7B3;
-            transform: scale(1.1);
-        }
-
-        .slider-nav-btn.disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        @media (max-width: 768px) {
-            .brands-slider-title {
-                font-size: 24px;
-                margin-bottom: 8px;
-            }
-
-            .brands-slider-subtitle {
-                font-size: 14px;
-                margin-bottom: 32px;
-            }
-
-            .brands-slider {
-                padding: 24px 12px;
-                gap: 12px;
-            }
-
-            .brand-slide {
-                width: 120px;
-                height: 120px;
-                padding: 12px;
-            }
-
-            .brands-slider-section {
-                padding: 60px 16px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .brands-slider-title {
-                font-size: 20px;
-                margin-bottom: 6px;
-            }
-
-            .brands-slider-subtitle {
-                font-size: 12px;
-                margin-bottom: 24px;
-            }
-
-            .brands-slider {
-                padding: 16px 8px;
-                gap: 8px;
-            }
-
-            .brand-slide {
-                width: 100px;
-                height: 100px;
-                padding: 8px;
-            }
-
-            .brands-slider-section {
-                padding: 40px 12px;
-            }
-
-            .slider-nav-btn {
-                width: 36px;
-                height: 36px;
-                font-size: 14px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -2911,6 +2709,7 @@ $brands_info = andison_get_brands_info();
         <!-- Navigation -->
         <nav>
             <div class="nav-inner">
+                <button class="browse-toggle" id="browseToggle"><i class="bi bi-list"></i><span class="browse-text">Browse</span></button>
                 <ul class="nav-list">
                     <li>
                         <a href="home.php">Home</a>
@@ -2935,12 +2734,11 @@ $brands_info = andison_get_brands_info();
                         <div class="nav-dropdown">
                             <h4>Featured Brands</h4>
                             <ul>
-                                 <li><a href="brand.php?name=Panasonic%20Connect"><img src="assets/brands/PANASONIC.jpg" alt="Panasonic Connect" title="Panasonic Connect"></a></li>
-                                <li><a href="brand.php?name=Robot%20Systems"><img src="assets/brands/ROBOT SYSTEMS.png" alt="Robot Systems Peripherals" title="Robot Systems Peripherals"></a></li>
+                                <li><a href="brand.php?name=Panasonic%20Connect"><img src="assets/brands/PANASONIC.jpg" alt="Panasonic Connect" title="Panasonic Connect"></a></li>
                                 <li><a href="brand.php?name=Kobelco"><img src="assets/brands/KOBELCO.jpg" alt="Kobelco" title="Kobelco"></a></li>
                                 <li><a href="brand.php?name=Metrode"><img src="assets/brands/METRODE.jpg" alt="Metrode" title="Metrode"></a></li>
                                 <li><a href="brand.php?name=DryRod.%20II"><img src="assets/brands/DRYROD.jpg" alt="DryRod. II" title="DryRod. II"></a></li>
-                                <li><a href="brand.php?name=Weldcraft"><img src="assets/brands/WELDCRAFT.png" alt="Weldcraft" title="Weldcraft"></a></li>
+                                <li><a href="brand.php?name=Weldcraft"><img src="assets/brands/WELDCRAFT.jpg" alt="Weldcraft" title="Weldcraft"></a></li>
                                 <li><a href="brand.php?name=Truweld"><img src="assets/brands/TRUWELD.jpg" alt="Truweld" title="Truweld"></a></li>
                                 <li><a href="brand.php?name=Arcair"><img src="assets/brands/ARCAIR.jpg" alt="Arcair" title="Arcair"></a></li>
                                 <li><a href="brand.php?name=MAGNAFLUX"><img src="assets/brands/MAGNAFLUX.jpg" alt="Magnaflux" title="Magnaflux"></a></li>
@@ -2954,7 +2752,7 @@ $brands_info = andison_get_brands_info();
                                 <li><a href="brand.php?name=SK%20And%20GAL%20GAGE"><img src="assets/brands/SK%20AND%20GAL%20GAGE.jpg" alt="SK And GAL GAGE" title="SK And GAL GAGE"></a></li>
                                 <li><a href="brand.php?name=COPPUS"><img src="assets/brands/COPPUS.jpg" alt="Coppus" title="Coppus"></a></li>
                                 <li><a href="brand.php?name=BW%20Technologies"><img src="assets/brands/BW%20TECHNOLOGIES.jpg" alt="BW Technologies" title="BW Technologies"></a></li>
-                                <li><a href="brand.php?name=RAC"><img src="assets/brands/RAE%20SYSTEMS.jpg" alt="RAE Systems" title="RAE Systems"></a></li>
+                                <li><a href="brand.php?name=RAC"><img src="assets/brands/RAE%20SYSTEMS.jpg" alt="RAC" title="RAC"></a></li>
                                 <li><a href="brand.php?name=WELDAS"><img src="assets/brands/WELDAS.jpg" alt="Weldas" title="Weldas"></a></li>
                                 <li><a href="brand.php?name=UVEX"><img src="assets/brands/UVEX.jpg" alt="Uvex" title="Uvex"></a></li>
                                 <li><a href="brand.php?name=ACES"><img src="assets/brands/ACES.jpg" alt="Aces" title="Aces"></a></li>
@@ -2965,8 +2763,6 @@ $brands_info = andison_get_brands_info();
                                 <li><a href="brand.php?name=Makita"><img src="assets/brands/MAKITA.jpg" alt="Makita" title="Makita"></a></li>
                                 <li><a href="brand.php?name=Weller"><img src="assets/brands/WEILER.jpg" alt="Weller" title="Weller"></a></li>
                                 <li><a href="brand.php?name=Garryson"><img src="assets/brands/GARRYSON.jpg" alt="Garryson" title="Garryson"></a></li>
-                                <li><a href="brand.php?name=REVOLT"><img src="assets/brands/REVOLT.png" alt="REVOLT" title="REVOLT"></a></li>
-                                <li><a href="brand.php?name=Technotex"><img src="assets/brands/TECHNOTEX.png" alt="Technotex" title="Technotex"></a></li>
                                 <li><a href="brand.php?name=Spilfyter"><img src="assets/brands/SPILFYTER.jpg" alt="Spilfyter" title="Spilfyter"></a></li>
                                 <li><a href="brand.php?name=Dalo"><img src="assets/brands/DALO.jpg" alt="Dalo" title="Dalo"></a></li>
                                 <li><a href="brand.php?name=MOTOLITE"><img src="assets/brands/MOTOLITE.jpg" alt="Motolite" title="Motolite"></a></li>
@@ -3027,7 +2823,7 @@ $brands_info = andison_get_brands_info();
                 <button class="sub-toggle" aria-controls="sub-arc-welding" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
                     <li><a href="arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
-                    <li><a href="arc-welding-machine/co1-mag-welding-machine.php">CO2/MAG Welding Machine</a></li>
+                    <li><a href="arc-welding-machine/co1-mag-welding-machine.php">CO1/MAG Welding Machine</a></li>
                     <li><a href="arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
                     <li><a href="arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
                     <li><a href="arc-welding-machine/plasma-cutting-machine.php">Plasma Cutting Machine</a></li>
@@ -3278,60 +3074,6 @@ $brands_info = andison_get_brands_info();
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Brands Slider Section -->
-    <section class="brands-slider-section">
-        <div class="brands-slider-container">
-            <h2 class="brands-slider-title">Our Partners</h2>
-            <p class="brands-slider-subtitle">Trusted by leading brands in the industrial sector</p>
-            
-            <div class="brands-slider-wrapper">
-                <div class="brands-slider" id="brandsSlider">
-                    <div class="brand-slide" title="Panasonic Connect"><a href="brand.php?name=Panasonic%20Connect"><img src="assets/brands/PANASONIC.jpg" alt="Panasonic Connect" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Robot Systems Peripherals"><a href="brand.php?name=Robot%20Systems"><img src="assets/brands/ROBOT SYSTEMS.png" alt="Robot Systems Peripherals" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Kobelco"><a href="brand.php?name=Kobelco"><img src="assets/brands/KOBELCO.jpg" alt="Kobelco" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Metrode"><a href="brand.php?name=Metrode"><img src="assets/brands/METRODE.jpg" alt="Metrode" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="DryRod. II"><a href="brand.php?name=DryRod.%20II"><img src="assets/brands/DRYROD.jpg" alt="DryRod. II" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Weldcraft"><a href="brand.php?name=Weldcraft"><img src="assets/brands/WELDCRAFT.png" alt="Weldcraft" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Truweld"><a href="brand.php?name=Truweld"><img src="assets/brands/TRUWELD.jpg" alt="Truweld" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Arcair"><a href="brand.php?name=Arcair"><img src="assets/brands/ARCAIR.jpg" alt="Arcair" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Magnaflux"><a href="brand.php?name=MAGNAFLUX"><img src="assets/brands/MAGNAFLUX.jpg" alt="Magnaflux" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Tempilstik"><a href="brand.php?name=Tempilstik"><img src="assets/brands/TEMPILSTIK.jpg" alt="Tempilstik" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Tanaka"><a href="brand.php?name=TANAKA"><img src="assets/brands/TANAKA.jpg" alt="Tanaka" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Chiyoda"><a href="brand.php?name=CHIYODA"><img src="assets/brands/CHIYODA.jpg" alt="Chiyoda" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Yutaka"><a href="brand.php?name=Yutaka"><img src="assets/brands/YUTAKA.jpg" alt="Yutaka" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Hard Workers"><a href="brand.php?name=HARDWORKER"><img src="assets/brands/HARDWORKER.jpg" alt="Hard Workers" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Soyer"><a href="brand.php?name=Soyer"><img src="assets/brands/SOYER.jpg" alt="Soyer" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Aquasol"><a href="brand.php?name=Aquasol"><img src="assets/brands/AQUASOL.jpg" alt="Aquasol" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="SK And GAL GAGE"><a href="brand.php?name=SK%20And%20GAL%20GAGE"><img src="assets/brands/SK%20AND%20GAL%20GAGE.jpg" alt="SK And GAL GAGE" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Coppus"><a href="brand.php?name=COPPUS"><img src="assets/brands/COPPUS.jpg" alt="Coppus" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="BW Technologies"><a href="brand.php?name=BW%20Technologies"><img src="assets/brands/BW%20TECHNOLOGIES.jpg" alt="BW Technologies" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="RAE Systems"><a href="brand.php?name=RAC"><img src="assets/brands/RAE%20SYSTEMS.jpg" alt="RAE Systems" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Weldas"><a href="brand.php?name=WELDAS"><img src="assets/brands/WELDAS.jpg" alt="Weldas" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Uvex"><a href="brand.php?name=UVEX"><img src="assets/brands/UVEX.jpg" alt="Uvex" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Aces"><a href="brand.php?name=ACES"><img src="assets/brands/ACES.jpg" alt="Aces" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Microgard"><a href="brand.php?name=MICROGARD"><img src="assets/brands/MICROGARD.jpg" alt="Microgard" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Ansell"><a href="brand.php?name=ANSELL"><img src="assets/brands/ANSELL.jpg" alt="Ansell" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Alfra"><a href="brand.php?name=Alfra"><img src="assets/brands/ALFRA.jpg" alt="Alfra" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Bosch"><a href="brand.php?name=BOSCH"><img src="assets/brands/BOSCH.jpg" alt="Bosch" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Makita"><a href="brand.php?name=Makita"><img src="assets/brands/MAKITA.jpg" alt="Makita" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Weller"><a href="brand.php?name=Weller"><img src="assets/brands/WEILER.jpg" alt="Weller" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Garryson"><a href="brand.php?name=Garryson"><img src="assets/brands/GARRYSON.jpg" alt="Garryson" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="REVOLT"><a href="brand.php?name=REVOLT"><img src="assets/brands/REVOLT.png" alt="REVOLT" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Technotex"><a href="brand.php?name=Technotex"><img src="assets/brands/TECHNOTEX.png" alt="Technotex" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Spilfyter"><a href="brand.php?name=Spilfyter"><img src="assets/brands/SPILFYTER.jpg" alt="Spilfyter" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Dalo"><a href="brand.php?name=Dalo"><img src="assets/brands/DALO.jpg" alt="Dalo" onerror="this.style.opacity='0.5';"></a></div>
-                    <div class="brand-slide" title="Motolite"><a href="brand.php?name=MOTOLITE"><img src="assets/brands/MOTOLITE.jpg" alt="Motolite" onerror="this.style.opacity='0.5';"></a></div>
-                </div>
-            </div>
-
-            <div class="brands-slider-nav">
-                <button class="slider-nav-btn" id="sliderPrevBtn" title="Previous brands">❮</button>
-                <span style="color: #666; font-size: 14px; font-weight: 600; min-width: 100px;">Scroll to explore</span>
-                <button class="slider-nav-btn" id="sliderNextBtn" title="Next brands">❯</button>
             </div>
         </div>
     </section>
@@ -3891,7 +3633,7 @@ $brands_info = andison_get_brands_info();
                 ],
                 'arc-welding-machine': [
                     { label: 'MIG Welding Machine', href: base + '/arc-welding-machine/mig-welding-machine.php' },
-                    { label: 'CO2/MAG Welding Machine', href: base + '/arc-welding-machine/co1-mag-welding-machine.php' },
+                    { label: 'CO1/MAG Welding Machine', href: base + '/arc-welding-machine/co1-mag-welding-machine.php' },
                     { label: 'STUD Welding Machine', href: base + '/arc-welding-machine/stud-welding-machine.php' },
                     { label: 'TIG Welding Machine', href: base + '/arc-welding-machine/tig-welding-machine.php' },
                     { label: 'Plasma Cutting Machine', href: base + '/arc-welding-machine/plasma-cutting-machine.php' }
@@ -4185,116 +3927,6 @@ $brands_info = andison_get_brands_info();
             observer.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
 
             window.addEventListener('resize', syncFab);
-        })();
-    </script>
-
-    <script>
-        // Brand Slider Navigation
-        (function() {
-            var brandsSlider = document.getElementById('brandsSlider');
-            var prevBtn = document.getElementById('sliderPrevBtn');
-            var nextBtn = document.getElementById('sliderNextBtn');
-
-            if (!brandsSlider || !prevBtn || !nextBtn) return;
-
-            var scrollAmount = 200; // Distance to scroll
-            var autoScrollInterval = null;
-            var autoScrollDuration = 3000; // Auto scroll every 3 seconds
-            var pauseTimeout = null;
-
-            function updateButtonStates() {
-                var scrollLeft = brandsSlider.scrollLeft;
-                var maxScroll = brandsSlider.scrollWidth - brandsSlider.clientWidth;
-
-                // Disable previous button if at start
-                if (scrollLeft <= 0) {
-                    prevBtn.classList.add('disabled');
-                    prevBtn.disabled = true;
-                } else {
-                    prevBtn.classList.remove('disabled');
-                    prevBtn.disabled = false;
-                }
-
-                // Disable next button if at end
-                if (scrollLeft >= maxScroll - 5) {
-                    nextBtn.classList.add('disabled');
-                    nextBtn.disabled = true;
-                } else {
-                    nextBtn.classList.remove('disabled');
-                    nextBtn.disabled = false;
-                }
-            }
-
-            function autoScroll() {
-                var scrollLeft = brandsSlider.scrollLeft;
-                var maxScroll = brandsSlider.scrollWidth - brandsSlider.clientWidth;
-
-                if (scrollLeft >= maxScroll - 5) {
-                    // Loop back to start
-                    brandsSlider.scrollTo({ left: 0, behavior: 'smooth' });
-                } else {
-                    // Scroll to next
-                    brandsSlider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-                }
-            }
-
-            function startAutoScroll() {
-                // Clear existing interval
-                if (autoScrollInterval) {
-                    clearInterval(autoScrollInterval);
-                }
-                // Start auto-scroll
-                autoScrollInterval = setInterval(autoScroll, autoScrollDuration);
-            }
-
-            function stopAutoScroll() {
-                if (autoScrollInterval) {
-                    clearInterval(autoScrollInterval);
-                    autoScrollInterval = null;
-                }
-            }
-
-            function pauseAutoScroll() {
-                stopAutoScroll();
-                // Resume after 8 seconds of inactivity
-                if (pauseTimeout) {
-                    clearTimeout(pauseTimeout);
-                }
-                pauseTimeout = setTimeout(startAutoScroll, 8000);
-            }
-
-            // Manual button clicks
-            prevBtn.addEventListener('click', function() {
-                brandsSlider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-                pauseAutoScroll();
-                setTimeout(updateButtonStates, 100);
-            });
-
-            nextBtn.addEventListener('click', function() {
-                brandsSlider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-                pauseAutoScroll();
-                setTimeout(updateButtonStates, 100);
-            });
-
-            // Pause on hover
-            brandsSlider.addEventListener('mouseenter', stopAutoScroll);
-            brandsSlider.addEventListener('mouseleave', startAutoScroll);
-
-            // Pause on manual scroll
-            brandsSlider.addEventListener('scroll', function() {
-                pauseAutoScroll();
-                updateButtonStates();
-            });
-
-            // Pause on touch
-            brandsSlider.addEventListener('touchstart', stopAutoScroll);
-            brandsSlider.addEventListener('touchend', pauseAutoScroll);
-
-            window.addEventListener('resize', updateButtonStates);
-
-            // Initial state and start auto-scroll
-            updateButtonStates();
-            startAutoScroll();
         })();
     </script>
 </body>
