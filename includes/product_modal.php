@@ -341,6 +341,31 @@
     var currentDetailItem = {};
     var productImages = [];
     var currentImageIndex = 0;
+    var modalSliderTimer = null;
+
+    function startModalSlider() {
+        stopModalSlider();
+        if (productImages.length < 2) return;
+        function tick() {
+            var mainImg = document.getElementById('prodMainImg');
+            if (!mainImg) return;
+            mainImg.style.transition = 'opacity 0.4s';
+            mainImg.style.opacity = '0';
+            setTimeout(function() {
+                currentImageIndex = (currentImageIndex + 1) % productImages.length;
+                switchImage(currentImageIndex);
+                mainImg.style.opacity = '1';
+                modalSliderTimer = setTimeout(tick, 2500);
+            }, 420);
+        }
+        modalSliderTimer = setTimeout(tick, 2000);
+    }
+
+    function stopModalSlider() {
+        if (modalSliderTimer) { clearTimeout(modalSliderTimer); modalSliderTimer = null; }
+        var mainImg = document.getElementById('prodMainImg');
+        if (mainImg) { mainImg.style.transition = ''; mainImg.style.opacity = '1'; }
+    }
 
     /* Load product details from JSON data */
     function loadProductDetails(brand, model) {
@@ -390,7 +415,7 @@
         productImages.forEach(function(path, idx) {
             var thumb = document.createElement('img');
             thumb.src = path;
-            thumb.onclick = function() { switchImage(idx); };
+            thumb.onclick = function() { switchImageManual(idx); };
             if (idx === 0) thumb.classList.add('active');
             thumbnailsWrap.appendChild(thumb);
         });
@@ -398,8 +423,10 @@
         // Show thumbnails only if more than one image
         if (productImages.length > 1) {
             document.getElementById('prodThumbnailsWrap').style.display = 'block';
+            startModalSlider();
         } else {
             document.getElementById('prodThumbnailsWrap').style.display = 'none';
+            stopModalSlider();
         }
     }
 
@@ -415,6 +442,13 @@
             if (i === idx) t.classList.add('active');
             else t.classList.remove('active');
         });
+    }
+
+    /* Manual thumbnail click — reset slider timer so auto doesn't fight with user */
+    function switchImageManual(idx) {
+        stopModalSlider();
+        switchImage(idx);
+        startModalSlider();
     }
 
     /* Load related products - FROM ALL BRANDS */
@@ -706,6 +740,7 @@
 
     /* ── Close ── */
     window.closeProductModal = function() {
+        stopModalSlider();
         overlay.style.display    = 'none';
         document.body.style.overflow = '';
     };

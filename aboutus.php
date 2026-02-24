@@ -3803,7 +3803,7 @@ $ytLinks = andison_get_youtube_links();
         .brands-carousel-track {
             display: flex;
             gap: 16px;
-            transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: transform;
         }
         .brands-carousel-item {
@@ -3998,7 +3998,7 @@ $ytLinks = andison_get_youtube_links();
                 var next = currentPage + 1;
                 if(next >= totalPages()) next = 0;
                 goTo(next);
-            }, 3500);
+            }, 7000);
         }
 
         // Resize handler

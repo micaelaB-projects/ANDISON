@@ -1356,29 +1356,21 @@ if (!function_exists('andison_get_brands_info')) {
             'Aquasol' => [
                 'description' => 'Water-soluble welding accessories for clean, quality welds.',
                 'products' => [
-                    ['model' => 'Aquasol Water Soluble Tape 1', 'type' => 'Welding Accessory', 'badge' => '', 'image' => 'assets/brands%20items/AQUASOL/Aquasol 1.jpg',
-                        'specs' => [
-                            ['label' => 'Type',        'value' => 'Water-soluble backing tape for pipe welding'],
-                            ['label' => 'Key Feature', 'value' => 'Dissolves completely in water after welding; no residue inside pipe'],
-                        ],
-                    ],
-                    ['model' => 'Aquasol Water Soluble Tape 2', 'type' => 'Welding Accessory', 'badge' => '', 'image' => 'assets/brands%20items/AQUASOL/Aquasol 2.jpg',
-                        'specs' => [
-                            ['label' => 'Type',        'value' => 'Water-soluble backing tape'],
-                            ['label' => 'Key Feature', 'value' => 'Supports weld pool during root pass; fully water-soluble after welding'],
-                        ],
-                    ],
-                    ['model' => 'Aquasol Water Soluble Tape 3', 'type' => 'Welding Accessory', 'badge' => '', 'image' => 'assets/brands%20items/AQUASOL/Aquasol 3.jpg',
-                        'specs' => [
-                            ['label' => 'Type',        'value' => 'Water-soluble backing tape'],
-                            ['label' => 'Key Feature', 'value' => 'Eliminates back purging for pipe welding in many applications'],
-                        ],
-                    ],
-                    ['model' => 'Aquasol Water Soluble Tape 4', 'type' => 'Welding Accessory', 'badge' => '', 'image' => 'assets/brands%20items/AQUASOL/Aquasol 4.jpg',
-                        'specs' => [
-                            ['label' => 'Type',        'value' => 'Water-soluble backing tape'],
-                            ['label' => 'Key Feature', 'value' => 'High-temperature resistance during welding; dissolves with water flush'],
-                        ],
+                    ['model' => 'Aquasol Water Soluble Tape', 'type' => 'Welding Accessory', 'badge' => '',
+                     'image' => 'assets/brands%20items/AQUASOL/Aquasol 1.jpg',
+                     'images' => [
+                         'assets/brands%20items/AQUASOL/Aquasol 1.jpg',
+                         'assets/brands%20items/AQUASOL/Aquasol 2.jpg',
+                         'assets/brands%20items/AQUASOL/Aquasol 3.jpg',
+                         'assets/brands%20items/AQUASOL/Aquasol 4.jpg',
+                     ],
+                     'specs' => [
+                         ['label' => 'Type',          'value' => 'Water-soluble backing tape for pipe welding'],
+                         ['label' => 'Key Feature 1', 'value' => 'Dissolves completely in water after welding; no residue inside pipe'],
+                         ['label' => 'Key Feature 2', 'value' => 'Supports weld pool during root pass; fully water-soluble after welding'],
+                         ['label' => 'Key Feature 3', 'value' => 'Eliminates back purging for pipe welding in many applications'],
+                         ['label' => 'Key Feature 4', 'value' => 'High-temperature resistance during welding; dissolves with water flush'],
+                     ],
                     ],
                 ],
             ],
@@ -1402,24 +1394,20 @@ if (!function_exists('andison_get_brands_info')) {
             'Dalo' => [
                 'description' => 'Industrial marking and identification solutions.',
                 'products' => [
-                    ['model' => 'Dalo Industrial Marker 1', 'type' => 'Industrial Marker', 'badge' => '', 'image' => 'assets/brands%20items/DALO/Dalo 1.jpg',
-                        'specs' => [
-                            ['label' => 'Type',        'value' => 'Industrial paint marker'],
-                            ['label' => 'Surface',     'value' => 'Metal, concrete, wood, glass, and oil-covered surfaces'],
-                            ['label' => 'Key Feature', 'value' => 'Permanent, fast-drying; visible on rough and contaminated surfaces'],
-                        ],
-                    ],
-                    ['model' => 'Dalo Industrial Marker 2', 'type' => 'Industrial Marker', 'badge' => '', 'image' => 'assets/brands%20items/DALO/Dalo 2.jpg',
-                        'specs' => [
-                            ['label' => 'Type',        'value' => 'Industrial paint marker'],
-                            ['label' => 'Key Feature', 'value' => 'High-contrast marking; resistant to water, oil, and solvents'],
-                        ],
-                    ],
-                    ['model' => 'Dalo Industrial Marker 3', 'type' => 'Industrial Marker', 'badge' => '', 'image' => 'assets/brands%20items/DALO/Dalo 3.jpg',
-                        'specs' => [
-                            ['label' => 'Type',        'value' => 'Industrial paint marker'],
-                            ['label' => 'Key Feature', 'value' => 'Durable marking on pipelines, steel structures, and weld joints'],
-                        ],
+                    ['model' => 'Dalo Industrial Marker', 'type' => 'Industrial Marker', 'badge' => '',
+                     'image' => 'assets/brands%20items/DALO/Dalo 1.jpg',
+                     'images' => [
+                         'assets/brands%20items/DALO/Dalo 1.jpg',
+                         'assets/brands%20items/DALO/Dalo 2.jpg',
+                         'assets/brands%20items/DALO/Dalo 3.jpg',
+                     ],
+                     'specs' => [
+                         ['label' => 'Type',        'value' => 'Industrial paint marker'],
+                         ['label' => 'Surface',     'value' => 'Metal, concrete, wood, glass, and oil-covered surfaces'],
+                         ['label' => 'Key Feature 1', 'value' => 'Permanent, fast-drying; visible on rough and contaminated surfaces'],
+                         ['label' => 'Key Feature 2', 'value' => 'High-contrast marking; resistant to water, oil, and solvents'],
+                         ['label' => 'Key Feature 3', 'value' => 'Durable marking on pipelines, steel structures, and weld joints'],
+                     ],
                     ],
                 ],
             ],
@@ -1489,21 +1477,19 @@ if (!function_exists('andison_get_brands_info')) {
             'Garryson' => [
                 'description' => 'Precision carbide burrs and rotary cutting tools.',
                 'products' => [
-                    ['model' => 'Carbide Burr Set 1', 'type' => 'Carbide Burr', 'badge' => '', 'image' => 'assets/brands%20items/GARRYSON/Carbide Burrs - 1.jpg',
-                        'specs' => [
-                            ['label' => 'Type',        'value' => 'Tungsten carbide rotary burr set'],
-                            ['label' => 'Shank',       'value' => '6 mm (1/4") shank'],
-                            ['label' => 'Material',    'value' => 'Premium tungsten carbide'],
-                            ['label' => 'Key Feature', 'value' => 'Ideal for deburring, shaping, and grinding metal, aluminum, and stainless steel'],
-                        ],
-                    ],
-                    ['model' => 'Carbide Burr Set 2', 'type' => 'Carbide Burr', 'badge' => '', 'image' => 'assets/brands%20items/GARRYSON/Carbide Burrs - 2.jpg',
-                        'specs' => [
-                            ['label' => 'Type',        'value' => 'Tungsten carbide rotary burr set'],
-                            ['label' => 'Shank',       'value' => '6 mm (1/4") shank'],
-                            ['label' => 'Material',    'value' => 'Premium tungsten carbide'],
-                            ['label' => 'Key Feature', 'value' => 'Long tool life; suitable for die grinders and rotary tools'],
-                        ],
+                    ['model' => 'Carbide Burr Set', 'type' => 'Carbide Burr', 'badge' => '',
+                     'image' => 'assets/brands%20items/GARRYSON/Carbide Burrs - 1.jpg',
+                     'images' => [
+                         'assets/brands%20items/GARRYSON/Carbide Burrs - 1.jpg',
+                         'assets/brands%20items/GARRYSON/Carbide Burrs - 2.jpg',
+                     ],
+                     'specs' => [
+                         ['label' => 'Type',        'value' => 'Tungsten carbide rotary burr set'],
+                         ['label' => 'Shank',       'value' => '6 mm (1/4") shank'],
+                         ['label' => 'Material',    'value' => 'Premium tungsten carbide'],
+                         ['label' => 'Key Feature 1', 'value' => 'Ideal for deburring, shaping, and grinding metal, aluminum, and stainless steel'],
+                         ['label' => 'Key Feature 2', 'value' => 'Long tool life; suitable for die grinders and rotary tools'],
+                     ],
                     ],
                 ],
             ],
@@ -1717,30 +1703,22 @@ if (!function_exists('andison_get_brands_info')) {
             'Tempilstik' => [
                 'description' => 'Temperature-indicating crayon sticks for preheat and interpass temperature control.',
                 'products' => [
-                    ['model' => 'Tempilstik Temperature Stick 1', 'type' => 'Temperature Indicator', 'badge' => '', 'image' => 'assets/brands%20items/TEMPILSTIK/Tempilstik - 1.jpg',
-                        'specs' => [
-                            ['label' => 'Type',        'value' => 'Temperature-indicating crayon stick'],
-                            ['label' => 'Use',         'value' => 'Preheat and interpass temperature verification in welding'],
-                            ['label' => 'Key Feature', 'value' => 'Melts precisely at rated temperature; provides immediate visual confirmation of target temperature'],
-                        ],
-                    ],
-                    ['model' => 'Tempilstik Temperature Stick 2', 'type' => 'Temperature Indicator', 'badge' => '', 'image' => 'assets/brands%20items/TEMPILSTIK/Tempilstik - 2.png',
-                        'specs' => [
-                            ['label' => 'Type',        'value' => 'Temperature-indicating crayon stick'],
-                            ['label' => 'Key Feature', 'value' => 'Wide temperature range available; accurate to ±1% of rated temperature'],
-                        ],
-                    ],
-                    ['model' => 'Tempilstik Temperature Stick 3', 'type' => 'Temperature Indicator', 'badge' => '', 'image' => 'assets/brands%20items/TEMPILSTIK/Tempilstik - 3.jpg',
-                        'specs' => [
-                            ['label' => 'Type',        'value' => 'Temperature-indicating crayon stick'],
-                            ['label' => 'Key Feature', 'value' => 'Non-toxic; leaves clear melt mark for easy visual inspection on metal surfaces'],
-                        ],
-                    ],
-                    ['model' => 'Tempilstik Temperature Stick 4', 'type' => 'Temperature Indicator', 'badge' => '', 'image' => 'assets/brands%20items/TEMPILSTIK/Tempilstik - 4.jpg',
-                        'specs' => [
-                            ['label' => 'Type',        'value' => 'Temperature-indicating crayon stick'],
-                            ['label' => 'Key Feature', 'value' => 'Industry standard for heat treatment, post-weld heat treatment (PWHT) verification'],
-                        ],
+                    ['model' => 'Tempilstik Temperature Stick', 'type' => 'Temperature Indicator', 'badge' => '',
+                     'image' => 'assets/brands%20items/TEMPILSTIK/Tempilstik - 1.jpg',
+                     'images' => [
+                         'assets/brands%20items/TEMPILSTIK/Tempilstik - 1.jpg',
+                         'assets/brands%20items/TEMPILSTIK/Tempilstik - 2.png',
+                         'assets/brands%20items/TEMPILSTIK/Tempilstik - 3.jpg',
+                         'assets/brands%20items/TEMPILSTIK/Tempilstik - 4.jpg',
+                     ],
+                     'specs' => [
+                         ['label' => 'Type',          'value' => 'Temperature-indicating crayon stick'],
+                         ['label' => 'Use',           'value' => 'Preheat and interpass temperature verification in welding'],
+                         ['label' => 'Key Feature 1', 'value' => 'Melts precisely at rated temperature; provides immediate visual confirmation of target temperature'],
+                         ['label' => 'Key Feature 2', 'value' => 'Wide temperature range available; accurate to ±1% of rated temperature'],
+                         ['label' => 'Key Feature 3', 'value' => 'Non-toxic; leaves clear melt mark for easy visual inspection on metal surfaces'],
+                         ['label' => 'Key Feature 4', 'value' => 'Industry standard for heat treatment and post-weld heat treatment (PWHT) verification'],
+                     ],
                     ],
                 ],
             ],
@@ -1749,24 +1727,20 @@ if (!function_exists('andison_get_brands_info')) {
             'Truweld' => [
                 'description' => 'Quality welding consumables for structural and industrial applications.',
                 'products' => [
-                    ['model' => 'Truweld Welding Consumables 1', 'type' => 'Welding Consumable', 'badge' => '', 'image' => 'assets/brands%20items/TRUWELD/Welding Consumables 1.jpg',
-                        'specs' => [
-                            ['label' => 'Type',        'value' => 'Welding electrode / consumable'],
-                            ['label' => 'Application', 'value' => 'Structural steel welding, general fabrication'],
-                            ['label' => 'Key Feature', 'value' => 'Consistent arc performance and bead quality for structural applications'],
-                        ],
-                    ],
-                    ['model' => 'Truweld Welding Consumables 2', 'type' => 'Welding Consumable', 'badge' => '', 'image' => 'assets/brands%20items/TRUWELD/Welding Consumables 2.jpg',
-                        'specs' => [
-                            ['label' => 'Type',        'value' => 'Welding electrode / consumable'],
-                            ['label' => 'Key Feature', 'value' => 'Reliable mechanical properties; suited for general and structural welding'],
-                        ],
-                    ],
-                    ['model' => 'Truweld Welding Consumables 3', 'type' => 'Welding Consumable', 'badge' => '', 'image' => 'assets/brands%20items/TRUWELD/Welding Consumables 3.jpg',
-                        'specs' => [
-                            ['label' => 'Type',        'value' => 'Welding electrode / consumable'],
-                            ['label' => 'Key Feature', 'value' => 'Low spatter production; minimal post-weld cleaning required'],
-                        ],
+                    ['model' => 'Truweld Welding Consumables', 'type' => 'Welding Consumable', 'badge' => '',
+                     'image' => 'assets/brands%20items/TRUWELD/Welding Consumables 1.jpg',
+                     'images' => [
+                         'assets/brands%20items/TRUWELD/Welding Consumables 1.jpg',
+                         'assets/brands%20items/TRUWELD/Welding Consumables 2.jpg',
+                         'assets/brands%20items/TRUWELD/Welding Consumables 3.jpg',
+                     ],
+                     'specs' => [
+                         ['label' => 'Type',          'value' => 'Welding electrode / consumable'],
+                         ['label' => 'Application',   'value' => 'Structural steel welding, general fabrication'],
+                         ['label' => 'Key Feature 1', 'value' => 'Consistent arc performance and bead quality for structural applications'],
+                         ['label' => 'Key Feature 2', 'value' => 'Reliable mechanical properties; suited for general and structural welding'],
+                         ['label' => 'Key Feature 3', 'value' => 'Low spatter production; minimal post-weld cleaning required'],
+                     ],
                     ],
                 ],
             ],
@@ -1774,52 +1748,36 @@ if (!function_exists('andison_get_brands_info')) {
             'Weiler' => [
                 'description' => 'Abrasive products and industrial brushes for surface preparation.',
                 'products' => [
-                    ['model' => 'Industrial Wire Brush 1',  'type' => 'Industrial Brush', 'badge' => '', 'image' => 'assets/brands%20items/WEILER/Industrial Brushes 1.jpg',
-                        'specs' => [
-                            ['label' => 'Type',        'value' => 'Industrial wire brush'],
-                            ['label' => 'Use',         'value' => 'Weld cleaning, rust removal, surface preparation'],
-                            ['label' => 'Key Feature', 'value' => 'Crimped wire fill for aggressive surface cleaning and deburring'],
-                        ],
-                    ],
-                    ['model' => 'Industrial Wire Brush 2',  'type' => 'Industrial Brush', 'badge' => '', 'image' => 'assets/brands%20items/WEILER/Industrial Brushes 2.jpg',
-                        'specs' => [
-                            ['label' => 'Type',        'value' => 'Industrial wire brush'],
-                            ['label' => 'Use',         'value' => 'Weld cleaning, rust removal, surface preparation'],
-                            ['label' => 'Key Feature', 'value' => 'Twisted knot wire for heavy-duty surface cleaning'],
-                        ],
-                    ],
-                    ['model' => 'Stringer Bead Wire Brush', 'type' => 'Industrial Brush', 'badge' => '', 'image' => 'assets/brands%20items/WEILER/stringer bead.jpg',
-                        'specs' => [
-                            ['label' => 'Type',        'value' => 'Stringer bead wire brush'],
-                            ['label' => 'Use',         'value' => 'Cleaning narrow weld beads and grooves'],
-                            ['label' => 'Key Feature', 'value' => 'Narrow profile reaches tight spaces between weld passes'],
-                        ],
+                    ['model' => 'Industrial Wire Brush', 'type' => 'Industrial Brush', 'badge' => '',
+                     'image' => 'assets/brands%20items/WEILER/Industrial Brushes 1.jpg',
+                     'images' => [
+                         'assets/brands%20items/WEILER/Industrial Brushes 1.jpg',
+                         'assets/brands%20items/WEILER/Industrial Brushes 2.jpg',
+                     ],
+                     'specs' => [
+                         ['label' => 'Type',          'value' => 'Industrial wire brush'],
+                         ['label' => 'Use',           'value' => 'Weld cleaning, rust removal, surface preparation'],
+                         ['label' => 'Key Feature 1', 'value' => 'Crimped wire fill for aggressive surface cleaning and deburring'],
+                         ['label' => 'Key Feature 2', 'value' => 'Twisted knot wire for heavy-duty surface cleaning'],
+                     ],
                     ],
                 ],
             ],
             'Weller' => [
                 'description' => 'Abrasive products and industrial brushes for surface preparation.',
                 'products' => [
-                    ['model' => 'Industrial Wire Brush 1',  'type' => 'Industrial Brush', 'badge' => '', 'image' => 'assets/brands%20items/WEILER/Industrial Brushes 1.jpg',
-                        'specs' => [
-                            ['label' => 'Type',        'value' => 'Industrial wire brush'],
-                            ['label' => 'Use',         'value' => 'Weld cleaning, rust removal, surface preparation'],
-                            ['label' => 'Key Feature', 'value' => 'Crimped wire fill for aggressive surface cleaning and deburring'],
-                        ],
-                    ],
-                    ['model' => 'Industrial Wire Brush 2',  'type' => 'Industrial Brush', 'badge' => '', 'image' => 'assets/brands%20items/WEILER/Industrial Brushes 2.jpg',
-                        'specs' => [
-                            ['label' => 'Type',        'value' => 'Industrial wire brush'],
-                            ['label' => 'Use',         'value' => 'Weld cleaning, rust removal, surface preparation'],
-                            ['label' => 'Key Feature', 'value' => 'Twisted knot wire for heavy-duty surface cleaning'],
-                        ],
-                    ],
-                    ['model' => 'Stringer Bead Wire Brush', 'type' => 'Industrial Brush', 'badge' => '', 'image' => 'assets/brands%20items/WEILER/stringer bead.jpg',
-                        'specs' => [
-                            ['label' => 'Type',        'value' => 'Stringer bead wire brush'],
-                            ['label' => 'Use',         'value' => 'Cleaning narrow weld beads and grooves'],
-                            ['label' => 'Key Feature', 'value' => 'Narrow profile reaches tight spaces between weld passes'],
-                        ],
+                    ['model' => 'Industrial Wire Brush', 'type' => 'Industrial Brush', 'badge' => '',
+                     'image' => 'assets/brands%20items/WEILER/Industrial Brushes 1.jpg',
+                     'images' => [
+                         'assets/brands%20items/WEILER/Industrial Brushes 1.jpg',
+                         'assets/brands%20items/WEILER/Industrial Brushes 2.jpg',
+                     ],
+                     'specs' => [
+                         ['label' => 'Type',          'value' => 'Industrial wire brush'],
+                         ['label' => 'Use',           'value' => 'Weld cleaning, rust removal, surface preparation'],
+                         ['label' => 'Key Feature 1', 'value' => 'Crimped wire fill for aggressive surface cleaning and deburring'],
+                         ['label' => 'Key Feature 2', 'value' => 'Twisted knot wire for heavy-duty surface cleaning'],
+                     ],
                     ],
                 ],
             ],

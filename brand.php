@@ -3474,6 +3474,28 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         .brand-product-card:hover .brand-product-img img {
             transform: scale(1.05);
         }
+        .slide-dots {
+            position: absolute;
+            bottom: 7px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 5px;
+            z-index: 5;
+            pointer-events: none;
+        }
+        .slide-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(43,17,219,0.2);
+            transition: background 0.3s, width 0.3s;
+            flex-shrink: 0;
+        }
+        .slide-dot.active {
+            background: #2B11DB;
+            width: 16px;
+        }
         .brand-product-img .no-img-icon {
             font-size: 48px;
             color: #d4dae6;
@@ -4113,10 +4135,18 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                                  style="cursor:pointer;">
                                 <div class="brand-product-img">
                                     <?php if ($img): ?>
-                                        <img src="<?php echo $img; ?>"
+                                        <img src="<?php echo htmlspecialchars($img, ENT_QUOTES); ?>"
                                              alt="<?php echo htmlspecialchars($model, ENT_QUOTES); ?>"
-                                             onerror="this.style.display='none'; this.parentElement.querySelector('.no-img-icon').style.display='block';">
+                                             data-slider="<?php echo $imgs_json; ?>"
+                                             onerror="this.style.display='none'; var ic=this.parentElement.querySelector('.no-img-icon'); if(ic) ic.style.display='block';">
                                         <i class="bi bi-tools no-img-icon" style="display:none;"></i>
+                                        <?php if (count($images_list) > 1): ?>
+                                        <div class="slide-dots">
+                                            <?php foreach ($images_list as $si => $_): ?>
+                                            <span class="slide-dot<?php echo $si === 0 ? ' active' : ''; ?>"></span>
+                                            <?php endforeach; ?>
+                                        </div>
+                                        <?php endif; ?>
                                     <?php else: ?>
                                         <i class="bi bi-tools no-img-icon"></i>
                                     <?php endif; ?>
@@ -4259,6 +4289,9 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
 
             // Build pagination
             buildPagination(totalPages, visible.length);
+
+            // Start auto-slider on any multi-image cards now in view
+            initSliders();
         }
 
         function buildPagination(totalPages, total){
@@ -4343,6 +4376,36 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             var badge = document.querySelector('.cart-badge');
             if (badge) { badge.textContent = list.length; badge.classList.toggle('hidden', list.length === 0); }
         });
+
+        // Auto-image slider: swaps src on single img with data-slider attribute
+        function initSliders() {
+            document.querySelectorAll('.brand-product-img img[data-slider]').forEach(function(img) {
+                if (img._sliderReady) return;
+                var images = [];
+                try { images = JSON.parse(img.getAttribute('data-slider')); } catch(e) {}
+                if (!Array.isArray(images) || images.length < 2) return;
+                img._sliderReady = true;
+                // Preload all images
+                images.forEach(function(src) { (new Image()).src = src; });
+                var dots = img.parentElement.querySelectorAll('.slide-dot');
+                var cur = 0;
+                function next() {
+                    // Fade out
+                    img.style.transition = 'opacity 0.4s';
+                    img.style.opacity = '0';
+                    setTimeout(function() {
+                        if (dots[cur]) dots[cur].classList.remove('active');
+                        cur = (cur + 1) % images.length;
+                        img.src = images[cur];
+                        if (dots[cur]) dots[cur].classList.add('active');
+                        // Fade in
+                        img.style.opacity = '1';
+                        setTimeout(next, 2000);
+                    }, 400);
+                }
+                setTimeout(next, 1500);
+            });
+        }
 
         // Initial render
         renderPage();
