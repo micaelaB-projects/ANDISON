@@ -21,23 +21,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $items_json = isset($_POST['items_json']) ? $_POST['items_json'] : '[]';
 
     // Validate required fields
-    if ($fullname && $company && $email && $address) {
+    if ($fullname && $company && $email && $phone && $address) {
         // Parse items JSON
         $items = json_decode($items_json, true) ?: [];
-        
+
         // Build email content
         $to = 'lizette.macalindol@gmail.com';
         $subject = 'New Inquiry Form Submission from ' . $fullname;
-        
+
         $items_list = '';
         if (!empty($items)) {
-            $items_list = "<h3>Inquiry Items:</h3><ul>";
-            foreach ($items as $item) {
-                $items_list .= "<li>" . htmlspecialchars($item['name']) . " - Qty: " . intval($item['qty']) . "</li>";
+            $items_list = "<h3>Inquiry Items:</h3><ul style='list-style:none;padding:0;'>";
+            foreach($items as $item) {
+                $items_list .= "<li style='padding:8px 0;border-bottom:1px solid #eee;'>";
+                $items_list .= "<strong>" . htmlspecialchars($item['name'] ?? '') . "</strong>";
+                if (!empty($item['brand'])) $items_list .= " (" . htmlspecialchars($item['brand']) . ")";
+                $items_list .= " - Qty: " . htmlspecialchars($item['qty'] ?? '1');
+                $items_list .= "</li>";
             }
             $items_list .= "</ul>";
         } else {
-            $items_list = "<p>No items selected</p>";
+            $items_list = "<p>No specific items listed.</p>";
         }
 
         $body = "
@@ -56,7 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class=\"header\">
         <h2>New Inquiry Submission</h2>
     </div>
-    
     <div class=\"section\">
         <p><span class=\"label\">Full Name:</span> " . $fullname . "</p>
         <p><span class=\"label\">Company:</span> " . $company . "</p>
@@ -65,57 +68,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p><span class=\"label\">Address:</span> " . nl2br($address) . "</p>
         <p><span class=\"label\">Preferred Contact Method:</span> " . ucfirst($contact_method) . "</p>
     </div>
-    
-    <div class=\"section\">
-        " . $items_list . "
-    </div>
-    
+    <div class=\"section\">" . $items_list . "</div>
     <div class=\"section\">
         <p><span class=\"label\">Message:</span></p>
         <p>" . nl2br($message ?: 'No message provided') . "</p>
     </div>
-    
     <hr>
     <p style=\"font-size: 12px; color: #666;\">This inquiry was submitted via ANDISON INDUSTRIAL website.</p>
 </body>
 </html>
         ";
 
-        // Email headers
         $headers = "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type: text/html; charset=UTF-8" . "\r\n";
         $headers .= "From: " . $email . "\r\n";
         $headers .= "Reply-To: " . $email . "\r\n";
 
-        // Send email
         $mail_sent = mail($to, $subject, $body, $headers);
 
-        // Handle file upload if provided
         if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
             $upload_dir = 'uploads/';
-            if (!is_dir($upload_dir)) {
-                mkdir($upload_dir, 0755, true);
-            }
-            
+            if (!is_dir($upload_dir)) { mkdir($upload_dir, 0755, true); }
             $file_tmp = $_FILES['file']['tmp_name'];
             $file_name = basename($_FILES['file']['name']);
             $file_path = $upload_dir . time() . '_' . $file_name;
             move_uploaded_file($file_tmp, $file_path);
         }
 
-        // Show success message and clear localStorage
         $success_message = $mail_sent ? "Inquiry submitted successfully! We'll contact you soon." : "Error sending inquiry. Please try again.";
         echo "<script>alert('" . addslashes($success_message) . "'); if(" . ($mail_sent ? 'true' : 'false') . ") { localStorage.removeItem('inquiryItems'); window.location.href='inquirylist.php'; }</script>";
     }
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Industrial Solutions Inc. - Homepage Redesign</title>
+    <title>Inquiry List - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
         * {
@@ -382,33 +372,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             white-space: nowrap;
             box-shadow: 0 4px 15px rgba(0,188,212,0.4);
             gap: 8px;
-            height: 40px;
-        }
-
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            text-decoration: none;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            background: linear-gradient(135deg,  #00E5C8  0%, #347aec 100%);
-            position: relative;
-            font-size: 14px;
-            font-weight: 700;
-            white-space: nowrap;
-            box-shadow: 0 4px 15px rgba(0,188,212,0.4);
-            gap: 8px;
-            border: none;
-            height: 40px;
         }
 
         .inquiry-btn:hover,
-        .cart-icon-wrapper:hover,
-        .back-btn:hover {
+        .cart-icon-wrapper:hover {
             background: linear-gradient(135deg, #00ACC1, #00796B);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0,188,212,0.5);
@@ -417,8 +384,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         .inquiry-btn .btn-icon { display: inline; }
         .inquiry-btn .btn-text { display: inline; }
-        .back-btn .btn-icon { display: inline; }
-        .back-btn .btn-text { display: inline; }
 
         .cart-badge {
             background: #c70d0d;
@@ -440,31 +405,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             display: none;
         }
 
-        /* Toast notification for inquiry items */
-        .inquiry-toast {
-            position: fixed;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: linear-gradient(135deg, #2B11DB 0%, #1e0aa3 100%);
-            color: white;
-            padding: 14px 28px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 14px;
-            box-shadow: 0 8px 24px rgba(43,17,219,0.4);
-            opacity: 0;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            z-index: 5000;
-            pointer-events: none;
-            letter-spacing: 0.3px;
-        }
-
-        .inquiry-toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(-6px);
-        }
-
         .right-actions {
             margin-left: auto;
             display: flex;
@@ -472,6 +412,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             gap: 12px;
             flex: 0 0 auto;
         }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #00D7B3 0%, #00bfb3 100%);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 9px 16px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: opacity 0.2s, transform 0.15s;
+            font-family: inherit;
+        }
+        .back-btn:hover { opacity: 0.88; transform: translateY(-1px); color: #fff; }
 
         /* Navigation */
         nav {
@@ -940,7 +899,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-bottom: 16px;
             color: #2B11DB;
             width: 100%;
-            background: linear-gradient(135deg, #2B11DB 0%, #00D7B3 100%);
+            background: linear-gradient(90deg, #1565C0 0%, #00BCD4 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -951,12 +910,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             text-align: center;
             max-width: 750px;
             margin: 0 auto 60px;
-            color: #555;
+            color: #8B4513;
             line-height: 1.9;
             width: 100%;
             box-sizing: border-box;
             padding: 0 20px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 500;
         }
 
@@ -1064,6 +1023,98 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: #666;
             line-height: 1.7;
             margin: 0;
+        }
+
+        /* Service Cards - Old Layout */
+        .services-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            width: 100%;
+            max-width: 1050px;
+        }
+
+        .service-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            background: white;
+            border-radius: 16px;
+            padding: 48px 44px;
+            border: 1px solid #E0E3FF;
+            box-shadow: 0 4px 16px rgba(30, 136, 229, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .service-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 32px rgba(30, 136, 229, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .service-card.reverse {
+            direction: rtl;
+        }
+
+        .service-card.reverse > * {
+            direction: ltr;
+        }
+
+        .service-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 24px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            box-shadow: 0 4px 12px rgba(30, 136, 229, 0.25);
+        }
+
+        .service-card.teal .service-badge {
+            background: linear-gradient(135deg, #00bcd4 0%, #00897b 100%);
+            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.25);
+        }
+
+        .service-content h3 {
+            font-size: 26px;
+            font-weight: 800;
+            color: #1e88e5;
+            margin-bottom: 18px;
+            line-height: 1.3;
+            letter-spacing: -0.3px;
+        }
+
+        .service-card.teal .service-content h3 {
+            color: #00bcd4;
+        }
+
+        .service-content p {
+            font-size: 14px;
+            color: #8B4513;
+            line-height: 1.85;
+            margin: 0;
+        }
+
+        .service-icon-box {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #1e88e5 0%, #00bcd4 100%);
+            font-size: 68px;
+            color: white;
+            box-shadow: 0 8px 24px rgba(30, 136, 229, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .service-card.teal .service-icon-box {
+            background: linear-gradient(135deg, #00bcd4 0%, #00897b 100%);
+            box-shadow: 0 8px 24px rgba(0, 188, 212, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
 
         /* Featured Section */
@@ -1402,22 +1453,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 padding: 6px !important;
                 font-size: 28px !important;
                 position: relative;
-                height: 40px !important;
-            }
-
-            .back-btn {
-                background: transparent !important;
-                box-shadow: none !important;
-                padding: 6px !important;
-                font-size: 28px !important;
-                position: relative;
-                height: 40px !important;
             }
 
             .inquiry-btn .btn-text { display: none; }
             .inquiry-btn .btn-icon { font-size: 28px; }
-            .back-btn .btn-text { display: none; }
-            .back-btn .btn-icon { font-size: 28px; }
 
             .cart-badge {
                 background: #2196F3 !important;
@@ -1484,7 +1523,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             .hero {
                 aspect-ratio: auto;
-                min-height: 420px;
+                min-height: 260px;
                 padding: 20px 0;
                 display: flex;
                 align-items: center;
@@ -1500,10 +1539,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 justify-content: center;
             }
 
+            .hero-slide {
+                width: 92% !important;
+                left: 50% !important;
+                transform: translateX(-50%) scale(1) !important;
+                filter: blur(0) !important;
+                opacity: 0 !important;
+            }
+
+            .hero-slide.active {
+                width: 92% !important;
+                left: 50% !important;
+                transform: translateX(-50%) scale(1) !important;
+                filter: blur(0) !important;
+                opacity: 1 !important;
+            }
+
+            .hero-slide.prev,
+            .hero-slide.next {
+                opacity: 0 !important;
+                pointer-events: none;
+            }
+
             .hero-thumb {
-                width: 85%;
+                width: 100%;
                 height: auto;
-                max-width: 95%;
+                max-width: 100%;
                 aspect-ratio: 16 / 9 !important;
             }
             
@@ -1552,6 +1613,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 gap: 24px;
             }
 
+            .services-grid {
+                gap: 24px;
+            }
+
+            .service-card {
+                grid-template-columns: 1fr;
+                gap: 24px;
+                padding: 24px;
+            }
+
+            .service-card.reverse {
+                direction: ltr;
+            }
+
+            .service-badge {
+                margin-bottom: 8px;
+                font-size: 11px;
+            }
+
+            .service-content h3 {
+                font-size: 20px;
+                margin-bottom: 12px;
+            }
+
+            .service-content p {
+                font-size: 14px;
+                line-height: 1.7;
+            }
+
+            .service-icon-box {
+                aspect-ratio: 1 / 1;
+                font-size: 48px;
+            }
+
             section h2 {
                 font-size: 28px;
             }
@@ -1562,24 +1657,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             .sidebar-overlay {
-                width: 95%;
-                max-width: 100%;
-                max-height: 95vh;
-                padding: 28px 20px;
+                width: 75%;
+                max-width: 320px;
+                padding: 12px 0;
             }
 
             .sidebar-overlay h3 {
-                font-size: 16px;
-                margin-bottom: 20px;
+                font-size: 14px;
+                margin-bottom: 8px;
+                padding: 0 12px;
+            }
+
+            .sidebar-list { 
+                padding: 0;
+            }
+
+            .sidebar-list li { 
+                border-bottom: none;
             }
 
             .sidebar-list a {
-                font-size: 14px;
-                padding: 14px 10px;
+                font-size: 13px;
+                padding: 10px 14px;
+                gap: 12px;
+                min-height: 36px;
+                align-items: center;
+            }
+
+            .sidebar-list a:active {
+                background: rgba(43, 17, 219, 0.08);
+            }
+
+            .sidebar-icon {
+                width: 20px;
+                height: 20px;
+                font-size: 16px;
+            }
+
+            .sidebar-sublist {
+                background: #f8f9fa;
+                border-left: 3px solid #2B11DB;
+                margin: 2px 0;
+                padding: 4px 0 4px 12px;
             }
 
             .sidebar-sublist a {
-                font-size: 13px;
+                font-size: 12px;
+                padding: 8px 14px 8px 42px;
+                min-height: 32px;
+            }
+
+            .sidebar-nested-sublist {
+                margin: 4px 0;
+                padding: 6px 0 6px 14px;
+                background: rgba(43, 17, 219, 0.06);
+                border-left: 2px solid rgba(43, 17, 219, 0.3);
+            }
+
+            .sidebar-nested-sublist a {
+                font-size: 11px;
+                padding: 8px 14px 8px 36px;
+                color: #5a6b7d;
+                min-height: 30px;
+                margin: 0;
+            }
+
+            .sidebar-nested-sublist a:hover,
+            .sidebar-nested-sublist a:active {
+                background: rgba(43, 17, 219, 0.14);
+                color: #2B11DB;
+                padding-left: 44px;
             }
         }
 
@@ -1604,14 +1751,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             left: 0;
             top: calc(14px + 50px + 14px + 12px + 52px);
             bottom: 0;
-            width: 380px;
-            max-width: 90%;
+            width: 320px;
+            max-width: 80%;
             background: #fff;
             box-shadow: 4px 0 24px rgba(0,0,0,0.15);
             transform: translateX(-100%);
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 70;
-            padding: 28px 20px;
+            padding: 20px 12px;
             overflow-y: auto;
         }
 
@@ -1640,11 +1787,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             justify-content: space-between;
             transition: all 0.2s ease;
             font-size: 15px;
+            min-height: 48px;
         }
         .sidebar-list a:hover { 
             background: #f3f4f6; 
             color: #2B11DB;
             padding-left: 16px;
+        }
+        .sidebar-list a:active {
+            background: rgba(43, 17, 219, 0.08);
         }
         .sidebar-list li a.active {
             background: #f3f4f6;
@@ -1689,21 +1840,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
         .sidebar-sublist li { 
-            padding: 4px 0; 
+            padding: 0; 
             border: none;
         }
         .sidebar-sublist a { 
             color: #4b5563; 
             font-size: 14px; 
-            padding: 6px 8px; 
+            padding: 10px 16px 10px 48px; 
             display: block; 
             text-decoration: none;
             justify-content: flex-start;
+            min-height: 42px;
+            align-items: center;
         }
         .sidebar-sublist a:hover { 
             color: #2B11DB; 
-            background: transparent;
-            padding-left: 12px;
+            background: rgba(43, 17, 219, 0.08);
+            padding-left: 52px;
         }
 
         /* Nested sublists */
@@ -1737,14 +1890,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         .sidebar-nested-sublist a { 
             color: #5a6b7d; 
-            font-size: 13px; 
-            padding: 10px 12px 10px 28px; 
+            font-size: 11px; 
+            padding: 8px 10px 8px 32px; 
             display: block; 
             text-decoration: none;
             position: relative;
             transition: all 0.25s ease;
-            border-radius: 6px;
-            margin: 2px 0;
+            border-radius: 4px;
+            margin: 0;
+            min-height: 30px;
         }
 
         .sidebar-list li.has-sub { position: relative; }
@@ -2113,7 +2267,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             transform: translateX(-100%);
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 70;
-            padding: 28px 20px;
+            padding: 12px 8px;
             overflow-y: auto;
         }
 
@@ -2122,26 +2276,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .sidebar-overlay h3 {
-            font-size: 18px;
-            margin-bottom: 24px;
+            font-size: 14px;
+            margin-bottom: 10px;
             color: #222;
             font-weight: 700;
             letter-spacing: 0.5px;
         }
 
-        .sidebar-list { list-style: none; padding: 28px 20px 0 20px; margin: 0; }
+        .sidebar-list { list-style: none; padding: 8px 8px 0 8px; margin: 0; }
         .sidebar-list li { border-bottom: 1px solid #e5e7eb; }
         .sidebar-list li:last-child { border-bottom: none; }
         .sidebar-list a { 
             display: flex; 
             gap: 12px; 
-            padding: 16px 12px; 
+            padding: 10px 10px; 
             color: #1f2937; 
             text-decoration: none; 
             align-items: center;
             justify-content: space-between;
             transition: all 0.2s ease;
-            font-size: 15px;
+            font-size: 13px;
+            min-height: 36px;
         }
         .sidebar-list a:hover { 
             background: #f3f4f6; 
@@ -2191,19 +2346,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         .sidebar-sublist { 
             list-style: none; 
-            margin: 0; 
-            padding: 8px 0 8px 44px; 
-            background: #fafafa;
-            margin-left: 12px;
-            margin-right: 12px;
-            padding-left: 16px;
-            border-left: 2px solid #e5e7eb;
-            padding-top: 8px;
-            padding-bottom: 8px;
-            max-height: 1000px;
+            margin: 2px 0; 
+            padding: 4px 0 4px 12px;
+            background: #f8f9fa;
+            border-left: 3px solid #2B11DB;
+            max-height: 500px;
             overflow: hidden;
             transition: max-height 0.3s ease, opacity 0.3s ease;
             opacity: 1;
+            display: block;
         }
         
         .sidebar-sublist.collapsed {
@@ -2212,21 +2363,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             overflow: hidden;
         }
         .sidebar-sublist li { 
-            padding: 4px 0; 
+            padding: 0; 
             border: none;
         }
         .sidebar-sublist a { 
             color: #4b5563; 
-            font-size: 14px; 
-            padding: 6px 8px; 
+            font-size: 12px; 
+            padding: 8px 12px 8px 38px; 
             display: block; 
             text-decoration: none;
             justify-content: flex-start;
+            min-height: 32px;
+            align-items: center;
         }
         .sidebar-sublist a:hover { 
             color: #2B11DB; 
-            background: transparent;
-            padding-left: 12px;
+            background: rgba(43, 17, 219, 0.08);
+            padding-left: 52px;
         }
 
         /* Nested sublists */
@@ -2255,12 +2408,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         .sidebar-nested-sublist { 
             list-style: none; 
-            margin: 10px 0 10px -12px; 
-            padding: 0;
+            margin: 2px 0;
+            padding: 4px 0 4px 12px;
             max-height: 500px;
             overflow: hidden;
             transition: max-height 0.3s ease, opacity 0.3s ease;
             opacity: 1;
+            background: rgba(43, 17, 219, 0.05);
+            border-left: 2px solid rgba(43, 17, 219, 0.3);
+        }
         }
         
         .sidebar-nested-sublist.collapsed {
@@ -2274,32 +2430,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         .sidebar-nested-sublist a { 
             color: #5a6b7d; 
-            font-size: 13px; 
-            padding: 10px 12px 10px 28px; 
+            font-size: 11px; 
+            padding: 8px 10px 8px 32px; 
             display: block; 
             text-decoration: none;
             position: relative;
             transition: all 0.25s ease;
-            border-radius: 6px;
-            margin: 2px 0;
+            border-radius: 4px;
+            margin: 0;
+            min-height: 30px;
+            align-items: center;
         }
         .sidebar-nested-sublist a::before {
             content: '';
             position: absolute;
-            left: 8px;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
             background: linear-gradient(135deg, #2B11DB 0%, #6d28d9 100%);
             border-radius: 50%;
             box-shadow: 0 2px 4px rgba(43, 17, 219, 0.2);
         }
         .sidebar-nested-sublist a:hover { 
             color: #2B11DB;
-            background: rgba(43, 17, 219, 0.08);
-            padding-left: 32px;
-            transform: translateX(4px);
+            background: rgba(43, 17, 219, 0.12);
+            padding-left: 36px;
+            transform: none;
         }
 
         .sidebar-list li.has-sub { position: relative; }
@@ -2456,7 +2614,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         .mini-sidebar-icon .label {
             display: none;
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 500;
             white-space: nowrap;
             flex: 1;
@@ -2630,29 +2788,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             transition: margin-left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Elegant page-content styling */
-        .page-content {
-            flex: 1;
-            background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 50%, #f9fbfd 100%);
-            min-height: calc(100vh - 142px);
-            padding: 20px 0;
-            position: relative;
-        }
-        
-        .page-content::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(0,215,179,0.06) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(43,17,219,0.04) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
         /* When expanded, increase margin */
         .mini-sidebar.expanded ~ section,
         .mini-sidebar.expanded ~ footer,
@@ -2738,27 +2873,99 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .mobile-sidebar-fab.open { transform: translateY(-50%) translateX(56px); }
         .mobile-sidebar-fab.open.wide { transform: translateY(-50%) translateX(240px); }
 
+        /* Mini popover — mobile overrides */
+        @media (max-width: 768px) {
+            .mini-popover {
+                border-radius: 0 12px 12px 0 !important;
+                box-shadow: 4px 8px 24px rgba(0,0,0,0.28) !important;
+                overflow: hidden !important;
+            }
+            .mini-popover::before { display: none !important; }
+            .mini-popover-header {
+                border-radius: 0 !important;
+                padding: 10px 14px !important;
+                font-size: 13px !important;
+                letter-spacing: 0.5px !important;
+            }
+            .mini-popover-body {
+                padding: 6px 8px 8px 8px !important;
+            }
+            .mini-popover-list {
+                padding: 0 !important;
+            }
+            .mini-popover-list::before {
+                display: none !important;
+            }
+            .mini-popover-item {
+                margin: 2px 0 !important;
+                min-height: auto !important;
+                padding-left: 4px !important;
+                align-items: center !important;
+            }
+            .mini-popover-item .square {
+                width: 6px !important;
+                height: 6px !important;
+                min-width: 6px !important;
+                border-radius: 2px !important;
+            }
+            .mini-popover-item a {
+                font-size: 12px !important;
+                padding: 8px 10px !important;
+                line-height: 1.2 !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                font-weight: 600 !important;
+            }
+            .mini-popover-item a:active {
+                background: rgba(255,255,255,0.18) !important;
+            }
+            .mini-popover-item.has-subitems {
+                padding-right: 30px !important;
+            }
+            .popover-expand-btn {
+                height: 28px !important;
+                width: 28px !important;
+                right: 4px !important;
+            }
+            .popover-expand-btn .bi {
+                font-size: 14px !important;
+            }
+            .popover-subitem {
+                padding: 5px 10px 5px 18px !important;
+                font-size: 11px !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+        }
+
         /* Mini popover styles for subcategories */
         .mini-popover {
             position: fixed;
             top: -9999px;
             left: -9999px;
-            width: 320px;
-            max-width: calc(100vw - 32px);
-            background: linear-gradient(180deg, #1976D2FF 0%, #19D2B6FF 100%);
+            width: 380px;
+            max-width: calc(100vw - 40px);
+            background: linear-gradient(135deg, #1E88E5 0%, #00BCD4 100%);
             color: #fff;
             border-radius: 16px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+            box-shadow: 0 16px 40px rgba(30, 136, 229, 0.3), 0 2px 8px rgba(0,0,0,0.2);
             opacity: 0;
             visibility: hidden;
-            transform: translateY(-6px);
-            transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease;
-            z-index: 200;
+            transform: translateY(-8px) scale(0.95);
+            transition: opacity 180ms cubic-bezier(0.34, 1.56, 0.64, 1), transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1), visibility 180ms ease;
+            z-index: 1300;
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.15);
         }
         .mini-popover.show {
             opacity: 1;
             visibility: visible;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
         .mini-popover::before {
             content: '';
@@ -2772,25 +2979,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             filter: drop-shadow(-2px 2px 2px rgba(0,0,0,0.12));
         }
         .mini-popover-header {
-            background: #f5f9ff;
-            color: #0f5132;
+            background: linear-gradient(135deg, #1E88E5 0%, #1565C0 100%);
+            color: #ffffff;
             border-top-left-radius: 16px;
             border-top-right-radius: 16px;
-            padding: 12px 16px;
-            font-weight: 800;
-            font-size: 15px;
-            letter-spacing: 0.3px;
+            padding: 16px 20px;
+            font-weight: 700;
+            font-size: 16px;
+            letter-spacing: 0.4px;
+            line-height: 1.3;
         }
-        .mini-popover-title { color: #0f5132; }
+        .mini-popover-title { color: #ffffff; }
         .mini-popover-body {
-            padding: 12px 16px 16px 16px;
-            max-height: calc(100vh - 100px);
-            overflow-y: auto;
+            padding: 14px 16px 18px 16px;
+            overflow: visible;
+            flex: 1;
+            background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 100%);
         }
         .mini-popover-list {
             list-style: none;
             margin: 0;
-            padding: 6px 0 6px 0;
+            padding: 0;
             position: relative;
         }
         .mini-popover-list::before {
@@ -2802,14 +3011,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             width: 2px;
             background: rgba(255,255,255,0.35);
             border-radius: 2px;
+            display: none;
         }
         .mini-popover-item {
             position: relative;
-            padding-left: 42px;
-            margin: 12px 0;
+            padding-left: 0;
+            margin: 3px 0;
             display: flex;
             align-items: stretch;
-            min-height: 32px;
+            min-height: auto;
         }
         .mini-popover-item .square {
             position: absolute;
@@ -2823,614 +3033,624 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             box-shadow: 0 2px 6px rgba(0,0,0,0.18), inset 0 -1px 0 rgba(0,0,0,0.08);
             flex-shrink: 0;
             pointer-events: none;
+            display: none;
         }
         .mini-popover-item a {
             color: #ffffff;
             text-decoration: none;
             font-weight: 600;
             display: block;
-            padding: 8px 10px;
+            padding: 12px 14px;
             border-radius: 8px;
-            transition: background 140ms ease, transform 120ms ease;
+            transition: all 160ms cubic-bezier(0.34, 1.56, 0.64, 1);
             width: 100%;
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+            line-height: 1.4;
+            font-size: 14px;
+            background: rgba(255,255,255,0.06);
+            border-left: 3px solid transparent;
         }
         .mini-popover-item a:hover {
-            background: rgba(255,255,255,0.12);
-            transform: translateX(2px);
-        }
-
-        /* INQUIRY FORM STYLES - PREMIUM DESIGN */
-        .container { max-width: 950px; margin: 0 auto; padding: 60px 20px; }
-        
-        .form-card { 
-            background: linear-gradient(135deg, #ffffff 0%, #f9fbfd 50%, #f5f9fc 100%);
-            border-radius: 24px; 
-            padding: 56px 48px; 
-            box-shadow: 
-                0 25px 70px rgba(43,17,219,0.15),
-                0 0 1px rgba(43,17,219,0.1),
-                inset 0 1px 0 rgba(255,255,255,0.8);
-            border: 1px solid rgba(43,17,219,0.08);
-            position: relative;
-            overflow: hidden;
-            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            background: rgba(255,255,255,0.16);
+            transform: translateX(4px);
+            border-left-color: rgba(255,255,255,0.5);
         }
         
-        .form-card:hover {
-            box-shadow: 
-                0 35px 90px rgba(43,17,219,0.18),
-                0 0 1px rgba(43,17,219,0.1),
-                inset 0 1px 0 rgba(255,255,255,0.9);
-            transform: translateY(-4px);
+        /* Expandable popover items */
+        .mini-popover-item.has-subitems {
+            flex-wrap: wrap;
+            padding-right: 36px;
         }
-        
-        .form-card::before {
-            content: '';
+        .popover-expand-btn {
             position: absolute;
-            top: -40%;
-            right: -30%;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(0,215,179,0.12) 0%, transparent 75%);
-            border-radius: 50%;
-            pointer-events: none;
-            animation: floatBefore 15s ease-in-out infinite;
-        }
-        
-        @keyframes floatBefore {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(20px, -20px); }
-        }
-        
-        .form-card::after {
-            content: '';
-            position: absolute;
-            bottom: -40%;
-            left: -20%;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(43,17,219,0.08) 0%, transparent 75%);
-            border-radius: 50%;
-            pointer-events: none;
-            animation: floatAfter 12s ease-in-out infinite;
-        }
-        
-        @keyframes floatAfter {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(-20px, 20px); }
-        }
-        
-        .form-card h1 { 
-            background: linear-gradient(135deg, #2B11DB 0%, #00d4aa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-size: 40px; 
-            margin: 0 0 12px; 
-            font-weight: 900; 
-            letter-spacing: -1px;
-            position: relative;
-            z-index: 2;
-            animation: slideInDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        
-        @keyframes slideInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .form-subtitle { 
-            color: #64748b; 
-            font-size: 16px; 
-            margin-bottom: 40px; 
-            line-height: 1.7;
-            font-weight: 500;
-            position: relative;
-            z-index: 2;
-            animation: slideInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
-        }
-        
-        .form-section { 
-            margin-bottom: 36px;
-            padding: 32px 36px;
-            border-radius: 18px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.9) 100%);
-            border: 1.5px solid rgba(43,17,219,0.08);
-            box-shadow: 
-                0 8px 24px rgba(43,17,219,0.05),
-                inset 0 1px 0 rgba(255,255,255,0.8),
-                0 0 0 1px rgba(43,17,219,0.02);
-            backdrop-filter: blur(10px);
-            position: relative;
-            z-index: 2;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            overflow: hidden;
-        }
-        
-        .form-section::before {
-            content: '';
-            position: absolute;
+            right: 8px;
             top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #2B11DB, #00d4aa, transparent);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .form-section:hover::before {
-            opacity: 1;
-        }
-        
-        .form-section:hover {
-            box-shadow: 
-                0 16px 40px rgba(43,17,219,0.1),
-                inset 0 1px 0 rgba(255,255,255,0.8),
-                0 0 0 1px rgba(43,17,219,0.04);
-            border-color: rgba(43,17,219,0.12);
-            transform: translateY(-2px);
-        }
-        
-        .form-section:last-of-type { margin-bottom: 0; }
-        
-        .section-title { 
-            font-size: 13px; 
-            font-weight: 900; 
-            background: linear-gradient(135deg, #2B11DB 0%, #00d4aa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-transform: uppercase; 
-            letter-spacing: 1.2px; 
-            margin-bottom: 24px;
+            bottom: 0;
+            height: 32px;
+            width: 32px;
+            margin: auto;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            padding: 0;
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid rgba(43,17,219,0.1);
-            transition: all 0.3s ease;
+            justify-content: center;
+            transition: all 160ms cubic-bezier(0.34, 1.56, 0.64, 1);
+            flex-shrink: 0;
+            border-radius: 8px;
         }
-        
-        .section-title i {
-            background: linear-gradient(135deg, #2B11DB 0%, #00d4aa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .popover-expand-btn:hover {
+            background: rgba(255,255,255,0.22);
+            transform: scale(1.08);
+        }
+        .popover-expand-btn:active {
+            background: rgba(255,255,255,0.3);
+            transform: scale(0.95);
+        }
+        .popover-expand-btn .bi {
             font-size: 18px;
-            transition: transform 0.3s ease;
+            transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .popover-expand-btn[aria-expanded="true"] .bi {
+            transform: rotate(90deg);
         }
         
-        .form-section:hover .section-title i {
-            transform: translateX(4px);
+        .popover-subitems {
+            width: 100%;
+            margin-top: 8px;
+            max-height: none;
+            overflow: visible;
+            transition: opacity 250ms ease;
+            opacity: 1;
+            padding-left: 0;
+        }
+        .popover-subitems.collapsed {
+            display: none;
         }
         
-        .form-row { 
-            margin-bottom: 18px; 
-            animation: slideInUp 0.5s ease;
-        }
-        
-        @keyframes slideInUp {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        label { 
-            display: block; 
-            font-size: 14px; 
-            margin-bottom: 10px; 
-            color: #334155; 
-            font-weight: 700; 
-            letter-spacing: 0.3px;
-            transition: color 0.3s ease;
-        }
-        
-        .form-row:focus-within label {
-            color: #2B11DB;
-        }
-        
-        .form-row {
-            animation: slideInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            animation-fill-mode: both;
-        }
-        
-        .form-section .form-row:nth-child(1) { animation-delay: 0.1s; }
-        .form-section .form-row:nth-child(2) { animation-delay: 0.15s; }
-        .form-section .form-row:nth-child(3) { animation-delay: 0.2s; }
-        .form-section .form-row:nth-child(4) { animation-delay: 0.25s; }
-        .form-section .form-row:nth-child(5) { animation-delay: 0.3s; }
-        
-        input[type="text"], input[type="email"], input[type="tel"], select, textarea, input[type="number"], input[type="file"] {
-            width: 100%; 
-            padding: 16px 18px; 
-            border-radius: 13px; 
-            border: 2px solid #e2e8f0; 
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            font-size: 14px; 
-            color: #1e293b; 
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            font-family: inherit;
+        .popover-subitem {
+            color: rgba(255,255,255,0.85) !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            padding: 6px 10px 6px 28px !important;
+            display: block !important;
+            text-decoration: none !important;
+            border-radius: 6px !important;
+            transition: all 120ms ease !important;
             position: relative;
         }
-        
-        input[type="text"]:hover, input[type="email"]:hover, input[type="tel"]:hover, select:hover, textarea:hover, input[type="number"]:hover, input[type="file"]:hover {
-            border-color: rgba(43,17,219,0.2);
-            background: linear-gradient(135deg, #ffffff 0%, #f5f9fc 100%);
+        .popover-subitem::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #ffffff;
+            opacity: 0.6;
         }
-        
-        input[type="text"]:focus, input[type="email"]:focus, input[type="tel"]:focus, select:focus, textarea:focus, input[type="number"]:focus, input[type="file"]:focus {
-            outline: none; 
-            border-color: #2B11DB; 
-            background: linear-gradient(135deg, #ffffff 0%, #f5ecff 100%);
-            box-shadow: 
-                0 0 0 5px rgba(43,17,219,0.12), 
-                inset 0 2px 8px rgba(43,17,219,0.05),
-                0 4px 15px rgba(43,17,219,0.1);
-            transform: translateY(-2px);
+        .popover-subitem:hover {
+            background: rgba(255,255,255,0.12) !important;
+            transform: translateX(2px) !important;
+            color: #ffffff !important;
         }
-        
-        input[type="text"]::placeholder, input[type="email"]::placeholder, input[type="tel"]::placeholder, textarea::placeholder {
-            color: #cbd5e1;
-        }
-        
-        textarea { 
-            min-height: 140px; 
-            resize: vertical; 
-            line-height: 1.8;
-            font-size: 14px;
-        }
-        
-        .small { 
-            font-size: 13px; 
-            color: #94a3b8; 
-            margin-top: 12px; 
-            line-height: 1.7; 
-            font-weight: 500;
-            display: flex;
-            align-items: flex-start;
-            gap: 6px;
-        }
-        
-        .row { 
-            display: flex; 
-            gap: 20px;
-            align-items: flex-start;
-        }
-        
-        .col { 
-            flex: 1;
-            min-width: 0;
-        }
-        
-        .actions { 
-            display: flex; 
-            justify-content: flex-end; 
-            gap: 16px; 
-            margin-top: 36px; 
-            padding-top: 28px; 
-            border-top: 2px solid rgba(43,17,219,0.08);
-            position: relative;
-            z-index: 2;
-        }
-        
-        .btn { 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 10px; 
-            padding: 14px 32px; 
-            border-radius: 13px; 
-            border: none;
-            font-weight: 800; 
-            cursor: pointer; 
-            font-size: 15px; 
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            text-decoration: none;
-            letter-spacing: 0.4px;
+
+        /* ===== INQUIRY FORM STYLES ===== */
+
+        /* Page Banner */
+        .inq-banner {
+            background: linear-gradient(135deg, #2B11DB 0%, #00D7B3 100%);
+            padding: 28px 28px 24px;
+            text-align: center;
             position: relative;
             overflow: hidden;
         }
-        
-        .btn::before {
+        .inq-banner::before {
             content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255,255,255,0.2);
+            top: -60px; right: -60px;
+            width: 220px; height: 220px;
+            background: rgba(255,255,255,0.06);
             border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
         }
-        
-        .btn:hover::before {
-            width: 300px;
-            height: 300px;
+        .inq-banner::after {
+            content: '';
+            position: absolute;
+            bottom: -80px; left: -40px;
+            width: 260px; height: 260px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 50%;
         }
-        
-        .btn-clear { 
-            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-            color: #475569;
-            box-shadow: 0 6px 20px rgba(100,116,139,0.12);
-            border: 1px solid rgba(43,17,219,0.06);
-        }
-        
-        .btn-clear:hover { 
-            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 32px rgba(100,116,139,0.18);
-        }
-        
-        .btn-clear:active {
-            transform: translateY(-1px);
-        }
-        
-        .btn-submit { 
-            background: linear-gradient(135deg, #2B11DB 0%, #1e0aa3 100%);
+        .inq-banner-icon {
+            width: 46px; height: 46px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
             color: #fff;
-            box-shadow: 0 6px 25px rgba(43,17,219,0.35);
-            border: 1px solid rgba(43,17,219,0.2);
+            margin-bottom: 10px;
+            backdrop-filter: blur(8px);
+            border: 2px solid rgba(255,255,255,0.25);
         }
-        
-        .btn-submit:hover { 
-            background: linear-gradient(135deg, #3d1ffa 0%, #2B11DB 100%);
-            transform: translateY(-4px);
-            box-shadow: 0 15px 45px rgba(43,17,219,0.45);
+        .inquiry-page-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 5px;
+            letter-spacing: -0.5px;
         }
-        
-        .btn-submit:active { 
-            transform: translateY(-1px);
-        }
-        
-        .required { 
-            color: #ef4444; 
-            margin-left: 4px; 
-            font-weight: 900;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-        
-        .form-row .options { 
-            display: flex; 
-            gap: 28px; 
-            align-items: center; 
-            margin-top: 14px; 
-            flex-wrap: wrap; 
-        }
-        
-        .form-row .options label { 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 12px; 
-            cursor: pointer; 
-            font-weight: 700; 
+        .inquiry-page-subtitle {
+            font-size: 13px;
+            color: rgba(255,255,255,0.82);
             margin: 0;
-            color: #334155;
-            transition: color 0.3s ease;
-            user-select: none;
         }
-        
-        .form-row .options label:hover {
-            color: #2B11DB;
+        .inq-banner-steps {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            margin-top: 18px;
+            position: relative;
+            z-index: 1;
         }
-        
-        .form-row .options input[type="radio"] { 
-            width: 24px; 
-            height: 24px; 
-            margin: 0; 
-            cursor: pointer; 
-            accent-color: #2B11DB;
-            transition: transform 0.2s ease;
+        .inq-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            position: relative;
+            flex: 1;
+            max-width: 130px;
         }
-        
-        .form-row .options input[type="radio"]:hover {
+        .inq-step + .inq-step::before {
+            content: '';
+            position: absolute;
+            left: -50%;
+            top: 15px;
+            width: 100%;
+            height: 2px;
+            background: rgba(255,255,255,0.25);
+        }
+        .inq-step {
+            cursor: pointer;
+        }
+        .inq-step-num {
+            width: 30px; height: 30px;
+            background: rgba(255,255,255,0.18);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 800;
+            color: #fff;
+            border: 2px solid rgba(255,255,255,0.4);
+            transition: background 0.25s, border-color 0.25s, transform 0.2s;
+        }
+        .inq-step:hover .inq-step-num {
+            background: rgba(255,255,255,0.3);
             transform: scale(1.1);
         }
-        
-        .inquiry-items-section { 
-            background: linear-gradient(135deg, #f9fafb 0%, #f1f5f9 100%);
-            border-radius: 14px; 
-            padding: 24px; 
-            border: 2px dashed rgba(43,17,219,0.15);
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
-        }
-        
-        .inquiry-items-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(0,215,179,0.02) 0%, transparent 100%);
-            border-radius: 12px;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .inquiry-items-section:hover {
-            border-color: rgba(43,17,219,0.25);
-            background: linear-gradient(135deg, #f5f9fc 0%, #e8f0f7 100%);
-            box-shadow: 0 4px 15px rgba(43,17,219,0.06);
-        }
-        
-        .inquiry-items-section:hover::before {
-            opacity: 1;
-        }
-        
-        .inquiry-items-section .small { 
-            margin-top: 0;
-            color: #64748b;
-        }
-        
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            font-size: 14px;
-            margin-top: 20px;
-        }
-        
-        table tr { 
-            border-bottom: 1.5px solid #e2e8f0;
-            transition: all 0.3s ease;
-        }
-        
-        table tr:hover {
-            background: linear-gradient(90deg, rgba(43,17,219,0.04) 0%, rgba(0,215,179,0.02) 100%);
-        }
-        
-        table th { 
-            text-align: left; 
-            padding: 14px 16px; 
-            font-weight: 800; 
+        .inq-step.active .inq-step-num {
+            background: #fff;
             color: #2B11DB;
-            border-bottom: 2.5px solid rgba(43,17,219,0.15); 
-            background: linear-gradient(135deg, rgba(43,17,219,0.04) 0%, rgba(0,215,179,0.02) 100%);
-            letter-spacing: 0.3px;
-            font-size: 13px;
+            border-color: #fff;
+            transform: scale(1.12);
+            box-shadow: 0 0 0 4px rgba(255,255,255,0.25);
+        }
+        .inq-step.active .inq-step-label {
+            color: #fff;
+            font-weight: 800;
+        }
+        .inq-step.completed .inq-step-num {
+            background: #00D7B3;
+            border-color: #00D7B3;
+            color: #fff;
+        }
+        .inq-step.completed .inq-step-num::before {
+            content: '\2713';
+        }
+        .inq-step.completed .inq-step-label {
+            color: rgba(255,255,255,0.95);
+        }
+        .inq-step + .inq-step.completed::before,
+        .inq-step.completed + .inq-step::before {
+            background: rgba(0,215,179,0.5);
+        }
+        .inq-step-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.8);
             text-transform: uppercase;
+            letter-spacing: 0.8px;
+            transition: color 0.25s;
         }
-        
-        table td { 
-            padding: 14px 16px;
-            color: #334155;
-            font-weight: 500;
+
+        /* Wrapper */
+        .inquiry-wrapper {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 0 0 60px;
         }
-        
-        table input { 
-            width: 60px;
-            padding: 8px 10px;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
+        .inq-form-body {
+            padding: 32px 28px 0;
+        }
+
+        /* Cards */
+        .inq-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(43,17,219,0.07), 0 1px 4px rgba(0,0,0,0.04);
+            padding: 0;
+            margin-bottom: 22px;
+            overflow: hidden;
+            border: 1px solid rgba(43,17,219,0.06);
+            transition: box-shadow 0.25s;
+        }
+        .inq-card:hover {
+            box-shadow: 0 8px 32px rgba(43,17,219,0.11), 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .inq-card-body {
+            padding: 24px 28px 28px;
+        }
+        .inq-section-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 18px 28px;
+            background: linear-gradient(90deg, #f4f2ff 0%, #f0fff9 100%);
+            border-bottom: 1px solid rgba(43,17,219,0.08);
+        }
+        .inq-section-icon {
+            width: 38px; height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #2B11DB 0%, #6247EA 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 16px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(43,17,219,0.25);
+        }
+        .inq-section-icon.teal {
+            background: linear-gradient(135deg, #00D7B3 0%, #00b49a 100%);
+            box-shadow: 0 4px 12px rgba(0,215,179,0.3);
+        }
+        .inq-section-icon.warm {
+            background: linear-gradient(135deg, #f7931e 0%, #f06292 100%);
+            box-shadow: 0 4px 12px rgba(247,147,30,0.3);
+        }
+        .inq-section-title {
             font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: #2B11DB;
+            line-height: 1.2;
         }
-        
-        .rem-btn { 
-            background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
-            border: 1px solid rgba(239,68,68,0.2);
-            padding: 10px 16px; 
-            border-radius: 9px; 
-            cursor: pointer; 
+        .inq-section-desc {
+            font-size: 12px;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        /* Items table */
+        .inq-table { width: 100%; border-collapse: collapse; }
+        .inq-table thead tr {
+            background: linear-gradient(90deg, #f0f2ff 0%, #e8f8f5 100%);
+        }
+        .inq-table thead th {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: #5b4de0;
+            padding: 11px 16px;
+            text-align: left;
+        }
+        .inq-table thead th:last-child { text-align: center; }
+        .inq-table tbody tr {
+            border-bottom: 1px solid #f5f5f5;
+            transition: background 0.15s;
+        }
+        .inq-table tbody tr:hover { background: #fafbff; }
+        .inq-table tbody tr:last-child { border-bottom: none; }
+        .inq-table tbody td {
+            padding: 13px 16px;
+            font-size: 13px;
+            color: #333;
+            vertical-align: middle;
+        }
+        .inq-table tbody td:last-child { text-align: center; }
+        .inq-product-name {
+            font-weight: 700;
+            color: #1a1a2e;
+            display: block;
+            line-height: 1.3;
+        }
+        .inq-product-brand {
+            font-size: 11px;
+            color: #2B11DB;
+            font-weight: 600;
+            display: block;
+            margin-top: 2px;
+        }
+        .inq-qty-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .inq-qty-btn {
+            width: 28px; height: 28px;
+            background: #f0f2ff;
+            border: 1px solid #d1d5f8;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #2B11DB;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s;
+            line-height: 1;
+        }
+        .inq-qty-btn:hover { background: #e0e4ff; }
+        .inq-qty-input {
+            width: 52px;
+            border: 1.5px solid #d1d5f8;
+            border-radius: 8px;
+            padding: 5px 8px;
             font-size: 13px;
             font-weight: 700;
-            color: #7f1d1d;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 3px 12px rgba(239,68,68,0.18);
-            letter-spacing: 0.2px;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s;
+            color: #1a1a2e;
         }
-        
-        .rem-btn:hover { 
-            background: linear-gradient(135deg, #f87171 0%, #f05252 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(239,68,68,0.3);
-            color: #ffffff;
+        .inq-qty-input:focus { border-color: #2B11DB; box-shadow: 0 0 0 3px rgba(43,17,219,0.08); }
+        .inq-remove-btn {
+            background: #fff0ef;
+            color: #e53935;
+            border: 1.5px solid #ffd7d6;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
-        
-        .rem-btn:active {
-            transform: translateY(0);
+        .inq-remove-btn:hover { background: #e53935; color: #fff; border-color: #e53935; }
+        .inq-empty-msg {
+            text-align: center;
+            padding: 48px 20px;
         }
+        .inq-empty-msg i { font-size: 40px; color: #d0d5f8; display: block; margin-bottom: 10px; }
+        .inq-empty-msg span { font-size: 14px; color: #bbb; display: block; }
+        .inq-empty-msg small { font-size: 12px; color: #ccc; margin-top: 4px; display: block; }
 
-        @media (max-width: 768px) {
-            .container { padding: 40px 16px; }
-            .form-card { 
-                padding: 36px 24px; 
-                border-radius: 18px;
-                box-shadow: 0 15px 40px rgba(43,17,219,0.1);
-            }
-            .form-card h1 { font-size: 32px; margin-bottom: 10px; }
-            .form-subtitle { font-size: 15px; margin-bottom: 28px; }
-            .form-section { 
-                padding: 24px; 
-                margin-bottom: 28px; 
-                border-radius: 16px;
-                box-shadow: 0 6px 20px rgba(43,17,219,0.05);
-            }
-            .row { flex-direction: column; gap: 18px; }
-            .col { flex: 1; }
-            .actions { flex-direction: column-reverse; gap: 12px; }
-            .btn-clear, .btn-submit { width: 100%; padding: 12px 24px; }
-            input[type="text"], input[type="email"], input[type="tel"], select, textarea, input[type="number"], input[type="file"] {
-                padding: 14px 16px;
-                font-size: 16px;
-            }
-            .form-row .options {
-                gap: 20px;
-                margin-top: 14px;
-            }
-            .form-row .options label {
-                gap: 10px;
-            }
+        /* Form fields */
+        .form-row { margin-bottom: 20px; }
+        .form-row:last-child { margin-bottom: 0; }
+        .form-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px; }
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 800;
+            color: #444;
+            margin-bottom: 7px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
+        .form-label .required { color: #e53935; margin-left: 2px; }
+        .input-wrap {
+            position: relative;
+        }
+        .input-wrap .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0a8c8;
+            font-size: 15px;
+            pointer-events: none;
+            transition: color 0.2s;
+        }
+        .input-wrap.textarea-wrap .input-icon {
+            top: 14px;
+            transform: none;
+        }
+        .input-wrap .input-icon.icon-right {
+            left: auto;
+            right: 14px;
+        }
+        .form-input {
+            width: 100%;
+            border: 1.5px solid #e4e8f0;
+            border-radius: 12px;
+            padding: 12px 14px 12px 42px;
+            font-size: 14px;
+            color: #1a1a2e;
+            outline: none;
+            background: #f8f9fd;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+            font-family: inherit;
+        }
+        .form-input.no-icon {
+            padding-left: 14px;
+        }
+        .form-input:focus {
+            border-color: #2B11DB;
+            box-shadow: 0 0 0 3px rgba(43,17,219,0.09);
+            background: #fff;
+        }
+        .form-input:focus + .input-icon,
+        .input-wrap:focus-within .input-icon { color: #2B11DB; }
+        textarea.form-input { resize: vertical; min-height: 120px; padding-top: 12px; }
 
-        @media (max-width: 480px) {
-            .container { padding: 28px 12px; }
-            .form-card { 
-                padding: 28px 18px; 
-                border-radius: 16px;
-                box-shadow: 0 12px 30px rgba(43,17,219,0.08);
-            }
-            .form-card::before {
-                width: 300px;
-                height: 300px;
-            }
-            .form-card::after {
-                width: 200px;
-                height: 200px;
-            }
-            .form-card h1 { 
-                font-size: 26px; 
-                margin-bottom: 8px; 
-                letter-spacing: -0.5px;
-            }
-            .form-subtitle { font-size: 14px; margin-bottom: 22px; }
-            .form-section { 
-                padding: 18px; 
-                margin-bottom: 20px; 
-                border-radius: 14px;
-                box-shadow: 0 4px 12px rgba(43,17,219,0.04);
-            }
-            .section-title { font-size: 12px; margin-bottom: 14px; padding-bottom: 10px; }
-            .form-row { margin-bottom: 16px; }
-            label { font-size: 13px; margin-bottom: 8px; }
-            .btn { padding: 11px 20px; font-size: 13px; gap: 8px; }
-            table { font-size: 12px; }
-            table th, table td { padding: 10px 8px; }
-            table input { width: 40px; padding: 6px 8px; font-size: 12px; }
-            input[type="text"], input[type="email"], input[type="tel"], select, textarea, input[type="number"], input[type="file"] {
-                padding: 12px 14px;
-                font-size: 16px;
-                border-radius: 11px;
-            }
-            textarea { min-height: 110px; line-height: 1.6; }
-            .small { font-size: 12px; margin-top: 10px; }
-            .required { font-size: 12px; }
-            input[type="text"]:focus, input[type="email"]:focus, input[type="tel"]:focus, select:focus, textarea:focus, input[type="number"]:focus, input[type="file"]:focus {
-                box-shadow: 
-                    0 0 0 3px rgba(43,17,219,0.1), 
-                    inset 0 2px 6px rgba(43,17,219,0.04);
-            }
-            .form-row .options {
-                gap: 16px;
-                margin-top: 12px;
-            }
-            .form-row .options label {
-                gap: 8px;
-                font-size: 13px;
-            }
-            .form-row .options input[type="radio"] {
-                width: 20px;
-                height: 20px;
-            }
-            .actions { gap: 10px; margin-top: 24px; padding-top: 20px; }
+        /* Card-style radio */
+        .radio-card-group { display: flex; gap: 12px; margin-top: 4px; flex-wrap: wrap; }
+        .radio-card {
+            flex: 1;
+            min-width: 120px;
         }
-            input[type="text"], input[type="email"], input[type="tel"], select, textarea, input[type="number"], input[type="file"] { padding: 10px 12px; font-size: 13px; }
+        .radio-card input[type="radio"] { display: none; }
+        .radio-card-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 2px solid #e4e8f0;
+            border-radius: 12px;
+            padding: 14px 18px;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+            background: #f8f9fd;
+            font-size: 14px;
+            font-weight: 600;
+            color: #444;
+        }
+        .radio-card-label i { font-size: 20px; color: #b0b8d8; transition: color 0.2s; }
+        .radio-card-label span { display: flex; flex-direction: column; gap: 2px; }
+        .radio-card-label .rc-title { font-size: 14px; font-weight: 700; color: #1a1a2e; }
+        .radio-card-label .rc-sub { font-size: 11px; color: #999; font-weight: 400; }
+        .radio-card input[type="radio"]:checked + .radio-card-label {
+            border-color: #2B11DB;
+            background: #f0f2ff;
+            box-shadow: 0 0 0 3px rgba(43,17,219,0.09);
+        }
+        .radio-card input[type="radio"]:checked + .radio-card-label i { color: #2B11DB; }
+        .radio-card input[type="radio"]:checked + .radio-card-label .rc-title { color: #2B11DB; }
+
+        /* Custom file upload */
+        .file-drop-zone {
+            border: 2px dashed #c8d0ee;
+            border-radius: 14px;
+            padding: 28px 20px;
+            text-align: center;
+            background: #f8f9fd;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            position: relative;
+        }
+        .file-drop-zone:hover, .file-drop-zone.drag-over {
+            border-color: #2B11DB;
+            background: #f0f2ff;
+        }
+        .file-drop-zone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+        .file-drop-icon { font-size: 32px; color: #c8d0ee; margin-bottom: 8px; display: block; }
+        .file-drop-text { font-size: 14px; font-weight: 700; color: #444; display: block; }
+        .file-drop-sub { font-size: 12px; color: #999; margin-top: 2px; display: block; }
+        .file-chosen-name { font-size: 12px; color: #2B11DB; font-weight: 700; margin-top: 8px; display: none; }
+
+        /* Tips & hints */
+        .inq-tip {
+            font-size: 12px;
+            color: #d97706;
+            display: flex;
+            align-items: flex-start;
+            gap: 7px;
+            margin-top: 10px;
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 8px;
+            padding: 9px 12px;
+        }
+        .inq-tip i { margin-top: 1px; flex-shrink: 0; }
+        .inq-file-hint { font-size: 12px; color: #888; margin-top: 6px; }
+
+        /* Form actions */
+        .form-actions-wrap {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px rgba(43,17,219,0.07), 0 1px 4px rgba(0,0,0,0.04);
+            border: 1px solid rgba(43,17,219,0.06);
+            padding: 20px 28px;
+            margin-bottom: 22px;
+        }
+        .form-security {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #888;
+            padding-bottom: 16px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #f0f0f4;
+        }
+        .form-security i { color: #00D7B3; font-size: 15px; }
+        .form-btns {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        .btn-clear {
+            background: transparent;
+            border: 2px solid #e4e8f0;
+            color: #666;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            transition: border-color 0.2s, color 0.2s, background 0.2s;
+            font-family: inherit;
+        }
+        .btn-clear:hover { border-color: #c0c8e0; color: #333; background: #f8f9fd; }
+        .btn-submit {
+            background: linear-gradient(135deg, #2B11DB 0%, #5a3dea 100%);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 32px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+            font-family: inherit;
+            box-shadow: 0 6px 20px rgba(43,17,219,0.3);
+            letter-spacing: 0.3px;
+        }
+        .btn-submit:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 10px 28px rgba(43,17,219,0.38); }
+        .btn-submit:active { transform: translateY(0); }
+
+        @media (max-width: 700px) {
+            .inq-banner { padding: 36px 20px 32px; margin-left: 0; }
+            .inq-banner-steps { gap: 0; }
+            .inq-step-label { font-size: 9px; }
+            .inq-form-body { padding: 20px 16px 0; }
+            .inq-card-body { padding: 18px 18px 22px; }
+            .inq-section-header { padding: 14px 18px; }
+            .form-cols { grid-template-columns: 1fr; }
+            .form-btns { flex-direction: column; }
+            .btn-submit, .btn-clear { justify-content: center; }
+            .inq-table thead th:nth-child(2),
+            .inq-table tbody td:nth-child(2) { display: none; }
+            .radio-card-group { flex-direction: column; }
+            .form-actions-wrap { padding: 16px 18px; }
         }
     </style>
 </head>
@@ -3439,9 +3659,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Set page title
         $page_title = "Inquiry Form";
         $company_name = "ANDISON INDUSTRIAL";
-        
-        // Determine current page for nav highlighting
-        $current_page = basename($_SERVER['PHP_SELF']);
         
         // Contact information
         $phone = "+1(234) 567 8900";
@@ -3464,7 +3681,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div class="right-actions">
-                <button id="backBtn" class="back-btn" title="Go back to previous page"><i class="bi bi-arrow-left btn-icon"></i> <span class="btn-text">BACK</span></button>
+                <a href="javascript:history.back()" class="back-btn"><i class="bi bi-arrow-left btn-icon"></i> <span class="btn-text">BACK</span></a>
                 <a href="inquirylist.php" class="inquiry-btn"><i class="bi bi-card-checklist btn-icon"></i> <span class="btn-text">INQUIRY LIST</span> <span class="cart-badge hidden" id="cartBadge">0</span></a>
                 <div class="header-contact">
                         <div class="contact-dropdown" tabindex="0" aria-haspopup="true">
@@ -3488,7 +3705,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="nav-inner">
                 <ul class="nav-list">
                     <li>
-                        <a href="home.php" <?php echo $current_page !== 'inquirylist.php' && $current_page === 'home.php' ? 'class="active"' : ''; ?>>Home</a>
+                        <a href="home.php">Home</a>
                         <div class="nav-dropdown">
                             <h4>Welcome</h4>
                             <p>Discover our complete range of industrial welding solutions and equipment.</p>
@@ -3510,8 +3727,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="nav-dropdown">
                             <h4>Featured Brands</h4>
                             <ul>
-                                <li><a href="brand.php?name=Panasonic%20Connect"><img src="assets/brands/PANASONIC.jpg" alt="Panasonic Connect" title="Panasonic Connect"></a></li>
-                                <li><a href="brand.php?name=Robot%20Systems"><img src="assets/brands/ROBOT SYSTEMS.png" alt="Robot Systems Peripherals" title="Robot Systems Peripherals"></a></li>
+                               <li><a href="brand.php?name=Panasonic%20Connect"><img src="assets/brands/PANASONIC.jpg" alt="Panasonic Connect" title="Panasonic Connect"></a></li>
+                                <li><a href="/brand.php?name=Robot%20Systems"><img src="/assets/brands/ROBOT SYSTEMS.png" alt="Robot Systems Peripherals" title="Robot Systems Peripherals"></a></li>
                                 <li><a href="brand.php?name=Kobelco"><img src="assets/brands/KOBELCO.jpg" alt="Kobelco" title="Kobelco"></a></li>
                                 <li><a href="brand.php?name=Metrode"><img src="assets/brands/METRODE.jpg" alt="Metrode" title="Metrode"></a></li>
                                 <li><a href="brand.php?name=DryRod.%20II"><img src="assets/brands/DRYROD.jpg" alt="DryRod. II" title="DryRod. II"></a></li>
@@ -3529,7 +3746,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <li><a href="brand.php?name=SK%20And%20GAL%20GAGE"><img src="assets/brands/SK%20AND%20GAL%20GAGE.jpg" alt="SK And GAL GAGE" title="SK And GAL GAGE"></a></li>
                                 <li><a href="brand.php?name=COPPUS"><img src="assets/brands/COPPUS.jpg" alt="Coppus" title="Coppus"></a></li>
                                 <li><a href="brand.php?name=BW%20Technologies"><img src="assets/brands/BW%20TECHNOLOGIES.jpg" alt="BW Technologies" title="BW Technologies"></a></li>
-                                <li><a href="brand.php?name=RAC"><img src="assets/brands/RAE%20SYSTEMS.jpg" alt="RAC" title="RAC"></a></li>
+                                <li><a href="brand.php?name=RAC"><img src="assets/brands/RAE%20SYSTEMS.jpg" alt="RAE Systems" title="RAE Systems"></a></li>
                                 <li><a href="brand.php?name=WELDAS"><img src="assets/brands/WELDAS.jpg" alt="Weldas" title="Weldas"></a></li>
                                 <li><a href="brand.php?name=UVEX"><img src="assets/brands/UVEX.jpg" alt="Uvex" title="Uvex"></a></li>
                                 <li><a href="brand.php?name=ACES"><img src="assets/brands/ACES.jpg" alt="Aces" title="Aces"></a></li>
@@ -3540,6 +3757,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <li><a href="brand.php?name=Makita"><img src="assets/brands/MAKITA.jpg" alt="Makita" title="Makita"></a></li>
                                 <li><a href="brand.php?name=Weller"><img src="assets/brands/WEILER.jpg" alt="Weller" title="Weller"></a></li>
                                 <li><a href="brand.php?name=Garryson"><img src="assets/brands/GARRYSON.jpg" alt="Garryson" title="Garryson"></a></li>
+                                <li><a href="brand.php?name=REVOLT"><img src="assets/brands/REVOLT.png" alt="REVOLT" title="REVOLT"></a></li>
+                                <li><a href="brand.php?name=Technotex"><img src="assets/brands/TECHNOTEX.png" alt="Technotex" title="Technotex"></a></li>
                                 <li><a href="brand.php?name=Spilfyter"><img src="assets/brands/SPILFYTER.jpg" alt="Spilfyter" title="Spilfyter"></a></li>
                                 <li><a href="brand.php?name=Dalo"><img src="assets/brands/DALO.jpg" alt="Dalo" title="Dalo"></a></li>
                                 <li><a href="brand.php?name=MOTOLITE"><img src="assets/brands/MOTOLITE.jpg" alt="Motolite" title="Motolite"></a></li>
@@ -3600,6 +3819,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <button class="sub-toggle" aria-controls="sub-arc-welding" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
                     <li><a href="arc-welding-machine/mig-welding-machine.php">MIG Welding Machine</a></li>
+                    <li><a href="arc-welding-machine/accessories-and-consumables.php">Accessories and Consumables</a></li>
                     <li><a href="arc-welding-machine/co1-mag-welding-machine.php">CO2/MAG Welding Machine</a></li>
                     <li><a href="arc-welding-machine/stud-welding-machine.php">STUD Welding Machine</a></li>
                     <li><a href="arc-welding-machine/tig-welding-machine.php">TIG Welding Machine</a></li>
@@ -3630,7 +3850,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <button class="sub-toggle" aria-controls="sub-drilling-lifting" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
                 <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
                     <li><a href="drilling-and-lifting/lifting.php">Lifting</a></li>
-                    <li><a href="drilling-and-lifting/magnetic-drill.php">Magnetic Drill</a></li>
+                    <li class="has-nested-sub">
+                        <a href="drilling-and-lifting/magnetic-drill.php">Magnetic Drill</a>
+                        <button class="nested-toggle" aria-controls="nested-magnetic-drill" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>
+                        <ul id="nested-magnetic-drill" class="sidebar-nested-sublist collapsed">
+                            <li><a href="drilling-and-lifting/magnetic-drill/b-line-series.php">B-Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/rl-e-line-series.php">RL-E Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/rbx-line-series.php">RBX-Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/sp-line-series.php">SP-Line Series</a></li>
+                            <li><a href="drilling-and-lifting/magnetic-drill/v-line-series.php">V-Line Series</a></li>
+                        </ul>
+                    </li>
                     <li><a href="drilling-and-lifting/cutters.php">Cutters</a></li>
                 </ul>
             </li>
@@ -3743,108 +3973,211 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-    <!-- Inquiry Form -->
+    <!-- Inquiry Form Content -->
     <div class="page-content">
-        <div class="container">
-            <div class="form-card" role="region" aria-labelledby="inquiryHeading">
-                <h1 id="inquiryHeading">Inquiry Form</h1>
-                <p class="form-subtitle">Share your product requirements and we'll get back to you within 24 hours</p>
-                
-                <form id="inquiryForm" action="inquirylist.php" method="post" enctype="multipart/form-data">
-                    <!-- Inquiry Items Section -->
-                    <div class="form-section">
-                        <div class="section-title"><i class="bi bi-box-seam"></i> Inquiry Items</div>
-                        <div class="inquiry-items-section" id="inquiryItemsContainer">
-                            <p class="small">📦 No items added yet. Use <strong>"ADD TO INQUIRY LIST"</strong> on product pages to add items.</p>
-                        </div>
-                    </div>
-                    <input type="hidden" id="items_json" name="items_json" value="">
+    <div class="inquiry-wrapper">
 
-                    <!-- Contact Information Section -->
-                    <div class="form-section">
-                        <div class="section-title"><i class="bi bi-person-circle"></i> Contact Information</div>
-                        
-                        <div class="form-row">
-                            <label for="fullname">Full Name <span class="required">*</span></label>
-                            <input type="text" id="fullname" name="fullname" placeholder="John Doe" required>
-                        </div>
-                        
-                        <div class="form-row">
-                            <label for="company">Company <span class="required">*</span></label>
-                            <input type="text" id="company" name="company" placeholder="Your Company Name" required>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-row">
-                                    <label for="email">Email <span class="required">*</span></label>
-                                    <input type="email" id="email" name="email" placeholder="john@example.com" required>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="form-row">
-                                    <label for="phone">Phone <span>(Optional)</span></label>
-                                    <input type="tel" id="phone" name="phone" placeholder="+63 912 345 6789">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-row">
-                            <label for="address">Delivery Address <span class="required">*</span></label>
-                            <textarea id="address" name="address" placeholder="Street address, city, state, postal code" required></textarea>
-                        </div>
-                    </div>
-
-                    <!-- Communication Preferences Section -->
-                    <div class="form-section">
-                        <div class="section-title"><i class="bi bi-chat-dots"></i> Communication Preferences</div>
-                        
-                        <div class="form-row">
-                            <label>Preferred Contact Method <span class="required">*</span></label>
-                            <div class="options">
-                                <label>
-                                    <input type="radio" name="contact_method" value="email" checked> Email
-                                </label>
-                                <label>
-                                    <input type="radio" name="contact_method" value="phone"> Phone
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Additional Information Section -->
-                    <div class="form-section">
-                        <div class="section-title"><i class="bi bi-file-text"></i> Additional Information</div>
-                        
-                        <div class="form-row">
-                            <label for="message">Message</label>
-                            <textarea id="message" name="message" placeholder="Tell us about your project, specifications, timeline, or any special requirements..."></textarea>
-                            <p class="small">💡 Tip: Include project details to help us serve you better</p>
-                        </div>
-
-                        <div class="form-row">
-                            <label for="file">Attachments <span>(Optional)</span></label>
-                            <input type="file" id="file" name="file" accept=".jpg,.jpeg,.png,.pdf">
-                            <p class="small">📎 Supported: Images (JPG, PNG) and PDF documents</p>
-                        </div>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="actions">
-                        <button type="reset" id="clearBtn" class="btn btn-clear">
-                            <i class="bi bi-arrow-clockwise"></i>Clear
-                        </button>
-                        <button type="submit" class="btn btn-submit">
-                            <i class="bi bi-send"></i>Submit Inquiry
-                        </button>
-                    </div>
-
-                    <p style="font-size: 12px; color: #9ca3af; margin-top: 16px; text-align: center;">
-                        ✓ Your information is secure and will be used solely to respond to your inquiry
-                    </p>
-                </form>
+        <!-- Banner / Page Header -->
+        <div class="inq-banner">
+            <div class="inq-banner-icon"><i class="bi bi-clipboard2-check"></i></div>
+            <h1 class="inquiry-page-title">Inquiry Form</h1>
+            <p class="inquiry-page-subtitle">Share your requirements and we'll respond within 24 hours</p>
+            <div class="inq-banner-steps">
+                <div class="inq-step active" id="step-1" data-target="card-items"><div class="inq-step-num">1</div><div class="inq-step-label">Items</div></div>
+                <div class="inq-step" id="step-2" data-target="card-contact"><div class="inq-step-num">2</div><div class="inq-step-label">Contact</div></div>
+                <div class="inq-step" id="step-3" data-target="card-prefs"><div class="inq-step-num">3</div><div class="inq-step-label">Preferences</div></div>
+                <div class="inq-step" id="step-4" data-target="card-submit"><div class="inq-step-num">4</div><div class="inq-step-label">Submit</div></div>
             </div>
         </div>
+
+        <div class="inq-form-body">
+        <form id="inquiryForm" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="items_json" id="itemsJsonInput" value="[]">
+
+            <!-- Inquiry Items -->
+            <div class="inq-card" id="card-items">
+                <div class="inq-section-header">
+                    <div class="inq-section-icon"><i class="bi bi-cart3"></i></div>
+                    <div>
+                        <div class="inq-section-title">Inquiry Items</div>
+                        <div class="inq-section-desc">Products added to your inquiry list</div>
+                    </div>
+                </div>
+                <div id="inquiryItemsContainer">
+                    <table class="inq-table" id="inquiryTable">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Remove</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inquiryTableBody">
+                            <!-- Items populated by JS -->
+                        </tbody>
+                    </table>
+                    <div class="inq-empty-msg" id="emptyMsg" style="display:none;">
+                        <i class="bi bi-cart-x"></i>
+                        <span>No items in your inquiry list</span>
+                        <small>Browse our products and click "Add to Inquiry" to get started</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="inq-card" id="card-contact">
+                <div class="inq-section-header">
+                    <div class="inq-section-icon teal"><i class="bi bi-person-vcard"></i></div>
+                    <div>
+                        <div class="inq-section-title">Contact Information</div>
+                        <div class="inq-section-desc">We'll use these details to reach you</div>
+                    </div>
+                </div>
+                <div class="inq-card-body">
+
+                <div class="form-cols">
+                    <div>
+                        <label class="form-label" for="fullname">Full Name <span class="required">*</span></label>
+                        <div class="input-wrap">
+                            <input class="form-input" type="text" id="fullname" name="fullname" placeholder="Juan dela Cruz" required>
+                            <i class="bi bi-person input-icon"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label" for="company">Company / Organization <span class="required">*</span></label>
+                        <div class="input-wrap">
+                            <input class="form-input" type="text" id="company" name="company" placeholder="Your Company Name" required>
+                            <i class="bi bi-building input-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-cols">
+                    <div>
+                        <label class="form-label" for="email">Email Address <span class="required">*</span></label>
+                        <div class="input-wrap">
+                            <input class="form-input" type="email" id="email" name="email" placeholder="juan@company.com" required>
+                            <i class="bi bi-envelope input-icon"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label" for="phone">Phone Number <span class="required">*</span></label>
+                        <div class="input-wrap">
+                            <input class="form-input" type="tel" id="phone" name="phone" placeholder="+63 912 345 6789" required>
+                            <i class="bi bi-telephone input-icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label class="form-label" for="address">Office Address <span class="required">*</span></label>
+                    <div class="input-wrap textarea-wrap">
+                        <textarea class="form-input" id="address" name="address" placeholder="Street, Barangay, City, Province, ZIP Code" required></textarea>
+                        <i class="bi bi-geo-alt input-icon"></i>
+                    </div>
+                </div>
+
+                </div>
+            </div>
+
+            <!-- Communication Preferences -->
+            <div class="inq-card" id="card-prefs">
+                <div class="inq-section-header">
+                    <div class="inq-section-icon warm"><i class="bi bi-chat-dots"></i></div>
+                    <div>
+                        <div class="inq-section-title">Communication Preferences</div>
+                        <div class="inq-section-desc">How would you like us to contact you?</div>
+                    </div>
+                </div>
+                <div class="inq-card-body">
+                <label class="form-label">Preferred Contact Method <span class="required">*</span></label>
+                <div class="radio-card-group">
+                    <label class="radio-card">
+                        <input type="radio" name="contact_method" value="email">
+                        <span class="radio-card-label">
+                            <i class="bi bi-envelope-fill"></i>
+                            <span>
+                                <span class="rc-title">Email</span>
+                                <span class="rc-sub">Get a written response</span>
+                            </span>
+                        </span>
+                    </label>
+                    <label class="radio-card">
+                        <input type="radio" name="contact_method" value="phone">
+                        <span class="radio-card-label">
+                            <i class="bi bi-telephone-fill"></i>
+                            <span>
+                                <span class="rc-title">Phone</span>
+                                <span class="rc-sub">Talk to our team directly</span>
+                            </span>
+                        </span>
+                    </label>
+                    <label class="radio-card">
+                        <input type="radio" name="contact_method" value="viber">
+                        <span class="radio-card-label">
+                            <i class="bi bi-phone-vibrate"></i>
+                            <span>
+                                <span class="rc-title">Viber</span>
+                                <span class="rc-sub">Quick chat messaging</span>
+                            </span>
+                        </span>
+                    </label>
+                </div>
+                </div>
+            </div>
+
+            <!-- Additional Information -->
+            <div class="inq-card" id="card-submit">
+                <div class="inq-section-header">
+                    <div class="inq-section-icon"><i class="bi bi-clipboard-text"></i></div>
+                    <div>
+                        <div class="inq-section-title">Additional Information</div>
+                        <div class="inq-section-desc">Any extra details to help us serve you better</div>
+                    </div>
+                </div>
+                <div class="inq-card-body">
+
+                <div class="form-row">
+                    <label class="form-label" for="message">Message / Special Requirements</label>
+                    <div class="input-wrap textarea-wrap">
+                        <textarea class="form-input" id="message" name="message" placeholder="Tell us about your project, timeline, specifications, or any special requirements..."></textarea>
+                        <i class="bi bi-chat-left-text input-icon"></i>
+                    </div>
+                    <div class="inq-tip"><i class="bi bi-lightbulb-fill"></i> Tip: Include product model numbers, quantities needed, and your preferred delivery date to speed up our response.</div>
+                </div>
+
+                <div class="form-row">
+                    <label class="form-label">Attachments <span style="color:#999;font-weight:400;text-transform:none;letter-spacing:0;">(Optional — Drawings, Specs, Photos)</span></label>
+                    <div class="file-drop-zone" id="fileDropZone">
+                        <input type="file" id="file" name="file" accept=".jpg,.jpeg,.png,.pdf" onchange="handleFileChange(this)">
+                        <i class="bi bi-cloud-arrow-up file-drop-icon"></i>
+                        <span class="file-drop-text">Click to upload or drag &amp; drop</span>
+                        <span class="file-drop-sub">JPG, PNG, PDF — max 10MB</span>
+                        <span class="file-chosen-name" id="fileChosenName"></span>
+                    </div>
+                </div>
+
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions-wrap">
+                <div class="form-security">
+                    <i class="bi bi-shield-check"></i>
+                    Your information is encrypted and used solely to process your inquiry. We respect your privacy.
+                </div>
+                <div class="form-btns">
+                    <button type="button" class="btn-clear" id="clearFormBtn">
+                        <i class="bi bi-arrow-counterclockwise"></i> Reset Form
+                    </button>
+                    <button type="submit" class="btn-submit">
+                        <i class="bi bi-send-fill"></i> Submit Inquiry
+                    </button>
+                </div>
+            </div>
+
+        </form>
+        </div><!-- /.inq-form-body -->
     </div>
 
     <!-- Footer -->
@@ -4262,18 +4595,113 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 });
             }
             
-            // Sidebar sub-toggle functionality
+            // Sidebar sub-toggle functionality - Show popover card
+            var mainSidebarPopover = document.getElementById('miniPopover');
+            var popoverTitle = mainSidebarPopover ? mainSidebarPopover.querySelector('.mini-popover-title') : null;
+            var popoverList = mainSidebarPopover ? mainSidebarPopover.querySelector('.mini-popover-list') : null;
+            var currentMainSidebarKey = null;
+            
+            function showMainSidebarPopover(toggle) {
+                if (!mainSidebarPopover || !popoverList || !popoverTitle) return;
+                
+                var sublistId = toggle.getAttribute('aria-controls');
+                var sublist = document.getElementById(sublistId);
+                if (!sublist) return;
+                
+                // Extract title from parent li's main link
+                var parentLi = toggle.closest('.has-sub');
+                var mainLink = parentLi ? parentLi.querySelector(':scope > a:not([class])') : null;
+                var title = mainLink ? mainLink.textContent.trim() : 'Items';
+                
+                // Extract items from the sublist
+                var items = [];
+                var listItems = sublist.querySelectorAll('li > a');
+                listItems.forEach(function(link) {
+                    items.push({
+                        text: link.textContent.trim(),
+                        href: link.getAttribute('href') || '#'
+                    });
+                });
+                
+                // Populate popover
+                popoverTitle.textContent = title;
+                popoverList.innerHTML = '';
+                items.forEach(function(item) {
+                    var li = document.createElement('li');
+                    li.className = 'mini-popover-item';
+                    li.innerHTML = '<span class="square"></span><a href="' + item.href + '">' + item.text + '</a>';
+                    popoverList.appendChild(li);
+                });
+                
+                // Position popover next to toggle button
+                setTimeout(function() {
+                    mainSidebarPopover.style.left = '-9999px';
+                    mainSidebarPopover.style.top = '-9999px';
+                    mainSidebarPopover.classList.add('show');
+                    
+                    var toggleRect = toggle.getBoundingClientRect();
+                    var pw = mainSidebarPopover.offsetWidth;
+                    var ph = mainSidebarPopover.offsetHeight;
+                    var toggleCenterY = toggleRect.top + toggleRect.height / 2;
+                    
+                    // Position to the right of the toggle button
+                    var left = Math.round(toggleRect.right + 14);
+                    var top = Math.round(toggleCenterY - ph / 2);
+                    
+                    // Adjust if off-screen horizontally
+                    if (left + pw + 12 > window.innerWidth) {
+                        left = Math.round(toggleRect.left - pw - 14);
+                    }
+                    
+                    // Adjust if off-screen vertically
+                    var headerHeight = 100;
+                    var minTop = headerHeight + 12;
+                    var maxTop = window.innerHeight - ph - 12;
+                    if (top < minTop) top = minTop;
+                    if (top > maxTop) top = maxTop;
+                    
+                    var arrowOffset = toggleCenterY - top - 26;
+                    mainSidebarPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+                    
+                    mainSidebarPopover.style.left = left + 'px';
+                    mainSidebarPopover.style.top = top + 'px';
+                    mainSidebarPopover.setAttribute('aria-hidden', 'false');
+                    currentMainSidebarKey = sublistId;
+                }, 5);
+            }
+            
+            function hideMainSidebarPopover() {
+                if (!mainSidebarPopover) return;
+                mainSidebarPopover.classList.remove('show');
+                mainSidebarPopover.setAttribute('aria-hidden', 'true');
+                currentMainSidebarKey = null;
+            }
+            
             var subToggles = document.querySelectorAll('.sub-toggle');
             subToggles.forEach(function(toggle) {
                 toggle.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    var sublist = document.getElementById(toggle.getAttribute('aria-controls'));
-                    if(sublist) {
-                        sublist.classList.toggle('collapsed');
-                        toggle.setAttribute('aria-expanded', sublist.classList.contains('collapsed') ? 'false' : 'true');
+                    
+                    if (currentMainSidebarKey === toggle.getAttribute('aria-controls') && mainSidebarPopover.classList.contains('show')) {
+                        hideMainSidebarPopover();
+                    } else {
+                        showMainSidebarPopover(toggle);
                     }
                 });
+            });
+            
+            // Close popover on outside click
+            document.addEventListener('click', function(e) {
+                if (!mainSidebarPopover) return;
+                if (!mainSidebarPopover.classList.contains('show')) return;
+                if (e.target.closest('.mini-popover') || e.target.closest('.sub-toggle')) return;
+                hideMainSidebarPopover();
+            });
+            
+            // Close popover on Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') hideMainSidebarPopover();
             });
             
             // Nested toggle functionality
@@ -4350,6 +4778,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         var popoverTitle = miniPopover ? miniPopover.querySelector('.mini-popover-title') : null;
         var popoverList = miniPopover ? miniPopover.querySelector('.mini-popover-list') : null;
         var currentPopoverKey = null;
+        var lastIconCenterY = 0; // track icon center Y for arrow realignment
+        var lastIconRight   = 0; // track icon right edge for mobile popover left
+        var lastIconTop     = 0; // track icon top for mobile popover start
 
         // Responsive function to show/hide browse toggle
         function updateBrowseToggleVisibility() {
@@ -4402,6 +4833,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ],
                 'arc-welding-machine': [
                     { label: 'MIG Welding Machine', href: base + '/arc-welding-machine/mig-welding-machine.php' },
+                    { label: 'Accessories and Consumables', href: base + '/arc-welding-machine/accessories-and-consumables.php', subitems: [
+                        { label: 'Welding Torch / Gun', href: base + '/arc-welding-machine/accessories-and-consumables/welding-torch-gun.php' },
+                        { label: 'Torch Consumables', href: base + '/arc-welding-machine/accessories-and-consumables/torch-consumables.php' },
+                        { label: 'Accessories', href: base + '/arc-welding-machine/accessories-and-consumables/accessories.php' }
+                    ]},
                     { label: 'CO2/MAG Welding Machine', href: base + '/arc-welding-machine/co1-mag-welding-machine.php' },
                     { label: 'STUD Welding Machine', href: base + '/arc-welding-machine/stud-welding-machine.php' },
                     { label: 'TIG Welding Machine', href: base + '/arc-welding-machine/tig-welding-machine.php' },
@@ -4414,7 +4850,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ],
                 'drilling-and-lifting': [
                     { label: 'Lifting', href: base + '/drilling-and-lifting/lifting.php' },
-                    { label: 'Magnetic Drill', href: base + '/drilling-and-lifting/magnetic-drill.php' },
+                    { label: 'Magnetic Drill', href: base + '/drilling-and-lifting/magnetic-drill.php', subitems: [
+                        { label: 'B-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/b-line-series.php' },
+                        { label: 'RL-E Line Series', href: base + '/drilling-and-lifting/magnetic-drill/rl-e-line-series.php' },
+                        { label: 'RBX-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/rbx-line-series.php' },
+                        { label: 'SP-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/sp-line-series.php' },
+                        { label: 'V-Line Series', href: base + '/drilling-and-lifting/magnetic-drill/v-line-series.php' }
+                    ]},
                     { label: 'Cutters', href: base + '/drilling-and-lifting/cutters.php' }
                 ],
                 'gas-detectors': [
@@ -4437,10 +4879,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ],
                 'protection': [
                     { label: 'Eye Protection', href: base + '/protection/eye-protection.php' },
-                    { label: 'Hand Protection', href: base + '/protection/hand-protection.php' },
+                    { label: 'Hand Protection', href: base + '/protection/hand-protection.php', subitems: [
+                        { label: 'Welding Gloves', href: base + '/protection/welding-gloves.php' },
+                        { label: 'Working Gloves', href: base + '/protection/working-gloves.php' },
+                        { label: 'Chemical and Liquid Protection Gloves', href: base + '/protection/chemical-liquid-protection-gloves.php' },
+                        { label: 'Disposable Gloves', href: base + '/protection/disposable-gloves.php' }
+                    ]},
                     { label: 'Hearing & Respiratory Protection', href: base + '/protection/hearing-respiratory-protection.php' },
                     { label: 'Welding Head and Face Protection', href: base + '/protection/welding-head-and-face-protection.php' },
-                    { label: 'Body Protection', href: base + '/protection/body-protection.php' }
+                    { label: 'Body Protection', href: base + '/protection/body-protection.php', subitems: [
+                        { label: 'Particulate and Low Hazard', href: base + '/protection/particulate-low-hazard.php' },
+                        { label: 'Liquid Spray and Splash', href: base + '/protection/liquid-spray-splash.php' },
+                        { label: 'Chemical and Flame Retardant', href: base + '/protection/chemical-flame-retardant.php' }
+                    ]}
                 ],
                 'welding-accessories': [
                     { label: 'Welding Electrode Oven', href: base + '/welding-accessories/welding-electrode-oven.php' },
@@ -4465,44 +4916,143 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             items.forEach(function(it){
                 var li = document.createElement('li');
                 li.className = 'mini-popover-item';
-                li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a>';
+                
+                if (it.subitems && it.subitems.length > 0) {
+                    // Item with subitems - add container for expanded view
+                    li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a><button class="popover-expand-btn" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>';
+                    li.className += ' has-subitems';
+                    
+                    // Create subitems container
+                    var subContainer = document.createElement('div');
+                    subContainer.className = 'popover-subitems collapsed';
+                    subContainer.innerHTML = it.subitems.map(function(sub){
+                        return '<a href="'+ sub.href +'" class="popover-subitem">'+ sub.label +'</a>';
+                    }).join('');
+                    
+                    li.appendChild(subContainer);
+                    
+                    // Add expand/collapse handler
+                    var expandBtn = li.querySelector('.popover-expand-btn');
+                    expandBtn.addEventListener('click', function(e){
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var isExpanded = expandBtn.getAttribute('aria-expanded') === 'true';
+                        if (isExpanded) {
+                            expandBtn.setAttribute('aria-expanded', 'false');
+                            subContainer.classList.add('collapsed');
+                        } else {
+                            expandBtn.setAttribute('aria-expanded', 'true');
+                            subContainer.classList.remove('collapsed');
+                        }
+                        // Adjust popover height after expanding/collapsing
+                        setTimeout(function(){
+                            adjustPopoverHeight();
+                        }, 10);
+                    });
+                } else {
+                    // Regular item
+                    li.innerHTML = '<span class="square"></span><a href="'+ it.href +'">'+ it.label +'</a>';
+                }
+                
                 popoverList.appendChild(li);
             });
             if (popoverTitle) popoverTitle.textContent = getCategoryTitle(key);
         }
+        /* Shared: compute top + arrow for a given height, centered on lastIconCenterY */
+        function _applyPosition(finalHeight) {
+            var vh = window.innerHeight;
+            var isMobile = window.innerWidth <= 768;
+
+            if (isMobile) {
+                // On mobile: align to icon top, but shift up if it would overflow the bottom
+                var popLeft   = Math.round(lastIconRight);
+                var headerMin = 90; // don't go above header
+                var bottomPad = 8;
+                var popTop    = Math.round(lastIconTop);
+                var maxH      = vh - headerMin - bottomPad;
+                var contentH  = Math.min(finalHeight, maxH);
+                // If it would overflow the bottom, shift top upward just enough
+                if (popTop + contentH > vh - bottomPad) {
+                    popTop = vh - contentH - bottomPad;
+                }
+                // Never overlap the header
+                if (popTop < headerMin) popTop = headerMin;
+
+                miniPopover.style.left   = popLeft + 'px';
+                miniPopover.style.right  = '0px';
+                miniPopover.style.width  = 'auto';
+                miniPopover.style.top    = popTop + 'px';
+                miniPopover.style.height = contentH + 'px';
+                miniPopover.style.setProperty('--arrow-offset', '-9999px');
+            } else {
+                // Desktop: center on icon
+                var headerBottom = 140;
+                var top = Math.round(lastIconCenterY - finalHeight / 2);
+                if (top < headerBottom)                top = headerBottom;
+                if (top + finalHeight > vh - 8)        top = vh - finalHeight - 8;
+                if (top < headerBottom)                top = headerBottom;
+
+                miniPopover.style.right  = '';
+                miniPopover.style.width  = '';
+                var arrowOffset = Math.round(lastIconCenterY - top - 26);
+                arrowOffset = Math.max(8, Math.min(finalHeight - 44, arrowOffset));
+
+                miniPopover.style.top    = top + 'px';
+                miniPopover.style.height = finalHeight + 'px';
+                miniPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+            }
+        }
+        function adjustPopoverHeight() {
+            if (!miniPopover) return;
+            var isMobile = window.innerWidth <= 768;
+
+            miniPopover.style.height = 'auto';
+            var naturalH = miniPopover.offsetHeight; 
+            var finalH   = Math.min(naturalH, window.innerHeight * 0.88);
+            _applyPosition(finalH);
+        }
         function positionPopoverForIcon(icon) {
             if (!miniPopover || !icon) return;
-            miniPopover.style.left = '-9999px';
-            miniPopover.style.top = '-9999px';
-            miniPopover.classList.add('show');
+
+            // Always reset mobile-specific styles first so they don't bleed into desktop
+            miniPopover.style.right = '';
+            miniPopover.style.width = '';
+
             var rect = icon.getBoundingClientRect();
-            var pw = miniPopover.offsetWidth;
-            var ph = miniPopover.offsetHeight;
-            var iconCenterY = rect.top + rect.height / 2;
+            lastIconCenterY = rect.top + rect.height / 2;
+            lastIconRight   = rect.right;
+            lastIconTop     = rect.top;
 
-            var left = Math.round(rect.right + 14);
-            var top = Math.round(iconCenterY - ph / 2);
+            var isMobile = window.innerWidth <= 768;
 
-            if (left + pw + 12 > window.innerWidth) {
-                left = Math.round(rect.left - pw - 14);
+            if (!isMobile) {
+                // Desktop: position to the right of the icon
+                var pw   = miniPopover.offsetWidth;
+                var left = Math.round(rect.right + 14);
+                if (left + pw + 12 > window.innerWidth) {
+                    left = Math.round(rect.left - pw - 14);
+                }
+                miniPopover.style.left = left + 'px';
             }
 
-            var headerHeight = 170;
-            var minTop = headerHeight + 12;
-            var maxTop = window.innerHeight - ph - 12;
-            if (top < minTop) top = minTop;
-            if (top > maxTop) top = maxTop;
+            // Measure true height off-screen, then position
+            miniPopover.style.height = 'auto';
+            miniPopover.style.top    = '-9999px';
+            miniPopover.classList.add('show');
 
-            var arrowOffset = iconCenterY - top - 26;
-            miniPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+            var naturalH = miniPopover.offsetHeight;
+            var finalH   = Math.min(naturalH, window.innerHeight * 0.88);
 
-            miniPopover.style.left = left + 'px';
-            miniPopover.style.top = top + 'px';
+            _applyPosition(finalH);
         }
         function hidePopover() {
             if (!miniPopover) return;
             miniPopover.classList.remove('show');
             miniPopover.setAttribute('aria-hidden', 'true');
+            // Reset all inline styles so next open starts clean
+            miniPopover.style.right  = '';
+            miniPopover.style.width  = '';
+            miniPopover.style.height = '';
             currentPopoverKey = null;
         }
         function showPopoverForKey(key, icon) {
@@ -4511,11 +5061,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 hidePopover();
                 return;
             }
+            // Reset while we measure new content
+            miniPopover.classList.remove('show');
+            miniPopover.style.left = '-9999px';
+            miniPopover.style.top  = '-9999px';
+            miniPopover.style.height = 'auto';
+
             renderPopover(key);
-            positionPopoverForIcon(icon);
-            miniPopover.classList.add('show');
-            miniPopover.setAttribute('aria-hidden', 'false');
             currentPopoverKey = key;
+
+            // positionPopoverForIcon makes it visible off-screen, measures, then places it
+            positionPopoverForIcon(icon);
+            miniPopover.setAttribute('aria-hidden', 'false');
         }
 
         // Close on outside click / Escape
@@ -4526,6 +5083,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             hidePopover();
         });
         document.addEventListener('keydown', function(e){ if (e.key === 'Escape') hidePopover(); });
+
+        // On resize, force-close and fully reset the popover so mobile styles never bleed into desktop
+        var _resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(_resizeTimer);
+            _resizeTimer = setTimeout(function() {
+                if (!miniPopover) return;
+                miniPopover.classList.remove('show');
+                miniPopover.setAttribute('aria-hidden', 'true');
+                miniPopover.style.right  = '';
+                miniPopover.style.width  = '';
+                miniPopover.style.height = '';
+                miniPopover.style.top    = '';
+                miniPopover.style.left   = '';
+                currentPopoverKey = null;
+            }, 150);
+        });
 
         // Browse toggle click
         if(browseToggle) {
@@ -4699,108 +5273,246 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         })();
     </script>
 
+    <!-- Step Navigation Logic -->
     <script>
-        (function(){
-            var form = document.getElementById('inquiryForm');
-            var clear = document.getElementById('clearBtn');
-            if(clear) clear.addEventListener('click', function(){ form.reset(); });
-            form.addEventListener('submit', function(e){
-                try{ document.getElementById('items_json').value = localStorage.getItem('inquiryItems')||'[]'; }catch(err){ document.getElementById('items_json').value='[]'; }
+    (function() {
+        // Allow clicking a selected radio card to deselect it (highlight updates via :checked CSS)
+        document.querySelectorAll('.radio-card').forEach(function(card) {
+            var radio = card.querySelector('input[type="radio"]');
+            // Record state before click (label click re-checks the radio after our handler)
+            card.addEventListener('mousedown', function() {
+                radio._wasChecked = radio.checked;
             });
-        })();
+            card.addEventListener('click', function() {
+                if (radio._wasChecked) {
+                    // Uncheck after browser finishes processing the label click
+                    setTimeout(function() {
+                        radio.checked = false;
+                        radio.dispatchEvent(new Event('change', { bubbles: true }));
+                    }, 0);
+                }
+            });
+        });
+        var steps = document.querySelectorAll('.inq-step');
+        var cards = [
+            document.getElementById('card-items'),
+            document.getElementById('card-contact'),
+            document.getElementById('card-prefs'),
+            document.getElementById('card-submit')
+        ];
+
+        // Click step → scroll to card
+        steps.forEach(function(step) {
+            step.addEventListener('click', function() {
+                var targetId = step.getAttribute('data-target');
+                var target = document.getElementById(targetId);
+                if (target) {
+                    var offset = 160;
+                    var top = target.getBoundingClientRect().top + window.scrollY - offset;
+                    window.scrollTo({ top: top, behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Set active step based on scroll position
+        function setActiveStep(idx) {
+            steps.forEach(function(s, i) {
+                s.classList.toggle('active', i === idx);
+            });
+        }
+
+        // IntersectionObserver — highlight step when card enters viewport
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    var idx = cards.indexOf(entry.target);
+                    if (idx !== -1) setActiveStep(idx);
+                }
+            });
+        }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
+
+        cards.forEach(function(card) { if (card) observer.observe(card); });
+
+        // Mark step as completed when required fields in that card are filled
+        function checkCompletion() {
+            // Step 2 (Contact) — all required fields filled
+            var contactFields = ['fullname','company','email','phone','address'];
+            var contactDone = contactFields.every(function(id) {
+                var el = document.getElementById(id);
+                return el && el.value.trim() !== '';
+            });
+            steps[1].classList.toggle('completed', contactDone);
+
+            // Step 3 (Preferences) — check if any contact_method radio is actually selected
+            var prefsDone = !!document.querySelector('input[name="contact_method"]:checked');
+            steps[2].classList.toggle('completed', prefsDone);
+
+            // Step 1 (Items) — at least 1 item
+            var hasItems = document.getElementById('inquiryTableBody') &&
+                           document.getElementById('inquiryTableBody').children.length > 0;
+            steps[0].classList.toggle('completed', hasItems);
+        }
+
+        // Listen for input changes
+        document.getElementById('inquiryForm').addEventListener('input', checkCompletion);
+        document.getElementById('inquiryForm').addEventListener('change', checkCompletion);
+
+        // Re-check after table renders (called from inquiry logic)
+        window._inqStepCheck = checkCompletion;
+    })();
     </script>
 
+    <!-- Inquiry Form Logic -->
     <script>
-        (function(){
-            function getItems(){ try{ return JSON.parse(localStorage.getItem('inquiryItems')||'[]'); }catch(e){ return []; } }
-            function setItems(items){ localStorage.setItem('inquiryItems', JSON.stringify(items)); }
-            var container = document.getElementById('inquiryItemsContainer');
+    (function() {
+        var STORAGE_KEY = 'inquiryItems';
 
-            function render(){
+        function getItems() {
+            try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+            catch(e) { return []; }
+        }
+
+        function saveItems(items) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+        }
+
+        function renderTable() {
+            var items = getItems();
+            var tbody = document.getElementById('inquiryTableBody');
+            var emptyMsg = document.getElementById('emptyMsg');
+            var table = document.getElementById('inquiryTable');
+
+            tbody.innerHTML = '';
+
+            if (items.length === 0) {
+                table.style.display = 'none';
+                emptyMsg.style.display = 'block';
+            } else {
+                table.style.display = 'table';
+                emptyMsg.style.display = 'none';
+                items.forEach(function(item, idx) {
+                    var tr = document.createElement('tr');
+                    tr.innerHTML =
+                        '<td>' + escHtml(item.name || '') + (item.brand ? '<br><span style="font-size:11px;color:#888;">(' + escHtml(item.brand) + ')</span>' : '') + '</td>' +
+                        '<td><input class="inq-qty-input" type="number" min="1" value="' + (item.qty || 1) + '" data-idx="' + idx + '"></td>' +
+                        '<td><button class="inq-remove-btn" data-idx="' + idx + '" type="button">Remove</button></td>';
+                    tbody.appendChild(tr);
+                });
+            }
+
+            // Update hidden input
+            document.getElementById('itemsJsonInput').value = JSON.stringify(items);
+
+            // Update step completion state
+            if (typeof window._inqStepCheck === 'function') window._inqStepCheck();
+        }
+
+        function escHtml(str) {
+            return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        // Event delegation for remove, qty input, and qty +/- buttons
+        document.getElementById('inquiryTableBody').addEventListener('click', function(e) {
+            var btn = e.target.closest('.inq-remove-btn');
+            if (btn) {
+                var idx = parseInt(btn.getAttribute('data-idx'));
                 var items = getItems();
-                if(items.length===0){ container.innerHTML='<p class="small">📦 No items added yet. Use <strong>"ADD TO INQUIRY LIST"</strong> on product pages to add items.</p>'; return; }
-                var html='<table><tr><th>Product</th><th style="text-align:center;">Qty</th><th style="text-align:center;">Action</th></tr>';
-                items.forEach(function(item, idx){
-                    var productName = (item.name || item.model || 'Product') + (item.brand ? ' (' + item.brand + ')' : '');
-                    html+='<tr><td>'+htmlEscape(productName)+'</td><td style="text-align:center;"><input type="number" class="qty-input" data-idx="'+idx+'" value="'+(item.qty || 1)+'" min="1"></td><td style="text-align:center;"><button type="button" class="rem-btn" data-idx="'+idx+'">Remove</button></td></tr>';
-                });
-                html+='</table>';
-                container.innerHTML=html;
+                items.splice(idx, 1);
+                saveItems(items);
+                renderTable();
+                return;
             }
-
-            function htmlEscape(text){ var map={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}; return text.replace(/[&<>"']/g, function(m){return map[m];}); }
-            function triggerBadgeUpdate() { if(typeof updateCartBadge==='function') updateCartBadge(); }
-            container.addEventListener('click', function(e){
-                var rem = e.target.closest('.rem-btn');
-                if(rem){ var idx = parseInt(rem.dataset.idx,10); var items = getItems(); items.splice(idx,1); setItems(items); render(); triggerBadgeUpdate(); }
-            });
-            container.addEventListener('change', function(e){
-                var q = e.target.closest('.qty-input');
-                if(q){ var idx = parseInt(q.dataset.idx,10); var items = getItems(); var val = parseInt(q.value,10) || 1; items[idx].qty = val; setItems(items); render(); triggerBadgeUpdate(); }
-            });
-
-            var clearBtn = document.getElementById('clearBtn');
-            if(clearBtn){ clearBtn.addEventListener('click', function(){ localStorage.removeItem('inquiryItems'); render(); triggerBadgeUpdate(); }); }
-
-            render();
-            
-            // Listen for storage changes from other tabs/windows
-            window.addEventListener('storage', function(e) {
-                if (e.key === 'inquiryItems') {
-                    render();
+            var decBtn = e.target.closest('.inq-qty-dec');
+            if (decBtn) {
+                var idx = parseInt(decBtn.getAttribute('data-idx'));
+                var items = getItems();
+                if (items[idx] && items[idx].qty > 1) {
+                    items[idx].qty = (items[idx].qty || 1) - 1;
+                    saveItems(items);
+                    renderTable();
                 }
-            });
-            
-            // Listen for items updated event from the handler
-            window.addEventListener('inquiryItemsUpdated', function(e) {
-                render();
-            });
-        })();
-    </script>
-
-    <!-- Inquiry List Handler -->
-    <script src="assets/js/inquiry-handler.js"></script>
-    
-    <script>
-        // Debug: Log localStorage contents to console
-        console.log('=== INQUIRY LIST DEBUG INFO ===');
-        console.log('localStorage inquiryItems:', localStorage.getItem('inquiryItems'));
-        console.log('Parsed items:', JSON.parse(localStorage.getItem('inquiryItems') || '[]'));
-    </script>
-    
-    <script>
-        (function(){
-            // Sync badge with storage changes
-            function updateCartBadge() {
-                var badge = document.getElementById('cartBadge');
-                if(!badge) return;
-                var items = JSON.parse(localStorage.getItem('inquiryItems') || '[]');
-                var count = items.length;
-                if(count > 0) {
-                    badge.textContent = count;
-                    badge.classList.remove('hidden');
-                } else {
-                    badge.classList.add('hidden');
+                return;
+            }
+            var incBtn = e.target.closest('.inq-qty-inc');
+            if (incBtn) {
+                var idx = parseInt(incBtn.getAttribute('data-idx'));
+                var items = getItems();
+                if (items[idx]) {
+                    items[idx].qty = (items[idx].qty || 1) + 1;
+                    saveItems(items);
+                    renderTable();
                 }
+                return;
             }
-            updateCartBadge();
-            window.addEventListener('storage', updateCartBadge);
-            window.addEventListener('inquiryItemsUpdated', updateCartBadge);
-            setInterval(updateCartBadge, 500);
-        })();
+        });
+
+        document.getElementById('inquiryTableBody').addEventListener('change', function(e) {
+            if (e.target.classList.contains('inq-qty-input')) {
+                var idx = parseInt(e.target.getAttribute('data-idx'));
+                var items = getItems();
+                var val = parseInt(e.target.value);
+                if (!isNaN(val) && val > 0) { items[idx].qty = val; }
+                saveItems(items);
+                document.getElementById('itemsJsonInput').value = JSON.stringify(items);
+            }
+        });
+
+        // Sync itemsJsonInput before submit
+        document.getElementById('inquiryForm').addEventListener('submit', function() {
+            document.getElementById('itemsJsonInput').value = JSON.stringify(getItems());
+        });
+
+        // Clear button
+        document.getElementById('clearFormBtn').addEventListener('click', function() {
+            if (confirm('Clear the form and all inquiry items?')) {
+                localStorage.removeItem(STORAGE_KEY);
+                document.getElementById('inquiryForm').reset();
+                renderTable();
+            }
+        });
+
+        // Initial render
+        renderTable();
+
+        // Re-render if localStorage changes from another tab
+        window.addEventListener('storage', function(e) {
+            if (e.key === STORAGE_KEY) renderTable();
+        });
+    })();
     </script>
 
     <script>
-        (function(){
-            var backBtn = document.getElementById('backBtn');
-            if(backBtn) {
-                backBtn.addEventListener('click', function(){
-                    window.history.back();
-                });
+    // File drop zone & file name display
+    function handleFileChange(input) {
+        var nameEl = document.getElementById('fileChosenName');
+        if (input.files && input.files.length > 0) {
+            nameEl.textContent = '\u2714 ' + input.files[0].name;
+            nameEl.style.display = 'block';
+        } else {
+            nameEl.style.display = 'none';
+        }
+    }
+    (function() {
+        var zone = document.getElementById('fileDropZone');
+        if (!zone) return;
+        zone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            zone.classList.add('drag-over');
+        });
+        zone.addEventListener('dragleave', function() {
+            zone.classList.remove('drag-over');
+        });
+        zone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            zone.classList.remove('drag-over');
+            var fileInput = zone.querySelector('input[type="file"]');
+            if (fileInput && e.dataTransfer.files.length > 0) {
+                fileInput.files = e.dataTransfer.files;
+                handleFileChange(fileInput);
             }
-        })();
+        });
+    })();
     </script>
 </body>
 </html>
-
 
