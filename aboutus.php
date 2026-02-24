@@ -2709,7 +2709,6 @@ $ytLinks = andison_get_youtube_links();
         <!-- Navigation -->
         <nav>
             <div class="nav-inner">
-                <button class="browse-toggle" id="browseToggle"><i class="bi bi-list"></i><span class="browse-text">Browse</span></button>
                 <ul class="nav-list">
                     <li>
                         <a href="home.php">Home</a>
