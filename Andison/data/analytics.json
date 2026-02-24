@@ -1,23 +1,23 @@
 {
-    "total_pageviews": 9,
-    "unique_sessions": 9,
-    "today_pageviews": 2,
-    "today_unique": 2,
+    "total_pageviews": 10,
+    "unique_sessions": 10,
+    "today_pageviews": 3,
+    "today_unique": 3,
     "today_date": "2026-02-24",
-    "week_pageviews": 3,
-    "week_unique": 3,
+    "week_pageviews": 4,
+    "week_unique": 4,
     "week_start": "2026-02-23",
-    "month_pageviews": 9,
-    "month_unique": 9,
+    "month_pageviews": 10,
+    "month_unique": 10,
     "month_key": "2026-02",
     "daily": {
         "2026-02-19": 2,
         "2026-02-20": 4,
         "2026-02-23": 1,
-        "2026-02-24": 2
+        "2026-02-24": 3
     },
     "pages": {
-        "home": 4,
+        "home": 5,
         "industries": 1,
         "brand": 3,
         "about": 1

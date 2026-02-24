@@ -1618,6 +1618,68 @@ $ytLinks = andison_get_youtube_links();
                 color: #2B11DB;
                 padding-left: 44px;
             }
+
+            /* About Us page — mobile */
+            body {
+                padding-top: 115px;
+            }
+            .page-content {
+                overflow-x: hidden;
+            }
+            .about-hero {
+                padding: 40px 20px 36px;
+            }
+            .about-hero h1 {
+                font-size: 26px;
+                letter-spacing: 0;
+                margin-bottom: 10px;
+            }
+            .about-hero p {
+                font-size: 14px;
+            }
+            .about-hero .hero-tagline {
+                font-size: 13px;
+                margin-top: 4px;
+            }
+            .about-building-wrap {
+                padding: 28px 12px 12px;
+            }
+            .about-building-inner {
+                max-width: 100%;
+                border-radius: 12px;
+            }
+            .about-company-section {
+                padding: 32px 16px 40px;
+            }
+            .about-company-card {
+                padding: 22px 18px;
+                border-radius: 10px;
+            }
+            .about-company-card p {
+                font-size: 13.5px;
+                line-height: 1.75;
+            }
+            .about-section-title {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+            .about-mvv-section {
+                padding: 32px 16px 40px;
+            }
+            .about-mvv-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                margin-top: 24px;
+            }
+            .about-mvv-body {
+                padding: 18px 18px 22px;
+            }
+            .about-mvv-body h3 {
+                font-size: 16px;
+            }
+            .about-mvv-body p {
+                font-size: 13px;
+            }
         }
 
         /* Overlay sidebar (full-height left panel) */
@@ -3191,9 +3253,6 @@ $ytLinks = andison_get_youtube_links();
         }
         @media (max-width: 640px) {
             .about-mvv-grid { grid-template-columns: 1fr; }
-            .about-hero h1 { font-size: 30px; }
-            .about-company-card { padding: 24px 20px; }
-            .about-section-title { font-size: 26px; }
         }
         .about-mvv-card {
             background: white;
@@ -3829,10 +3888,33 @@ $ytLinks = andison_get_youtube_links();
             width: 22px;
             border-radius: 4px;
         }
+        @media (max-width: 768px) {
+            .brands-carousel-section { padding: 28px 0 24px; }
+            .brands-carousel-heading { font-size: 13px; margin-bottom: 16px; letter-spacing: 1.5px; }
+            .brands-carousel-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 13px;
+            }
+            .brands-carousel-outer { gap: 6px; padding: 0 6px; }
+            .brands-carousel-dots { margin-top: 16px; gap: 6px; }
+            .brands-carousel-dot {
+                /* expand tap target with padding, keep visual tiny */
+                padding: 10px 4px;
+                width: 8px;
+                height: 8px;
+                box-sizing: content-box;
+                background-clip: content-box;
+            }
+            .brands-carousel-dot.active {
+                width: 22px;
+                padding: 10px 4px;
+            }
+        }
         @media (max-width: 600px) {
             .brands-carousel-item { width: 90px; height: 60px; padding: 8px 10px; }
             .brands-carousel-track { gap: 10px; }
-            .brands-carousel-outer { gap: 8px; padding: 0 8px; }
+            .brands-carousel-outer { gap: 6px; padding: 0 4px; }
         }
     </style>
     <script>
@@ -3931,6 +4013,31 @@ $ytLinks = andison_get_youtube_links();
 
         prevBtn.addEventListener('click', function(){ goTo(currentPage - 1); resetAuto(); });
         nextBtn.addEventListener('click', function(){ goTo(currentPage + 1); resetAuto(); });
+
+        // Touch / swipe support for mobile
+        var touchStartX = 0;
+        var touchStartY = 0;
+        var isSwiping = false;
+        viewport.addEventListener('touchstart', function(e){
+            touchStartX = e.changedTouches[0].clientX;
+            touchStartY = e.changedTouches[0].clientY;
+            isSwiping = false;
+        }, { passive: true });
+        viewport.addEventListener('touchmove', function(e){
+            var dx = Math.abs(e.changedTouches[0].clientX - touchStartX);
+            var dy = Math.abs(e.changedTouches[0].clientY - touchStartY);
+            if(dx > dy && dx > 8) isSwiping = true;
+        }, { passive: true });
+        viewport.addEventListener('touchend', function(e){
+            if(!isSwiping) return;
+            var dx = e.changedTouches[0].clientX - touchStartX;
+            if(Math.abs(dx) > 40) {
+                if(dx < 0) goTo(currentPage + 1);
+                else        goTo(currentPage - 1);
+                resetAuto();
+            }
+            isSwiping = false;
+        }, { passive: true });
 
         // Init
         buildDots();
