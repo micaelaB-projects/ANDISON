@@ -33,16 +33,6 @@ if (!function_exists('andison_get_brands_info')) {
                             ['label' => 'Key Feature',  'value' => 'Smooth and stable rotation, excellent repeatability'],
                         ],
                     ],
-                    ['model' => 'YP-080PF3', 'type' => 'Positioner / External Axis', 'badge' => '', 'image' => 'assets/brands%20items/PANASONIC/Arc Welding Robot/Panasonic Positioner 2.webp',
-                        'specs' => [
-                            ['label' => 'Type',         'value' => 'High-precision servo-driven positioner'],
-                            ['label' => 'Application',  'value' => 'Robotic welding and cutting'],
-                            ['label' => 'Motion',       'value' => 'Single-axis and dual-axis positioning'],
-                            ['label' => 'Integration',  'value' => 'Synchronizes with Panasonic robots for coordinated motion control'],
-                            ['label' => 'Construction', 'value' => 'Heavy-duty for long-term industrial use'],
-                            ['label' => 'Key Feature',  'value' => 'Smooth and stable rotation, excellent repeatability'],
-                        ],
-                    ],
                     ['model' => 'YP-130PF1', 'type' => 'Positioner / External Axis', 'badge' => '', 'image' => 'assets/brands%20items/PANASONIC/Arc Welding Robot/Panasonic Positioner 3.jpg',
                         'specs' => [
                             ['label' => 'Type',         'value' => 'High-precision servo-driven positioner'],

@@ -3168,7 +3168,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
 
         /* Brand Header Card */
         #brand-page {
-            padding-top: 120px !important;
+            padding-top: 24px !important;
         }
         .brand-header-card {
             background: #fff;
