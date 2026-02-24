@@ -4351,12 +4351,14 @@ if ($_btrack) andison_track_brand_visit($_btrack);
             'DryRod. II' => 'Dryrod',
             'Garryson' => 'Garryson',
             'Kobelco' => 'Kobelco',
+            
             'Makita' => 'Makita',
             'Metrode' => 'Metrode',
             'RAE SYSTEMS' => 'RAE SYSTEMS',
-            'ROBOT SYSTEMS' => 'ROBOT SYSTEMS',
-            'RAC' => 'RAC',
-            'SK And GAL GAGE' => 'SK And GAL GAGE',
+            'ROBOT SYSTEMS' => 'Robot Systems Peripherals',
+            'Robot Systems' => 'Robot Systems Peripherals',
+            'Robot Systems Peripherals' => 'Robot Systems Peripherals',
+            'RAC' => 'RAE SYSTEMS',
             'Spilfyter' => 'Spilfyter',
             'Tempilstik' => 'Tempilstik',
             'Truweld' => 'Truweld',
@@ -4400,6 +4402,8 @@ if ($_btrack) andison_track_brand_visit($_btrack);
             'Metrode' => 'METRODE',
             'RAE SYSTEMS' => 'RAE SYSTEMS',
             'ROBOT SYSTEMS' => 'ROBOT SYSTEMS',
+            'Robot Systems Peripherals' => 'ROBOT SYSTEMS',
+            'Robot Systems' => 'ROBOT SYSTEMS',
             'RAC' => 'RAE SYSTEMS',
             'SK And GAL GAGE' => 'SK AND GAL GAGE',
             'Spilfyter' => 'SPILFYTER',
@@ -4422,6 +4426,8 @@ if ($_btrack) andison_track_brand_visit($_btrack);
     
     // Normalize the brand name to match the array key
     $normalized_brand_name = $brand_name_map($brand_name);
+    // Overwrite display name so breadcrumb, title, h1 all show the canonical name
+    $brand_name = $normalized_brand_name;
     
     // Get brand info or use defaults
     $brand_info = isset($brands_info[$normalized_brand_name]) ? $brands_info[$normalized_brand_name] : [
@@ -4503,7 +4509,7 @@ if ($_btrack) andison_track_brand_visit($_btrack);
                             <h4>Featured Brands</h4>
                             <ul>
                                   <li><a href="brand.php?name=Panasonic%20Connect"><img src="assets/brands/PANASONIC.jpg" alt="Panasonic Connect" title="Panasonic Connect"></a></li>
-                                <li><a href="brand.php?name=Robot%20Systems"><img src="assets/brands/ROBOT SYSTEMS.png" alt="Robot Systems Peripherals" title="Robot Systems Peripherals"></a></li>
+                                <li><a href="brand.php?name=Robot%20Systems"><img src="assets/brands/ROBOT%20SYSTEMS.png" alt="Robot Systems Peripherals" title="Robot Systems Peripherals"></a></li>
                                 <li><a href="brand.php?name=Kobelco"><img src="assets/brands/KOBELCO.jpg" alt="Kobelco" title="Kobelco"></a></li>
                                 <li><a href="brand.php?name=Metrode"><img src="assets/brands/METRODE.jpg" alt="Metrode" title="Metrode"></a></li>
                                 <li><a href="brand.php?name=DryRod.%20II"><img src="assets/brands/DRYROD.jpg" alt="DryRod. II" title="DryRod. II"></a></li>
@@ -4521,7 +4527,7 @@ if ($_btrack) andison_track_brand_visit($_btrack);
                                 <li><a href="brand.php?name=SK%20And%20GAL%20GAGE"><img src="assets/brands/SK%20AND%20GAL%20GAGE.jpg" alt="SK And GAL GAGE" title="SK And GAL GAGE"></a></li>
                                 <li><a href="brand.php?name=COPPUS"><img src="assets/brands/COPPUS.jpg" alt="Coppus" title="Coppus"></a></li>
                                 <li><a href="brand.php?name=BW%20Technologies"><img src="assets/brands/BW%20TECHNOLOGIES.jpg" alt="BW Technologies" title="BW Technologies"></a></li>
-                                <li><a href="brand.php?name=RAC"><img src="assets/brands/RAE%20SYSTEMS.jpg" alt="RAE Systems" title="RAE Systems"></a></li>
+                                <li><a href="brand.php?name=RAE SYSTEMS"><img src="assets/brands/RAE%20SYSTEMS.jpg" alt="RAE Systems" title="RAE Systems"></a></li>
                                 <li><a href="brand.php?name=WELDAS"><img src="assets/brands/WELDAS.jpg" alt="Weldas" title="Weldas"></a></li>
                                 <li><a href="brand.php?name=UVEX"><img src="assets/brands/UVEX.jpg" alt="Uvex" title="Uvex"></a></li>
                                 <li><a href="brand.php?name=ACES"><img src="assets/brands/ACES.jpg" alt="Aces" title="Aces"></a></li>
@@ -4743,7 +4749,7 @@ if ($_btrack) andison_track_brand_visit($_btrack);
 
         <div class="brand-header">
             <div class="brand-logo-container">
-                <img src="assets/brands/<?php echo htmlspecialchars($logo_filename($brand_name)); ?>.jpg" alt="<?php echo $brand_name; ?>" class="brand-logo" onerror="console.log('Logo failed:', this.src); this.style.opacity='0.5';">
+                <img src="assets/brands/<?php echo htmlspecialchars($logo_filename($brand_name)); ?>.jpg" alt="<?php echo $brand_name; ?>" class="brand-logo" onerror="if(!this.dataset.tried){this.dataset.tried=1;this.src=this.src.replace('.jpg','.png');}else{this.style.opacity='0.5';}">
                 <h1><?php echo $brand_name; ?></h1>
             </div>
             <p><?php echo $brand_info['description']; ?></p>
