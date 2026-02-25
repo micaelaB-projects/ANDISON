@@ -3,10 +3,13 @@
         "description": "Leading manufacturer of welding robots and automated welding systems.",
         "products": [
             {
+                "product_name": "",
                 "model": "YD-350KR2",
                 "type": "Welding Robot",
-                "badge": "Not Available",
+                "price": "",
+                "badge": "Available",
                 "description": "",
+                "specifications": "",
                 "image": "../assets/uploads/products/yd-350kr2_20260205_083232.jpg"
             },
             {
