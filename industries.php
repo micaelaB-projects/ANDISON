@@ -93,7 +93,7 @@ $ytLinks = andison_get_youtube_links();
         }
 
         .contact-link {
-            color: rgba(255,255,255,0.95);
+            color: rgba(252, 249, 249, 0.95);
             text-decoration: none;
             font-weight: 600;
             font-size: 15px;
@@ -1322,7 +1322,7 @@ $ytLinks = andison_get_youtube_links();
             .cart-badge.hidden { display: inline-flex !important; }
 
             .header-contact {
-                display: none;
+                display: flex;
             }
 
             nav ul {
@@ -2210,7 +2210,6 @@ $ytLinks = andison_get_youtube_links();
     </style>
 </head>
 <body>
-    <?php require_once __DIR__ . '/includes/sidebar.php'; ?>
         <?php
         // Set page title
         $page_title = "Industries";
@@ -2233,22 +2232,23 @@ $ytLinks = andison_get_youtube_links();
             <div class="search-bar">
                 <form class="search-field" action="search.php" method="get">
                     <i class="bi bi-search"></i>
-                    <input type="text" name="q" placeholder="Search for products" value="<?php echo htmlspecialchars(isset($_GET['q']) ? $_GET['q'] : '', ENT_QUOTES); ?>" onkeydown="if(event.key==='Enter') this.form.submit();"
+                    <input type="text" name="q" placeholder="Search for products" value="<?php echo htmlspecialchars(isset($_GET['q']) ? $_GET['q'] : '', ENT_QUOTES); ?>" onkeydown="if(event.key==='Enter') this.form.submit();">
                 </form>
             </div>
 
-            <div class="right-actions">
+           <div class="right-actions">
                 <a href="inquirylist.php" class="inquiry-btn"><i class="bi bi-card-checklist btn-icon"></i> <span class="btn-text">INQUIRY LIST</span> <span class="cart-badge hidden" id="cartBadge">0</span></a>
                 <div class="header-contact">
                         <div class="contact-dropdown" tabindex="0" aria-haspopup="true">
-                            <a href="#contact" class="contact-link" aria-label="Contact Us">Contact Us ▾</a>
+                            <a href="javascript:void(0)" class="contact-link" aria-label="Contact Us">Contact Us &#9662;</a>
                             <div class="contact-popover" role="menu" aria-hidden="true">
-                                <button class="contact-close" aria-label="Close contact popover">✕</button>
-                                <ul class="contact-list">
-                                    <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone; ?>"><?php echo $phone; ?></a></li>
-                                    <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone2; ?>"><?php echo $phone2; ?></a></li>
-                                    <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone3; ?>"><?php echo $phone3; ?></a></li>
-                                    <li><span class="icon"><i class="bi bi-envelope"></i></span><a href="mailto:<?php echo $email; ?>"><?php echo $email; ?></a></li>
+                                <button type="button" class="contact-close" aria-label="Close contact popover">&times;</button>
+                                <p style="font-weight:700;font-size:13px;color:#2B11DB;margin-bottom:8px;padding-bottom:8px;border-bottom:2px solid #f0f0f0;">Get in Touch</p>
+                                <ul class="contact-list" style="display:block;list-style:none;margin:0;padding:6px 0;">
+                                    <li style="display:flex;gap:12px;align-items:center;padding:10px 6px;"><span class="icon" style="font-size:18px;width:28px;text-align:center;color:#2B11DB;flex-shrink:0;"><i class="bi bi-telephone-fill"></i></span><div><small style="color:#999;font-size:11px;display:block;">Landline</small><a href="tel:+12345678900" style="color:#111;text-decoration:none;font-weight:600;">+1(234) 567 8900</a></div></li>
+                                    <li style="display:flex;gap:12px;align-items:center;padding:10px 6px;"><span class="icon" style="font-size:18px;width:28px;text-align:center;color:#2B11DB;flex-shrink:0;"><i class="bi bi-telephone-fill"></i></span><div><small style="color:#999;font-size:11px;display:block;">Mobile</small><a href="tel:+16399778037398" style="color:#111;text-decoration:none;font-weight:600;">+1(639) 977 803 7398</a></div></li>
+                                    <li style="display:flex;gap:12px;align-items:center;padding:10px 6px;"><span class="icon" style="font-size:18px;width:28px;text-align:center;color:#2B11DB;flex-shrink:0;"><i class="bi bi-envelope-fill"></i></span><div><small style="color:#999;font-size:11px;display:block;">Email</small><a href="mailto:info@andison-industrial.com" style="color:#111;text-decoration:none;font-weight:600;">info@andison-industrial.com</a></div></li>
+                                    <li style="display:flex;gap:12px;align-items:center;padding:10px 6px;"><span class="icon" style="font-size:18px;width:28px;text-align:center;color:#2B11DB;flex-shrink:0;"><i class="bi bi-facebook"></i></span><div><small style="color:#999;font-size:11px;display:block;">Facebook</small><a href="https://www.facebook.com/AndisonIndustrialSalesInc" target="_blank" style="color:#111;text-decoration:none;font-weight:600;">Andison Industrial</a></div></li>
                                 </ul>
                             </div>
                         </div>
@@ -2584,52 +2584,7 @@ $ytLinks = andison_get_youtube_links();
         </div>
     </footer>
     </div><!-- /.page-content -->
-        (function(){
-            var dropdowns = document.querySelectorAll('.contact-dropdown');
-            dropdowns.forEach(function(dd){
-                var pop = dd.querySelector('.contact-popover');
-                var link = dd.querySelector('.contact-link');
-                dd.addEventListener('keydown', function(e){
-                    if(e.key === 'Escape') { link.blur(); pop.setAttribute('aria-hidden','true'); }
-                });
-                dd.addEventListener('focusin', function(){ pop.setAttribute('aria-hidden','false'); dd.setAttribute('aria-expanded','true'); });
-                dd.addEventListener('focusout', function(){ setTimeout(function(){ if(!dd.contains(document.activeElement)){ pop.setAttribute('aria-hidden','true'); dd.setAttribute('aria-expanded','false'); } }, 10); });
-                dd.addEventListener('mouseenter', function(){ 
-                    if(dd.classList.contains('closed')) return;
-                    pop.setAttribute('aria-hidden','false'); dd.setAttribute('aria-expanded','true'); 
-                });
-                dd.addEventListener('mouseleave', function(){ pop.setAttribute('aria-hidden','true'); dd.setAttribute('aria-expanded','false'); dd.classList.remove('closed'); });
-
-                // Mobile: click to toggle
-                dd.addEventListener('click', function(e){
-                    if(window.innerWidth > 768) return;
-                    e.stopPropagation();
-                    var isOpen = dd.classList.contains('open');
-                    document.querySelectorAll('.contact-dropdown').forEach(function(d){ d.classList.remove('open'); });
-                    if(!isOpen) dd.classList.add('open');
-                });
-
-                // Close button
-                var closeBtn = dd.querySelector('.contact-close');
-                if(closeBtn){
-                    closeBtn.addEventListener('click', function(e){
-                        e.stopPropagation();
-                        e.preventDefault();
-                        pop.setAttribute('aria-hidden','true');
-                        dd.setAttribute('aria-expanded','false');
-                        dd.classList.add('closed');
-                        dd.classList.remove('open');
-                        document.activeElement.blur();
-                    });
-                }
-            });
-
-            // Mobile: click outside closes all
-            document.addEventListener('click', function(){
-                if(window.innerWidth > 768) return;
-                document.querySelectorAll('.contact-dropdown').forEach(function(d){ d.classList.remove('open'); });
-            });
-        })();
+        
     </script>
     <script>
         // Hero slider functionality
@@ -2795,12 +2750,7 @@ $ytLinks = andison_get_youtube_links();
                 link.style.animationDelay = (index * 0.1) + 's';
             });
 
-            // Stagger contact list items
-            var contactItems = document.querySelectorAll('.contact-list li');
-            contactItems.forEach(function(item, index){
-                item.style.opacity = '0';
-                item.style.animation = 'fadeInUp 0.5s ease ' + (index * 0.1) + 's forwards';
-            });
+
         })();
     </script>
 

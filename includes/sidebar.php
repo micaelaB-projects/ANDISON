@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Sidebar Include File
  * Contains all CSS, HTML, and JavaScript for:
@@ -635,19 +635,13 @@ if (($andison_idx = array_search('ANDISON', $path_parts)) !== false && isset($pa
         border: 1px solid rgba(0, 215, 179, 0.3);
     }
 
-    /* ── Adjust main content for mini sidebar (footer stays fixed) ── */
+    /* ── Main content never shifts when sidebar opens/closes ── */
     section,
     .page-content,
     .main-content,
     .category-container {
-        margin-left: 0px;
-        transition: margin-left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .mini-sidebar.expanded ~ section,
-    .mini-sidebar.expanded ~ .page-content,
-    .mini-sidebar.expanded ~ .main-content,
-    .mini-sidebar.expanded ~ .category-container {
-        margin-left: 280px;
+        margin-left: 0 !important;
+        transition: none !important;
     }
     
     /* Footer remains at the bottom and scrolls with content */

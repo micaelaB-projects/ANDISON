@@ -202,10 +202,10 @@ if (!$current_category) {
             transform: translateX(-50%) translateY(-6px) scale(0.98) !important;
         }
 
-        .contact-list { list-style: none; margin: 0; padding: 6px 0; }
-        .contact-list li { display:flex; gap:12px; align-items:center; padding:10px 6px; }
-        .contact-list .icon { font-size:18px; width:28px; text-align:center; color:#2B11DB; }
-        .contact-list a { color: #111; text-decoration:none; font-weight:600; }
+        .contact-list { list-style: none !important; margin: 0 !important; padding: 6px 0 !important; display: block !important; visibility: visible !important; }
+        .contact-list li { display:flex !important; gap:12px !important; align-items:center !important; padding:10px 6px !important; visibility: visible !important; }
+        .contact-list .icon { font-size:18px !important; width:28px !important; text-align:center !important; color:#2B11DB !important; }
+        .contact-list a { color: #111 !important; text-decoration:none !important; font-weight:600 !important; }
         .contact-list a:hover { text-decoration:underline; }
 
         /* compact on mobile */
@@ -1140,16 +1140,17 @@ if (!$current_category) {
                 <a href="../inquirylist.php" class="inquiry-btn"><i class="bi bi-card-checklist btn-icon"></i> <span class="btn-text">INQUIRY LIST</span> <span class="cart-badge hidden" id="cartBadge">0</span></a>
                 <div class="header-contact">
                     <div class="contact-dropdown" tabindex="0" aria-haspopup="true">
-                        <a href="#contact" class="contact-link" aria-label="Contact Us">Contact Us ▾</a>
+                        <a href="javascript:void(0)" class="contact-link" aria-label="Contact Us">Contact Us ▾</a>
                         <div class="contact-popover" role="menu" aria-hidden="true">
-                            <button class="contact-close" aria-label="Close contact popover">✕</button>
-                            <ul class="contact-list">
-                                <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone; ?>"><?php echo $phone; ?></a></li>
-                                <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone2; ?>"><?php echo $phone2; ?></a></li>
-                                <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone3; ?>"><?php echo $phone3; ?></a></li>
-                                <li><span class="icon"><i class="bi bi-envelope"></i></span><a href="mailto:<?php echo $email; ?>"><?php echo $email; ?></a></li>
-                            </ul>
-                        </div>
+                                <button type="button" class="contact-close" aria-label="Close contact popover">&times;</button>
+                                <p style="font-weight:700;font-size:13px;color:#2B11DB;margin-bottom:8px;padding-bottom:8px;border-bottom:2px solid #f0f0f0;">Get in Touch</p>
+                                <ul class="contact-list" style="display:block!important;visibility:visible!important;list-style:none;margin:0;padding:6px 0;">
+                                    <li style="display:flex!important;gap:12px;align-items:center;padding:10px 6px;color:#333!important;"><span class="icon" style="font-size:18px;width:28px;text-align:center;color:#2B11DB!important;flex-shrink:0;"><i class="bi bi-telephone-fill"></i></span><div style="color:#333!important;"><small style="color:#999!important;font-size:11px;display:block!important;">Landline</small><a href="tel:+12345678900" style="color:#111!important;text-decoration:none;font-weight:600;">+1(234) 567 8900</a></div></li>
+                                    <li style="display:flex!important;gap:12px;align-items:center;padding:10px 6px;color:#333!important;"><span class="icon" style="font-size:18px;width:28px;text-align:center;color:#2B11DB!important;flex-shrink:0;"><i class="bi bi-telephone-fill"></i></span><div style="color:#333!important;"><small style="color:#999!important;font-size:11px;display:block!important;">Mobile</small><a href="tel:+16399778037398" style="color:#111!important;text-decoration:none;font-weight:600;">+1(639) 977 803 7398</a></div></li>
+                                    <li style="display:flex!important;gap:12px;align-items:center;padding:10px 6px;color:#333!important;"><span class="icon" style="font-size:18px;width:28px;text-align:center;color:#2B11DB!important;flex-shrink:0;"><i class="bi bi-envelope-fill"></i></span><div style="color:#333!important;"><small style="color:#999!important;font-size:11px;display:block!important;">Email</small><a href="mailto:info@andison-industrial.com" style="color:#111!important;text-decoration:none;font-weight:600;">info@andison-industrial.com</a></div></li>
+                                    <li style="display:flex!important;gap:12px;align-items:center;padding:10px 6px;color:#333!important;"><span class="icon" style="font-size:18px;width:28px;text-align:center;color:#2B11DB!important;flex-shrink:0;"><i class="bi bi-facebook"></i></span><div style="color:#333!important;"><small style="color:#999!important;font-size:11px;display:block!important;">Facebook</small><a href="https://www.facebook.com/AndisonIndustrialSalesInc" target="_blank" style="color:#111!important;text-decoration:none;font-weight:600;">Andison Industrial</a></div></li>
+                                </ul>
+                            </div>
                     </div>
                 </div>
             </div>

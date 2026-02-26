@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Product Detail Modal
  * Included by brand.php (and any other page that shows clickable product cards).
