@@ -627,9 +627,8 @@ if (($andison_idx = array_search('ANDISON', $path_parts)) !== false && isset($pa
         border: 1px solid rgba(0, 215, 179, 0.3);
     }
 
-    /* ── Adjust main content for mini sidebar ── */
+    /* ── Adjust main content for mini sidebar (footer stays fixed) ── */
     section,
-    footer,
     .page-content,
     .main-content,
     .category-container {
@@ -637,11 +636,26 @@ if (($andison_idx = array_search('ANDISON', $path_parts)) !== false && isset($pa
         transition: margin-left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .mini-sidebar.expanded ~ section,
-    .mini-sidebar.expanded ~ footer,
     .mini-sidebar.expanded ~ .page-content,
     .mini-sidebar.expanded ~ .main-content,
     .mini-sidebar.expanded ~ .category-container {
         margin-left: 280px;
+    }
+    
+    /* Footer remains fixed and doesn't move when sidebar expands */
+    footer {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        width: 100vw !important;
+        left: 0 !important;
+        right: 0 !important;
+        transition: none !important;
+        position: relative !important;
+    }
+    .mini-sidebar.expanded ~ footer {
+        margin-left: 0 !important;
+        width: 100vw !important;
+        left: 0 !important;
     }
 
     @media (max-width: 992px) {
