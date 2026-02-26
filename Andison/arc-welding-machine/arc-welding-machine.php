@@ -170,20 +170,6 @@ if (!$current_category) {
             z-index: 120;
         }
 
-        .contact-popover::before {
-            content: '';
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            top: -8px;
-            width: 0;
-            height: 0;
-            border-left: 10px solid transparent;
-            border-right: 10px solid transparent;
-            border-bottom: 10px solid #fff;
-            filter: drop-shadow(0 -1px 0 rgba(0,0,0,0.03));
-        }
-
         .contact-dropdown:hover:not(.closed) .contact-popover,
         .contact-dropdown:focus-within:not(.closed) .contact-popover {
             opacity: 1;
@@ -251,8 +237,7 @@ if (!$current_category) {
             color: #999;
         }
 
-        .search-bar .search-field::before {
-            content: '🔍';
+        .search-bar .search-field i {
             position: absolute;
             left: 12px;
             font-size: 16px;

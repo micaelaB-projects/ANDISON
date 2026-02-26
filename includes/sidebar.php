@@ -11,6 +11,46 @@
  * Usage: <?php require_once 'includes/sidebar.php'; ?>
  *        Place after <body> and after your <header>.
  */
+
+// Define the site base path for all sidebar links
+$_sidebar_base = '/ANDISON/';
+
+// ================================================================
+// ACTIVE CATEGORY DETECTION
+// ================================================================
+// Detect current page and extract category information
+$current_page = basename($_SERVER['PHP_SELF']);
+$current_path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $_SERVER['PHP_SELF']);
+$current_path = str_replace('\\', '/', $current_path); // Normalize backslashes
+
+// Extract category and subcategory from current path
+// Examples: /ANDISON/arc-welding-machine/arc-welding-machine.php => arc-welding-machine
+// Also handles deep nesting: /ANDISON/arc-welding-machine/accessories-and-consumables/welding-torch-gun.php
+$path_parts = explode('/', trim($current_path, '/'));
+$current_category = '';
+$current_subcategory = '';
+$current_nested_subcategory = '';
+
+// Find ANDISON index and extract category/subcategory/nested
+if (($andison_idx = array_search('ANDISON', $path_parts)) !== false && isset($path_parts[$andison_idx + 1])) {
+    $current_category = $path_parts[$andison_idx + 1];
+    
+    // Handle deep nesting (e.g., drilling-and-lifting/magnetic-drill/b-line-series.php)
+    if (isset($path_parts[$andison_idx + 2]) && $path_parts[$andison_idx + 2] !== $current_page) {
+        $current_subcategory = $path_parts[$andison_idx + 2];
+        
+        // Check for 4th level (nested subcategory)
+        if (isset($path_parts[$andison_idx + 3]) && $path_parts[$andison_idx + 3] !== $current_page) {
+            $current_nested_subcategory = $path_parts[$andison_idx + 3];
+        } else {
+            // The page file is at the 3rd level
+            $current_nested_subcategory = $current_page;
+        }
+    } else {
+        // Main category page (e.g., arc-welding-machine.php)
+        $current_subcategory = $current_page;
+    }
+}
 ?>
 
 <!-- Bootstrap Icons (ensures icons load regardless of parent page) -->
@@ -95,6 +135,48 @@
     }
     .sidebar-list li a.active .sidebar-icon {
         color: #2B11DB;
+    }
+    
+    /* Active parent category highlight */
+    .sidebar-list li.active-parent > a {
+        background: rgba(43, 17, 219, 0.06);
+        color: #2B11DB;
+        font-weight: 500;
+        border-left: 4px solid #2B11DB;
+        padding-left: 12px;
+    }
+    .sidebar-list li.active-parent > a .sidebar-icon {
+        color: #2B11DB;
+    }
+    
+    /* Active parent category in mini sidebar */
+    .mini-sidebar-icon.active-parent {
+        background: rgba(0, 215, 179, 0.2);
+    }
+    .mini-sidebar-icon.active-parent .sub-indicator {
+        background: #00D7B3;
+        border-color: #2B11DB;
+    }
+    
+    /* Highlight subcategory items */
+    .sidebar-sublist a.active-subcategory {
+        background: rgba(43, 17, 219, 0.12);
+        color: #2B11DB;
+        font-weight: 600;
+        border-left: 3px solid #2B11DB;
+        padding-left: 13px;
+    }
+    .sidebar-sublist a.active-subcategory:hover {
+        background: rgba(43, 17, 219, 0.18);
+    }
+    
+    /* Highlight nested subcategory items */
+    .sidebar-nested-sublist a.active-nested {
+        background: rgba(43, 17, 219, 0.15);
+        color: #2B11DB;
+        font-weight: 600;
+        border-left: 2px solid #2B11DB;
+        padding-left: 10px;
     }
     .sidebar-icon {
         color: #5b21b6;
@@ -351,7 +433,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #fff;
+        color: #00FFE0;
         font-size: 24px;
         cursor: pointer;
         position: relative;
@@ -384,19 +466,23 @@
         min-width: auto;
         margin-bottom: 12px;
         border-radius: 8px;
-        background: rgba(255,255,255,0.08);
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(0, 215, 179, 0.3);
     }
     .mini-sidebar.expanded .mini-sidebar-icon:hover {
-        background: rgba(255,255,255,0.15);
+        background: rgba(255,255,255,0.22);
+        border-color: rgba(0, 215, 179, 0.6);
         transform: translateX(4px);
     }
     .mini-sidebar.expanded .mini-sidebar-icon .label {
         display: block;
         opacity: 1;
         color: #ffffff;
+        font-weight: 500;
+        font-size: 14px;
     }
     .mini-sidebar-icon:hover {
-        background: rgba(0, 215, 179, 0.15);
+        background: rgba(0, 215, 179, 0.2);
         transform: scale(1.08);
     }
     .mini-sidebar.expanded .mini-sidebar-icon:hover {
@@ -410,6 +496,27 @@
     }
     .mini-sidebar-icon.active-icon .label {
         color: #2B11DB;
+        font-weight: 600;
+    }
+    
+    /* Also highlight active-parent class (used for category highlighting) */
+    .mini-sidebar-icon.active-parent {
+        background: #00D7B3;
+        color: #2B11DB;
+        font-weight: 600;
+    }
+    .mini-sidebar-icon.active-parent .label {
+        color: #2B11DB;
+        font-weight: 600;
+    }
+    .mini-sidebar.expanded .mini-sidebar-icon.active-parent {
+        background: rgba(0, 215, 179, 0.25);
+        color: #00FFE0;
+        border: 1.5px solid #00D7B3;
+        box-shadow: 0 0 12px rgba(0, 215, 179, 0.2);
+    }
+    .mini-sidebar.expanded .mini-sidebar-icon.active-parent .label {
+        color: #00FFE0;
         font-weight: 600;
     }
 
@@ -471,8 +578,11 @@
         justify-content: flex-start;
         width: 100%;
         height: auto;
-        padding: 12px;
+        padding: 14px;
         margin-bottom: 8px;
+        background: rgba(0, 215, 179, 0.15);
+        border: 1px solid rgba(0, 215, 179, 0.3);
+        border-radius: 8px;
     }
     .mini-sidebar.expanded .browse-label { display: inline-block !important; }
 
@@ -513,6 +623,8 @@
         padding: 14px;
         min-width: auto;
         margin-bottom: 12px;
+        background: rgba(0, 215, 179, 0.15);
+        border: 1px solid rgba(0, 215, 179, 0.3);
     }
 
     /* ── Adjust main content for mini sidebar ── */
@@ -806,6 +918,28 @@
         transform: translateX(2px) !important;
         color: #ffffff !important;
     }
+    
+    /* ── Active Popover Items ── */
+    .mini-popover-item a.active-popover-item {
+        background: rgba(0, 215, 179, 0.3);
+        color: #00FFE0;
+        font-weight: 600;
+        border-left: 3px solid #00D7B3;
+        padding-left: 17px !important;
+    }
+    .mini-popover-item a.active-popover-item:hover {
+        background: rgba(0, 215, 179, 0.4);
+    }
+    .popover-subitem.active-popover-subitem {
+        background: rgba(0, 215, 179, 0.25) !important;
+        color: #00FFE0 !important;
+        font-weight: 600 !important;
+        border-left: 2px solid #00D7B3 !important;
+        padding-left: 20px !important;
+    }
+    .popover-subitem.active-popover-subitem:hover {
+        background: rgba(0, 215, 179, 0.35) !important;
+    }
 
     /* ── Mini Popover — Mobile overrides ── */
     @media (max-width: 768px) {
@@ -876,128 +1010,136 @@
         <button id="closeSidebar" style="background: transparent; border: none; color: white; cursor: pointer; font-size: 24px; padding: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; line-height: 1;">×</button>
     </div>
     <ul class="sidebar-list">
-        <li class="has-sub">
-            <a href="arc-welding-machine/arc-welding-machine.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span><span class="sidebar-label">Arc Welding Machines</span></a>
-            <button class="sub-toggle" aria-controls="sub-arc-welding" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
-            <ul id="sub-arc-welding" class="sidebar-sublist collapsed">
-                <li><a href="arc-welding-machine/mig-welding-machine.php"><i class="bi bi-lightning-charge"></i>MIG Welding Machine</a></li>
-                <li><a href="arc-welding-machine/accessories-and-consumables.php"><i class="bi bi-bag2"></i>Accessories and Consumables</a></li>
-                <li><a href="arc-welding-machine/co1-mag-welding-machine.php"><i class="bi bi-cloud-fill"></i>CO2/MAG Welding Machine</a></li>
-                <li><a href="arc-welding-machine/stud-welding-machine.php"><i class="bi bi-record-circle"></i>STUD Welding Machine</a></li>
-                <li><a href="arc-welding-machine/tig-welding-machine.php"><i class="bi bi-activity"></i>TIG Welding Machine</a></li>
-                <li><a href="arc-welding-machine/plasma-cutting-machine.php"><i class="bi bi-fire"></i>Plasma Cutting Machine</a></li>
-            </ul>
-        </li>
-        <li class="has-sub">
-            <a href="arc-welding-robots/arc-welding-robot.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label">Arc Welding Robots</span></a>
-            <button class="sub-toggle" aria-controls="sub-arc-robots" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
-            <ul id="sub-arc-robots" class="sidebar-sublist collapsed">
-                <li><a href="arc-welding-robots/g3-controller-series.php"><i class="bi bi-cpu"></i>G3 Controller Series</a></li>
-                <li><a href="arc-welding-robots/g4-controller-series.php"><i class="bi bi-cpu-fill"></i>G4 Controller Series</a></li>
-                <li><a href="arc-welding-robots/featured-products-and-solution.php"><i class="bi bi-stars"></i>Featured Products and Solutions</a></li>
-                <li><a href="arc-welding-robots/robot-system-peripherals.php"><i class="bi bi-puzzle"></i>Robot System Peripherals</a></li>
-            </ul>
-        </li>
-        <li class="has-sub">
-            <a href="batteries/batteries.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-fill"></i></span><span class="sidebar-label">Batteries</span></a>
-            <button class="sub-toggle" aria-controls="sub-batteries" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
-            <ul id="sub-batteries" class="sidebar-sublist collapsed">
-                <li><a href="batteries/maintenance-free.php"><i class="bi bi-battery-full"></i>Maintenance Free</a></li>
-                <li><a href="batteries/low-maintenance.php"><i class="bi bi-battery-half"></i>Low Maintenance</a></li>
-                <li><a href="batteries/special-batteries.php"><i class="bi bi-battery-charging"></i>Special Batteries</a></li>
-            </ul>
-        </li>
-        <li class="has-sub">
-            <a href="drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling and Lifting</span></a>
-            <button class="sub-toggle" aria-controls="sub-drilling-lifting" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
-            <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
-                <li><a href="drilling-and-lifting/lifting.php"><i class="bi bi-arrow-up-circle-fill"></i>Lifting</a></li>
+        <li class="has-sub<?php echo ($current_category === 'arc-welding-machine') ? ' active-parent' : ''; ?>">
+            <a href="<?php echo $_sidebar_base; ?>arc-welding-machine/arc-welding-machine.php"<?php echo ($current_category === 'arc-welding-machine' && $current_subcategory === 'arc-welding-machine.php') ? ' class="active"' : ''; ?>><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-charge"></i></span><span class="sidebar-label">Arc Welding Machines</span></a>
+            <button class="sub-toggle" aria-controls="sub-arc-welding" aria-expanded="<?php echo ($current_category === 'arc-welding-machine') ? 'true' : 'false'; ?>"><i class="bi bi-chevron-down"></i></button>
+            <ul id="sub-arc-welding" class="sidebar-sublist<?php echo ($current_category === 'arc-welding-machine') ? '' : ' collapsed'; ?>">
+                <li><a href="<?php echo $_sidebar_base; ?>arc-welding-machine/mig-welding-machine.php"<?php echo ($current_category === 'arc-welding-machine' && $current_page === 'mig-welding-machine.php') ? ' class="active-subcategory"' : ''; ?>><i class="bi bi-lightning-charge"></i>MIG Welding Machine</a></li>
                 <li class="has-nested-sub">
-                    <a href="drilling-and-lifting/magnetic-drill.php"><i class="bi bi-tools"></i>Magnetic Drill</a>
-                    <button class="nested-toggle" aria-controls="nested-magnetic-drill" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>
-                    <ul id="nested-magnetic-drill" class="sidebar-nested-sublist collapsed">
-                        <li><a href="drilling-and-lifting/magnetic-drill/b-line-series.php"><i class="bi bi-dash-lg"></i>B-Line Series</a></li>
-                        <li><a href="drilling-and-lifting/magnetic-drill/rl-e-line-series.php"><i class="bi bi-dash-lg"></i>RL-E Line Series</a></li>
-                        <li><a href="drilling-and-lifting/magnetic-drill/rbx-line-series.php"><i class="bi bi-dash-lg"></i>RBX-Line Series</a></li>
-                        <li><a href="drilling-and-lifting/magnetic-drill/sp-line-series.php"><i class="bi bi-dash-lg"></i>SP-Line Series</a></li>
-                        <li><a href="drilling-and-lifting/magnetic-drill/v-line-series.php"><i class="bi bi-dash-lg"></i>V-Line Series</a></li>
+                    <a href="<?php echo $_sidebar_base; ?>arc-welding-machine/accessories-and-consumables.php"<?php echo ($current_category === 'arc-welding-machine' && ($current_page === 'accessories-and-consumables.php' || $current_subcategory === 'accessories-and-consumables')) ? ' class="active-subcategory"' : ''; ?>><i class="bi bi-bag2"></i>Accessories and Consumables</a>
+                    <button class="nested-toggle" aria-controls="nested-accessories-consumables" aria-expanded="<?php echo ($current_category === 'arc-welding-machine' && ($current_page === 'welding-torch-gun.php' || $current_page === 'torch-consumables.php' || $current_page === 'accessories.php' || $current_subcategory === 'accessories-and-consumables')) ? 'true' : 'false'; ?>"><i class="bi bi-chevron-right"></i></button>
+                    <ul id="nested-accessories-consumables" class="sidebar-nested-sublist<?php echo ($current_category === 'arc-welding-machine' && ($current_page === 'welding-torch-gun.php' || $current_page === 'torch-consumables.php' || $current_page === 'accessories.php')) ? '' : ' collapsed'; ?>">
+                        <li><a href="<?php echo $_sidebar_base; ?>arc-welding-machine/welding-torch-gun.php"<?php echo ($current_category === 'arc-welding-machine' && $current_page === 'welding-torch-gun.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-dash-lg"></i>Welding Torch / Gun</a></li>
+                        <li><a href="<?php echo $_sidebar_base; ?>arc-welding-machine/torch-consumables.php"<?php echo ($current_category === 'arc-welding-machine' && $current_page === 'torch-consumables.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-dash-lg"></i>Torch Consumables</a></li>
+                        <li><a href="<?php echo $_sidebar_base; ?>arc-welding-machine/accessories.php"<?php echo ($current_category === 'arc-welding-machine' && $current_page === 'accessories.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-dash-lg"></i>Accessories</a></li>
                     </ul>
                 </li>
-                <li><a href="drilling-and-lifting/cutters.php"><i class="bi bi-scissors"></i>Cutters</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>arc-welding-machine/co1-mag-welding-machine.php"><i class="bi bi-cloud-fill"></i>CO2/MAG Welding Machine</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>arc-welding-machine/stud-welding-machine.php"><i class="bi bi-record-circle"></i>STUD Welding Machine</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>arc-welding-machine/tig-welding-machine.php"><i class="bi bi-activity"></i>TIG Welding Machine</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>arc-welding-machine/plasma-cutting-machine.php"><i class="bi bi-fire"></i>Plasma Cutting Machine</a></li>
             </ul>
         </li>
         <li class="has-sub">
-            <a href="gas-detectors/gas-detectors.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></span><span class="sidebar-label">Gas Detectors</span></a>
+            <a href="<?php echo $_sidebar_base; ?>arc-welding-robots/arc-welding-robot.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label">Arc Welding Robots</span></a>
+            <button class="sub-toggle" aria-controls="sub-arc-robots" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
+            <ul id="sub-arc-robots" class="sidebar-sublist collapsed">
+                <li><a href="<?php echo $_sidebar_base; ?>arc-welding-robots/g3-controller-series.php"><i class="bi bi-cpu"></i>G3 Controller Series</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>arc-welding-robots/g4-controller-series.php"><i class="bi bi-cpu-fill"></i>G4 Controller Series</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>arc-welding-robots/featured-products-and-solution.php"><i class="bi bi-stars"></i>Featured Products and Solutions</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>arc-welding-robots/robot-system-peripherals.php"><i class="bi bi-puzzle"></i>Robot System Peripherals</a></li>
+            </ul>
+        </li>
+        <li class="has-sub">
+            <a href="<?php echo $_sidebar_base; ?>batteries/batteries.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-lightning-fill"></i></span><span class="sidebar-label">Batteries</span></a>
+            <button class="sub-toggle" aria-controls="sub-batteries" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
+            <ul id="sub-batteries" class="sidebar-sublist collapsed">
+                <li><a href="<?php echo $_sidebar_base; ?>batteries/maintenance-free.php"><i class="bi bi-battery-full"></i>Maintenance Free</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>batteries/low-maintenance.php"><i class="bi bi-battery-half"></i>Low Maintenance</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>batteries/special-batteries.php"><i class="bi bi-battery-charging"></i>Special Batteries</a></li>
+            </ul>
+        </li>
+        <li class="has-sub">
+            <a href="<?php echo $_sidebar_base; ?>drilling-and-lifting/drilling-and-lifting.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-hammer"></i></span><span class="sidebar-label">Drilling and Lifting</span></a>
+            <button class="sub-toggle" aria-controls="sub-drilling-lifting" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
+            <ul id="sub-drilling-lifting" class="sidebar-sublist collapsed">
+                <li><a href="<?php echo $_sidebar_base; ?>drilling-and-lifting/lifting.php"><i class="bi bi-arrow-up-circle-fill"></i>Lifting</a></li>
+                <li class="has-nested-sub">
+                    <a href="<?php echo $_sidebar_base; ?>drilling-and-lifting/magnetic-drill.php"<?php echo ($current_category === 'drilling-and-lifting' && ($current_page === 'magnetic-drill.php' || $current_subcategory === 'magnetic-drill')) ? ' class="active-subcategory"' : ''; ?>><i class="bi bi-tools"></i>Magnetic Drill</a>
+                    <button class="nested-toggle" aria-controls="nested-magnetic-drill" aria-expanded="<?php echo ($current_category === 'drilling-and-lifting' && ($current_page === 'b-line-series.php' || $current_page === 'rl-e-line-series.php' || $current_page === 'rbx-line-series.php' || $current_page === 'sp-line-series.php' || $current_page === 'v-line-series.php')) ? 'true' : 'false'; ?>"><i class="bi bi-chevron-right"></i></button>
+                    <ul id="nested-magnetic-drill" class="sidebar-nested-sublist<?php echo ($current_category === 'drilling-and-lifting' && ($current_page === 'b-line-series.php' || $current_page === 'rl-e-line-series.php' || $current_page === 'rbx-line-series.php' || $current_page === 'sp-line-series.php' || $current_page === 'v-line-series.php')) ? '' : ' collapsed'; ?>">
+                        <li><a href="<?php echo $_sidebar_base; ?>drilling-and-lifting/magnetic-drill/b-line-series.php"<?php echo ($current_category === 'drilling-and-lifting' && $current_page === 'b-line-series.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-dash-lg"></i>B-Line Series</a></li>
+                        <li><a href="<?php echo $_sidebar_base; ?>drilling-and-lifting/magnetic-drill/rl-e-line-series.php"<?php echo ($current_category === 'drilling-and-lifting' && $current_page === 'rl-e-line-series.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-dash-lg"></i>RL-E Line Series</a></li>
+                        <li><a href="<?php echo $_sidebar_base; ?>drilling-and-lifting/magnetic-drill/rbx-line-series.php"<?php echo ($current_category === 'drilling-and-lifting' && $current_page === 'rbx-line-series.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-dash-lg"></i>RBX-Line Series</a></li>
+                        <li><a href="<?php echo $_sidebar_base; ?>drilling-and-lifting/magnetic-drill/sp-line-series.php"<?php echo ($current_category === 'drilling-and-lifting' && $current_page === 'sp-line-series.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-dash-lg"></i>SP-Line Series</a></li>
+                        <li><a href="<?php echo $_sidebar_base; ?>drilling-and-lifting/magnetic-drill/v-line-series.php"<?php echo ($current_category === 'drilling-and-lifting' && $current_page === 'v-line-series.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-dash-lg"></i>V-Line Series</a></li>
+                    </ul>
+                </li>
+                <li><a href="<?php echo $_sidebar_base; ?>drilling-and-lifting/cutters.php"><i class="bi bi-scissors"></i>Cutters</a></li>
+            </ul>
+        </li>
+        <li class="has-sub">
+            <a href="<?php echo $_sidebar_base; ?>gas-detectors/gas-detectors.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-bullseye"></i></span><span class="sidebar-label">Gas Detectors</span></a>
             <button class="sub-toggle" aria-controls="sub-gas-detectors" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
             <ul id="sub-gas-detectors" class="sidebar-sublist collapsed">
-                <li><a href="gas-detectors/single-gas-detector.php"><i class="bi bi-search"></i>Single Gas Detector</a></li>
-                <li><a href="gas-detectors/multi-gas-detector.php"><i class="bi bi-grid"></i>Multi Gas Detector</a></li>
-                <li><a href="gas-detectors/portable-gas-detectors.php"><i class="bi bi-bag"></i>Portable Gas Detectors</a></li>
-                <li><a href="gas-detectors/docking-data-management.php"><i class="bi bi-hdd-network"></i>Docking and Data Management</a></li>
-                <li><a href="gas-detectors/calibration-gas-regulators.php"><i class="bi bi-sliders"></i>Calibration Gas and Regulators</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>gas-detectors/single-gas-detector.php"><i class="bi bi-search"></i>Single Gas Detector</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>gas-detectors/multi-gas-detector.php"><i class="bi bi-grid"></i>Multi Gas Detector</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>gas-detectors/portable-gas-detectors.php"><i class="bi bi-bag"></i>Portable Gas Detectors</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>gas-detectors/docking-data-management.php"><i class="bi bi-hdd-network"></i>Docking and Data Management</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>gas-detectors/calibration-gas-regulators.php"><i class="bi bi-sliders"></i>Calibration Gas and Regulators</a></li>
             </ul>
         </li>
         <li class="">
-            <a href="portable-ventilators/portable-ventilators.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-fan"></i></span><span class="sidebar-label">Portable Ventilators</span></a>
+            <a href="<?php echo $_sidebar_base; ?>portable-ventilators/portable-ventilators.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-fan"></i></span><span class="sidebar-label">Portable Ventilators</span></a>
         </li>
         <li class="has-sub">
-            <a href="power-tools/power-tools.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-tools"></i></span><span class="sidebar-label">Power Tools</span></a>
+            <a href="<?php echo $_sidebar_base; ?>power-tools/power-tools.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-tools"></i></span><span class="sidebar-label">Power Tools</span></a>
             <button class="sub-toggle" aria-controls="sub-power-tool" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
             <ul id="sub-power-tool" class="sidebar-sublist collapsed">
-                <li><a href="power-tools/grinder.php"><i class="bi bi-circle-fill"></i>Grinder</a></li>
-                <li><a href="power-tools/saw.php"><i class="bi bi-app"></i>Saw</a></li>
-                <li><a href="power-tools/drill-and-wrench.php"><i class="bi bi-wrench"></i>Drill and Wrench</a></li>
-                <li><a href="power-tools/rotary-and-demolition-hammer.php"><i class="bi bi-lightning-fill"></i>Rotary and Demolition Hammer</a></li>
-                <li><a href="power-tools/accessories.php"><i class="bi bi-bag-fill"></i>Accessories</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>power-tools/grinder.php"><i class="bi bi-circle-fill"></i>Grinder</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>power-tools/saw.php"><i class="bi bi-app"></i>Saw</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>power-tools/drill-and-wrench.php"><i class="bi bi-wrench"></i>Drill and Wrench</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>power-tools/rotary-and-demolition-hammer.php"><i class="bi bi-lightning-fill"></i>Rotary and Demolition Hammer</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>power-tools/accessories.php"><i class="bi bi-bag-fill"></i>Accessories</a></li>
             </ul>
         </li>
         <li class="has-sub">
-            <a href="protection/protection.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-shield-check"></i></span><span class="sidebar-label">Personal Protective Equipment</span></a>
+            <a href="<?php echo $_sidebar_base; ?>protection/protection.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-shield-check"></i></span><span class="sidebar-label">Personal Protective Equipment</span></a>
             <button class="sub-toggle" aria-controls="sub-protection-safety" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
             <ul id="sub-protection-safety" class="sidebar-sublist collapsed">
-                <li><a href="protection/eye-protection.php"><i class="bi bi-eye-fill"></i>Eye Protection</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>protection/eye-protection.php"><i class="bi bi-eye-fill"></i>Eye Protection</a></li>
                 <li class="has-nested-sub">
-                    <a href="protection/hand-protection.php"><i class="bi bi-hand-index"></i>Hand Protection</a>
-                    <button class="nested-toggle" aria-controls="nested-hand-protection" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>
-                    <ul id="nested-hand-protection" class="sidebar-nested-sublist collapsed">
-                        <li><a href="protection/working-gloves.php"><i class="bi bi-hand-index"></i>Working Gloves</a></li>
-                        <li><a href="protection/chemical-liquid-protection-gloves.php"><i class="bi bi-shield-fill"></i>Chemical and Liquid Protection Gloves</a></li>
-                        <li><a href="protection/disposable-gloves.php"><i class="bi bi-hand-thumbs-up"></i>Disposable Gloves</a></li>
-                        <li><a href="protection/welding-gloves.php"><i class="bi bi-hand-index-thumb"></i>Welding Gloves</a></li>
+                    <a href="<?php echo $_sidebar_base; ?>protection/hand-protection.php"<?php echo ($current_category === 'protection' && ($current_page === 'hand-protection.php' || $current_subcategory === 'hand-protection')) ? ' class="active-subcategory"' : ''; ?>><i class="bi bi-hand-index"></i>Hand Protection</a>
+                    <button class="nested-toggle" aria-controls="nested-hand-protection" aria-expanded="<?php echo ($current_category === 'protection' && ($current_page === 'working-gloves.php' || $current_page === 'chemical-liquid-protection-gloves.php' || $current_page === 'disposable-gloves.php' || $current_page === 'welding-gloves.php')) ? 'true' : 'false'; ?>"><i class="bi bi-chevron-right"></i></button>
+                    <ul id="nested-hand-protection" class="sidebar-nested-sublist<?php echo ($current_category === 'protection' && ($current_page === 'working-gloves.php' || $current_page === 'chemical-liquid-protection-gloves.php' || $current_page === 'disposable-gloves.php' || $current_page === 'welding-gloves.php')) ? '' : ' collapsed'; ?>">
+                        <li><a href="<?php echo $_sidebar_base; ?>protection/working-gloves.php"<?php echo ($current_category === 'protection' && $current_page === 'working-gloves.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-hand-index"></i>Working Gloves</a></li>
+                        <li><a href="<?php echo $_sidebar_base; ?>protection/chemical-liquid-protection-gloves.php"<?php echo ($current_category === 'protection' && $current_page === 'chemical-liquid-protection-gloves.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-shield-fill"></i>Chemical and Liquid Protection Gloves</a></li>
+                        <li><a href="<?php echo $_sidebar_base; ?>protection/disposable-gloves.php"<?php echo ($current_category === 'protection' && $current_page === 'disposable-gloves.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-hand-thumbs-up"></i>Disposable Gloves</a></li>
+                        <li><a href="<?php echo $_sidebar_base; ?>protection/welding-gloves.php"<?php echo ($current_category === 'protection' && $current_page === 'welding-gloves.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-hand-index-thumb"></i>Welding Gloves</a></li>
                     </ul>
                 </li>
-                <li><a href="protection/hearing-respiratory-protection.php"><i class="bi bi-headphones"></i>Hearing &amp; Respiratory Protection</a></li>
-                <li><a href="protection/welding-head-and-face-protection.php"><i class="bi bi-person-bounding-box"></i>Welding Head and Face Protection</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>protection/hearing-respiratory-protection.php"><i class="bi bi-headphones"></i>Hearing &amp; Respiratory Protection</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>protection/welding-head-and-face-protection.php"><i class="bi bi-person-bounding-box"></i>Welding Head and Face Protection</a></li>
                 <li class="has-nested-sub">
-                    <a href="protection/body-protection.php"><i class="bi bi-person-fill"></i>Body Protection</a>
-                    <button class="nested-toggle" aria-controls="nested-body-protection" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>
-                    <ul id="nested-body-protection" class="sidebar-nested-sublist collapsed">
-                        <li><a href="protection/chemical-flame-retardant.php"><i class="bi bi-fire"></i>Chemical and Flame Retardant</a></li>
-                        <li><a href="protection/liquid-spray-splash.php"><i class="bi bi-droplet-fill"></i>Liquid Spray and Splash</a></li>
-                        <li><a href="protection/particulate-low-hazard.php"><i class="bi bi-wind"></i>Particulate and Low Hazard</a></li>
+                    <a href="<?php echo $_sidebar_base; ?>protection/body-protection.php"<?php echo ($current_category === 'protection' && ($current_page === 'body-protection.php' || $current_subcategory === 'body-protection')) ? ' class="active-subcategory"' : ''; ?>><i class="bi bi-person-fill"></i>Body Protection</a>
+                    <button class="nested-toggle" aria-controls="nested-body-protection" aria-expanded="<?php echo ($current_category === 'protection' && ($current_page === 'chemical-flame-retardant.php' || $current_page === 'liquid-spray-splash.php' || $current_page === 'particulate-low-hazard.php')) ? 'true' : 'false'; ?>"><i class="bi bi-chevron-right"></i></button>
+                    <ul id="nested-body-protection" class="sidebar-nested-sublist<?php echo ($current_category === 'protection' && ($current_page === 'chemical-flame-retardant.php' || $current_page === 'liquid-spray-splash.php' || $current_page === 'particulate-low-hazard.php')) ? '' : ' collapsed'; ?>">
+                        <li><a href="<?php echo $_sidebar_base; ?>protection/chemical-flame-retardant.php"<?php echo ($current_category === 'protection' && $current_page === 'chemical-flame-retardant.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-fire"></i>Chemical and Flame Retardant</a></li>
+                        <li><a href="<?php echo $_sidebar_base; ?>protection/liquid-spray-splash.php"<?php echo ($current_category === 'protection' && $current_page === 'liquid-spray-splash.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-droplet-fill"></i>Liquid Spray and Splash</a></li>
+                        <li><a href="<?php echo $_sidebar_base; ?>protection/particulate-low-hazard.php"<?php echo ($current_category === 'protection' && $current_page === 'particulate-low-hazard.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-wind"></i>Particulate and Low Hazard</a></li>
                     </ul>
                 </li>
             </ul>
         </li>
         <li class="has-sub">
-            <a href="welding-accessories/welding-accessories.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-gear"></i></span><span class="sidebar-label">Welding Accessories</span></a>
+            <a href="<?php echo $_sidebar_base; ?>welding-accessories/welding-accessories.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-gear"></i></span><span class="sidebar-label">Welding Accessories</span></a>
             <button class="sub-toggle" aria-controls="sub-welding-accessories" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
             <ul id="sub-welding-accessories" class="sidebar-sublist collapsed">
-                <li><a href="welding-accessories/welding-electrode-oven.php"><i class="bi bi-thermometer"></i>Welding Electrode Oven</a></li>
-                <li><a href="welding-accessories/non-destructive-crack-detection.php"><i class="bi bi-search"></i>Non-Destructive Crack Detection</a></li>
-                <li><a href="welding-accessories/gas-saving-regulator.php"><i class="bi bi-droplet"></i>Gas Saving Regulator</a></li>
-                <li><a href="welding-accessories/gas-cutting-equipment.php"><i class="bi bi-scissors"></i>Gas Cutting Equipment</a></li>
-                <li><a href="welding-accessories/industrial-markers.php"><i class="bi bi-pen-fill"></i>Industrial Markers</a></li>
-                <li><a href="welding-accessories/measuring-gauge.php"><i class="bi bi-rulers"></i>Measuring Gauge</a></li>
-                <li><a href="welding-accessories/others.php"><i class="bi bi-three-dots"></i>Others</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>welding-accessories/welding-electrode-oven.php"><i class="bi bi-thermometer"></i>Welding Electrode Oven</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>welding-accessories/non-destructive-crack-detection.php"><i class="bi bi-search"></i>Non-Destructive Crack Detection</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>welding-accessories/gas-saving-regulator.php"><i class="bi bi-droplet"></i>Gas Saving Regulator</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>welding-accessories/gas-cutting-equipment.php"><i class="bi bi-scissors"></i>Gas Cutting Equipment</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>welding-accessories/industrial-markers.php"><i class="bi bi-pen-fill"></i>Industrial Markers</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>welding-accessories/measuring-gauge.php"><i class="bi bi-rulers"></i>Measuring Gauge</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>welding-accessories/others.php"><i class="bi bi-three-dots"></i>Others</a></li>
             </ul>
         </li>
         <li class="has-sub">
-            <a href="welding-consumables/welding-consumables.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-box"></i></span><span class="sidebar-label">Welding Consumables</span></a>
+            <a href="<?php echo $_sidebar_base; ?>welding-consumables/welding-consumables.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-box"></i></span><span class="sidebar-label">Welding Consumables</span></a>
             <button class="sub-toggle" aria-controls="sub-welding-consumables" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
             <ul id="sub-welding-consumables" class="sidebar-sublist collapsed">
-                <li><a href="welding-consumables/kobelco.php"><i class="bi bi-award"></i>Kobelco</a></li>
-                <li><a href="welding-consumables/metrode.php"><i class="bi bi-award-fill"></i>Metrode</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>welding-consumables/kobelco.php"><i class="bi bi-award"></i>Kobelco</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>welding-consumables/metrode.php"><i class="bi bi-award-fill"></i>Metrode</a></li>
             </ul>
         </li>
     </ul>
@@ -1009,16 +1151,16 @@
         <i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i>
         <span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px; display: none;" class="browse-label">BROWSE CATEGORIES</span>
     </div>
-    <div class="mini-sidebar-icon has-sub" data-target="arc-welding-machine/arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-    <div class="mini-sidebar-icon has-sub" data-target="arc-welding-robots/arc-welding-robot.php" title="Arc Welding Robots"><i class="bi bi-robot"></i><span class="label">Arc Welding Robots</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-    <div class="mini-sidebar-icon has-sub" data-target="batteries/batteries.php" title="Batteries"><i class="bi bi-lightning-fill"></i><span class="label">Batteries</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-    <div class="mini-sidebar-icon has-sub" data-target="drilling-and-lifting/drilling-and-lifting.php" title="Drilling and Lifting"><i class="bi bi-hammer"></i><span class="label">Drilling and Lifting</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-    <div class="mini-sidebar-icon has-sub" data-target="gas-detectors/gas-detectors.php" title="Gas Detectors"><i class="bi bi-bullseye"></i><span class="label">Gas Detectors</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-    <div class="mini-sidebar-icon has-sub" data-target="portable-ventilators/portable-ventilators.php" title="Portable Ventilators"><i class="bi bi-fan"></i><span class="label">Portable Ventilators</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-    <div class="mini-sidebar-icon has-sub" data-target="power-tools/power-tools.php" title="Power Tools"><i class="bi bi-tools"></i><span class="label">Power Tools</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-    <div class="mini-sidebar-icon has-sub" data-target="protection/protection.php" title="Personal Protective Equipment"><i class="bi bi-shield-check"></i><span class="label">PPE</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-    <div class="mini-sidebar-icon has-sub" data-target="welding-accessories/welding-accessories.php" title="Welding Accessories"><i class="bi bi-gear"></i><span class="label">Welding Accessories</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-    <div class="mini-sidebar-icon has-sub" data-target="welding-consumables/welding-consumables.php" title="Welding Consumables"><i class="bi bi-box"></i><span class="label">Welding Consumables</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+    <div class="mini-sidebar-icon has-sub" data-target="<?php echo $_sidebar_base; ?>arc-welding-machine/arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+    <div class="mini-sidebar-icon has-sub" data-target="<?php echo $_sidebar_base; ?>arc-welding-robots/arc-welding-robot.php" title="Arc Welding Robots"><i class="bi bi-robot"></i><span class="label">Arc Welding Robots</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+    <div class="mini-sidebar-icon has-sub" data-target="<?php echo $_sidebar_base; ?>batteries/batteries.php" title="Batteries"><i class="bi bi-lightning-fill"></i><span class="label">Batteries</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+    <div class="mini-sidebar-icon has-sub" data-target="<?php echo $_sidebar_base; ?>drilling-and-lifting/drilling-and-lifting.php" title="Drilling and Lifting"><i class="bi bi-hammer"></i><span class="label">Drilling and Lifting</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+    <div class="mini-sidebar-icon has-sub" data-target="<?php echo $_sidebar_base; ?>gas-detectors/gas-detectors.php" title="Gas Detectors"><i class="bi bi-bullseye"></i><span class="label">Gas Detectors</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+    <div class="mini-sidebar-icon has-sub" data-target="<?php echo $_sidebar_base; ?>portable-ventilators/portable-ventilators.php" title="Portable Ventilators"><i class="bi bi-fan"></i><span class="label">Portable Ventilators</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+    <div class="mini-sidebar-icon has-sub" data-target="<?php echo $_sidebar_base; ?>power-tools/power-tools.php" title="Power Tools"><i class="bi bi-tools"></i><span class="label">Power Tools</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+    <div class="mini-sidebar-icon has-sub" data-target="<?php echo $_sidebar_base; ?>protection/protection.php" title="Personal Protective Equipment"><i class="bi bi-shield-check"></i><span class="label">PPE</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+    <div class="mini-sidebar-icon has-sub" data-target="<?php echo $_sidebar_base; ?>welding-accessories/welding-accessories.php" title="Welding Accessories"><i class="bi bi-gear"></i><span class="label">Welding Accessories</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+    <div class="mini-sidebar-icon has-sub" data-target="<?php echo $_sidebar_base; ?>welding-consumables/welding-consumables.php" title="Welding Consumables"><i class="bi bi-box"></i><span class="label">Welding Consumables</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
     <button class="mini-sidebar-toggle" id="expandSidebar" title="Toggle Sidebar"><i class="bi bi-chevron-right"></i></button>
 </div>
 
@@ -1245,21 +1387,119 @@
     // ── Active sidebar category highlighting ──
     setTimeout(function(){
         var currentPath = window.location.pathname.toLowerCase();
+        var currentPathClean = currentPath.replace(/\/andison\//i, '').replace(/\.php$/, '');
         var sidebar = document.getElementById('sidebar');
+        var miniSidebar = document.getElementById('miniSidebar');
         if(!sidebar) return;
+        
         var pathParts = currentPath.split('/').filter(function(p){ return p && p !== 'andison-1'; });
         var categoryList = [
             'arc-welding-machine','arc-welding-robots','batteries','drilling-and-lifting',
             'gas-detectors','portable-ventilators','power-tools','protection',
             'welding-accessories','welding-consumables'
         ];
-        var currentCategory = null;
+        
+        // Find current category, subcategory, and nested level
+        var currentCategory = null, currentSubcategory = null, currentNested = null;
         for(var i = 0; i < pathParts.length; i++){
-            if(categoryList.indexOf(pathParts[i]) !== -1){ currentCategory = pathParts[i]; break; }
+            if(categoryList.indexOf(pathParts[i]) !== -1){ 
+                currentCategory = pathParts[i]; 
+                // Next part could be subcategory
+                if(i + 1 < pathParts.length && pathParts[i + 1].indexOf('.php') === -1) {
+                    currentSubcategory = pathParts[i + 1];
+                    // Check for nested level
+                    if(i + 2 < pathParts.length && pathParts[i + 2].indexOf('.php') === -1) {
+                        currentNested = pathParts[i + 2];
+                    }
+                }
+                break; 
+            }
         }
-        if(currentCategory){
-            sidebar.querySelectorAll('.sidebar-list > li > a').forEach(function(link){
-                if(link.getAttribute('href').toLowerCase().includes(currentCategory)) link.classList.add('active');
+        
+        if(!currentCategory) return;
+        
+        // 1. Highlight and expand main sidebar category parent
+        sidebar.querySelectorAll('.sidebar-list > li').forEach(function(li){
+            var link = li.querySelector(':scope > a');
+            if(link && link.getAttribute('href').toLowerCase().includes('/' + currentCategory + '/')) {
+                li.classList.add('active-parent');
+                // Auto-expand
+                var toggle = li.querySelector('.sub-toggle');
+                var sublist = li.querySelector('.sidebar-sublist');
+                if(toggle && sublist) {
+                    toggle.setAttribute('aria-expanded', 'true');
+                    sublist.classList.remove('collapsed');
+                }
+            }
+        });
+        
+        // 2. Highlight direct subcategory/main page links
+        sidebar.querySelectorAll('.sidebar-sublist > li > a').forEach(function(link){
+            var href = link.getAttribute('href').toLowerCase();
+            var hrefClean = href.replace(/\/andison\//i, '').replace(/\.php$/, '');
+            // Match if the entire path matches or if current path contains this href
+            if(currentPathClean === hrefClean || currentPath.includes(href)) {
+                link.classList.add('active-subcategory');
+            }
+        });
+        
+        // 3. Highlight nested subcategory links and auto-expand ALL parent lists
+        sidebar.querySelectorAll('.sidebar-nested-sublist a').forEach(function(link){
+            var href = link.getAttribute('href').toLowerCase();
+            var hrefClean = href.replace(/\/andison\//i, '').replace(/\.php$/, '');
+            
+            if(currentPathClean === hrefClean || currentPath.includes(href)) {
+                link.classList.add('active-nested');
+                
+                // Get the nested list
+                var nestedList = link.closest('.sidebar-nested-sublist');
+                if(nestedList) {
+                    // Expand nested list
+                    nestedList.classList.remove('collapsed');
+                    
+                    // Expand nested toggle
+                    var nestedToggle = nestedList.previousElementSibling;
+                    if(nestedToggle && nestedToggle.classList.contains('nested-toggle')) {
+                        nestedToggle.setAttribute('aria-expanded', 'true');
+                    }
+                    
+                    // Mark parent subcategory as active
+                    var hasNestedSubLi = nestedList.closest('.has-nested-sub');
+                    if(hasNestedSubLi) {
+                        var parentSublink = hasNestedSubLi.querySelector(':scope > a');
+                        if(parentSublink) {
+                            parentSublink.classList.add('active-subcategory');
+                        }
+                        
+                        // Also ensure the parent sublist is visible
+                        var parentSublist = hasNestedSubLi.closest('.sidebar-sublist');
+                        if(parentSublist && parentSublist.classList.contains('collapsed')) {
+                            parentSublist.classList.remove('collapsed');
+                            var parentToggle = parentSublist.previousElementSibling;
+                            if(parentToggle && parentToggle.classList.contains('sub-toggle')) {
+                                parentToggle.setAttribute('aria-expanded', 'true');
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // 4. Also highlight subcategory links that are parents of nested items
+        sidebar.querySelectorAll('.sidebar-sublist > li.has-nested-sub > a').forEach(function(link){
+            var href = link.getAttribute('href').toLowerCase();
+            if(currentPathClean.indexOf(href.replace(/\/andison\//i, '').replace(/\.php$/, '')) === 0) {
+                link.classList.add('active-subcategory');
+            }
+        });
+        
+        // 5. Highlight mini-sidebar icon
+        if(miniSidebar) {
+            miniSidebar.querySelectorAll('.mini-sidebar-icon').forEach(function(icon){
+                var target = icon.getAttribute('data-target') || '';
+                if(target.toLowerCase().includes('/' + currentCategory + '/')) {
+                    icon.classList.add('active-parent');
+                }
             });
         }
     }, 500);
@@ -1314,7 +1554,7 @@
             return map[key] || 'Categories';
         }
         function getPopoverItems(key){
-            var base = '.';
+            var base = '<?php echo rtrim($_sidebar_base,"/"); ?>';
             var maps = {
                 'arc-welding-robots': [
                     { label:'G3 Controller Series',              href: base+'/arc-welding-robots/g3-controller-series.php' },
@@ -1325,9 +1565,9 @@
                 'arc-welding-machine': [
                     { label:'MIG Welding Machine',        href: base+'/arc-welding-machine/mig-welding-machine.php' },
                     { label:'Accessories and Consumables', href: base+'/arc-welding-machine/accessories-and-consumables.php', subitems:[
-                        { label:'Welding Torch / Gun', href: base+'/arc-welding-machine/accessories-and-consumables/welding-torch-gun.php' },
-                        { label:'Torch Consumables',   href: base+'/arc-welding-machine/accessories-and-consumables/torch-consumables.php' },
-                        { label:'Accessories',         href: base+'/arc-welding-machine/accessories-and-consumables/accessories.php' }
+                        { label:'Welding Torch / Gun', href: base+'/arc-welding-machine/welding-torch-gun.php' },
+                        { label:'Torch Consumables',   href: base+'/arc-welding-machine/torch-consumables.php' },
+                        { label:'Accessories',         href: base+'/arc-welding-machine/accessories.php' }
                     ]},
                     { label:'CO2/MAG Welding Machine',    href: base+'/arc-welding-machine/co1-mag-welding-machine.php' },
                     { label:'STUD Welding Machine',       href: base+'/arc-welding-machine/stud-welding-machine.php' },
@@ -1342,11 +1582,11 @@
                 'drilling-and-lifting': [
                     { label:'Lifting',        href: base+'/drilling-and-lifting/lifting.php' },
                     { label:'Magnetic Drill', href: base+'/drilling-and-lifting/magnetic-drill.php', subitems:[
-                        { label:'B-Line Series',     href: base+'/drilling-and-lifting/magnetic-drill/b-line-series.php' },
-                        { label:'RL-E Line Series',  href: base+'/drilling-and-lifting/magnetic-drill/rl-e-line-series.php' },
-                        { label:'RBX-Line Series',   href: base+'/drilling-and-lifting/magnetic-drill/rbx-line-series.php' },
-                        { label:'SP-Line Series',    href: base+'/drilling-and-lifting/magnetic-drill/sp-line-series.php' },
-                        { label:'V-Line Series',     href: base+'/drilling-and-lifting/magnetic-drill/v-line-series.php' }
+                        { label:'B-Line Series',     href: base+'/drilling-and-lifting/b-line-series.php' },
+                        { label:'RL-E Line Series',  href: base+'/drilling-and-lifting/rl-e-line-series.php' },
+                        { label:'RBX-Line Series',   href: base+'/drilling-and-lifting/rbx-line-series.php' },
+                        { label:'SP-Line Series',    href: base+'/drilling-and-lifting/sp-line-series.php' },
+                        { label:'V-Line Series',     href: base+'/drilling-and-lifting/v-line-series.php' }
                     ]},
                     { label:'Cutters', href: base+'/drilling-and-lifting/cutters.php' }
                 ],
@@ -1404,19 +1644,45 @@
         // ── Popover render ──
         function renderPopover(key){
             if(!miniPopover || !popoverList) return;
+            
+            // Get current page for highlighting
+            var currentPath = window.location.pathname.toLowerCase();
+            var currentPathClean = currentPath.replace(/\/andison\//i, '').replace(/\.php$/, '');
+            
             popoverList.innerHTML = '';
             getPopoverItems(key).forEach(function(it){
                 var li = document.createElement('li');
                 li.className = 'mini-popover-item';
+                
+                // Check if this item is active
+                var itemHrefClean = it.href.toLowerCase().replace(/\/andison\//i, '').replace(/\.php$/, '');
+                var isActive = currentPathClean === itemHrefClean || currentPath.includes(it.href.toLowerCase());
+                
                 if(it.subitems && it.subitems.length > 0){
-                    li.innerHTML = '<span class="square"></span><a href="'+it.href+'">'+it.label+'</a><button class="popover-expand-btn" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>';
+                    var activeClass = isActive ? ' active-popover-item' : '';
+                    li.innerHTML = '<span class="square"></span><a href="'+it.href+'" class="'+activeClass+'">'+it.label+'</a><button class="popover-expand-btn" aria-expanded="false"><i class="bi bi-chevron-right"></i></button>';
                     li.className += ' has-subitems';
                     var subContainer = document.createElement('div');
                     subContainer.className = 'popover-subitems collapsed';
+                    
+                    // Check if any subitems are active
+                    var hasActiveSubitem = false;
                     subContainer.innerHTML = it.subitems.map(function(sub){
-                        return '<a href="'+sub.href+'" class="popover-subitem">'+sub.label+'</a>';
+                        var subHrefClean = sub.href.toLowerCase().replace(/\/andison\//i, '').replace(/\.php$/, '');
+                        var isActiveSub = currentPathClean === subHrefClean || currentPath.includes(sub.href.toLowerCase());
+                        if(isActiveSub) hasActiveSubitem = true;
+                        return '<a href="'+sub.href+'" class="popover-subitem' + (isActiveSub ? ' active-popover-subitem' : '') + '">'+sub.label+'</a>';
                     }).join('');
+                    
                     li.appendChild(subContainer);
+                    
+                    // Auto-expand if has active subitem
+                    if(hasActiveSubitem) {
+                        subContainer.classList.remove('collapsed');
+                        var btn = li.querySelector('.popover-expand-btn');
+                        btn.setAttribute('aria-expanded', 'true');
+                    }
+                    
                     var btn = li.querySelector('.popover-expand-btn');
                     btn.addEventListener('click', function(e){
                         e.preventDefault(); e.stopPropagation();
@@ -1426,7 +1692,8 @@
                         setTimeout(adjustPopoverHeight, 10);
                     });
                 } else {
-                    li.innerHTML = '<span class="square"></span><a href="'+it.href+'">'+it.label+'</a>';
+                    var activeClass = isActive ? ' active-popover-item' : '';
+                    li.innerHTML = '<span class="square"></span><a href="'+it.href+'" class="'+activeClass+'">'+it.label+'</a>';
                 }
                 popoverList.appendChild(li);
             });

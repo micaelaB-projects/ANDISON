@@ -1,0 +1,74 @@
+[
+    {
+        "id": "arc-welding-robot-1",
+        "name": "TM/TL G3 Series",
+        "model": "TM/TL G3 Series",
+        "description": "Compact G3 controller for robotic welding applications",
+        "type": "Welding Robot",
+        "brand": "Panasonic Connect",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": "assets/brands%20items/PANASONIC/G3%20Controller%20Series/TM-TL%20G3%20Series.jpg"
+    },
+    {
+        "id": "arc-welding-robot-2",
+        "name": "TM/LZ G4 Series",
+        "model": "TM/TL G4 Series",
+        "description": "Latest generation G4 controller for advanced welding automation",
+        "type": "Welding Robot",
+        "brand": "Panasonic Connect",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": "assets/brands%20items/PANASONIC/G4%20Controller%20Series/TM-TL%20G4%20Series.jpg"
+    },
+    {
+        "id": "arc-welding-robot-3",
+        "name": "Tig Welding Robot",
+        "model": "Tig Welding Robot",
+        "description": "Specialized TIG welding robot system",
+        "type": "Welding Robot",
+        "brand": "Panasonic Connect",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": "assets/brands%20items/PANASONIC/G4%20Controller%20Series/Tig%20Welding%20Robot.jpg"
+    },
+    {
+        "id": "arc-welding-robot-4",
+        "name": "DTPS 3",
+        "model": "DTPS 3",
+        "description": "Featured solution for professional welding applications",
+        "type": "Welding Robot",
+        "brand": "Panasonic Connect",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": "assets/brands%20items/PANASONIC/Featured%20Products%20and%20Solutions/DTPS%203.jpg"
+    },
+    {
+        "id": "arc-welding-robot-5",
+        "name": "i-Reporter",
+        "model": "i-Reporter",
+        "description": "Smart reporting and monitoring system for welding operations",
+        "type": "Welding Robot",
+        "brand": "Panasonic Connect",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": "assets/brands%20items/PANASONIC/Featured%20Products%20and%20Solutions/i-Reporter.jpg"
+    },
+    {
+        "id": "arc-welding-robot-6",
+        "name": "Handling Robot for Welding",
+        "model": "Handling Robot for Welding",
+        "description": "Material handling robot specifically designed for welding operations",
+        "type": "Welding Robot",
+        "brand": "Panasonic Connect",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": "assets/brands%20items/PANASONIC/G4%20Controller%20Series/Handling%20Robot%20for%20Welding.jpg"
+    }
+]

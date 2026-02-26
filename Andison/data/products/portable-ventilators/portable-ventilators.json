@@ -1,1 +1,92 @@
-[]
+[
+    {
+        "id": "air-max-12-blower",
+        "name": "Air Max 12 Blower",
+        "model": "Air Max 12",
+        "brand": "Air Max",
+        "type": "Portable Ventilators",
+        "description": "Portable air blower for efficient ventilation and air circulation",
+        "image": "assets/brands%20items/AIR%20MAX/Air%20Max%2012.jpg",
+        "badge": ""
+    },
+    {
+        "id": "cadet-vaneaxial",
+        "name": "Cadet Vaneaxial Ventilator",
+        "model": "Cadet VA",
+        "brand": "Cadet",
+        "type": "Portable Ventilators",
+        "description": "Professional Cadet vaneaxial ventilation system",
+        "image": "assets/brands%20items/CADET/Cadet%20VA.jpg",
+        "badge": ""
+    },
+    {
+        "id": "cadet-centrifugal",
+        "name": "Cadet Centrifugal Ventilator",
+        "model": "Cadet CF",
+        "brand": "Cadet",
+        "type": "Portable Ventilators",
+        "description": "High-performance Cadet centrifugal ventilation equipment",
+        "image": "assets/brands%20items/CADET/Cadet%20CF.jpg",
+        "badge": ""
+    },
+    {
+        "id": "double-duty-heat-killer",
+        "name": "Double Duty Heat Killer",
+        "model": "Double Duty HK",
+        "brand": "Heat Killer",
+        "type": "Portable Ventilators",
+        "description": "Dual-function heat dissipation and cooling ventilator",
+        "image": "assets/brands%20items/HEAT%20KILLER/Double%20Duty%20HK.jpg",
+        "badge": ""
+    },
+    {
+        "id": "jecta-ventilator",
+        "name": "Jecta I Ventilator",
+        "model": "Jecta I",
+        "brand": "Jecta",
+        "type": "Portable Ventilators",
+        "description": "Professional-grade Jecta ventilation system",
+        "image": "assets/brands%20items/JECTA/Jecta%20I.jpg",
+        "badge": ""
+    },
+    {
+        "id": "hornet-hp-ventilator",
+        "name": "Hornet HP Ventilator",
+        "model": "Hornet HP",
+        "brand": "Hornet",
+        "type": "Portable Ventilators",
+        "description": "High-performance Hornet HP ventilation equipment",
+        "image": "assets/brands%20items/HORNET/Hornet%20HP.jpg",
+        "badge": ""
+    },
+    {
+        "id": "reaction-fans",
+        "name": "Reaction Fans",
+        "model": "Reaction",
+        "brand": "Reaction",
+        "type": "Portable Ventilators",
+        "description": "High-performance reaction fans for powerful ventilation",
+        "image": "assets/brands%20items/REACTION/Reaction.jpg",
+        "badge": ""
+    },
+    {
+        "id": "vano-175-cv",
+        "name": "Vano 175 CV",
+        "model": "Vano 175 CV",
+        "brand": "Vano",
+        "type": "Portable Ventilators",
+        "description": "Vano 175 CV portable ventilation system",
+        "image": "assets/brands%20items/VANO/Vano%20175%20CV.jpg",
+        "badge": ""
+    },
+    {
+        "id": "vano-250-cv",
+        "name": "Vano 250 CV",
+        "model": "Vano 250 CV",
+        "brand": "Vano",
+        "type": "Portable Ventilators",
+        "description": "High-capacity Vano 250 CV ventilation equipment",
+        "image": "assets/brands%20items/VANO/Vano%20250%20CV.jpg",
+        "badge": ""
+    }
+]

@@ -161,20 +161,6 @@ if (!$current_category) {
             z-index: 120;
         }
 
-        .contact-popover::before {
-            content: '';
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            top: -8px;
-            width: 0;
-            height: 0;
-            border-left: 10px solid transparent;
-            border-right: 10px solid transparent;
-            border-bottom: 10px solid #fff;
-            filter: drop-shadow(0 -1px 0 rgba(0,0,0,0.03));
-        }
-
         .contact-dropdown:hover:not(.closed) .contact-popover,
         .contact-dropdown:focus-within:not(.closed) .contact-popover {
             opacity: 1;
@@ -267,8 +253,7 @@ if (!$current_category) {
             color: #999;
         }
 
-        .search-bar .search-field::before {
-            content: '🔍';
+        .search-bar .search-field i {
             position: absolute;
             left: 12px;
             font-size: 16px;
@@ -406,30 +391,9 @@ if (!$current_category) {
             transition: color 180ms ease, background 180ms ease;
         }
 
-        .nav-list > li > a::after {
-            content: '';
-            position: absolute;
-            left: 50%;
-            bottom: 2px;
-            transform: translateX(-50%) scaleX(0);
-            transform-origin: center;
-            width: 44px;
-            height: 5px;
-            border-radius: 6px;
-            background: linear-gradient(90deg, #00ffd1 0%, #00d4aa 50%, #2B11DB 100%);
-            box-shadow: 0 2px 10px rgba(0,212,170,0.35);
-            pointer-events: none;
-            transition: transform 180ms ease, width 180ms ease;
-        }
-
         .nav-list > li > a:hover {
             background: rgba(0,0,0,0.10);
             border-radius: 6px;
-        }
-
-        .nav-list > li > a:hover::after {
-            transform: translateX(-50%) scaleX(1);
-            width: 44px;
         }
 
         .nav-list > li > a.active {
@@ -438,11 +402,6 @@ if (!$current_category) {
             font-weight: 700;
             border-radius: 6px;
             box-shadow: inset 0 -6px 18px rgba(0,0,0,0.06);
-        }
-
-        .nav-list > li > a.active::after {
-            transform: translateX(-50%) scaleX(1);
-            width: 44px;
         }
 
         .nav-dropdown {
@@ -1643,7 +1602,7 @@ if (!$current_category) {
                 padding: 6px 8px 6px 30px;
             }
 
-            .search-bar .search-field::before {
+            .search-bar .search-field i {
                 font-size: 13px;
                 left: 8px;
             }
@@ -4159,6 +4118,7 @@ if (!$current_category) {
     </style>
 </head>
 <body>
+    <?php require_once __DIR__ . '/../includes/sidebar.php'; ?>
         <?php
         // Set page title
         $page_title = "Brands";
@@ -4304,10 +4264,7 @@ if (!$current_category) {
         </nav>
     </header>
 
-    <!-- Overlay Backdrop -->
-    <div class="overlay-backdrop" id="overlayBackdrop"></div>
-
-    <!-- Sidebar Navigation -->
+    <!-- Overlay Backdrop --><!-- Sidebar Navigation -->
     <aside id="sidebar" class="sidebar-overlay" aria-hidden="true">
         <div style="padding: 14px 20px; background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); display: flex; align-items: center; justify-content: space-between; gap: 12px;">
             <div style="display: flex; align-items: center; gap: 8px; color: white; flex: 1;">
@@ -4432,34 +4389,6 @@ if (!$current_category) {
             </li>
         </ul>
     </aside>
-
-    <!-- Mini Sidebar (Icon Bar) -->
-    <div class="mini-sidebar active" id="miniSidebar">
-        <div id="miniSidebarMenuBar" style="background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); border-radius: 0; display: flex; align-items: center; gap: 8px; cursor: pointer;">
-            <i class="bi bi-list" style="font-size: 18px; font-weight: 700; color: white;"></i>
-            <span style="font-size: 13px; font-weight: 700; color: white; letter-spacing: 0.5px;" class="browse-label">BROWSE CATEGORIES</span>
-        </div>
-        <div class="mini-sidebar-icon has-sub" data-target="arc-welding-machine.php" title="Arc Welding Machines"><i class="bi bi-lightning-charge"></i><span class="label">Arc Welding Machines</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="../arc-welding-robots/arc-welding-robot.php" title="Arc Welding Robots"><i class="bi bi-robot"></i><span class="label">Arc Welding Robots</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="../batteries/batteries.php" title="Batteries"><i class="bi bi-lightning-fill"></i><span class="label">Batteries</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="../drilling-and-lifting/drilling-and-lifting.php" title="Drilling and Lifting"><i class="bi bi-hammer"></i><span class="label">Drilling and Lifting</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="../gas-detectors/gas-detectors.php" title="Gas Detectors"><i class="bi bi-bullseye"></i><span class="label">Gas Detectors</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="../portable-ventilators/portable-ventilators.php" title="Portable Ventilators"><i class="bi bi-fan"></i><span class="label">Portable Ventilators</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="../power-tools/power-tools.php" title="Power Tools"><i class="bi bi-tools"></i><span class="label">Power Tools</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="../protection/protection.php" title="Personal Protective Equipment"><i class="bi bi-shield-check"></i><span class="label">PPE</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="../welding-accessories/welding-accessories.php" title="Welding Accessories"><i class="bi bi-gear"></i><span class="label">Welding Accessories</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <div class="mini-sidebar-icon has-sub" data-target="../welding-consumables/welding-consumables.php" title="Welding Consumables"><i class="bi bi-box"></i><span class="label">Welding Consumables</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-        <button class="mini-sidebar-toggle" id="expandSidebar" title="Toggle Sidebar"><i class="bi bi-chevron-right"></i></button>
-    </div>
-
-    <!-- Mobile FAB to show/hide mini sidebar -->
-    <button class="mobile-sidebar-fab" id="mobileSidebarFab"><i class="bi bi-chevron-right" id="mobileFabIcon"></i></button>
-
-    <!-- Floating popover for mini sidebar subcategories -->
-    <div id="miniPopover" class="mini-popover" aria-hidden="true">
-        <div class="mini-popover-header">
-            <div class="mini-popover-title">Arc Welding Robots</div>
-        </div>
         <div class="mini-popover-body">
             <ul class="mini-popover-list"></ul>
         </div>
@@ -5946,5 +5875,7 @@ if (!$current_category) {
             </div>
         </div>
     </div>
+
+
 
 
