@@ -145,7 +145,8 @@ $ytLinks = andison_get_youtube_links();
         }
 
         .contact-dropdown:hover:not(.closed) .contact-popover,
-        .contact-dropdown:focus-within:not(.closed) .contact-popover {
+        .contact-dropdown:focus-within:not(.closed) .contact-popover,
+        .contact-dropdown.open .contact-popover {
             opacity: 1;
             visibility: visible;
             transform: translateX(-50%) translateY(0) scale(1);
@@ -1832,7 +1833,7 @@ $ytLinks = andison_get_youtube_links();
             <div class="search-bar">
                 <form class="search-field" action="search.php" method="get">
                     <i class="bi bi-search"></i>
-                    <input type="text" name="q" placeholder="Search for products" value="<?php echo htmlspecialchars(isset($_GET['q']) ? $_GET['q'] : '', ENT_QUOTES); ?>" onkeydown="if(event.key==='Enter') this.form.submit();"
+                    <input type="text" name="q" placeholder="Search for products" value="<?php echo htmlspecialchars(isset($_GET['q']) ? $_GET['q'] : '', ENT_QUOTES); ?>" onkeydown="if(event.key==='Enter') this.form.submit();">
                 </form>
             </div>
 
@@ -1840,9 +1841,9 @@ $ytLinks = andison_get_youtube_links();
                 <a href="inquirylist.php" class="inquiry-btn"><i class="bi bi-card-checklist btn-icon"></i> <span class="btn-text">INQUIRY LIST</span> <span class="cart-badge hidden" id="cartBadge">0</span></a>
                 <div class="header-contact">
                         <div class="contact-dropdown" tabindex="0" aria-haspopup="true">
-                            <a href="#contact" class="contact-link" aria-label="Contact Us">Contact Us ▾</a>
+                            <a href="javascript:void(0)" class="contact-link" aria-label="Contact Us">Contact Us ▾</a>
                             <div class="contact-popover" role="menu" aria-hidden="true">
-                                <button class="contact-close" aria-label="Close contact popover">✕</button>
+                                <button type="button" class="contact-close" aria-label="Close contact popover">✕</button>
                                 <ul class="contact-list">
                                     <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone; ?>"><?php echo $phone; ?></a></li>
                                     <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone2; ?>"><?php echo $phone2; ?></a></li>
@@ -2218,9 +2219,8 @@ $ytLinks = andison_get_youtube_links();
                 });
                 dd.addEventListener('mouseleave', function(){ pop.setAttribute('aria-hidden','true'); dd.setAttribute('aria-expanded','false'); dd.classList.remove('closed'); });
 
-                // Mobile: click to toggle
+                // Click to toggle (all screen sizes)
                 dd.addEventListener('click', function(e){
-                    if(window.innerWidth > 768) return;
                     e.stopPropagation();
                     var isOpen = dd.classList.contains('open');
                     document.querySelectorAll('.contact-dropdown').forEach(function(d){ d.classList.remove('open'); });
@@ -2242,10 +2242,11 @@ $ytLinks = andison_get_youtube_links();
                 }
             });
 
-            // Mobile: click outside closes all
-            document.addEventListener('click', function(){
-                if(window.innerWidth > 768) return;
-                document.querySelectorAll('.contact-dropdown').forEach(function(d){ d.classList.remove('open'); });
+            // Click outside closes all
+            document.addEventListener('click', function(e){
+                if (!e.target.closest('.contact-dropdown')){
+                    document.querySelectorAll('.contact-dropdown').forEach(function(d){ d.classList.remove('open'); });
+                }
             });
         })();
     </script>

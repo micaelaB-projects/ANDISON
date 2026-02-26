@@ -1672,7 +1672,7 @@ $ytLinks = andison_get_youtube_links();
             <div class="search-bar">
                 <form class="search-field" action="search.php" method="get">
                     <i class="bi bi-search"></i>
-                    <input type="text" name="q" placeholder="Search for products" value="<?php echo htmlspecialchars(isset($_GET['q']) ? $_GET['q'] : '', ENT_QUOTES); ?>" onkeydown="if(event.key==='Enter') this.form.submit();"
+                    <input type="text" name="q" placeholder="Search for products" value="<?php echo htmlspecialchars(isset($_GET['q']) ? $_GET['q'] : '', ENT_QUOTES); ?>" onkeydown="if(event.key==='Enter') this.form.submit();">
                 </form>
             </div>
 
@@ -1680,9 +1680,9 @@ $ytLinks = andison_get_youtube_links();
                 <a href="inquirylist.php" class="inquiry-btn"><i class="bi bi-card-checklist btn-icon"></i> <span class="btn-text">INQUIRY LIST</span> <span class="cart-badge hidden" id="cartBadge">0</span></a>
                 <div class="header-contact">
                         <div class="contact-dropdown" tabindex="0" aria-haspopup="true">
-                            <a href="#contact" class="contact-link" aria-label="Contact Us">Contact Us ▾</a>
+                            <a href="javascript:void(0)" class="contact-link" aria-label="Contact Us">Contact Us ▾</a>
                             <div class="contact-popover" role="menu" aria-hidden="true">
-                                <button class="contact-close" aria-label="Close contact popover">✕</button>
+                                <button type="button" class="contact-close" aria-label="Close contact popover">✕</button>
                                 <ul class="contact-list">
                                     <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone; ?>"><?php echo $phone; ?></a></li>
                                     <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone2; ?>"><?php echo $phone2; ?></a></li>
@@ -1920,6 +1920,44 @@ $ytLinks = andison_get_youtube_links();
         </div>
     </footer>
     </div><!-- /.page-content -->
+    <script>
+    (function(){
+        // Contact Us dropdown toggle
+        var dropdowns = document.querySelectorAll('.contact-dropdown');
+        dropdowns.forEach(function(dropdown){
+            var toggle = dropdown.querySelector('.contact-link');
+            var popover = dropdown.querySelector('.contact-popover');
+            var closeBtn = dropdown.querySelector('.contact-close');
+            if (!toggle || !popover) return;
+
+            toggle.addEventListener('click', function(e){
+                e.preventDefault();
+                e.stopPropagation();
+                var isOpen = dropdown.classList.contains('open');
+                // Close all dropdowns first
+                dropdowns.forEach(function(d){ d.classList.remove('open'); d.classList.remove('closed'); });
+                if (!isOpen) dropdown.classList.add('open');
+            });
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function(e){
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropdown.classList.remove('open');
+                    dropdown.classList.add('closed');
+                    setTimeout(function(){ dropdown.classList.remove('closed'); }, 300);
+                });
+            }
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', function(e){
+            if (!e.target.closest('.contact-dropdown')){
+                dropdowns.forEach(function(d){ d.classList.remove('open'); });
+            }
+        });
+    })();
+    </script>
 </body>
 </html>
 
