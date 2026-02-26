@@ -126,6 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            background-color: #eef2fb;
         }
 
         /* Header */
@@ -1654,6 +1655,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 font-size: 14px;
                 margin-bottom: 28px;
             }
+        } /* end @media (max-width: 768px) */
         
         .nested-toggle {
             position: absolute;
@@ -1951,6 +1953,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 grid-template-columns: 1fr;
                 padding: 0 12px;
             }
+        }
 
         /* Mini popover — mobile overrides */
         @media (max-width: 768px) {
@@ -2218,6 +2221,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background: rgba(255,255,255,0.12) !important;
             transform: translateX(2px) !important;
             color: #ffffff !important;
+        }
+
+        /* Page layout */
+        .page-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        .inquiry-wrapper {
+            flex: 1;
         }
 
         /* ===== INQUIRY FORM STYLES ===== */
@@ -2779,7 +2793,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </style>
 </head>
 <body>
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/ANDISON/includes/sidebar.php'; ?>
+    
         <?php
         // Set page title
         $page_title = "Inquiry Form";
@@ -2926,11 +2940,74 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </nav>
     </header>
-
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/ANDISON/includes/sidebar.php'; ?>
     <!-- Overlay Backdrop -->
     <div class="overlay-backdrop" id="overlayBackdrop"></div>
 
-           <!-- Contact Information -->
+    <!-- Page Content -->
+    <div class="page-content">
+
+        <!-- Banner -->
+        <div class="inq-banner">
+            <div class="inq-banner-icon"><i class="bi bi-card-checklist"></i></div>
+            <h1 class="inquiry-page-title">Inquiry Form</h1>
+            <p class="inquiry-page-subtitle">Share your requirements and we'll respond within 24 hours</p>
+            <div class="inq-banner-steps">
+                <div class="inq-step active" id="step-1" data-target="card-items">
+                    <div class="inq-step-num">1</div>
+                    <div class="inq-step-label">ITEMS</div>
+                </div>
+                <div class="inq-step" id="step-2" data-target="card-contact">
+                    <div class="inq-step-num">2</div>
+                    <div class="inq-step-label">CONTACT</div>
+                </div>
+                <div class="inq-step" id="step-3" data-target="card-prefs">
+                    <div class="inq-step-num">3</div>
+                    <div class="inq-step-label">PREFERENCES</div>
+                </div>
+                <div class="inq-step" id="step-4" data-target="card-submit">
+                    <div class="inq-step-num">4</div>
+                    <div class="inq-step-label">SUBMIT</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="inquiry-wrapper">
+        <form id="inquiryForm" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="items_json" id="itemsJsonInput" value="[]">
+        <div class="inq-form-body">
+
+            <!-- Inquiry Items -->
+            <div class="inq-card" id="card-items">
+                <div class="inq-section-header">
+                    <div class="inq-section-icon"><i class="bi bi-cart3"></i></div>
+                    <div>
+                        <div class="inq-section-title">Inquiry Items</div>
+                        <div class="inq-section-desc">Products added to your inquiry list</div>
+                    </div>
+                </div>
+                <div class="inq-card-body">
+                    <table class="inq-table" id="inquiryTable" style="display:none;">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Product / Model</th>
+                                <th>Qty</th>
+                                <th>Remove</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inquiryTableBody">
+                        </tbody>
+                    </table>
+                    <div class="inq-empty-msg" id="emptyMsg">
+                        <i class="bi bi-cart-x"></i>
+                        <span>No items in your inquiry list.</span>
+                        <small>Browse our products and click "Add to inquiry" to get started</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
             <div class="inq-card" id="card-contact">
                 <div class="inq-section-header">
                     <div class="inq-section-icon teal"><i class="bi bi-person-vcard"></i></div>
@@ -3082,9 +3159,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
 
-        </form>
         </div><!-- /.inq-form-body -->
-    </div>
+        </form>
+        </div><!-- /.inquiry-wrapper -->
 
     <!-- Footer -->
     <footer>
@@ -3526,9 +3603,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 items.forEach(function(item, idx) {
                     var tr = document.createElement('tr');
                     tr.innerHTML =
-                        '<td>' + escHtml(item.name || '') + (item.brand ? '<br><span style="font-size:11px;color:#888;">(' + escHtml(item.brand) + ')</span>' : '') + '</td>' +
-                        '<td><input class="inq-qty-input" type="number" min="1" value="' + (item.qty || 1) + '" data-idx="' + idx + '"></td>' +
-                        '<td><button class="inq-remove-btn" data-idx="' + idx + '" type="button">Remove</button></td>';
+                        '<td style="color:#888;font-size:13px;font-weight:600;">' + (idx + 1) + '</td>' +
+                        '<td><span class="inq-product-name">' + escHtml(item.name || '') + '</span>' + (item.brand ? '<br><span class="inq-product-brand">' + escHtml(item.brand) + '</span>' : '') + '</td>' +
+                        '<td><div class="inq-qty-wrap"><button class="inq-qty-btn inq-qty-dec" data-idx="' + idx + '" type="button">−</button><input class="inq-qty-input" type="number" min="1" value="' + (item.qty || 1) + '" data-idx="' + idx + '"><button class="inq-qty-btn inq-qty-inc" data-idx="' + idx + '" type="button">+</button></div></td>' +
+                        '<td><button class="inq-remove-btn" data-idx="' + idx + '" type="button"><i class="bi bi-trash"></i></button></td>';
                     tbody.appendChild(tr);
                 });
             }
