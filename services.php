@@ -250,8 +250,7 @@ $ytLinks = andison_get_youtube_links();
             color: #999;
         }
 
-        .search-bar .search-field::before {
-            content: '🔍';
+        .search-bar .search-field i {
             position: absolute;
             left: 12px;
             font-size: 16px;
@@ -1320,7 +1319,7 @@ $ytLinks = andison_get_youtube_links();
                 padding: 6px 8px 6px 30px;
             }
 
-            .search-bar .search-field::before {
+            .search-bar .search-field i {
                 font-size: 13px;
                 left: 8px;
             }
@@ -1974,6 +1973,7 @@ $ytLinks = andison_get_youtube_links();
 
             <div class="search-bar">
                 <form class="search-field" action="search.php" method="get">
+                    <i class="bi bi-search"></i>
                     <input type="text" name="q" placeholder="Search for products" value="<?php echo htmlspecialchars(isset($_GET['q']) ? $_GET['q'] : '', ENT_QUOTES); ?>" onkeydown="if(event.key==='Enter') this.form.submit();">
                 </form>
             </div>
