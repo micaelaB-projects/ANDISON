@@ -1635,7 +1635,7 @@ if (!$current_category) {
             .cart-badge.hidden { display: inline-flex !important; }
 
             .header-contact {
-                display: none;
+                display: flex;
             }
 
             nav ul {
@@ -3181,7 +3181,7 @@ if (!$current_category) {
                 </ul>
             </div>
         </nav>
-    </header><?php include $_SERVER['DOCUMENT_ROOT'] . '/ANDISON/includes/sidebar.php'; ?>
+    </header>
 
         <div class="category-content">
             <h2>Welding Gloves</h2>

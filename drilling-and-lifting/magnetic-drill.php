@@ -1643,7 +1643,7 @@ $current_category['description'] = 'Professional magnetic drilling equipment for
             .cart-badge.hidden { display: inline-flex !important; }
 
             .header-contact {
-                display: none;
+                display: flex;
             }
 
             nav ul {

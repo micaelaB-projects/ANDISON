@@ -1362,7 +1362,7 @@ $ytLinks = andison_get_youtube_links();
             .cart-badge.hidden { display: inline-flex !important; }
 
             .header-contact {
-                display: none;
+                display: flex;
             }
 
             nav ul {

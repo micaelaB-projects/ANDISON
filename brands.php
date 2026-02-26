@@ -145,8 +145,7 @@ $ytLinks = andison_get_youtube_links();
         }
 
         .contact-dropdown:hover:not(.closed) .contact-popover,
-        .contact-dropdown:focus-within:not(.closed) .contact-popover,
-        .contact-dropdown.open .contact-popover {
+        .contact-dropdown:focus-within:not(.closed) .contact-popover {
             opacity: 1;
             visibility: visible;
             transform: translateX(-50%) translateY(0) scale(1);
@@ -375,6 +374,27 @@ $ytLinks = andison_get_youtube_links();
             transition: color 180ms ease, background 180ms ease;
         }
 
+        .nav-list > li > a::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 2px;
+            transform: translateX(-50%) scaleX(0);
+            transform-origin: center;
+            width: 44px;
+            height: 5px;
+            border-radius: 6px;
+            background: linear-gradient(90deg, #00ffd1 0%, #00d4aa 50%, #2B11DB 100%);
+            box-shadow: 0 2px 10px rgba(0,212,170,0.35);
+            pointer-events: none;
+            transition: transform 180ms ease, width 180ms ease;
+        }
+
+        .nav-list > li > a:hover::after {
+            transform: translateX(-50%) scaleX(1);
+            width: 44px;
+        }
+
         .nav-list > li > a:hover {
             background: rgba(0,0,0,0.10);
             border-radius: 6px;
@@ -386,6 +406,11 @@ $ytLinks = andison_get_youtube_links();
             font-weight: 700;
             border-radius: 6px;
             box-shadow: inset 0 -6px 18px rgba(0,0,0,0.06);
+        }
+
+        .nav-list > li > a.active::after {
+            transform: translateX(-50%) scaleX(1);
+            width: 44px;
         }
 
         .nav-dropdown {
@@ -1347,7 +1372,7 @@ $ytLinks = andison_get_youtube_links();
             .cart-badge.hidden { display: inline-flex !important; }
 
             .header-contact {
-                display: none;
+                display: flex;
             }
 
             nav ul {
@@ -1833,7 +1858,7 @@ $ytLinks = andison_get_youtube_links();
             <div class="search-bar">
                 <form class="search-field" action="search.php" method="get">
                     <i class="bi bi-search"></i>
-                    <input type="text" name="q" placeholder="Search for products" value="<?php echo htmlspecialchars(isset($_GET['q']) ? $_GET['q'] : '', ENT_QUOTES); ?>" onkeydown="if(event.key==='Enter') this.form.submit();">
+                    <input type="text" name="q" placeholder="Search for products" value="<?php echo htmlspecialchars(isset($_GET['q']) ? $_GET['q'] : '', ENT_QUOTES); ?>" onkeydown="if(event.key==='Enter') this.form.submit();"
                 </form>
             </div>
 
@@ -1841,9 +1866,9 @@ $ytLinks = andison_get_youtube_links();
                 <a href="inquirylist.php" class="inquiry-btn"><i class="bi bi-card-checklist btn-icon"></i> <span class="btn-text">INQUIRY LIST</span> <span class="cart-badge hidden" id="cartBadge">0</span></a>
                 <div class="header-contact">
                         <div class="contact-dropdown" tabindex="0" aria-haspopup="true">
-                            <a href="javascript:void(0)" class="contact-link" aria-label="Contact Us">Contact Us ▾</a>
+                            <a href="#contact" class="contact-link" aria-label="Contact Us">Contact Us ▾</a>
                             <div class="contact-popover" role="menu" aria-hidden="true">
-                                <button type="button" class="contact-close" aria-label="Close contact popover">✕</button>
+                                <button class="contact-close" aria-label="Close contact popover">✕</button>
                                 <ul class="contact-list">
                                     <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone; ?>"><?php echo $phone; ?></a></li>
                                     <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone2; ?>"><?php echo $phone2; ?></a></li>
@@ -2186,6 +2211,7 @@ $ytLinks = andison_get_youtube_links();
             </div>
         </div>
     </section>
+    </div><!-- /.page-content -->
 
     <!-- Footer -->
     <footer>
@@ -2200,7 +2226,6 @@ $ytLinks = andison_get_youtube_links();
             </div>
         </div>
     </footer>
-    </div><!-- /.page-content -->
     <script>
         // Manage aria states for contact dropdown (improves accessibility)
         (function(){
@@ -2219,8 +2244,9 @@ $ytLinks = andison_get_youtube_links();
                 });
                 dd.addEventListener('mouseleave', function(){ pop.setAttribute('aria-hidden','true'); dd.setAttribute('aria-expanded','false'); dd.classList.remove('closed'); });
 
-                // Click to toggle (all screen sizes)
+                // Mobile: click to toggle
                 dd.addEventListener('click', function(e){
+                    if(window.innerWidth > 768) return;
                     e.stopPropagation();
                     var isOpen = dd.classList.contains('open');
                     document.querySelectorAll('.contact-dropdown').forEach(function(d){ d.classList.remove('open'); });
@@ -2242,11 +2268,10 @@ $ytLinks = andison_get_youtube_links();
                 }
             });
 
-            // Click outside closes all
-            document.addEventListener('click', function(e){
-                if (!e.target.closest('.contact-dropdown')){
-                    document.querySelectorAll('.contact-dropdown').forEach(function(d){ d.classList.remove('open'); });
-                }
+            // Mobile: click outside closes all
+            document.addEventListener('click', function(){
+                if(window.innerWidth > 768) return;
+                document.querySelectorAll('.contact-dropdown').forEach(function(d){ d.classList.remove('open'); });
             });
         })();
     </script>

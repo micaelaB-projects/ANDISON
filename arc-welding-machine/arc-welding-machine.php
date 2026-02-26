@@ -1634,7 +1634,7 @@ if (!$current_category) {
             .cart-badge.hidden { display: inline-flex !important; }
 
             .header-contact {
-                display: none;
+                display: flex;
             }
 
             nav ul {
@@ -3182,8 +3182,6 @@ if (!$current_category) {
             </div>
         </nav>
     </header>
-
-    <!-- Overlay Backdrop --><?php include $_SERVER['DOCUMENT_ROOT'] . '/ANDISON/includes/sidebar.php'; ?>
 
         <div class="category-content">
             <h2><?php echo htmlspecialchars($current_category['name'] ?? 'Arc Welding Machines'); ?></h2>

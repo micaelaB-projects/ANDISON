@@ -1170,8 +1170,6 @@ if (!$current_category) {
         </nav>
     </header>
 
-    <!-- Overlay Backdrop --><?php include $_SERVER['DOCUMENT_ROOT'] . '/ANDISON/includes/sidebar.php'; ?>
-
     <div class="category-content">
         <h2>Welding Torch Gun</h2>
         

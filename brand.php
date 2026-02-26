@@ -1466,7 +1466,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             .cart-badge.hidden { display: inline-flex !important; }
 
             .header-contact {
-                display: none;
+                display: flex;
             }
 
             nav ul {
@@ -4056,6 +4056,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
 
         </div>
     </section>
+    </div><!-- /.page-content -->
 
     <!-- Footer -->
     <footer>
@@ -4070,7 +4071,6 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             </div>
         </div>
     </footer>
-    </div><!-- /.page-content -->
 
     <script>
     // ===== BRAND PAGE: PRODUCTS LOGIC =====

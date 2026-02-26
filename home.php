@@ -374,6 +374,27 @@ $ytLinks = andison_get_youtube_links();
             transition: color 180ms ease, background 180ms ease;
         }
 
+        .nav-list > li > a::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 2px;
+            transform: translateX(-50%) scaleX(0);
+            transform-origin: center;
+            width: 44px;
+            height: 5px;
+            border-radius: 6px;
+            background: linear-gradient(90deg, #00ffd1 0%, #00d4aa 50%, #2B11DB 100%);
+            box-shadow: 0 2px 10px rgba(0,212,170,0.35);
+            pointer-events: none;
+            transition: transform 180ms ease, width 180ms ease;
+        }
+
+        .nav-list > li > a:hover::after {
+            transform: translateX(-50%) scaleX(1);
+            width: 44px;
+        }
+
         .nav-list > li > a:hover {
             background: rgba(0,0,0,0.10);
             border-radius: 6px;
@@ -385,6 +406,11 @@ $ytLinks = andison_get_youtube_links();
             font-weight: 700;
             border-radius: 6px;
             box-shadow: inset 0 -6px 18px rgba(0,0,0,0.06);
+        }
+
+        .nav-list > li > a.active::after {
+            transform: translateX(-50%) scaleX(1);
+            width: 44px;
         }
 
         .nav-dropdown {
@@ -1223,7 +1249,7 @@ $ytLinks = andison_get_youtube_links();
             .cart-badge.hidden { display: inline-flex !important; }
 
             .header-contact {
-                display: none;
+                display: flex;
             }
 
             nav ul {
@@ -1983,6 +2009,8 @@ $ytLinks = andison_get_youtube_links();
         </div>
     </section>
 
+    </div><!-- /.page-content -->
+
     <!-- Footer -->
     <footer>
         <div class="footer-content">
@@ -1996,7 +2024,6 @@ $ytLinks = andison_get_youtube_links();
             </div>
         </div>
     </footer>
-    </div><!-- /.page-content -->
     <script>
         // Sidebar sublist toggle behavior with persistent state
         (function(){

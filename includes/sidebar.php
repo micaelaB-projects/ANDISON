@@ -425,6 +425,13 @@ if (($andison_idx = array_search('ANDISON', $path_parts)) !== false && isset($pa
         align-items: center;
     }
     .mini-sidebar.active.expanded { align-items: stretch; }
+    
+    /* Ensure mini-sidebar is visible by default (treat as always active for desktop) */
+    @media (min-width: 769px) {
+        .mini-sidebar {
+            display: flex !important;
+        }
+    }
 
     /* ── Mini Sidebar Icon ── */
     .mini-sidebar-icon {
@@ -606,6 +613,7 @@ if (($andison_idx = array_search('ANDISON', $path_parts)) !== false && isset($pa
                     transform 0.2s ease,
                     border-color 0.3s ease;
         flex-shrink: 0;
+        z-index: 100;
     }
     .mini-sidebar-toggle:hover {
         background: rgba(0, 215, 179, 0.3);
@@ -642,27 +650,33 @@ if (($andison_idx = array_search('ANDISON', $path_parts)) !== false && isset($pa
         margin-left: 280px;
     }
     
-    /* Footer remains fixed and doesn't move when sidebar expands */
+    /* Footer remains at the bottom and scrolls with content */
     footer {
         margin-left: 0 !important;
         margin-right: 0 !important;
-        width: 100vw !important;
-        left: 0 !important;
-        right: 0 !important;
-        transition: none !important;
+        margin-top: 40px !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        width: 100% !important;
         position: relative !important;
+        bottom: auto !important;
+        left: auto !important;
+        right: auto !important;
+        z-index: 50 !important;
+        transition: none !important;
+        box-sizing: border-box !important;
     }
-    .mini-sidebar.expanded ~ footer {
-        margin-left: 0 !important;
-        width: 100vw !important;
-        left: 0 !important;
+    /* Remove body padding since footer is no longer fixed */
+    body {
+        padding-bottom: 0 !important;
     }
 
-    @media (max-width: 992px) {
+    @media (max-width: 768px) {
         section, footer, .page-content, .main-content, .category-container {
             margin-left: 0 !important;
         }
         .mini-sidebar { display: none !important; }
+        .mini-sidebar.mobile-visible { display: flex !important; }
     }
 
     /* ── Sidebar overlay expanded state ── */
@@ -1832,11 +1846,25 @@ if (($andison_idx = array_search('ANDISON', $path_parts)) !== false && isset($pa
 
         // ── Expand / collapse button ──
         if(expandBtn){
-            expandBtn.addEventListener('click', function(){
-                miniSidebar.classList.toggle('expanded');
+            expandBtn.addEventListener('click', function(e){
+                e.preventDefault();
+                e.stopPropagation();
+                if(miniSidebar) miniSidebar.classList.toggle('expanded');
                 if(browseToggle) browseToggle.classList.toggle('expanded');
             });
         }
+        
+        // Fallback: Direct selector if ID method fails
+        document.addEventListener('click', function(e){
+            if(e.target.closest('.mini-sidebar-toggle')){
+                e.preventDefault();
+                e.stopPropagation();
+                var sidebar = document.getElementById('miniSidebar');
+                if(sidebar) sidebar.classList.toggle('expanded');
+                var browse = document.getElementById('browseToggle');
+                if(browse) browse.classList.toggle('expanded');
+            }
+        }, true);
 
         // Mobile: collapse by default
         if(window.innerWidth <= 768){
@@ -1847,11 +1875,25 @@ if (($andison_idx = array_search('ANDISON', $path_parts)) !== false && isset($pa
         // Menu-bar click handler
         var menuBar = document.getElementById('miniSidebarMenuBar');
         if(menuBar){
-            menuBar.addEventListener('click', function(){
-                miniSidebar.classList.toggle('expanded');
+            menuBar.addEventListener('click', function(e){
+                e.preventDefault();
+                e.stopPropagation();
+                if(miniSidebar) miniSidebar.classList.toggle('expanded');
                 if(browseToggle) browseToggle.classList.toggle('expanded');
             });
         }
+        
+        // Fallback: Direct selector for menu bar
+        document.addEventListener('click', function(e){
+            if(e.target.closest('#miniSidebarMenuBar')){
+                e.preventDefault();
+                e.stopPropagation();
+                var sidebar = document.getElementById('miniSidebar');
+                if(sidebar) sidebar.classList.toggle('expanded');
+                var browse = document.getElementById('browseToggle');
+                if(browse) browse.classList.toggle('expanded');
+            }
+        }, true);
 
         // ── Arrow (sub-indicator) click handler ──
         var arrowHandler = function(e){
@@ -1921,5 +1963,30 @@ if (($andison_idx = array_search('ANDISON', $path_parts)) !== false && isset($pa
         });
         new MutationObserver(function(){ syncFab(); }).observe(sidebar, { attributes: true, attributeFilter: ['class'] });
         window.addEventListener('resize', syncFab);
+    })();
+
+    // Direct expand button initialization (runs immediately)
+    (function(){
+        document.addEventListener('DOMContentLoaded', initExpandButton);
+        if(document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initExpandButton);
+        } else {
+            initExpandButton();
+        }
+        
+        function initExpandButton(){
+            var expandBtn = document.getElementById('expandSidebar');
+            var miniSidebar = document.getElementById('miniSidebar');
+            if(!expandBtn || !miniSidebar) return;
+            
+            expandBtn.onclick = function(e){
+                e.preventDefault();
+                e.stopPropagation();
+                miniSidebar.classList.toggle('expanded');
+                var browseToggle = document.getElementById('browseToggle');
+                if(browseToggle) browseToggle.classList.toggle('expanded');
+                return false;
+            };
+        }
     })();
 </script>
