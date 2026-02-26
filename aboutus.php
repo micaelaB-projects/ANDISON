@@ -3170,6 +3170,22 @@ $ytLinks = andison_get_youtube_links();
             window.addEventListener('resize', syncFab);
         })();
     </script>
+    <script>
+        (function(){
+            function updateCartBadge() {
+                var badge = document.getElementById('cartBadge');
+                if(!badge) return;
+                var items = JSON.parse(localStorage.getItem('inquiryItems') || '[]');
+                var count = items.length;
+                if(count > 0) { badge.textContent = count; badge.classList.remove('hidden'); }
+                else { badge.classList.add('hidden'); }
+            }
+            updateCartBadge();
+            window.addEventListener('storage', updateCartBadge);
+            window.addEventListener('inquiryItemsUpdated', updateCartBadge);
+            setInterval(updateCartBadge, 500);
+        })();
+    </script>
 </body>
 </html>
 

@@ -900,6 +900,7 @@ if (!isset($base_path)) {
         }
         updateCartBadge();
         window.addEventListener('storage', updateCartBadge);
+        window.addEventListener('inquiryItemsUpdated', updateCartBadge);
         setInterval(updateCartBadge, 500);
     })();
 </script>

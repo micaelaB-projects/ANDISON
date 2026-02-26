@@ -3707,58 +3707,71 @@ if (!$current_category) {
             var searchInput = document.getElementById('searchInput')?.value?.toLowerCase() || '';
             var sortSelect = document.getElementById('sortSelect')?.value || 'default';
             var allCards = Array.from(document.querySelectorAll('.product-grid .product-card'));
-            var visibleCards = [];
 
             // Get filter states
-            var filters = {
-                popular: document.getElementById('cat-popular')?.checked || false,
-                new: document.getElementById('cat-new')?.checked || false,
-                machinery: document.getElementById('type-machinery')?.checked || false,
-                accessories: document.getElementById('type-accessories')?.checked || false,
-                consumables: document.getElementById('type-consumables')?.checked || false,
-                industrial: document.getElementById('tag-industrial')?.checked || false,
-                professional: document.getElementById('tag-professional')?.checked || false,
-                premium: document.getElementById('tag-premium')?.checked || false
-            };
+            var catAll       = document.getElementById('cat-all')?.checked || false;
+            var catPopular   = document.getElementById('cat-popular')?.checked || false;
+            var catNew       = document.getElementById('cat-new')?.checked || false;
+            var typeMachinery    = document.getElementById('type-machinery')?.checked || false;
+            var typeAccessories  = document.getElementById('type-accessories')?.checked || false;
+            var typeConsumables  = document.getElementById('type-consumables')?.checked || false;
+            var tagIndustrial    = document.getElementById('tag-industrial')?.checked || false;
+            var tagProfessional  = document.getElementById('tag-professional')?.checked || false;
+            var tagPremium       = document.getElementById('tag-premium')?.checked || false;
 
-            // Filter cards
-            allCards.forEach(function(card) {
+            var hasTypeFilter = typeMachinery || typeAccessories || typeConsumables;
+            var hasTagFilter  = tagIndustrial || tagProfessional || tagPremium;
+            var hasCatFilter  = catPopular || catNew;
+
+            // Build filtered list
+            var filtered = allCards.filter(function(card) {
                 var text = card.textContent.toLowerCase();
-                var matchesSearch = !searchInput || text.includes(searchInput);
-                var hasFilters = Object.values(filters).some(v => v);
-                var matchesFilters = !hasFilters; // Show all if no filters applied
 
-                if (matchesSearch && matchesFilters) {
-                    card.style.display = '';
-                    visibleCards.push(card);
-                } else {
-                    card.style.display = 'none';
-                }
+                // Search filter
+                if (searchInput && !text.includes(searchInput)) return false;
+
+                // 'All Products' checkbox or no filter active -> show all
+                if (catAll || (!hasTypeFilter && !hasTagFilter && !hasCatFilter)) return true;
+
+                var dataType = (card.querySelector('.add-to-inquiry')?.getAttribute('data-type') || '').toLowerCase();
+                var matchesType = !hasTypeFilter || (
+                    (typeMachinery   && (dataType.includes('machine') || dataType.includes('machinery') || dataType.includes('equipment'))) ||
+                    (typeAccessories && (dataType.includes('accessor') || dataType.includes('tool') || dataType.includes('attachment'))) ||
+                    (typeConsumables && (dataType.includes('consumable') || dataType.includes('electrode') || dataType.includes('wire') || dataType.includes('gas')))
+                );
+
+                var matchesTag = !hasTagFilter || (
+                    (tagIndustrial   && text.includes('industrial')) ||
+                    (tagProfessional && text.includes('professional')) ||
+                    (tagPremium      && (text.includes('premium') || text.includes('heavy duty') || text.includes('high performance')))
+                );
+
+                var matchesCat = !hasCatFilter || (
+                    (catPopular && card.getAttribute('data-popular') === '1') ||
+                    (catNew     && card.getAttribute('data-new') === '1')
+                );
+
+                return matchesType && matchesTag && matchesCat;
             });
 
-            // Sort cards
-            if (sortSelect !== 'default') {
-                visibleCards.sort(function(a, b) {
-                    var aText = a.querySelector('h4')?.textContent || '';
-                    var bText = b.querySelector('h4')?.textContent || '';
-                    
-                    if (sortSelect === 'name-asc') return aText.localeCompare(bText);
-                    if (sortSelect === 'name-desc') return bText.localeCompare(aText);
-                    return 0;
-                });
-
-                // Reorder cards in DOM
-                var grid = document.querySelector('.product-grid');
-                visibleCards.forEach(function(card) {
-                    grid.appendChild(card);
-                });
+            // Sort
+            if (sortSelect === 'name-asc') {
+                filtered.sort(function(a, b) { return (a.querySelector('h4')?.textContent || '').localeCompare(b.querySelector('h4')?.textContent || ''); });
+            } else if (sortSelect === 'name-desc') {
+                filtered.sort(function(a, b) { return (b.querySelector('h4')?.textContent || '').localeCompare(a.querySelector('h4')?.textContent || ''); });
             }
 
-            // Update results count
-            var resultsSpan = document.getElementById('resultsCount');
-            if (resultsSpan) {
-                resultsSpan.textContent = 'Showing ' + visibleCards.length + ' products';
+            // Update filteredCards for pagination and re-render
+            filteredCards = filtered;
+            currentPage = 1;
+
+            // Reorder in DOM if sorted
+            var grid = document.querySelector('.product-grid');
+            if (grid && sortSelect !== 'default') {
+                filtered.forEach(function(card) { grid.appendChild(card); });
             }
+
+            updatePagination();
         }
 
         function clearAllFilters() {
@@ -3886,10 +3899,12 @@ if (!$current_category) {
         var currentMediaIndex = 0;
 
         function openProductModal(cardElement) {
-            var model = cardElement.querySelector('.product-model').textContent || '';
-            var name = cardElement.querySelector('h4').textContent || '';
-            var imgSrc = cardElement.querySelector('.product-image img')?.src || '';
-            var description = cardElement.querySelector('.product-description').textContent || 'Premium quality arc welding equipment.';
+            var modelEl = cardElement.querySelector('.product-model');
+            var descEl  = cardElement.querySelector('.product-description');
+            var model       = modelEl ? modelEl.textContent.trim() : (cardElement.querySelector('.add-to-inquiry')?.getAttribute('data-model') || '');
+            var name        = cardElement.querySelector('h4')?.textContent?.trim() || model;
+            var imgSrc      = cardElement.querySelector('.product-image img')?.src || '';
+            var description = descEl ? descEl.textContent.trim() : (cardElement.querySelector('.add-to-inquiry')?.getAttribute('data-type') || 'Industrial product');
             
             // Populate modal
             document.getElementById('modalProductName').textContent = name;
@@ -3940,7 +3955,8 @@ if (!$current_category) {
         document.addEventListener('DOMContentLoaded', function() {
             var productCards = document.querySelectorAll('.product-card');
             productCards.forEach(function(card) {
-                card.addEventListener('click', function() {
+                card.addEventListener('click', function(e) {
+                    if (e.target.closest('.add-to-inquiry')) return;
                     openProductModal(card);
                 });
             });
@@ -4015,10 +4031,13 @@ if (!$current_category) {
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
                     
+                    var model = this.getAttribute('data-model') || '';
+                    var brand = this.getAttribute('data-brand') || '';
                     var card = this.closest('.product-card');
-                    var model = card.querySelector('.product-model').textContent || '';
-                    var name = card.querySelector('h4').textContent || '';
-                    var description = card.querySelector('.product-description').textContent || 'Premium quality product';
+                    var h4el = card ? card.querySelector('h4') : null;
+                    var descel = card ? card.querySelector('.product-description') : null;
+                    var name = (h4el ? h4el.textContent.trim() : '') || this.getAttribute('data-type') || model;
+                    var description = (descel ? descel.textContent.trim() : '') || this.getAttribute('data-type') || 'Industrial product';
                     
                     var items = JSON.parse(localStorage.getItem('inquiryItems') || '[]');
                     var found = items.find(function(i) { 
@@ -4030,6 +4049,7 @@ if (!$current_category) {
                             model: model,
                             name: name,
                             description: description,
+                            brand: brand,
                             qty: 1,
                             timestamp: new Date().getTime()
                         };

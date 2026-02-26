@@ -4228,21 +4228,27 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         grid.addEventListener('click', function(e){
             var btn = e.target.closest('.brand-add-inquiry');
             if (!btn) return;
-            var item = {
-                model: btn.getAttribute('data-model'),
-                type:  btn.getAttribute('data-type'),
-                brand: btn.getAttribute('data-brand')
-            };
+            var modelVal = btn.getAttribute('data-model') || '';
+            var typeVal  = btn.getAttribute('data-type')  || '';
+            var brandVal = btn.getAttribute('data-brand') || '';
             var list = [];
-            try { list = JSON.parse(localStorage.getItem('inquiryList') || '[]'); } catch(err){}
-            var exists = list.some(function(x){ return x.model === item.model && x.brand === item.brand; });
-            if (!exists) { list.push(item); localStorage.setItem('inquiryList', JSON.stringify(list)); }
+            try { list = JSON.parse(localStorage.getItem('inquiryItems') || '[]'); } catch(err){}
+            var exists = list.some(function(x){ return x.model === modelVal && x.brand === brandVal; });
+            if (!exists) {
+                list.push({
+                    model:       modelVal,
+                    name:        modelVal,
+                    description: typeVal,
+                    brand:       brandVal,
+                    qty:         1,
+                    timestamp:   new Date().getTime()
+                });
+                localStorage.setItem('inquiryItems', JSON.stringify(list));
+                window.dispatchEvent(new Event('inquiryItemsUpdated'));
+            }
             btn.textContent = exists ? 'ALREADY ADDED' : 'ADDED!';
             btn.classList.add('added');
             setTimeout(function(){ btn.textContent = 'ADD TO INQUIRY LIST'; btn.classList.remove('added'); }, 2000);
-            // Update cart badge
-            var badge = document.querySelector('.cart-badge');
-            if (badge) { badge.textContent = list.length; badge.classList.toggle('hidden', list.length === 0); }
         });
 
         // Initial render
@@ -5283,6 +5289,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             
             // Update on storage change (when items added from other pages)
             window.addEventListener('storage', updateCartBadge);
+            window.addEventListener('inquiryItemsUpdated', updateCartBadge);
             
             // Update frequently to catch changes
             setInterval(updateCartBadge, 500);
