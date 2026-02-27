@@ -6,8 +6,8 @@
  */
 ?>
 <!-- ══ PRODUCT DETAIL MODAL ══ -->
-<div id="prodDetailOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:9999;align-items:center;justify-content:center;animation:fadeIn .2s ease;">
-    <div id="prodDetailModal" style="background:#fff;border-radius:24px;max-width:90vw;width:90vw;max-height:80vh;height:auto;overflow:hidden;box-shadow:0 25px 70px rgba(0,0,0,.32),0 0 1px rgba(0,0,0,.1);position:relative;animation:modalIn .3s cubic-bezier(0.34, 1.56, 0.64, 1);">
+<div id="prodDetailOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:9999;align-items:flex-start;justify-content:center;padding:20px;box-sizing:border-box;overflow-y:auto;animation:fadeIn .2s ease;">
+    <div id="prodDetailModal" style="background:#fff;border-radius:24px;max-width:90vw;width:90vw;max-height:calc(100vh - 40px);height:auto;overflow:hidden;box-shadow:0 25px 70px rgba(0,0,0,.32),0 0 1px rgba(0,0,0,.1);position:relative;animation:modalIn .3s cubic-bezier(0.34, 1.56, 0.64, 1);flex-shrink:0;margin:auto;">
     <button id="prodDetailClose" style="position:absolute;top:18px;right:18px;background:rgba(0,0,0,0.05);border:none;font-size:28px;cursor:pointer;color:#555;line-height:1;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:10;\">&times;</button>
     
     <div style="display:flex;gap:0;flex-wrap:wrap;height:100%;">
@@ -16,7 +16,7 @@
         <!-- Decorative top accent -->
         <div style="position:absolute;top:0;right:0;width:120px;height:120px;background:linear-gradient(135deg, rgba(43,17,219,0.06) 0%, transparent 70%);border-radius:0 0 0 100%;pointer-events:none;"></div>
         
-        <div id="prodImageGallery" style="height:400px;background:linear-gradient(135deg, #fff 0%, #f8fafc 100%);border-radius:20px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;flex-shrink:0;box-shadow:0 16px 40px rgba(43,17,219,0.18), 0 0 1px rgba(43,17,219,0.3), inset 0 1px 0 rgba(255,255,255,0.9);border:1px solid rgba(43,17,219,0.12);">
+        <div id="prodImageGallery" style="height:400px;background:#fff;border-radius:20px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;flex-shrink:0;box-shadow:0 16px 40px rgba(43,17,219,0.18), 0 0 1px rgba(43,17,219,0.3), inset 0 1px 0 rgba(255,255,255,0.9);border:1px solid rgba(43,17,219,0.12);">
           <img id="prodMainImg" src="" alt="" style="max-width:100%;max-height:100%;object-fit:contain;padding:24px;width:100%;">
           <i id="prodNoImg" class="bi bi-tools" style="display:none;font-size:80px;color:#d4d9e6;"></i>
         </div>
@@ -36,7 +36,7 @@
         
         <!-- Related Products -->
         <div id="relatedProductsWrap" style="display:none;flex-shrink:0;position:relative;z-index:2;">
-          <div style="font-size:9px;font-weight:950;color:#2B11DB;letter-spacing:1.5px;margin-bottom:12px;text-transform:uppercase;display:flex;align-items:center;gap:6px;"><i class="bi bi-boxes"></i> RELATED</div>
+          <div style="font-size:9px;font-weight:950;color:#2B11DB;letter-spacing:1.5px;margin-bottom:12px;text-transform:uppercase;display:flex;align-items:center;gap:6px;"><i class="bi bi-boxes"></i> MORE FROM THIS BRAND</div>
           <div id="relatedProductsGrid" style="display:grid;grid-template-columns:repeat(2, 1fr);gap:10px;"></div>
         </div>
       </div>
@@ -45,40 +45,45 @@
       <div style="position:absolute;left:35%;top:0;bottom:0;width:1px;background:linear-gradient(180deg, transparent 0%, rgba(43,17,219,0.1) 30%, rgba(43,17,219,0.1) 70%, transparent 100%);pointer-events:none;"></div>
       
       <!-- RIGHT SIDE: Product Information -->
-      <div style="flex:0 0 65%;padding:42px 48px;display:flex;flex-direction:column;justify-content:space-between;">
-        <!-- Header Section -->
-        <div style="margin-bottom:24px;padding-bottom:20px;border-bottom:2px solid #f0f4ff;">
-          <span id="prodDetailBrand" style="font-size:9px;font-weight:950;color:#2B11DB;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:block;background:linear-gradient(135deg, rgba(43,17,219,0.12) 0%, rgba(43,17,219,0.06) 100%);padding:8px 14px;border-radius:8px;width:fit-content;border-left:3px solid #2B11DB;"></span>
-          <h2 id="prodDetailName" style="font-size:42px;font-weight:980;color:#0a0a1a;margin:10px 0 12px;line-height:1.15;letter-spacing:-1px;text-shadow:0 2px 8px rgba(0,0,0,0.08);"></h2>
-          <span id="prodDetailType" style="display:inline-block;background:linear-gradient(135deg, #2B11DB 0%, #1f0aa1 100%);color:#fff;font-size:10px;font-weight:950;padding:10px 20px;border-radius:24px;text-transform:uppercase;letter-spacing:1.2px;box-shadow:0 6px 16px rgba(43,17,219,0.28);"></span>
-        </div>
-        
-        <!-- Description -->
-        <div id="prodDescSection" style="display:none;margin-bottom:22px;padding:18px 20px;background:linear-gradient(135deg, rgba(43,17,219,0.06) 0%, rgba(43,17,219,0.03) 100%);border-radius:14px;border-left:4px solid #2B11DB;">
-          <div style="font-size:9px;font-weight:950;color:#2B11DB;letter-spacing:1.2px;margin-bottom:10px;text-transform:uppercase;display:flex;align-items:center;gap:6px;"><i class="bi bi-file-text"></i> OVERVIEW</div>
-          <p id="prodDetailDesc" style="font-size:13px;color:#444;line-height:1.8;margin:0;font-weight:500;"></p>
-        </div>
-        
-        <!-- Specs table -->
-        <div id="prodSpecsSection" style="display:none;margin-bottom:24px;">
-          <div style="font-size:9px;font-weight:950;color:#2B11DB;letter-spacing:1.2px;margin-bottom:14px;text-transform:uppercase;display:flex;align-items:center;gap:6px;"><i class="bi bi-speedometer2"></i> SPECIFICATIONS</div>
-          <div style="border-radius:14px;box-shadow:0 6px 18px rgba(43,17,219,0.12);overflow:hidden;border:1px solid rgba(43,17,219,0.08);">
-            <table id="prodDetailSpecsTable" style="width:100%;border-collapse:collapse;font-size:12px;"></table>
+      <div style="flex:0 0 65%;display:flex;flex-direction:column;overflow:hidden;">
+        <!-- Scrollable content area -->
+        <div style="flex:1 1 auto;overflow-y:auto;padding:42px 48px 24px;min-height:0;">
+          <!-- Header Section -->
+          <div style="margin-bottom:24px;padding-bottom:20px;border-bottom:2px solid #f0f4ff;">
+            <span id="prodDetailBrand" style="font-size:9px;font-weight:950;color:#2B11DB;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:block;background:linear-gradient(135deg, rgba(43,17,219,0.12) 0%, rgba(43,17,219,0.06) 100%);padding:8px 14px;border-radius:8px;width:fit-content;border-left:3px solid #2B11DB;"></span>
+            <h2 id="prodDetailName" style="font-size:42px;font-weight:980;color:#0a0a1a;margin:10px 0 12px;line-height:1.15;letter-spacing:-1px;text-shadow:0 2px 8px rgba(0,0,0,0.08);"></h2>
+            <span id="prodDetailType" style="display:inline-block;background:linear-gradient(135deg, #2B11DB 0%, #1f0aa1 100%);color:#fff;font-size:10px;font-weight:950;padding:10px 20px;border-radius:24px;text-transform:uppercase;letter-spacing:1.2px;box-shadow:0 6px 16px rgba(43,17,219,0.28);"></span>
+          </div>
+          
+          <!-- Description -->
+          <div id="prodDescSection" style="display:none;margin-bottom:22px;padding:18px 20px;background:linear-gradient(135deg, rgba(43,17,219,0.06) 0%, rgba(43,17,219,0.03) 100%);border-radius:14px;border-left:4px solid #2B11DB;">
+            <div style="font-size:9px;font-weight:950;color:#2B11DB;letter-spacing:1.2px;margin-bottom:10px;text-transform:uppercase;display:flex;align-items:center;gap:6px;"><i class="bi bi-file-text"></i> OVERVIEW</div>
+            <p id="prodDetailDesc" style="font-size:13px;color:#444;line-height:1.8;margin:0;font-weight:500;"></p>
+          </div>
+          
+          <!-- Specs table -->
+          <div id="prodSpecsSection" style="display:none;margin-bottom:24px;">
+            <div style="font-size:9px;font-weight:950;color:#2B11DB;letter-spacing:1.2px;margin-bottom:14px;text-transform:uppercase;display:flex;align-items:center;gap:6px;"><i class="bi bi-speedometer2"></i> SPECIFICATIONS</div>
+            <div style="border-radius:14px;box-shadow:0 6px 18px rgba(43,17,219,0.12);overflow:hidden;border:1px solid rgba(43,17,219,0.08);">
+              <table id="prodDetailSpecsTable" style="width:100%;border-collapse:collapse;font-size:12px;"></table>
+            </div>
+          </div>
+          
+          <!-- Additional Details -->
+          <div id="prodAdditionalDetails" style="display:none;margin-bottom:24px;">
+            <div id="prodAdditionalContent"></div>
+          </div>
+          
+          <!-- Default message -->
+          <div id="prodNoDetails" style="font-size:12px;color:#9a9fb5;line-height:1.8;font-style:italic;">
+            <p style="margin:0;">Complete specifications and datasheets available upon request.</p>
           </div>
         </div>
-        
-        <!-- Additional Details -->
-        <div id="prodAdditionalDetails" style="display:none;margin-bottom:24px;">
-          <div id="prodAdditionalContent"></div>
+
+        <!-- PINNED Button footer — always visible -->
+        <div style="flex-shrink:0;padding:16px 48px 28px;border-top:1px solid #f0f0fa;background:#fff;">
+          <button id="prodDetailInquiry" style="width:100%;padding:16px 22px;background:linear-gradient(135deg, #2B11DB 0%, #1f0aa1 100%);color:#fff;border:none;border-radius:14px;font-size:12px;font-weight:950;letter-spacing:1.2px;cursor:pointer;transition:all .4s cubic-bezier(0.34,1.56,0.64,1);text-transform:uppercase;box-shadow:0 10px 28px rgba(43,17,219,0.38);position:relative;overflow:hidden;transform:translateY(0);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 14px 36px rgba(43,17,219,0.5)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 28px rgba(43,17,219,0.38)';">ADD TO INQUIRY LIST</button>
         </div>
-        
-        <!-- Default message -->
-        <div id="prodNoDetails" style="font-size:12px;color:#9a9fb5;line-height:1.8;font-style:italic;">
-          <p style="margin:0;">Complete specifications and datasheets available upon request.</p>
-        </div>
-        
-        <!-- Add to Inquiry Button -->
-        <button id="prodDetailInquiry" style="width:100%;padding:16px 22px;background:linear-gradient(135deg, #2B11DB 0%, #1f0aa1 100%);color:#fff;border:none;border-radius:14px;font-size:12px;font-weight:950;letter-spacing:1.2px;cursor:pointer;transition:all .4s cubic-bezier(0.34,1.56,0.64,1);text-transform:uppercase;box-shadow:0 10px 28px rgba(43,17,219,0.38);flex-shrink:0;position:relative;overflow:hidden;transform:translateY(0);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 14px 36px rgba(43,17,219,0.5)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 28px rgba(43,17,219,0.38)';">ADD TO INQUIRY LIST</button>
       </div>
     </div>
   </div>
@@ -91,7 +96,8 @@
 
 #prodDetailModal {
   display: flex !important;
-  overflow: visible !important;
+  overflow: hidden !important;
+  flex-direction: column !important;
 }
 #prodDetailModal::-webkit-scrollbar{width:10px}
 #prodDetailModal::-webkit-scrollbar-track{background:transparent}
@@ -103,7 +109,9 @@
   display: flex !important;
   gap: 0 !important;
   width: 100% !important;
-  height: auto !important;
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  min-height: 0 !important;
 }
 
 #prodDetailModal > div > div:first-child {
@@ -111,7 +119,7 @@
   background: linear-gradient(180deg, #f9f9fc 0%, #f0f4ff 100%);
   border-radius:24px 0 0 24px;
   padding:32px;
-  overflow: visible;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -119,16 +127,14 @@
 
 #prodDetailModal > div > div:last-child {
   flex: 0 0 65%;
-  padding: 42px 48px;
   display: flex;
   flex-direction: column;
-  overflow: visible;
-  justify-content: space-between;
+  overflow: hidden;
 }
 
 #prodImageGallery {
   height:400px;
-  background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+  background: #fff;
   border-radius:20px;
   display:flex;
   align-items:center;
@@ -165,12 +171,13 @@
   position: relative;
   z-index: 10;
 }
-#prodDetailSpecsTable th { 
-  padding:13px 12px; 
-  text-align:left; 
+
+#prodDetailSpecsTable th {
+  padding:13px 12px;
+  text-align:left;
   border-bottom:1px solid rgba(255,255,255,0.3);
   color:#fff;
-  font-size:10px;
+  font-size:18px;
   font-weight:950;
   text-transform:uppercase;
   letter-spacing:1px;
@@ -180,11 +187,11 @@
 #prodDetailSpecsTable tbody tr:hover { background:linear-gradient(90deg, rgba(43,17,219,0.04) 0%, rgba(43,17,219,0.02) 100%); }
 #prodDetailSpecsTable tbody tr:nth-child(odd) { background:#fbfbfd; }
 #prodDetailSpecsTable tbody tr:nth-child(even) { background:#fff; }
-#prodDetailSpecsTable td { 
+#prodDetailSpecsTable td {
   padding:11px 12px;
   border-bottom:1px solid #f1f3f8;
   color:#3a4559;
-  font-size:11px;
+  font-size:18px;
   line-height:1.5;
   font-weight:500;
 }
@@ -193,7 +200,7 @@
   color:#2B11DB;
   background:linear-gradient(90deg, rgba(43,17,219,0.06) 0%, rgba(43,17,219,0.03) 100%);
   width:32%;
-  font-size:10.5px;
+  font-size:18px;
   letter-spacing:0.2px;
 }
 #prodDetailSpecsTable tbody tr:nth-child(odd) td:first-child {
@@ -264,7 +271,7 @@
 
 @media(max-width:900px){
   #prodDetailModal{max-width:92vw!important;width:92vw!important;max-height:90vh!important}
-  #prodDetailName{font-size:36px!important}
+  #prodDetailName{font-size:28px!important}
   #prodDetailModal > div > div:first-child { flex: 0 0 38% !important; padding: 28px !important; }
   #prodDetailModal > div > div:last-child { flex: 0 0 62% !important; padding: 36px 40px !important; }
   #prodImageGallery { height: 340px !important; }
@@ -367,9 +374,11 @@
         if (mainImg) { mainImg.style.transition = ''; mainImg.style.opacity = '1'; }
     }
 
+    var _jsonPath = (typeof MODAL_JSON_PATH !== 'undefined') ? MODAL_JSON_PATH : 'Andison/data/brands_info.json';
+
     /* Load product details from JSON data */
     function loadProductDetails(brand, model) {
-        fetch('Andison/data/brands_info.json')
+        fetch(_jsonPath)
             .then(function(r) { return r.json(); })
             .then(function(data) {
                 var brandData = data[brand];
@@ -389,45 +398,62 @@
             .catch(function(){});
     }
 
+    /* Helper to ensure image path is absolute from assets if not already */
+    function normalizeImagePath(path) {
+      if (!path || typeof path !== 'string') return '';
+      path = path.trim();
+      if (path.startsWith('data:') || path.startsWith('http://') || path.startsWith('https://')) return path;
+      // If already starts with 'assets/' or '/assets/', return as is (remove leading slash for '/assets/')
+      if (path.startsWith('assets/')) return path;
+      if (path.startsWith('/assets/')) return path.substring(1);
+      // Remove leading './' or '/'
+      path = path.replace(/^\.?\/?/, '');
+      return 'assets/' + path;
+    }
+
     /* Load all product images from card data */
     function loadProductImagesFromCard(images) {
-        productImages = images && images.length > 0 ? images : [];
-        currentImageIndex = 0;
-        var mainImg = document.getElementById('prodMainImg');
-        var noImg = document.getElementById('prodNoImg');
-        var thumbnailsWrap = document.getElementById('prodThumbnails');
-        thumbnailsWrap.innerHTML = '';
-        
-        if (productImages.length === 0) {
-            mainImg.src = '';
-            mainImg.style.display = 'none';
-            noImg.style.display = 'block';
-            document.getElementById('prodThumbnailsWrap').style.display = 'none';
-            return;
-        }
-        
-        // Show main image
-        mainImg.src = productImages[0];
+      // Filter out empty, null, or undefined images
+      productImages = (images && images.length > 0 ? images : []).filter(function(img) {
+        return img && typeof img === 'string' && img.trim() !== '';
+      }).map(normalizeImagePath);
+      currentImageIndex = 0;
+      var mainImg = document.getElementById('prodMainImg');
+      var noImg = document.getElementById('prodNoImg');
+      var thumbnailsWrap = document.getElementById('prodThumbnails');
+      thumbnailsWrap.innerHTML = '';
+
+      if (productImages.length === 0) {
+        // Show default SVG in main image if no images at all
+        mainImg.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22300%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E';
         mainImg.style.display = 'block';
         noImg.style.display = 'none';
-        
-        // Add thumbnails
-        productImages.forEach(function(path, idx) {
-            var thumb = document.createElement('img');
-            thumb.src = path;
-            thumb.onclick = function() { switchImageManual(idx); };
-            if (idx === 0) thumb.classList.add('active');
-            thumbnailsWrap.appendChild(thumb);
-        });
-        
-        // Show thumbnails only if more than one image
-        if (productImages.length > 1) {
-            document.getElementById('prodThumbnailsWrap').style.display = 'block';
-            startModalSlider();
-        } else {
-            document.getElementById('prodThumbnailsWrap').style.display = 'none';
-            stopModalSlider();
-        }
+        document.getElementById('prodThumbnailsWrap').style.display = 'none';
+        return;
+      }
+
+      // Show main image
+      mainImg.src = productImages[0];
+      mainImg.style.display = 'block';
+      noImg.style.display = 'none';
+
+      // Add thumbnails
+      productImages.forEach(function(path, idx) {
+        var thumb = document.createElement('img');
+        thumb.src = path;
+        thumb.onclick = function() { switchImageManual(idx); };
+        if (idx === 0) thumb.classList.add('active');
+        thumbnailsWrap.appendChild(thumb);
+      });
+
+      // Show thumbnails only if more than one image
+      if (productImages.length > 1) {
+        document.getElementById('prodThumbnailsWrap').style.display = 'block';
+        startModalSlider();
+      } else {
+        document.getElementById('prodThumbnailsWrap').style.display = 'none';
+        stopModalSlider();
+      }
     }
 
     /* Switch between product images */
@@ -451,35 +477,30 @@
         startModalSlider();
     }
 
-    /* Load related products - FROM ALL BRANDS */
+    /* Load related products - FROM SAME BRAND ONLY */
     function loadRelatedProducts(currentBrand, currentModel) {
         var grid = document.getElementById('relatedProductsGrid');
         var wrap = document.getElementById('relatedProductsWrap');
         grid.innerHTML = '';
         
-        // Fetch JSON to get products from ALL brands
-        fetch('Andison/data/brands_info.json')
+        fetch(_jsonPath)
             .then(function(r) { return r.json(); })
             .then(function(data) {
-                // Collect products from ALL brands (not just current brand)
+                // Find the current brand data (case-insensitive)
+                var brandData = data[currentBrand];
+                if (!brandData) {
+                    var lc = currentBrand.toLowerCase();
+                    for (var k in data) { if (k.toLowerCase() === lc) { brandData = data[k]; break; } }
+                }
+                if (!brandData || !brandData.products) { wrap.style.display = 'none'; return; }
+
+                // Collect products from same brand only (image not required)
                 var allProducts = [];
-                var seenModels = {};
-                
-                for (var brandName in data) {
-                    var brandData = data[brandName];
-                    if (brandData && brandData.products && Array.isArray(brandData.products)) {
-                        for (var i = 0; i < brandData.products.length; i++) {
-                            var product = brandData.products[i];
-                            // Exclude current product, avoid duplicates, only include products with images
-                            var hasImages = product.images && Array.isArray(product.images) && product.images.length > 0;
-                            var hasImage = product.image && product.image.trim() !== '';
-                            
-                            if (product.model && product.model !== currentModel && !seenModels[product.model] && (hasImages || hasImage)) {
-                                product._brand = brandName; // Store brand info
-                                allProducts.push(product);
-                                seenModels[product.model] = true;
-                            }
-                        }
+                for (var i = 0; i < brandData.products.length; i++) {
+                    var product = brandData.products[i];
+                    if (product.model && product.model !== currentModel) {
+                        product._brand = currentBrand;
+                        allProducts.push(product);
                     }
                 }
                 
@@ -515,19 +536,23 @@
                     // Try to get image from page card first, then JSON
                     var pageCard = cardMap[product.model];
                     var imgSrc = '';
-                    
                     if (pageCard) {
                         var pageImg = pageCard.querySelector('img');
                         if (pageImg && pageImg.src && pageImg.src.trim() !== '') {
                             imgSrc = pageImg.src;
                         }
                     }
-                    
-                    if (!imgSrc && product.image && product.image.trim() !== '') {
+                    if (!imgSrc) {
+                      if (product.image && product.image.trim() !== '') {
                         imgSrc = product.image;
+                      } else if (Array.isArray(product.images) && product.images.length > 0 && product.images[0]) {
+                        imgSrc = product.images[0];
+                      }
                     }
-                    
-                    img.src = imgSrc || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%2270%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22100%22 height=%2270%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2212%22%3ENo Image%3C/text%3E%3C/svg%3E';
+                    imgSrc = normalizeImagePath(imgSrc);
+                    var fallbackImg = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%2270%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22100%22 height=%2270%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2212%22%3ENo Image%3C/text%3E%3C/svg%3E';
+                    img.src = imgSrc || fallbackImg;
+                    img.onerror = function() { this.onerror = null; this.src = fallbackImg; };
                     
                     var name = document.createElement('div');
                     name.className = 'related-product-name';
@@ -550,10 +575,17 @@
                                 syntheticCard.setAttribute('data-model', product.model);
                                 syntheticCard.setAttribute('data-type', product.type || '');
                                 syntheticCard.setAttribute('data-brand', productBrand);
-                                syntheticCard.setAttribute('data-image', product.image || '');
-                                syntheticCard.setAttribute('data-badge', product.badge || '');
-                                syntheticCard.setAttribute('data-images', JSON.stringify(product.images || []));
-                                syntheticCard.setAttribute('data-specs', JSON.stringify(product.specs || []));
+                                // Ensure imagesArr is always an array
+                                var imagesArr = Array.isArray(product.images) ? product.images : (product.images ? [product.images] : []);
+                                // Set data-image to first image if product.image is missing
+                                var mainImage = product.image || (imagesArr.length > 0 ? imagesArr[0] : '');
+                                syntheticCard.setAttribute('data-image', mainImage);
+                                if (product.badge) syntheticCard.setAttribute('data-badge', product.badge);
+                                var specsArr = Array.isArray(product.specs) ? product.specs : (product.specs ? [product.specs] : []);
+                                syntheticCard.setAttribute('data-images', JSON.stringify(imagesArr));
+                                syntheticCard.setAttribute('data-specs', JSON.stringify(specsArr));
+                                // Optionally add description if available
+                                if (product.description) syntheticCard.setAttribute('data-description', product.description);
                                 openProductModal(syntheticCard);
                             }
                         };
@@ -590,13 +622,140 @@
         try { specs = JSON.parse(specsRaw); } catch(e){}
         try { images = JSON.parse(imagesRaw); } catch(e){}
 
-        document.getElementById('prodDetailBrand').textContent = brand;
+        // Show brand logo using PHP endpoint to guarantee match
+        var brandElem = document.getElementById('prodDetailBrand');
+        var logoApi = 'includes/brand_logo_resolver.php?brand=' + encodeURIComponent(brand);
+        fetch(logoApi)
+          .then(function(r) { return r.text(); })
+          .then(function(path) {
+            brandElem.innerHTML = '';
+            if (path && path.trim() && !path.match(/^\s*notfound/i)) {
+              var img = document.createElement('img');
+              img.src = path.trim();
+              img.alt = brand + ' logo';
+              img.title = path.trim();
+              img.style.maxHeight = '38px';
+              img.style.maxWidth = '120px';
+              img.style.display = 'inline-block';
+              img.style.verticalAlign = 'middle';
+              img.style.marginRight = '8px';
+              brandElem.appendChild(img);
+            } else {
+              // Only show brand name if logo is missing
+              var span = document.createElement('span');
+              span.textContent = brand;
+              span.style.fontWeight = 'bold';
+              span.style.fontSize = '15px';
+              span.style.verticalAlign = 'middle';
+              brandElem.appendChild(span);
+            }
+          })
+          .catch(function() {
+            brandElem.innerHTML = '';
+            var span = document.createElement('span');
+            span.textContent = brand;
+            span.style.fontWeight = 'bold';
+            span.style.fontSize = '15px';
+            span.style.verticalAlign = 'middle';
+            brandElem.appendChild(span);
+          });
+        // Also set textContent for accessibility/SEO
+        brandElem.setAttribute('data-brand', brand);
         document.getElementById('prodDetailName').textContent  = model;
         document.getElementById('prodDetailType').textContent  = type;
 
-        // Load product details from JSON
+
+        // Fallback: show description from card attribute if available (while waiting for JSON)
+        var descFromAttr = card.getAttribute('data-description');
+        if (descFromAttr) {
+          document.getElementById('prodDetailDesc').textContent = descFromAttr;
+          document.getElementById('prodDescSection').style.display = 'block';
+        } else {
+          document.getElementById('prodDescSection').style.display = 'none';
+        }
+
+        // Fallback: show specs from card attribute if available (for synthetic cards)
+        var specsArr  = Array.isArray(specs) ? specs : Object.entries(specs).map(function(e){ return {label:e[0],value:e[1]}; });
+        var table     = document.getElementById('prodDetailSpecsTable');
+        var specsSection = document.getElementById('prodSpecsSection');
+        table.innerHTML = '';
+        if (specsArr.length > 0) {
+          var thead = document.createElement('thead');
+          var tbody = document.createElement('tbody');
+          var isMultiColumn = false;
+          var colCount = 1;
+          for (var i = 0; i < specsArr.length; i++) {
+            if (specsArr[i].value && specsArr[i].value.includes('|')) {
+              isMultiColumn = true;
+              var cols = specsArr[i].value.split('|').length;
+              if (cols > colCount) colCount = cols;
+            }
+          }
+          if (isMultiColumn) {
+            var headerTr = document.createElement('tr');
+            headerTr.style.fontWeight = '700';
+            headerTr.style.backgroundColor = '#e8eeff';
+            for (var i = 0; i < specsArr.length; i++) {
+              var spec = specsArr[i];
+              if (spec.label === '' || !spec.value) continue;
+              var th = document.createElement('th');
+              th.textContent = spec.label;
+              th.style.padding = '12px 14px';
+              th.style.textAlign = 'left';
+              th.style.borderBottom = '2px solid #2B11DB';
+              th.style.color = '#2B11DB';
+              th.style.fontSize = '12px';
+              headerTr.appendChild(th);
+            }
+            thead.appendChild(headerTr);
+            var maxRows = 1;
+            for (var i = 0; i < specsArr.length; i++) {
+              var rows = specsArr[i].value.split('|').length;
+              if (rows > maxRows) maxRows = rows;
+            }
+            for (var rowIdx = 0; rowIdx < maxRows; rowIdx++) {
+              var tr = document.createElement('tr');
+              if (rowIdx % 2 === 0) {
+                tr.style.backgroundColor = '#f8fafb';
+              }
+              for (var colIdx = 0; colIdx < specsArr.length; colIdx++) {
+                var spec = specsArr[colIdx];
+                if (spec.label === '' || !spec.value) continue;
+                var values = spec.value.split('|').map(function(v) { return v.trim(); });
+                var td = document.createElement('td');
+                td.textContent = values[rowIdx] || '';
+                td.style.padding = '12px 14px';
+                td.style.borderBottom = '1px solid #e8ecf4';
+                td.style.fontSize = '13px';
+                tr.appendChild(td);
+              }
+              tbody.appendChild(tr);
+            }
+            table.appendChild(thead);
+          } else {
+            specsArr.forEach(function(s){
+              if (s.label === '') return;
+              var tr = document.createElement('tr');
+              var td1 = document.createElement('td');
+              var td2 = document.createElement('td');
+              td1.textContent = s.label;
+              td2.textContent = s.value;
+              td1.style.fontWeight = '700';
+              td1.style.color = '#2d3748';
+              td1.style.backgroundColor = 'rgba(43,17,219,0.04)';
+              tr.appendChild(td1);
+              tr.appendChild(td2);
+              tbody.appendChild(tr);
+            });
+          }
+          table.appendChild(tbody);
+          specsSection.style.display = 'block';
+        } else {
+          specsSection.style.display = 'none';
+        }
+
+        // Load product details from JSON (will override fallback if available)
         loadProductDetails(brand, model);
-        
         // Load product images from card data
         loadProductImagesFromCard(images);
 
@@ -734,6 +893,14 @@
         // Load related products
         loadRelatedProducts(brand, model);
 
+        // Measure actual header height and position overlay below it
+        var header = document.querySelector('header');
+        var headerBottom = header ? header.getBoundingClientRect().bottom : 0;
+        overlay.style.top = headerBottom + 'px';
+        // Update modal max-height to fit in remaining space (minus 40px for top+bottom padding)
+        var modal = document.getElementById('prodDetailModal');
+        if (modal) modal.style.maxHeight = (window.innerHeight - headerBottom - 40) + 'px';
+
         overlay.style.display    = 'flex';
         document.body.style.overflow = 'hidden';
     };
@@ -796,5 +963,68 @@
             this.style.transform = 'translateY(0)';
         });
     }
+  // ──────────────── PRODUCT CARD IMAGE SLIDER ────────────────
+// (Removed misplaced style append)
+  function initProductCardSliders() {
+    // Add smooth transition to all product card images (only once)
+    if (!document.getElementById('slider-style-tag')) {
+      var style = document.createElement('style');
+      style.id = 'slider-style-tag';
+      style.innerHTML = '[data-images] img { transition: opacity 0.9s cubic-bezier(0.34,1.56,0.64,1) !important; }';
+      document.head.appendChild(style);
+    }
+    var cards = document.querySelectorAll('[data-images]');
+    cards.forEach(function(card) {
+      var imagesRaw = card.getAttribute('data-images') || '[]';
+      var images = [];
+      try { images = JSON.parse(imagesRaw); } catch(e){}
+      images = (Array.isArray(images) ? images : []).filter(function(img){ return img && typeof img === 'string' && img.trim() !== ''; }).map(normalizeImagePath);
+      if (images.length < 2) return; // Only slider if more than 1 image
+
+      var imgTag = card.querySelector('img');
+      if (!imgTag) return;
+
+      var idx = 0;
+      var timer = null;
+
+      function showImage(i) {
+        if (!images[i]) return;
+        imgTag.style.transition = 'opacity 0.9s cubic-bezier(0.34,1.56,0.64,1)';
+        imgTag.style.opacity = '0';
+        setTimeout(function() {
+          imgTag.src = images[i];
+          imgTag.onload = function() {
+            imgTag.style.opacity = '1';
+          };
+        }, 350);
+      }
+
+      function startSlider() {
+        if (timer) clearTimeout(timer);
+        function tick() {
+          idx = (idx + 1) % images.length;
+          showImage(idx);
+          timer = setTimeout(tick, 2200);
+        }
+        timer = setTimeout(tick, 2200);
+      }
+
+      // Pause slider on hover
+      card.addEventListener('mouseenter', function(){ if (timer) clearTimeout(timer); });
+      card.addEventListener('mouseleave', function(){ startSlider(); });
+
+      // Init
+      showImage(0);
+      startSlider();
+    });
+  }
+
+  // Run on DOMContentLoaded (in case this file is included at the end, still safe)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initProductCardSliders);
+  } else {
+    initProductCardSliders();
+  }
+
 })();
 </script>

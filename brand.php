@@ -85,7 +85,7 @@ $brand_products = $brand_info['products'] ?? [];
 
 /**
  * Auto-detect all numbered images for a product.
- * e.g. "Product 1.jpg" → also finds "Product 2.jpg", "Product 3.jpg" etc.
+ * e.g. "Product 1.jpg" ? also finds "Product 2.jpg", "Product 3.jpg" etc.
  * Supports patterns:  "Name 1.ext"  "Name - 1.ext"  "Name (1).ext"  "Name - (1).ext"
  */
 function andison_auto_images(string $webPath, array $explicit, string $baseDir): array {
@@ -243,6 +243,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             box-shadow: 0 10px 30px rgba(10,10,20,0.12);
             opacity: 0;
             visibility: hidden;
+            pointer-events: none;
             transform: translateX(-50%) translateY(-6px) scale(0.98);
             transition: opacity 180ms ease, transform 180ms ease, visibility 180ms;
             z-index: 120;
@@ -262,19 +263,21 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             filter: drop-shadow(0 -1px 0 rgba(0,0,0,0.03));
         }
 
-        .contact-dropdown:hover:not(.closed) .contact-popover,
-        .contact-dropdown:focus-within:not(.closed) .contact-popover {
+        .contact-dropdown:not(.closed) .contact-link:hover ~ .contact-popover,
+        .contact-dropdown:not(.closed) .contact-popover:hover {
             opacity: 1;
             visibility: visible;
+            pointer-events: auto;
             transform: translateX(-50%) translateY(0) scale(1);
         }
 
         /* mobile: click-to-open; .open class used instead of hover */
         @media (max-width: 768px) {
-            .contact-dropdown:hover:not(.closed) .contact-popover,
-            .contact-dropdown:focus-within:not(.closed) .contact-popover {
+            .contact-dropdown:not(.closed) .contact-link:hover ~ .contact-popover,
+            .contact-dropdown:not(.closed) .contact-popover:hover {
                 opacity: 0;
                 visibility: hidden;
+                pointer-events: none;
                 transform: translateX(-50%) translateY(-6px) scale(0.98);
             }
             .contact-dropdown.open .contact-popover {
@@ -944,7 +947,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             width: 100%;
             aspect-ratio: 16 / 9;
             min-height: 320px;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            background: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1275,7 +1278,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             width: 100%;
             aspect-ratio: 16 / 9;
             min-height: 400px;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            background: #fff;
             border-radius: 16px;
             display: flex;
             align-items: center;
@@ -2771,7 +2774,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             margin-bottom: 12px;
         }
 
-        /* Adjust main container for mini sidebar — collapsed by default on desktop */
+        /* Adjust main container for mini sidebar � collapsed by default on desktop */
         section,
         footer,
         .page-content,
@@ -2866,7 +2869,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         .mobile-sidebar-fab.open { transform: translateY(-50%) translateX(56px); }
         .mobile-sidebar-fab.open.wide { transform: translateY(-50%) translateX(240px); }
 
-        /* Mini popover — mobile overrides */
+        /* Mini popover � mobile overrides */
         @media (max-width: 768px) {
             .mini-popover {
                 border-radius: 0 12px 12px 0 !important;
@@ -3251,19 +3254,12 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         }
         .filter-group {
             margin-bottom: 22px;
-            padding-bottom: 22px;
-            border-bottom: 1px solid #e8e8e8;
-        }
-        .filter-group:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
         }
         .filter-group-title {
             font-size: 11px;
             font-weight: 700;
             letter-spacing: 1px;
-            color: #2B11DB;
+            color: #888;
             text-transform: uppercase;
             display: flex;
             align-items: center;
@@ -3432,7 +3428,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         .brand-product-img {
             width: 100%;
             height: 140px;
-            background: #f5f5f5;
+            background: #fff;
             border-radius: 6px;
             display: flex;
             align-items: center;
@@ -3580,7 +3576,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                 <a href="inquirylist.php" class="inquiry-btn"><i class="bi bi-card-checklist btn-icon"></i> <span class="btn-text">INQUIRY LIST</span> <span class="cart-badge hidden" id="cartBadge">0</span></a>
                 <div class="header-contact">
                         <div class="contact-dropdown" tabindex="0" aria-haspopup="true">
-                            <a href="javascript:void(0)" class="contact-link" aria-label="Contact Us">Contact Us ▾</a>
+                            <a href="javascript:void(0)" class="contact-link" aria-label="Contact Us">Contact Us ?</a>
                             <div class="contact-popover" role="menu" aria-hidden="true">
                                 <button type="button" class="contact-close" aria-label="Close contact popover">&times;</button>
                                 <p style="font-weight:700;font-size:13px;color:#2B11DB;margin-bottom:8px;padding-bottom:8px;border-bottom:2px solid #f0f0f0;">Get in Touch</p>
@@ -3707,7 +3703,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                 <i class="bi bi-list" style="font-size: 20px; font-weight: 700;"></i>
                 <span style="font-size: 14px; font-weight: 700; letter-spacing: 0.5px;">BROWSE</span>
             </div>
-            <button id="closeSidebar" style="background: transparent; border: none; color: white; cursor: pointer; font-size: 24px; padding: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; line-height: 1;">×</button>
+            <button id="closeSidebar" style="background: transparent; border: none; color: white; cursor: pointer; font-size: 24px; padding: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; line-height: 1;">�</button>
         </div>
         <ul class="sidebar-list">
             <li class="has-sub">
@@ -3986,8 +3982,8 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                                 Sort by:
                                 <select id="productSort">
                                     <option value="default">Default</option>
-                                    <option value="az">A → Z</option>
-                                    <option value="za">Z → A</option>
+                                    <option value="az">A ? Z</option>
+                                    <option value="za">Z ? A</option>
                                 </select>
                             </div>
                             <div class="view-toggle">
@@ -4224,7 +4220,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             filterAndRender();
         });
 
-        // ── Product Detail Modal — open on product card click ──
+        // -- Product Detail Modal � open on product card click --
         grid.addEventListener('click', function(e){
             if (e.target.closest('.brand-add-inquiry')) return;
             var card = e.target.closest('.brand-product-card');
