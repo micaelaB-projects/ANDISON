@@ -382,17 +382,133 @@
             .then(function(r) { return r.json(); })
             .then(function(data) {
                 var brandData = data[brand];
-                if (!brandData) return;
+                // Case-insensitive brand lookup
+                if (!brandData) {
+                    var lc = brand.toLowerCase();
+                    for (var k in data) { 
+                        if (k.toLowerCase() === lc) { 
+                            brandData = data[k]; 
+                            break; 
+                        } 
+                    }
+                }
+                if (!brandData || !brandData.products) return;
                 
-                var product = brandData.products.find(function(p) { return p.model === model; });
+                // Case-insensitive model lookup
+                var product = null;
+                var modelLower = model.toLowerCase().trim();
+                for (var i = 0; i < brandData.products.length; i++) {
+                    if (brandData.products[i].model && brandData.products[i].model.toLowerCase().trim() === modelLower) {
+                        product = brandData.products[i];
+                        break;
+                    }
+                }
                 if (!product) return;
                 
                 // Load description
                 if (product.description) {
                     document.getElementById('prodDetailDesc').textContent = product.description;
                     document.getElementById('prodDescSection').style.display = 'block';
-                } else {
-                    document.getElementById('prodDescSection').style.display = 'none';
+                }
+                
+                // Load specs from JSON if available
+                if (product.specs) {
+                    var specsArr = [];
+                    if (Array.isArray(product.specs)) {
+                        specsArr = product.specs;
+                    } else if (typeof product.specs === 'object') {
+                        // Convert object to array of {label, value}
+                        for (var key in product.specs) {
+                            if (product.specs.hasOwnProperty(key)) {
+                                specsArr.push({ label: key, value: product.specs[key] });
+                            }
+                        }
+                    }
+                    
+                    if (specsArr.length > 0) {
+                        var table = document.getElementById('prodDetailSpecsTable');
+                        var specsSection = document.getElementById('prodSpecsSection');
+                        table.innerHTML = '';
+                        
+                        var thead = document.createElement('thead');
+                        var tbody = document.createElement('tbody');
+                        var isMultiColumn = false;
+                        
+                        // Check for multi-column format
+                        for (var i = 0; i < specsArr.length; i++) {
+                            if (specsArr[i].value && specsArr[i].value.toString().includes('|')) {
+                                isMultiColumn = true;
+                                break;
+                            }
+                        }
+                        
+                        if (isMultiColumn) {
+                            // Multi-column format
+                            var headerTr = document.createElement('tr');
+                            headerTr.style.fontWeight = '700';
+                            headerTr.style.backgroundColor = '#e8eeff';
+                            
+                            for (var i = 0; i < specsArr.length; i++) {
+                                var spec = specsArr[i];
+                                if (spec.label === '' || !spec.value) continue;
+                                var th = document.createElement('th');
+                                th.textContent = spec.label;
+                                th.style.padding = '12px 14px';
+                                th.style.textAlign = 'left';
+                                th.style.borderBottom = '2px solid #2B11DB';
+                                th.style.color = '#2B11DB';
+                                th.style.fontSize = '12px';
+                                headerTr.appendChild(th);
+                            }
+                            thead.appendChild(headerTr);
+                            
+                            var maxRows = 1;
+                            for (var i = 0; i < specsArr.length; i++) {
+                                if (specsArr[i].value) {
+                                    var rows = specsArr[i].value.toString().split('|').length;
+                                    if (rows > maxRows) maxRows = rows;
+                                }
+                            }
+                            
+                            for (var rowIdx = 0; rowIdx < maxRows; rowIdx++) {
+                                var tr = document.createElement('tr');
+                                if (rowIdx % 2 === 0) tr.style.backgroundColor = '#f8fafb';
+                                
+                                for (var i = 0; i < specsArr.length; i++) {
+                                    var spec = specsArr[i];
+                                    if (spec.label === '' || !spec.value) continue;
+                                    var values = spec.value.toString().split('|').map(function(v) { return v.trim(); });
+                                    var td = document.createElement('td');
+                                    td.textContent = values[rowIdx] || '';
+                                    td.style.padding = '12px 14px';
+                                    td.style.borderBottom = '1px solid #e8ecf4';
+                                    td.style.fontSize = '13px';
+                                    tr.appendChild(td);
+                                }
+                                tbody.appendChild(tr);
+                            }
+                            table.appendChild(thead);
+                        } else {
+                            // Simple 2-column format
+                            specsArr.forEach(function(s){
+                                if (s.label === '') return;
+                                var tr = document.createElement('tr');
+                                var td1 = document.createElement('td');
+                                var td2 = document.createElement('td');
+                                td1.textContent = s.label;
+                                td2.textContent = s.value;
+                                td1.style.fontWeight = '700';
+                                td1.style.color = '#2d3748';
+                                td1.style.backgroundColor = 'rgba(43,17,219,0.04)';
+                                tr.appendChild(td1);
+                                tr.appendChild(td2);
+                                tbody.appendChild(tr);
+                            });
+                        }
+                        
+                        table.appendChild(tbody);
+                        specsSection.style.display = 'block';
+                    }
                 }
             })
             .catch(function(){});
@@ -575,16 +691,46 @@
                                 syntheticCard.setAttribute('data-model', product.model);
                                 syntheticCard.setAttribute('data-type', product.type || '');
                                 syntheticCard.setAttribute('data-brand', productBrand);
-                                // Ensure imagesArr is always an array
-                                var imagesArr = Array.isArray(product.images) ? product.images : (product.images ? [product.images] : []);
-                                // Set data-image to first image if product.image is missing
-                                var mainImage = product.image || (imagesArr.length > 0 ? imagesArr[0] : '');
-                                syntheticCard.setAttribute('data-image', mainImage);
+                                
+                                // Combine both product.image and product.images
+                                var imagesArr = [];
+                                if (product.image && typeof product.image === 'string' && product.image.trim()) {
+                                    imagesArr.push(product.image);
+                                }
+                                if (Array.isArray(product.images)) {
+                                    imagesArr = imagesArr.concat(product.images.filter(function(img) { 
+                                        return img && typeof img === 'string' && img.trim(); 
+                                    }));
+                                } else if (product.images && typeof product.images === 'string' && product.images.trim()) {
+                                    imagesArr.push(product.images);
+                                }
+                                
+                                // Remove duplicates
+                                var seen = {}, uniqueImages = [];
+                                imagesArr.forEach(function(img) {
+                                    if (!seen[img]) { uniqueImages.push(img); seen[img] = true; }
+                                });
+                                
+                                syntheticCard.setAttribute('data-image', uniqueImages[0] || '');
+                                syntheticCard.setAttribute('data-images', JSON.stringify(uniqueImages));
+                                
+                                // Convert specs to array format {label, value}
+                                var specsArr = [];
+                                if (product.specs) {
+                                    if (Array.isArray(product.specs)) {
+                                        specsArr = product.specs;
+                                    } else if (typeof product.specs === 'object') {
+                                        // Convert object to array of {label, value} pairs
+                                        for (var key in product.specs) {
+                                            if (product.specs.hasOwnProperty(key)) {
+                                                specsArr.push({ label: key, value: product.specs[key] });
+                                            }
+                                        }
+                                    }
+                                }
+                                
                                 if (product.badge) syntheticCard.setAttribute('data-badge', product.badge);
-                                var specsArr = Array.isArray(product.specs) ? product.specs : (product.specs ? [product.specs] : []);
-                                syntheticCard.setAttribute('data-images', JSON.stringify(imagesArr));
                                 syntheticCard.setAttribute('data-specs', JSON.stringify(specsArr));
-                                // Optionally add description if available
                                 if (product.description) syntheticCard.setAttribute('data-description', product.description);
                                 openProductModal(syntheticCard);
                             }
@@ -619,8 +765,10 @@
         var imagesRaw = card.getAttribute('data-images') || '[]';
         var specs    = [];
         var images   = [];
-        try { specs = JSON.parse(specsRaw); } catch(e){}
+        console.log('MODAL OPEN - specsRaw:', specsRaw, 'model:', model, 'brand:', brand);
+        try { specs = JSON.parse(specsRaw); } catch(e){console.log('Failed to parse specs:', e);}
         try { images = JSON.parse(imagesRaw); } catch(e){}
+        console.log('Parsed specs:', specs, 'specs length:', Array.isArray(specs) ? specs.length : 'not array');
 
         // Show brand logo using PHP endpoint to guarantee match
         var brandElem = document.getElementById('prodDetailBrand');
@@ -679,6 +827,7 @@
         var table     = document.getElementById('prodDetailSpecsTable');
         var specsSection = document.getElementById('prodSpecsSection');
         table.innerHTML = '';
+        console.log('specsArr after conversion:', specsArr, 'length:', specsArr.length);
         if (specsArr.length > 0) {
           var thead = document.createElement('thead');
           var tbody = document.createElement('tbody');
@@ -758,100 +907,6 @@
         loadProductDetails(brand, model);
         // Load product images from card data
         loadProductImagesFromCard(images);
-
-        /* Specs */
-        var specsArr  = Array.isArray(specs) ? specs : Object.entries(specs).map(function(e){ return {label:e[0],value:e[1]}; });
-        var table     = document.getElementById('prodDetailSpecsTable');
-        var specsSection = document.getElementById('prodSpecsSection');
-        table.innerHTML = '';
-        if (specsArr.length > 0) {
-            var thead = document.createElement('thead');
-            var tbody = document.createElement('tbody');
-            var isMultiColumn = false;
-            var colCount = 1;
-            
-            // Check if any value contains pipes (multi-column data)
-            for (var i = 0; i < specsArr.length; i++) {
-                if (specsArr[i].value && specsArr[i].value.includes('|')) {
-                    isMultiColumn = true;
-                    var cols = specsArr[i].value.split('|').length;
-                    if (cols > colCount) colCount = cols;
-                }
-            }
-            
-            // Build table based on format
-            if (isMultiColumn) {
-                // Multi-column Excel-like format
-                var headerTr = document.createElement('tr');
-                headerTr.style.fontWeight = '700';
-                headerTr.style.backgroundColor = '#e8eeff';
-                
-                for (var i = 0; i < specsArr.length; i++) {
-                    var spec = specsArr[i];
-                    if (spec.label === '' || !spec.value) continue; // Skip empty rows
-                    
-                    var th = document.createElement('th');
-                    th.textContent = spec.label;
-                    th.style.padding = '12px 14px';
-                    th.style.textAlign = 'left';
-                    th.style.borderBottom = '2px solid #2B11DB';
-                    th.style.color = '#2B11DB';
-                    th.style.fontSize = '12px';
-                    headerTr.appendChild(th);
-                }
-                thead.appendChild(headerTr);
-                
-                // Split values and create rows
-                var maxRows = 1;
-                for (var i = 0; i < specsArr.length; i++) {
-                    var rows = specsArr[i].value.split('|').length;
-                    if (rows > maxRows) maxRows = rows;
-                }
-                
-                for (var rowIdx = 0; rowIdx < maxRows; rowIdx++) {
-                    var tr = document.createElement('tr');
-                    if (rowIdx % 2 === 0) {
-                        tr.style.backgroundColor = '#f8fafb';
-                    }
-                    
-                    for (var colIdx = 0; colIdx < specsArr.length; colIdx++) {
-                        var spec = specsArr[colIdx];
-                        if (spec.label === '' || !spec.value) continue;
-                        
-                        var values = spec.value.split('|').map(function(v) { return v.trim(); });
-                        var td = document.createElement('td');
-                        td.textContent = values[rowIdx] || '';
-                        td.style.padding = '12px 14px';
-                        td.style.borderBottom = '1px solid #e8ecf4';
-                        td.style.fontSize = '13px';
-                        tr.appendChild(td);
-                    }
-                    tbody.appendChild(tr);
-                }
-                table.appendChild(thead);
-            } else {
-                // Simple 2-column key-value format
-                specsArr.forEach(function(s){
-                    if (s.label === '') return; // Skip empty rows
-                    var tr = document.createElement('tr');
-                    var td1 = document.createElement('td');
-                    var td2 = document.createElement('td');
-                    td1.textContent = s.label;
-                    td2.textContent = s.value;
-                    td1.style.fontWeight = '700';
-                    td1.style.color = '#2d3748';
-                    td1.style.backgroundColor = 'rgba(43,17,219,0.04)';
-                    tr.appendChild(td1);
-                    tr.appendChild(td2);
-                    tbody.appendChild(tr);
-                });
-            }
-            
-            table.appendChild(tbody);
-            specsSection.style.display = 'block';
-        } else {
-            specsSection.style.display = 'none';
-        }
 
         /* Load Datasheet from assets folder */
         var datasheetWrap = document.getElementById('prodDatasheetWrap');
