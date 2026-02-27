@@ -46,5 +46,17 @@
         "price": "",
         "specs": "",
         "image": "assets/brands%20items/PANASONIC/TIG%20Welding%20Machine/YD-300BP4.jpg"
+    },
+    {
+        "id": "tig-welding-machine-5",
+        "name": "TIG Welding Machine",
+        "model": "YD-500BP4",
+        "description": "Professional TIG Welder",
+        "type": "Welding Machine",
+        "brand": "Panasonic Connect",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": "assets/brands%20items/PANASONIC/TIG%20Welding%20Machine/YC-500BP4.jpg"
     }
 ]

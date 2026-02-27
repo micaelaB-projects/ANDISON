@@ -22,6 +22,7 @@ if (!function_exists('andison_get_brands_info')) {
                     ['model' => 'YD-200BL3', 'type' => 'TIG Welding Machine', 'badge' => '', 'image' => 'assets/brands%20items/PANASONIC/TIG Welding Machine/YC-200BL3.jpeg'],
                     ['model' => 'YD-300BZ3', 'type' => 'TIG Welding Machine', 'badge' => '', 'image' => 'assets/brands%20items/PANASONIC/TIG Welding Machine/YC-300BZ3.jpeg'],
                     ['model' => 'YD-300BP4', 'type' => 'TIG Welding Machine', 'badge' => '', 'image' => 'assets/brands%20items/PANASONIC/TIG Welding Machine/YC-300BP4.png'],
+                    ['model' => 'YD-500BP4', 'type' => 'TIG Welding Machine', 'badge' => '', 'image' => 'assets/brands%20items/PANASONIC/TIG Welding Machine/YC-500BP4.jpg'],
                     ['model' => 'YD-300WX4', 'type' => 'TIG Welding Machine', 'badge' => '', 'image' => 'assets/brands%20items/PANASONIC/TIG Welding Machine/YC-300WX4.jpg'],
                     ['model' => 'YP-060PF3', 'type' => 'Positioner / External Axis', 'badge' => '', 'image' => 'assets/brands%20items/PANASONIC/Arc Welding Robot/Panasonic Positioner 1.webp',
                         'specs' => [

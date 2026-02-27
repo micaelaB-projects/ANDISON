@@ -73,6 +73,12 @@
                 "image": "assets/brands%20items/PANASONIC/TIG Welding Machine/YC-300BP4.png"
             },
             {
+                "model": "YD-500BP4",
+                "type": "Welding Robot",
+                "badge": "",
+                "image": "assets/brands%20items/PANASONIC/TIG Welding Machine/YC-500BP4.jpg"
+            },
+            {
                 "model": "YD-300WX4",
                 "type": "Welding Robot",
                 "badge": "",

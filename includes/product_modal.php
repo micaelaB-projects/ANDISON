@@ -730,23 +730,52 @@
               return str.replace(/\s+/g, '').replace(/_/g, '').toLowerCase();
             }
             var brandFolder = brand;
-            if (brand === 'Panasonic Connect') brandFolder = 'panasonic';
+            if (brand === 'Panasonic Connect') brandFolder = 'PANASONIC';
             var brandNorm = normalize(brandFolder);
             var modelCode = model.split(/[^A-Za-z0-9]+/).filter(function(p){ return p.match(/^[A-Z0-9]+[-\d]*$/i); })[0] || model.split(/\s/)[0];
             var modelNorm = normalize(modelCode);
             var modelFullNorm = normalize(model);
+            
+            // Extract series code (e.g., "KR2" from "YD-350KR2")
+            var seriesMatch = model.match(/([A-Z]+\d+)$/i);
+            var seriesCode = seriesMatch ? seriesMatch[1] : '';
 
             var patterns = [
               'assets/brands items/' + brandFolder + '/Datasheet/' + brandFolder + ' ' + modelCode + '.pdf',
               'assets/brands items/' + brandFolder + '/Datasheet/Datasheet ' + modelCode + '.pdf',
               'assets/brands items/' + brandFolder + '/Datasheet/' + modelCode + '.pdf',
-              'assets/brands items/' + brandFolder + '/Datasheet/' + model + '.pdf',
-              'assets/brands items/' + brandNorm + '/Datasheet/' + brandNorm + modelNorm + '.pdf',
-              'assets/brands items/' + brandNorm + '/Datasheet/datasheet' + modelNorm + '.pdf',
-              'assets/brands items/' + brandNorm + '/Datasheet/' + modelNorm + '.pdf',
-              'assets/brands items/' + brandNorm + '/Datasheet/' + modelFullNorm + '.pdf'
+              'assets/brands items/' + brandFolder + '/Datasheet/' + model + '.pdf'
             ];
-            console.log('[DATASHEET DEBUG] brand:', brand, '| model:', model, '| modelCode:', modelCode);
+            
+            // Add series-based pattern (e.g., "KR2 Series.pdf" for YD-350KR2)
+            if (seriesCode) {
+              patterns.push('assets/brands items/' + brandFolder + '/Datasheet/' + seriesCode + ' Series.pdf');
+              // Also check in product-type subdirectories (e.g., TIG Welding Machine/Datasheet/Panasonic BP4 Series.pdf)
+              patterns.push('assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + brandFolder + ' ' + seriesCode + ' Series.pdf');
+              patterns.push('assets/brands items/' + brandFolder + '/CO2,MAG,MIG Welding Machine/Datasheet/' + brandFolder + ' ' + seriesCode + ' Series.pdf');
+              patterns.push('assets/brands items/' + brandFolder + '/Arc Welding Robot/Datasheet/' + brandFolder + ' ' + seriesCode + ' Series.pdf');
+              // Also check in Arc Welding Robot Brochure folder with proper casing (e.g., Panasonic G3 Welding Robot.pdf)
+              patterns.push('assets/brands items/' + brandFolder + '/Arc Welding Robot/Brochure/Panasonic ' + seriesCode + ' Welding Robot.pdf');
+              patterns.push('assets/brands items/' + brandFolder + '/Arc Welding Robot/Brochure/' + seriesCode + ' Welding Robot.pdf');
+            }
+            
+            // Check in product-type subdirectories for model-specific datasheets
+            patterns.push('assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + brandFolder + ' ' + model + '.pdf');
+            patterns.push('assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + model + 'YNA.pdf');
+            // Convert YD model to YC for datasheet search (e.g., YD-200BL3 -> YC-200BL3YNA)
+            var ycModel = model.replace(/^YD/, 'YC');
+            patterns.push('assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + brandFolder + ' ' + ycModel + 'YNA.pdf');
+            patterns.push('assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + ycModel + 'YNA.pdf');
+            patterns.push('assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + brandFolder + ' ' + ycModel + '.pdf');
+            patterns.push('assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + ycModel + '.pdf');
+            patterns.push('assets/brands items/' + brandFolder + '/CO2,MAG,MIG Welding Machine/Datasheet/' + brandFolder + ' ' + model + '.pdf');
+            
+            patterns.push('assets/brands items/' + brandNorm + '/Datasheet/' + brandNorm + modelNorm + '.pdf');
+            patterns.push('assets/brands items/' + brandNorm + '/Datasheet/datasheet' + modelNorm + '.pdf');
+            patterns.push('assets/brands items/' + brandNorm + '/Datasheet/' + modelNorm + '.pdf');
+            patterns.push('assets/brands items/' + brandNorm + '/Datasheet/' + modelFullNorm + '.pdf');
+            
+            console.log('[DATASHEET DEBUG] brand:', brand, '| model:', model, '| modelCode:', modelCode, '| seriesCode:', seriesCode);
             console.log('[DATASHEET DEBUG] Checking patterns:', patterns);
             (function tryDatasheet(i) {
               if (i >= patterns.length) {
