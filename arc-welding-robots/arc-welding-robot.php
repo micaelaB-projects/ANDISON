@@ -4077,6 +4077,33 @@ if (!$current_category) {
                 <li><strong>Type:</strong> Professional Grade</li>
                 <li><strong>Support:</strong> 24/7 Technical Support</li>
             `;
+
+            // Datasheet logic
+            var datasheetCard = document.getElementById('modalDatasheetCard');
+            var datasheetBtn = document.getElementById('modalDatasheetBtn');
+            datasheetCard.style.display = 'none';
+            if (model) {
+                // Try common datasheet patterns
+                var brand = 'Panasonic';
+                var patterns = [
+                    '../assets/brands items/panasonic/Datasheet/' + brand + ' ' + model + '.pdf',
+                    '../assets/brands items/panasonic/Datasheet/Datasheet ' + model + '.pdf',
+                    '../assets/brands items/panasonic/Datasheet/' + model + '.pdf'
+                ];
+                (function tryDatasheet(i) {
+                    if (i >= patterns.length) return;
+                    fetch(patterns[i].replace(/%20/g, ' '), { method: 'HEAD' })
+                        .then(function(r) {
+                            if (r.ok) {
+                                datasheetBtn.href = patterns[i];
+                                datasheetCard.style.display = 'block';
+                            } else {
+                                tryDatasheet(i+1);
+                            }
+                        })
+                        .catch(function(){ tryDatasheet(i+1); });
+                })(0);
+            }
             
             // Store current product
             currentProduct = {
@@ -4246,6 +4273,14 @@ if (!$current_category) {
 
                 <div class="modal-description" id="modalDescription">
                     Professional arc welding equipment for industrial applications.
+                </div>
+
+                <!-- Datasheet Card/Button -->
+                <div id="modalDatasheetCard" style="display:none;margin:24px 0 0 0;">
+                    <a id="modalDatasheetBtn" href="#" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg, #2B11DB 0%, #1f0aa1 100%);color:#fff;padding:13px 20px;border-radius:14px;font-size:16px;font-weight:950;text-decoration:none;box-shadow:0 8px 22px rgba(43,17,219,0.3);transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);width:100%;border:1px solid rgba(255,255,255,0.2);letter-spacing:1px;text-transform:uppercase;position:relative;overflow:hidden;">
+                        <i class="bi bi-file-pdf" style="font-size:18px;"></i>
+                        <span>VIEW DATASHEET (PDF)</span>
+                    </a>
                 </div>
 
                 <div class="modal-specs">
