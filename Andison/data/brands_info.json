@@ -886,12 +886,6 @@
                 "image": "assets/brands%20items/MOTOLITE/Gold.jpg"
             },
             {
-                "model": "Silver",
-                "type": "Battery",
-                "badge": "",
-                "image": "assets/brands%20items/MOTOLITE/excel.png"
-            },
-            {
                 "model": "Enduro",
                 "type": "Battery",
                 "badge": "",
@@ -902,6 +896,24 @@
                 "type": "Battery",
                 "badge": "",
                 "image": "assets/brands%20items/MOTOLITE/Truckmaster.png"
+            },
+            {
+                "model": "EXCEL",
+                "type": "Maintenance Free Battery",
+                "badge": "",
+                "image": "assets/brands%20items/MOTOLITE/excel.png"
+            },
+            {
+                "model": "AMP-TECH",
+                "type": "Special Battery",
+                "badge": "",
+                "image": "assets/brands%20items/MOTOLITE/Amp-Tech.jpg"
+            },
+            {
+                "model": "SOLAR MASTER",
+                "type": "Special Battery",
+                "badge": "",
+                "image": "assets/brands%20items/MOTOLITE/Solar Master.png"
             }
         ]
     }

@@ -4012,6 +4012,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                             <div class="brand-product-card"
                                  data-model="<?php echo htmlspecialchars($model, ENT_QUOTES); ?>"
                                  data-type="<?php echo htmlspecialchars($type, ENT_QUOTES); ?>"
+                                 data-brand="<?php echo htmlspecialchars($brand_name, ENT_QUOTES); ?>"
                                  data-image="<?php echo htmlspecialchars($img, ENT_QUOTES); ?>"
                                  data-images="<?php echo $imgs_json; ?>"
                                  data-specs="<?php echo $specs_json; ?>"

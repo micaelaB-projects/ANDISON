@@ -376,11 +376,18 @@
 
     var _jsonPath = (typeof MODAL_JSON_PATH !== 'undefined') ? MODAL_JSON_PATH : 'Andison/data/brands_info.json';
 
+    /* Generation counter – incremented on every openProductModal call so that
+       stale XHR responses from a previously-opened product are discarded. */
+    var _detailGen = 0;
+
     /* Load product details from JSON data */
     function loadProductDetails(brand, model) {
-        fetch(_jsonPath)
+        var myGen = ++_detailGen;
+        fetch(_jsonPath + '?v=' + Date.now())
             .then(function(r) { return r.json(); })
             .then(function(data) {
+                // Discard if a newer openProductModal call has already fired
+                if (myGen !== _detailGen) return;
                 var brandData = data[brand];
                 // Case-insensitive brand lookup
                 if (!brandData) {
@@ -593,166 +600,77 @@
         startModalSlider();
     }
 
-    /* Load related products - FROM SAME BRAND ONLY */
+    /* Load related products - FROM SAME BRAND ONLY, using DOM cards as source */
     function loadRelatedProducts(currentBrand, currentModel) {
         var grid = document.getElementById('relatedProductsGrid');
         var wrap = document.getElementById('relatedProductsWrap');
         grid.innerHTML = '';
-        
-        fetch(_jsonPath)
-            .then(function(r) { return r.json(); })
-            .then(function(data) {
-                // Find the current brand data (case-insensitive)
-                var brandData = data[currentBrand];
-                if (!brandData) {
-                    var lc = currentBrand.toLowerCase();
-                    for (var k in data) { if (k.toLowerCase() === lc) { brandData = data[k]; break; } }
-                }
-                if (!brandData || !brandData.products) { wrap.style.display = 'none'; return; }
 
-                // Collect products from same brand only (image not required)
-                var allProducts = [];
-                for (var i = 0; i < brandData.products.length; i++) {
-                    var product = brandData.products[i];
-                    if (product.model && product.model !== currentModel) {
-                        product._brand = currentBrand;
-                        allProducts.push(product);
-                    }
-                }
-                
-                if (allProducts.length === 0) {
-                    wrap.style.display = 'none';
-                    return;
-                }
-                
-                // Shuffle and take 4
-                var relatedProducts = allProducts.sort(function() { return Math.random() - 0.5; }).slice(0, 4);
-                
-                // Try to find matching cards on page
-                var allPageCards = document.querySelectorAll('.product-card');
-                var cardMap = {};
-                for (var i = 0; i < allPageCards.length; i++) {
-                    var cardModel = allPageCards[i].getAttribute('data-model') || 
-                                   (allPageCards[i].querySelector('h4') ? allPageCards[i].querySelector('h4').textContent.trim() : '');
-                    if (cardModel) {
-                        cardMap[cardModel] = allPageCards[i];
-                    }
-                }
-                
-                relatedProducts.forEach(function(product) {
-                    var item = document.createElement('div');
-                    item.className = 'related-product-item';
-                    item.style.cursor = 'pointer';
-                    
-                    var img = document.createElement('img');
-                    img.style.maxWidth = '100%';
-                    img.style.maxHeight = '70px';
-                    img.style.objectFit = 'contain';
-                    
-                    // Try to get image from page card first, then JSON
-                    var pageCard = cardMap[product.model];
-                    var imgSrc = '';
-                    if (pageCard) {
-                        var pageImg = pageCard.querySelector('img');
-                        if (pageImg && pageImg.src && pageImg.src.trim() !== '') {
-                            imgSrc = pageImg.src;
-                        }
-                    }
-                    if (!imgSrc) {
-                      if (product.image && product.image.trim() !== '') {
-                        imgSrc = product.image;
-                      } else if (Array.isArray(product.images) && product.images.length > 0 && product.images[0]) {
-                        imgSrc = product.images[0];
-                      }
-                    }
-                    imgSrc = normalizeImagePath(imgSrc);
-                    var fallbackImg = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%2270%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22100%22 height=%2270%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2212%22%3ENo Image%3C/text%3E%3C/svg%3E';
-                    img.src = imgSrc || fallbackImg;
-                    img.onerror = function() { this.onerror = null; this.src = fallbackImg; };
-                    
-                    var name = document.createElement('div');
-                    name.className = 'related-product-name';
-                    name.textContent = product.model;
-                    
-                    item.appendChild(img);
-                    item.appendChild(name);
-                    
-                    // Closure to capture correct brand
-                    (function(product, pageCard) {
-                        item.onclick = function(e) {
-                            e.stopPropagation();
-                            if (pageCard) {
-                                // Use the actual product card from the page
-                                openProductModal(pageCard);
-                            } else {
-                                // Create synthetic card with all product data
-                                var syntheticCard = document.createElement('div');
-                                var productBrand = product._brand || currentBrand;
-                                syntheticCard.setAttribute('data-model', product.model);
-                                syntheticCard.setAttribute('data-type', product.type || '');
-                                syntheticCard.setAttribute('data-brand', productBrand);
-                                
-                                // Combine both product.image and product.images
-                                var imagesArr = [];
-                                if (product.image && typeof product.image === 'string' && product.image.trim()) {
-                                    imagesArr.push(product.image);
-                                }
-                                if (Array.isArray(product.images)) {
-                                    imagesArr = imagesArr.concat(product.images.filter(function(img) { 
-                                        return img && typeof img === 'string' && img.trim(); 
-                                    }));
-                                } else if (product.images && typeof product.images === 'string' && product.images.trim()) {
-                                    imagesArr.push(product.images);
-                                }
-                                
-                                // Remove duplicates
-                                var seen = {}, uniqueImages = [];
-                                imagesArr.forEach(function(img) {
-                                    if (!seen[img]) { uniqueImages.push(img); seen[img] = true; }
-                                });
-                                
-                                syntheticCard.setAttribute('data-image', uniqueImages[0] || '');
-                                syntheticCard.setAttribute('data-images', JSON.stringify(uniqueImages));
-                                
-                                // Convert specs to array format {label, value}
-                                var specsArr = [];
-                                if (product.specs) {
-                                    if (Array.isArray(product.specs)) {
-                                        specsArr = product.specs;
-                                    } else if (typeof product.specs === 'object') {
-                                        // Convert object to array of {label, value} pairs
-                                        for (var key in product.specs) {
-                                            if (product.specs.hasOwnProperty(key)) {
-                                                specsArr.push({ label: key, value: product.specs[key] });
-                                            }
-                                        }
-                                    }
-                                }
-                                
-                                if (product.badge) syntheticCard.setAttribute('data-badge', product.badge);
-                                syntheticCard.setAttribute('data-specs', JSON.stringify(specsArr));
-                                if (product.description) syntheticCard.setAttribute('data-description', product.description);
-                                openProductModal(syntheticCard);
-                            }
-                        };
-                    })(product, pageCard);
-                    
-                    item.onmouseover = function() {
-                        item.style.transform = 'translateY(-4px)';
-                    };
-                    item.onmouseout = function() {
-                        item.style.transform = 'translateY(0)';
-                    };
-                    
-                    grid.appendChild(item);
-                });
-                
-                wrap.style.display = 'block';
-            })
-            .catch(function(err){
-                console.log('Error loading related products:', err);
-                wrap.style.display = 'none';
-            });
+        var currentBrandLower = currentBrand.toLowerCase().trim();
+        var currentModelLower = currentModel.toLowerCase().trim();
+        var fallbackImg = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%2270%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22100%22 height=%2270%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2212%22%3ENo Image%3C/text%3E%3C/svg%3E';
+
+        // Collect all page cards that belong to the same brand (excluding current model)
+        var allPageCards = document.querySelectorAll('.brand-product-card, .product-card');
+        var sameBrandCards = [];
+        for (var i = 0; i < allPageCards.length; i++) {
+            var c = allPageCards[i];
+            // data-brand may be on the card itself or on the inner inquiry button
+            var cBrand = (c.getAttribute('data-brand') ||
+                          (c.querySelector('[data-brand]') ? c.querySelector('[data-brand]').getAttribute('data-brand') : '') || '').toLowerCase().trim();
+            var cModel = (c.getAttribute('data-model') || '').toLowerCase().trim();
+            if (cBrand === currentBrandLower && cModel !== currentModelLower) {
+                sameBrandCards.push(c);
+            }
+        }
+
+        if (sameBrandCards.length === 0) {
+            wrap.style.display = 'none';
+            return;
+        }
+
+        // Shuffle and take up to 4
+        sameBrandCards.sort(function() { return Math.random() - 0.5; });
+        var relatedCards = sameBrandCards.slice(0, 4);
+
+        relatedCards.forEach(function(pageCard) {
+            var model = pageCard.getAttribute('data-model') || '';
+            var item = document.createElement('div');
+            item.className = 'related-product-item';
+            item.style.cursor = 'pointer';
+
+            var img = document.createElement('img');
+            img.style.maxWidth = '100%';
+            img.style.maxHeight = '70px';
+            img.style.objectFit = 'contain';
+
+            // Get image from page card
+            var pageImg = pageCard.querySelector('img');
+            var imgSrc = (pageImg && pageImg.src) ? pageImg.src : (pageCard.getAttribute('data-image') || '');
+            img.src = imgSrc || fallbackImg;
+            img.onerror = function() { this.onerror = null; this.src = fallbackImg; };
+
+            var name = document.createElement('div');
+            name.className = 'related-product-name';
+            name.textContent = model;
+
+            item.appendChild(img);
+            item.appendChild(name);
+
+            (function(card) {
+                item.onclick = function(e) {
+                    e.stopPropagation();
+                    openProductModal(card);
+                };
+            })(pageCard);
+
+            item.onmouseover = function() { item.style.transform = 'translateY(-4px)'; };
+            item.onmouseout  = function() { item.style.transform = 'translateY(0)'; };
+
+            grid.appendChild(item);
+        });
+
+        wrap.style.display = 'block';
     }
 
     /* ── Open ── */
@@ -834,9 +752,10 @@
           var isMultiColumn = false;
           var colCount = 1;
           for (var i = 0; i < specsArr.length; i++) {
-            if (specsArr[i].value && specsArr[i].value.includes('|')) {
+            var _sv = String(specsArr[i].value != null ? specsArr[i].value : '');
+            if (_sv.includes('|')) {
               isMultiColumn = true;
-              var cols = specsArr[i].value.split('|').length;
+              var cols = _sv.split('|').length;
               if (cols > colCount) colCount = cols;
             }
           }
@@ -859,7 +778,7 @@
             thead.appendChild(headerTr);
             var maxRows = 1;
             for (var i = 0; i < specsArr.length; i++) {
-              var rows = specsArr[i].value.split('|').length;
+              var rows = String(specsArr[i].value != null ? specsArr[i].value : '').split('|').length;
               if (rows > maxRows) maxRows = rows;
             }
             for (var rowIdx = 0; rowIdx < maxRows; rowIdx++) {
@@ -869,8 +788,8 @@
               }
               for (var colIdx = 0; colIdx < specsArr.length; colIdx++) {
                 var spec = specsArr[colIdx];
-                if (spec.label === '' || !spec.value) continue;
-                var values = spec.value.split('|').map(function(v) { return v.trim(); });
+                if (spec.label === '' || spec.value == null) continue;
+                var values = String(spec.value).split('|').map(function(v) { return v.trim(); });
                 var td = document.createElement('td');
                 td.textContent = values[rowIdx] || '';
                 td.style.padding = '12px 14px';
@@ -958,6 +877,16 @@
 
         overlay.style.display    = 'flex';
         document.body.style.overflow = 'hidden';
+
+        // Scroll modal content back to top whenever a new product is opened
+        setTimeout(function(){
+            var modalInner = document.querySelector('#prodDetailModal > div');
+            if (modalInner) modalInner.scrollTop = 0;
+            var leftPanel = document.querySelector('#prodDetailModal > div > div:first-child');
+            if (leftPanel) leftPanel.scrollTop = 0;
+            var rightPanel = document.querySelector('#prodDetailModal > div > div:last-child');
+            if (rightPanel) rightPanel.scrollTop = 0;
+        }, 0);
     };
 
     /* ── Close ── */
