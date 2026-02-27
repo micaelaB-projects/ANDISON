@@ -2508,8 +2508,6 @@ $ytLinks = andison_get_youtube_links();
     </script>
 
     <script>
-
-    <script>
         // ============================================
         // UPDATE CART BADGE COUNT IN REAL-TIME
         // ============================================

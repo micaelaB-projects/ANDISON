@@ -2381,8 +2381,6 @@ $ytLinks = andison_get_youtube_links();
         })();
     </script>
 
-        <script>
-
     <script>
         // ============================================
         // UPDATE CART BADGE COUNT IN REAL-TIME
@@ -2390,27 +2388,20 @@ $ytLinks = andison_get_youtube_links();
         (function(){
             function updateCartBadge() {
                 var badge = document.getElementById('cartBadge');
-                if(!badge) return;
-                
+                if (!badge) return;
                 var items = JSON.parse(localStorage.getItem('inquiryItems') || '[]');
                 var count = items.length;
-                
-                if(count > 0) {
+                if (count > 0) {
                     badge.textContent = count;
                     badge.classList.remove('hidden');
                 } else {
+                    badge.textContent = '0';
                     badge.classList.add('hidden');
                 }
             }
-            
-            // Update on page load
             updateCartBadge();
-            
-            // Update on storage change (when items added from other pages)
             window.addEventListener('storage', updateCartBadge);
             window.addEventListener('inquiryItemsUpdated', updateCartBadge);
-            
-            // Update frequently to catch changes
             setInterval(updateCartBadge, 500);
         })();
     </script>
