@@ -1,1 +1,101 @@
-[\n    {\n        \"id\": \"panasonic-mag-mig-torch\",\n        \"name\": \"Panasonic MAG/MIG Torch\",\n        \"model\": \"MAG/MIG Torch\",\n        \"description\": \"Durable Panasonic MAG/MIG Welding Torch\",\n        \"type\": \"Welding Torch\",\n        \"badge\": \"\",\n        \"price\": \"\",\n        \"specs\": \"\",\n        \"image\": \"\"\n    },\n    {\n        \"id\": \"panasonic-tig-torch\",\n        \"name\": \"Panasonic TIG Torch\",\n        \"model\": \"TIG Torch\",\n        \"description\": \"Professional Panasonic TIG Welding Torch\",\n        \"type\": \"TIG Torch\",\n        \"badge\": \"\",\n        \"price\": \"\",\n        \"specs\": \"\",\n        \"image\": \"\"\n    },\n    {\n        \"id\": \"revolt-mag-mig-torch\",\n        \"name\": \"Revolt MAG/MIG Torch\",\n        \"model\": \"MAG/MIG Torch\",\n        \"description\": \"High Quality Revolt MAG/MIG Welder Torch\",\n        \"type\": \"Welding Torch\",\n        \"badge\": \"\",\n        \"price\": \"\",\n        \"specs\": \"\",\n        \"image\": \"\"\n    },\n    {\n        \"id\": \"weldcraft-tig-torch-accessories\",\n        \"name\": \"Weldcraft TIG Torch and Accessories\",\n        \"model\": \"TIG Torch with Accessories\",\n        \"description\": \"Complete Weldcraft TIG Torch Set with Accessories\",\n        \"type\": \"TIG Torch Set\",\n        \"badge\": \"\",\n        \"price\": \"\",\n        \"specs\": \"\",\n        \"image\": \"\"\n    },\n    {\n        \"id\": \"truweld-accessories-consumables\",\n        \"name\": \"Truweld Accessories & Consumables\",\n        \"model\": \"Welding Accessories\",\n        \"description\": \"Truweld Welding Accessories and Consumables\",\n        \"type\": \"Welding Accessories\",\n        \"badge\": \"\",\n        \"price\": \"\",\n        \"specs\": \"\",\n        \"image\": \"\"\n    },\n    {\n        \"id\": \"aircair-gouging-torch\",\n        \"name\": \"Aircair Gouging Torch\",\n        \"model\": \"Gouging Torch\",\n        \"description\": \"Professional Aircair Gouging Torch\",\n        \"type\": \"Gouging Torch\",\n        \"badge\": \"\",\n        \"price\": \"\",\n        \"specs\": \"\",\n        \"image\": \"\"\n    },\n    {\n        \"id\": \"water-cooling-unit\",\n        \"name\": \"Water Cooling Unit\",\n        \"model\": \"Cooling Unit\",\n        \"description\": \"Water Cooling System for Welding Equipment\",\n        \"type\": \"Cooling System\",\n        \"badge\": \"\",\n        \"price\": \"\",\n        \"specs\": \"\",\n        \"image\": \"\"\n    },\n    {\n        \"id\": \"torch-consumables\",\n        \"name\": \"Torch Consumables\",\n        \"model\": \"Consumables\",\n        \"description\": \"Replacement Torch Consumables and Parts\",\n        \"type\": \"Consumables\",\n        \"badge\": \"\",\n        \"price\": \"\",\n        \"specs\": \"\",\n        \"image\": \"\"\n    },\n    {\n        \"id\": \"hard-worker-mag-welding-plier\",\n        \"name\": \"Hard Worker MAG Welding Plier\",\n        \"model\": \"Welding Plier\",\n        \"description\": \"Industrial Grade Hard Worker MAG Welding Plier\",\n        \"type\": \"Welding Tool\",\n        \"badge\": \"\",\n        \"price\": \"\",\n        \"specs\": \"\",\n        \"image\": \"\"\n    }\n]
+[
+    {
+        "id": "panasonic-mag-mig-torch",
+        "name": "Panasonic MAG/MIG Torch",
+        "model": "MAG/MIG Torch",
+        "description": "Durable Panasonic MAG/MIG Welding Torch",
+        "type": "Welding Torch",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "panasonic-tig-torch",
+        "name": "Panasonic TIG Torch",
+        "model": "TIG Torch",
+        "description": "Professional Panasonic TIG Welding Torch",
+        "type": "TIG Torch",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "revolt-mag-mig-torch",
+        "name": "Revolt MAG/MIG Torch",
+        "model": "MAG/MIG Torch",
+        "description": "High Quality Revolt MAG/MIG Welder Torch",
+        "type": "Welding Torch",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "weldcraft-tig-torch-accessories",
+        "name": "Weldcraft TIG Torch and Accessories",
+        "model": "TIG Torch with Accessories",
+        "description": "Complete Weldcraft TIG Torch Set with Accessories",
+        "type": "TIG Torch Set",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "truweld-accessories-consumables",
+        "name": "Truweld Accessories & Consumables",
+        "model": "Welding Accessories",
+        "description": "Truweld Welding Accessories and Consumables",
+        "type": "Welding Accessories",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "aircair-gouging-torch",
+        "name": "Aircair Gouging Torch",
+        "model": "Gouging Torch",
+        "description": "Professional Aircair Gouging Torch",
+        "type": "Gouging Torch",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "water-cooling-unit",
+        "name": "Water Cooling Unit",
+        "model": "Cooling Unit",
+        "description": "Water Cooling System for Welding Equipment",
+        "type": "Cooling System",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "torch-consumables",
+        "name": "Torch Consumables",
+        "model": "Consumables",
+        "description": "Replacement Torch Consumables and Parts",
+        "type": "Consumables",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    },
+    {
+        "id": "hard-worker-mag-welding-plier",
+        "name": "Hard Worker MAG Welding Plier",
+        "model": "Welding Plier",
+        "description": "Industrial Grade Hard Worker MAG Welding Plier",
+        "type": "Welding Tool",
+        "badge": "",
+        "price": "",
+        "specs": "",
+        "image": ""
+    }
+]

@@ -1,0 +1,472 @@
+[
+    {
+        "id": "body-protection-vest-1",
+        "name": "Safety Vest High Visibility",
+        "model": "HV-100",
+        "brand": "SAFETY PRO",
+        "type": "Body Protection",
+        "description": "High visibility safety vest for industrial work",
+        "image": "assets/brands%20items/SAFETY%20PRO/Body%20Protection/HV-100.jpg",
+        "badge": ""
+    },
+    {
+        "id": "body-protection-apron",
+        "name": "Protective Work Apron",
+        "model": "WA-200",
+        "brand": "WORKGUARD",
+        "type": "Body Protection",
+        "description": "Durable protective apron for welding and industrial tasks",
+        "image": "assets/brands%20items/WORKGUARD/Body%20Protection/WA-200.jpg",
+        "badge": ""
+    },
+    {
+        "id": "flame-retardant-1",
+        "name": "Alphatec 1500 Plus FR",
+        "model": "111",
+        "brand": "ALPHATEC",
+        "type": "Chemical Flame Retardant",
+        "description": "Premium flame-retardant chemical protection suit",
+        "image": "assets/brands%20items/ALPHATEC/Chemical%20Flame%20Retardant/111.jpg",
+        "badge": ""
+    },
+    {
+        "id": "chemical-liquid-gloves-1",
+        "name": "Alphatec Solvex Gloves",
+        "model": "37-185",
+        "brand": "ALPHATEC",
+        "type": "Chemical Liquid Protection Gloves",
+        "description": "Chemical-resistant gloves for hazardous liquid handling",
+        "image": "assets/brands%20items/ALPHATEC/Chemical%20Liquid%20Protection%20Gloves/37-185.jpg",
+        "badge": ""
+    },
+    {
+        "id": "chemical-liquid-gloves-2",
+        "name": "Alphatec Solvex Premium",
+        "model": "37-176",
+        "brand": "ALPHATEC",
+        "type": "Chemical Liquid Protection Gloves",
+        "description": "Premium Solvex gloves for chemical protection",
+        "image": "assets/brands%20items/ALPHATEC/Chemical%20Liquid%20Protection%20Gloves/37-176.jpg",
+        "badge": ""
+    },
+    {
+        "id": "disposable-gloves-1",
+        "name": "Edge Disposable Gloves",
+        "model": "82-133",
+        "brand": "EDGE",
+        "type": "Disposable Gloves",
+        "description": "Single-use disposable gloves for general protection",
+        "image": "assets/brands%20items/EDGE/Disposable%20Gloves/82-133.jpg",
+        "badge": ""
+    },
+    {
+        "id": "disposable-gloves-2",
+        "name": "TouchNTuff Disposable Gloves",
+        "model": "92-670",
+        "brand": "TOUCHNTUFF",
+        "type": "Disposable Gloves",
+        "description": "Nitrile disposable gloves for multiple applications",
+        "image": "assets/brands%20items/TOUCHNTUFF/Disposable%20Gloves/92-670.jpg",
+        "badge": ""
+    },
+    {
+        "id": "aces-2118-1af-clear",
+        "name": "Aces 2118-1AF Clear",
+        "model": "2118-1AF",
+        "brand": "ACES",
+        "type": "Eye Protection",
+        "description": "Clear protective eyewear for general eye protection",
+        "image": "assets/brands%20items/ACES/Eye%20Protection/2118-1AF.jpg",
+        "badge": ""
+    },
+    {
+        "id": "aces-2118-4af-gray",
+        "name": "Aces 2118-4AF Gray",
+        "model": "2118-4AF",
+        "brand": "ACES",
+        "type": "Eye Protection",
+        "description": "Gray tinted protective eyewear for outdoor and bright conditions",
+        "image": "assets/brands%20items/ACES/Eye%20Protection/2118-4AF.jpg",
+        "badge": ""
+    },
+    {
+        "id": "aces-2508",
+        "name": "Aces 2508",
+        "model": "2508",
+        "brand": "ACES",
+        "type": "Eye Protection",
+        "description": "Standard protective eyewear for industrial use",
+        "image": "assets/brands%20items/ACES/Eye%20Protection/2508.jpg",
+        "badge": ""
+    },
+    {
+        "id": "uvex-i-vo",
+        "name": "UVEX I-VO",
+        "model": "I-VO",
+        "brand": "UVEX",
+        "type": "Eye Protection",
+        "description": "Lightweight protective eyewear with high comfort fit",
+        "image": "assets/brands%20items/UVEX/Eye%20Protection/I-VO.jpg",
+        "badge": ""
+    },
+    {
+        "id": "uvex-ultra-vision",
+        "name": "UVEX Ultra Vision",
+        "model": "Ultra Vision",
+        "brand": "UVEX",
+        "type": "Eye Protection",
+        "description": "Enhanced vision protective eyewear with superior clarity",
+        "image": "assets/brands%20items/UVEX/Eye%20Protection/Ultra%20Vision.jpg",
+        "badge": ""
+    },
+    {
+        "id": "uvex-ultrasonic",
+        "name": "UVEX Ultrasonic",
+        "model": "Ultrasonic",
+        "brand": "UVEX",
+        "type": "Eye Protection",
+        "description": "Advanced protective eyewear with anti-fog coating",
+        "image": "assets/brands%20items/UVEX/Eye%20Protection/Ultrasonic.jpg",
+        "badge": ""
+    },
+    {
+        "id": "uvex-otg",
+        "name": "Uvex OTG",
+        "model": "OTG",
+        "brand": "UVEX",
+        "type": "Eye Protection",
+        "description": "Over-the-glasses protective eyewear",
+        "image": "assets/brands%20items/UVEX/Eye%20Protection/OTG.jpg",
+        "badge": ""
+    },
+    {
+        "id": "foot-protection-boots-1",
+        "name": "Steel Toe Safety Boots",
+        "model": "STB-400",
+        "brand": "IronStep",
+        "type": "Foot Protection",
+        "description": "Durable steel toe boots for heavy industrial environments",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "foot-protection-shoes",
+        "name": "Slip-Resistant Work Shoes",
+        "model": "SRW-450",
+        "brand": "SafeStep",
+        "type": "Foot Protection",
+        "description": "Slip-resistant work shoes for safe footing on any surface",
+        "image": "",
+        "badge": ""
+    },
+    {
+        "id": "hand-protection-gloves-1",
+        "name": "Leather Work Gloves",
+        "model": "LWG-300",
+        "brand": "SAFEHANDS",
+        "type": "Hand Protection",
+        "description": "Premium leather work gloves for general industrial use",
+        "image": "assets/brands%20items/SAFEHANDS/Hand%20Protection/LWG-300.jpg",
+        "badge": ""
+    },
+    {
+        "id": "hand-protection-gloves-2",
+        "name": "Nitrile Coated Work Gloves",
+        "model": "NCG-350",
+        "brand": "GRIPPRO",
+        "type": "Hand Protection",
+        "description": "Nitrile coated gloves for enhanced grip and protection",
+        "image": "assets/brands%20items/GRIPPRO/Hand%20Protection/NCG-350.jpg",
+        "badge": ""
+    },
+    {
+        "id": "uvex-k1h-helmet-earmuff",
+        "name": "Uvex K1H Helmet Earmuff",
+        "model": "K1H",
+        "brand": "UVEX",
+        "type": "Hearing and Respiratory Protection",
+        "description": "Protective helmet with integrated earmuff for hearing protection",
+        "image": "assets/brands%20items/UVEX/Hearing%20and%20Respiratory%20Protection/K1H.jpg",
+        "badge": ""
+    },
+    {
+        "id": "uvex-whisper",
+        "name": "Uvex Whisper",
+        "model": "Whisper",
+        "brand": "UVEX",
+        "type": "Hearing Protection",
+        "description": "Low-profile hearing protection earmuff",
+        "image": "assets/brands%20items/UVEX/Hearing%20Protection/Whisper.jpg",
+        "badge": ""
+    },
+    {
+        "id": "uvex-x-fit",
+        "name": "Uvex X-Fit",
+        "model": "X-Fit",
+        "brand": "UVEX",
+        "type": "Hearing Protection",
+        "description": "Adjustable hearing protection with X-fit design",
+        "image": "assets/brands%20items/UVEX/Hearing%20Protection/X-Fit.jpg",
+        "badge": ""
+    },
+    {
+        "id": "uvex-x-fit-cord",
+        "name": "Uvex X-Fit w/ Cord",
+        "model": "X-Fit w/ Cord",
+        "brand": "UVEX",
+        "type": "Hearing Protection",
+        "description": "Hearing protection with attachment cord for safety",
+        "image": "assets/brands%20items/UVEX/Hearing%20Protection/X-Fit%20w%2F%20Cord.jpg",
+        "badge": ""
+    },
+    {
+        "id": "aces-a188",
+        "name": "Aces A188",
+        "model": "A188",
+        "brand": "ACES",
+        "type": "Respiratory Protection",
+        "description": "Respiratory protection equipment",
+        "image": "assets/brands%20items/ACES/Respiratory%20Protection/A188.jpg",
+        "badge": ""
+    },
+    {
+        "id": "uvex-silv-air-2200",
+        "name": "Uvex Silv-Air 2200",
+        "model": "Silv-Air 2200",
+        "brand": "UVEX",
+        "type": "Respiratory Protection",
+        "description": "Air-purifying respirator for industrial use",
+        "image": "assets/brands%20items/UVEX/Respiratory%20Protection/Silv-Air%202200.jpg",
+        "badge": ""
+    },
+    {
+        "id": "uvex-silv-air-2210",
+        "name": "Uvex Silv-Air 2210",
+        "model": "Silv-Air 2210",
+        "brand": "UVEX",
+        "type": "Respiratory Protection",
+        "description": "Advanced air-purifying respirator with valve",
+        "image": "assets/brands%20items/UVEX/Respiratory%20Protection/Silv-Air%202210.jpg",
+        "badge": ""
+    },
+    {
+        "id": "liquid-splash-1",
+        "name": "Alphatec 2300 Plus",
+        "model": "132",
+        "brand": "ALPHATEC",
+        "type": "Liquid Spray Splash Protection",
+        "description": "High-performance liquid spray splash protection",
+        "image": "assets/brands%20items/ALPHATEC/Liquid%20Spray%20Splash%20Protection/132.jpg",
+        "badge": ""
+    },
+    {
+        "id": "liquid-splash-2",
+        "name": "Alphatec 3000",
+        "model": "111",
+        "brand": "ALPHATEC",
+        "type": "Liquid Spray Splash Protection",
+        "description": "Advanced liquid and splash protection suit",
+        "image": "assets/brands%20items/ALPHATEC/Liquid%20Spray%20Splash%20Protection/111.jpg",
+        "badge": ""
+    },
+    {
+        "id": "liquid-splash-3",
+        "name": "Alphatec 4000",
+        "model": "111",
+        "brand": "ALPHATEC",
+        "type": "Liquid Spray Splash Protection",
+        "description": "Premium liquid spray and splash protection equipment",
+        "image": "assets/brands%20items/ALPHATEC/Liquid%20Spray%20Splash%20Protection/111.jpg",
+        "badge": ""
+    },
+    {
+        "id": "particulate-1",
+        "name": "Alphatec 1500 Plus",
+        "model": "111",
+        "brand": "ALPHATEC",
+        "type": "Particulate Low Hazard",
+        "description": "High-efficiency particulate protection suit",
+        "image": "assets/brands%20items/ALPHATEC/Particulate%20Low%20Hazard/111.jpg",
+        "badge": ""
+    },
+    {
+        "id": "particulate-2",
+        "name": "Alphatec 2000 Standard",
+        "model": "111",
+        "brand": "ALPHATEC",
+        "type": "Particulate Low Hazard",
+        "description": "Standard particulate protection equipment",
+        "image": "assets/brands%20items/ALPHATEC/Particulate%20Low%20Hazard/111.jpg",
+        "badge": ""
+    },
+    {
+        "id": "welding-gloves-1",
+        "name": "Weldas Welding Gloves",
+        "model": "10-0160",
+        "brand": "WELDAS",
+        "type": "Welding Gloves",
+        "description": "Professional welding gloves for arc and gas welding",
+        "image": "assets/brands%20items/WELDAS/Welding%20Gloves/10-0160.jpg",
+        "badge": ""
+    },
+    {
+        "id": "welding-gloves-2",
+        "name": "Weldas Premium Gloves",
+        "model": "10-2101",
+        "brand": "WELDAS",
+        "type": "Welding Gloves",
+        "description": "Premium quality welding gloves",
+        "image": "assets/brands%20items/WELDAS/Welding%20Gloves/10-2101.jpg",
+        "badge": ""
+    },
+    {
+        "id": "welding-gloves-3",
+        "name": "Weldas Comfort Gloves",
+        "model": "10-1003",
+        "brand": "WELDAS",
+        "type": "Welding Gloves",
+        "description": "Comfortable welding gloves for extended use",
+        "image": "assets/brands%20items/WELDAS/Welding%20Gloves/10-1003.jpg",
+        "badge": ""
+    },
+    {
+        "id": "welding-gloves-4",
+        "name": "Weldas Heavy Duty Gloves",
+        "model": "10-1009",
+        "brand": "WELDAS",
+        "type": "Welding Gloves",
+        "description": "Heavy-duty welding gloves for industrial applications",
+        "image": "assets/brands%20items/WELDAS/Welding%20Gloves/10-1009.jpg",
+        "badge": ""
+    },
+    {
+        "id": "welding-head-face-1",
+        "name": "Aces A388 Polycarbonate Clear Visor",
+        "model": "A388",
+        "brand": "ACES",
+        "type": "Welding Head and Face Protection",
+        "description": "Professional polycarbonate clear visor for welding head protection",
+        "image": "assets/brands%20items/ACES/Welding%20Head%20and%20Face%20Protection/A388.jpg",
+        "badge": ""
+    },
+    {
+        "id": "welding-head-face-2",
+        "name": "Aces A366 Hemispherical Hard Hat Attachment",
+        "model": "A366",
+        "brand": "ACES",
+        "type": "Welding Head and Face Protection",
+        "description": "Hemispherical hard hat attachment for welding protection",
+        "image": "assets/brands%20items/ACES/Welding%20Head%20and%20Face%20Protection/A366.jpg",
+        "badge": ""
+    },
+    {
+        "id": "welding-head-face-3",
+        "name": "Aces A288 Welding Helmet",
+        "model": "A288",
+        "brand": "ACES",
+        "type": "Welding Head and Face Protection",
+        "description": "Professional welding helmet for industrial welding applications",
+        "image": "assets/brands%20items/ACES/Welding%20Head%20and%20Face%20Protection/A288.jpg",
+        "badge": ""
+    },
+    {
+        "id": "welding-head-face-4",
+        "name": "Aces A238 Welding Helmet w/ Mounting Adaptor",
+        "model": "A238",
+        "brand": "ACES",
+        "type": "Welding Head and Face Protection",
+        "description": "Welding helmet with mounting adaptor for versatile use",
+        "image": "assets/brands%20items/ACES/Welding%20Head%20and%20Face%20Protection/A238.jpg",
+        "badge": ""
+    },
+    {
+        "id": "welding-head-face-5",
+        "name": "Aces A300 Headgear Assy",
+        "model": "A300",
+        "brand": "ACES",
+        "type": "Welding Head and Face Protection",
+        "description": "Complete headgear assembly for welding head protection",
+        "image": "assets/brands%20items/ACES/Welding%20Head%20and%20Face%20Protection/A300.jpg",
+        "badge": ""
+    },
+    {
+        "id": "welding-head-face-6",
+        "name": "Uvex Pheos B-WR Helmet w/ Sweatband",
+        "model": "Pheos B-WR",
+        "brand": "UVEX",
+        "type": "Welding Head and Face Protection",
+        "description": "Advanced welding helmet with integrated sweatband",
+        "image": "assets/brands%20items/UVEX/Welding%20Head%20and%20Face%20Protection/Pheos%20B-WR.jpg",
+        "badge": ""
+    },
+    {
+        "id": "working-gloves-1",
+        "name": "Weldas Work Gloves",
+        "model": "10-1206",
+        "brand": "WELDAS",
+        "type": "Working Gloves",
+        "description": "Professional work gloves for general labor",
+        "image": "assets/brands%20items/WELDAS/Working%20Gloves/10-1206.jpg",
+        "badge": ""
+    },
+    {
+        "id": "working-gloves-2",
+        "name": "Weldas Premium Work Gloves",
+        "model": "10-2064",
+        "brand": "WELDAS",
+        "type": "Working Gloves",
+        "description": "Premium work gloves for durability",
+        "image": "assets/brands%20items/WELDAS/Working%20Gloves/10-2064.jpg",
+        "badge": ""
+    },
+    {
+        "id": "working-gloves-3",
+        "name": "Hyflex Work Gloves",
+        "model": "11-724",
+        "brand": "HYFLEX",
+        "type": "Working Gloves",
+        "description": "Flexible work gloves for enhanced dexterity",
+        "image": "assets/brands%20items/HYFLEX/Working%20Gloves/11-724.jpg",
+        "badge": ""
+    },
+    {
+        "id": "working-gloves-4",
+        "name": "Hyflex Premium Gloves",
+        "model": "11-735",
+        "brand": "HYFLEX",
+        "type": "Working Gloves",
+        "description": "Premium flexible work gloves",
+        "image": "assets/brands%20items/HYFLEX/Working%20Gloves/11-735.jpg",
+        "badge": ""
+    },
+    {
+        "id": "working-gloves-5",
+        "name": "Edge Work Gloves",
+        "model": "48-126",
+        "brand": "EDGE",
+        "type": "Working Gloves",
+        "description": "Durable work gloves for industrial tasks",
+        "image": "assets/brands%20items/EDGE/Working%20Gloves/48-126.jpg",
+        "badge": ""
+    },
+    {
+        "id": "working-gloves-6",
+        "name": "Edge Professional Gloves",
+        "model": "48-128",
+        "brand": "EDGE",
+        "type": "Working Gloves",
+        "description": "Professional edge work gloves",
+        "image": "assets/brands%20items/EDGE/Working%20Gloves/48-128.jpg",
+        "badge": ""
+    },
+    {
+        "id": "working-gloves-7",
+        "name": "Edge Heavy-Duty Gloves",
+        "model": "48-706",
+        "brand": "EDGE",
+        "type": "Working Gloves",
+        "description": "Heavy-duty work gloves for tough jobs",
+        "image": "assets/brands%20items/EDGE/Working%20Gloves/48-706.jpg",
+        "badge": ""
+    }
+]

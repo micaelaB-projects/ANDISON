@@ -5,10 +5,11 @@ require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
 
-// Update page name and subcategory
+// Set category and subcategory for Gas Detectors
 $page_title = "Gas Detectors";
 $category_id = "gas-detectors";
 $subcategory_id = "gas-detectors";
+
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";
@@ -16,35 +17,57 @@ $email = "info@andison-industrial.com";
 
 $categories = andison_get_categories();
 $current_category = null;
+$current_subcategory_info = null;
 
 foreach ($categories as $cat) {
     if ($cat['id'] === $category_id) {
         $current_category = $cat;
+        
+        // Find the subcategory within this category
+        if (isset($cat['subcategories'])) {
+            foreach ($cat['subcategories'] as $subcat) {
+                if ($subcat['id'] === $subcategory_id) {
+                    $current_subcategory_info = $subcat;
+                    break;
+                }
+            }
+        }
         break;
     }
 }
 
+// Fallback if category not found
 if (!$current_category) {
-    // Fallback: create a default category object
     $current_category = array(
         'id' => $category_id,
         'name' => 'Gas Detectors',
-        'description' => 'Comprehensive gas detection solutions including portable detectors, multi-gas monitors, and calibration systems',
+        'description' => 'Discover our comprehensive range of gas detection equipment for industrial safety and monitoring.',
         'subcategories' => array(
             array('id' => 'gas-detectors', 'name' => 'Gas Detectors')
         )
     );
 }
+
+// Fallback if subcategory not found
+if (!$current_subcategory_info) {
+    $current_subcategory_info = array(
+        'id' => $subcategory_id,
+        'name' => 'Gas Detectors'
+    );
+}
+
+// Get products for this category/subcategory
+$products = andison_get_products_for_subcategory($category_id, $subcategory_id);
+
+// Set page title and description
+$category_name = $current_subcategory_info['name'];
+$category_description = $current_category['description'] ?? 'Discover our comprehensive range of industrial products.';
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <?php 
-    $category_name = 'Gas Detectors';
-    $category_description = 'Comprehensive gas detection solutions including portable detectors, multi-gas monitors, and calibration systems';
-    ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
@@ -789,7 +812,7 @@ if (!$current_category) {
 
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: 1fr;
             gap: 16px;
             width: 100%;
             max-width: 1200px;
@@ -799,13 +822,17 @@ if (!$current_category) {
             padding: 0 20px;
         }
 
+        .product-grid.grid-view {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
         .product-card {
             display: flex;
-            flex-direction: column;
-            align-items: stretch;
+            flex-direction: row;
+            align-items: center;
             justify-content: flex-start;
-            gap: 0;
-            padding: 0;
+            gap: 16px;
+            padding: 16px;
             background: white;
             border-radius: 12px;
             overflow: hidden;
@@ -816,6 +843,14 @@ if (!$current_category) {
             cursor: pointer;
         }
 
+        .product-grid.grid-view .product-card {
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: flex-start;
+            gap: 0;
+            padding: 0;
+        }
+
         .product-card:hover {
             border-color: #00D7B3;
             box-shadow: 0 8px 24px rgba(0, 215, 179, 0.25);
@@ -824,14 +859,22 @@ if (!$current_category) {
         }
 
         .product-image {
-            width: 100%;
-            height: 180px;
+            width: 120px;
+            height: 100px;
             background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .product-grid.grid-view .product-image {
+            width: 100%;
+            height: 180px;
             border-bottom: 1px solid #e0e0e0;
+            border-radius: 12px 12px 0 0;
         }
 
         .product-card:hover .product-image {
@@ -885,7 +928,7 @@ if (!$current_category) {
 
         .product-info {
             padding: 0;
-            background: white;
+            background: transparent;
             width: 100%;
             box-sizing: border-box;
             display: flex;
@@ -894,13 +937,21 @@ if (!$current_category) {
             flex-grow: 1;
         }
 
+        .product-grid.grid-view .product-info {
+            padding: 0;
+        }
+
         .product-card > div:last-child {
             padding: 8px 12px 12px 12px;
             margin-top: auto;
         }
 
+        .product-grid.grid-view .product-card > div:last-child {
+            padding: 8px 12px 12px 12px;
+        }
+
         .product-card h4 {
-            padding: 12px 12px 6px 12px;
+            padding: 0;
             margin: 0;
             color: #2B11DB;
             font-size: 13px;
@@ -909,20 +960,37 @@ if (!$current_category) {
         }
 
         .product-model {
-            padding: 0 12px 8px 12px;
+            padding: 0;
             margin: 0;
             color: #666;
             font-size: 11px;
             line-height: 1.4;
-            min-height: 22px;
+            min-height: auto;
         }
 
         .product-description {
-            padding: 0 12px 8px 12px;
+            padding: 0;
             margin: 0;
             color: #666;
             font-size: 11px;
             line-height: 1.4;
+            min-height: auto;
+        }
+
+        .product-grid.grid-view .product-card h4 {
+            padding: 12px 12px 6px 12px;
+            margin: 0;
+        }
+
+        .product-grid.grid-view .product-model {
+            padding: 0 12px 8px 12px;
+            margin: 0;
+            min-height: 22px;
+        }
+
+        .product-grid.grid-view .product-description {
+            padding: 0 12px 8px 12px;
+            margin: 0;
             min-height: 22px;
         }
 
@@ -931,7 +999,6 @@ if (!$current_category) {
         }
 
         .add-to-inquiry {
-            width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -944,16 +1011,22 @@ if (!$current_category) {
             border: none;
             border-radius: 6px;
             transition: all 0.3s ease;
-            background: linear-gradient(135deg, #00D7B3 0%, #00C9A0 100%);
+            background: linear-gradient(135deg, #2B11DB 0%, #1e0aa3 100%);
             position: relative;
             font-size: 12px;
-            box-shadow: 0 2px 8px rgba(0,215,179,0.3);
+            box-shadow: 0 2px 8px rgba(43,17,219,0.3);
+            width: auto;
+            flex-shrink: 0;
+        }
+
+        .product-grid.grid-view .add-to-inquiry {
+            width: 100%;
         }
 
         .add-to-inquiry:hover {
-            background: linear-gradient(135deg, #00C9A0, #00B690);
+            background: linear-gradient(135deg, #3d1ffa, #2B11DB);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,215,179,0.4);
+            box-shadow: 0 4px 12px rgba(43,17,219,0.4);
         }
 
         .add-to-inquiry:active {
@@ -3040,7 +3113,7 @@ if (!$current_category) {
     <?php require_once __DIR__ . '/../includes/sidebar.php'; ?>
         <?php
         // Set page title
-        $page_title = "Brands";
+        $page_title = "Low-Maintenance Batteries";
         $company_name = "ANDISON INDUSTRIAL";
         
         // Contact information
@@ -3275,10 +3348,10 @@ if (!$current_category) {
                 </div>
 
                 <!-- Product Grid -->
-                <div class="product-grid">
+                <div class="product-grid grid-view">
                 <?php 
-                // Fetch only Gas Detectors products
-                $all_products = andison_get_products_for_subcategory('gas-detectors', 'gas-detectors');
+                // Use pre-loaded products from top of page
+                $all_products = $products;
                 
                 // Display products
                 if (!empty($all_products)) {
@@ -3334,9 +3407,9 @@ if (!$current_category) {
                         <i class="bi bi-lightning-charge" style="font-size: 56px; color: #ccc;"></i>
                     </div>
                     <div class="product-info">
-                        <h4>Gas Detectors</h4>
+                        <h4>Arc Welding Machine</h4>
                         <p class="product-description">No products available</p>
-                        <button class="add-to-inquiry" type="button" data-model="Gas Detectors" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
+                        <button class="add-to-inquiry" type="button" data-model="Arc Welding Machine" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
                     </div>
                 </div>
                 <?php
@@ -3773,16 +3846,27 @@ if (!$current_category) {
             var grid = document.querySelector('.product-grid');
             var buttons = document.querySelectorAll('.view-toggle button');
             
+            // Remove active class from all buttons
             buttons.forEach(function(btn) {
                 btn.classList.remove('active');
             });
-            event.target.closest('button').classList.add('active');
-
-            if (viewType === 'list') {
-                grid.style.gridTemplateColumns = '1fr';
-            } else {
-                grid.style.gridTemplateColumns = 'repeat(3, 1fr)';
+            
+            // Add active class to the clicked button
+            var activeButton = document.querySelector('.view-toggle button[data-view="' + viewType + '"]');
+            if (activeButton) {
+                activeButton.classList.add('active');
             }
+
+            // Toggle grid view class on the product grid
+            if (viewType === 'list') {
+                grid.classList.remove('grid-view');
+            } else {
+                grid.classList.add('grid-view');
+            }
+            
+            // Reset current page when changing views
+            currentPage = 1;
+            updatePagination();
         }
 
         // Initialize on page load
@@ -3824,6 +3908,97 @@ if (!$current_category) {
             if(resultsCount) {
                 resultsCount.innerHTML = 'Showing <span>' + Math.min(itemsPerPage, filteredCards.length - start) + '</span> of <span>' + filteredCards.length + '</span> products';
             }
+
+            // Re-attach event listeners to visible product buttons
+            attachProductButtonListeners();
+        }
+
+        // ============================================
+        // MODAL CLICK HANDLER (Event Delegation)
+        // ============================================
+        // This listener is placed here (outside updatePagination) 
+        // so it's only attached once and works for all dynamically-shown cards
+        document.addEventListener('click', function(e) {
+            var card = e.target.closest('.product-card');
+            if (card) {
+                // Prevent opening modal if clicking the add-to-inquiry button
+                if (e.target.closest('.add-to-inquiry')) {
+                    return;
+                }
+                console.log('Opening modal for product:', card.querySelector('h4')?.textContent);
+                openProductModal(card);
+            }
+        });
+
+        function attachProductButtonListeners() {
+            document.querySelectorAll('.product-grid .add-to-inquiry').forEach(function(btn) {
+                // Remove existing listeners by cloning and replacing
+                var newBtn = btn.cloneNode(true);
+                btn.parentNode.replaceChild(newBtn, btn);
+
+                newBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    
+                    var model = this.getAttribute('data-model') || '';
+                    var brand = this.getAttribute('data-brand') || '';
+                    var card = this.closest('.product-card');
+                    var h4el = card ? card.querySelector('h4') : null;
+                    var descel = card ? card.querySelector('.product-description') : null;
+                    var name = (h4el ? h4el.textContent.trim() : '') || model;
+                    var description = (descel ? descel.textContent.trim() : '') || 'Industrial product';
+                    
+                    if (!model || !name) {
+                        console.error('Missing product data: model=' + model + ', name=' + name);
+                        alert('Error: Product information incomplete');
+                        return;
+                    }
+                    
+                    var items = JSON.parse(localStorage.getItem('inquiryItems') || '[]');
+                    var found = items.find(function(i) { 
+                        return i.model === model && i.name === name; 
+                    });
+                    
+                    if(!found) {
+                        var product = {
+                            model: model,
+                            name: name,
+                            description: description,
+                            brand: brand,
+                            qty: 1,
+                            timestamp: new Date().getTime()
+                        };
+                        items.push(product);
+                        localStorage.setItem('inquiryItems', JSON.stringify(items));
+                        
+                        // Show success animation
+                        var originalText = this.innerHTML;
+                        this.innerHTML = '<i class="bi bi-check-circle"></i> Added ✓';
+                        this.style.background = 'linear-gradient(135deg, #10B981 0%, #059669 100%)';
+                        
+                        // Dispatch event to update badge
+                        window.dispatchEvent(new Event('inquiryItemsUpdated'));
+                        
+                        // Reset after 1.5 seconds
+                        var self = this;
+                        setTimeout(function() {
+                            self.innerHTML = originalText;
+                            self.style.background = '';
+                        }, 1500);
+                    } else {
+                        // Already added
+                        var originalText = this.innerHTML;
+                        this.innerHTML = '<i class="bi bi-check-circle"></i> Already in List ✓';
+                        this.style.background = 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)';
+                        
+                        var self = this;
+                        setTimeout(function() {
+                            self.innerHTML = originalText;
+                            self.style.background = '';
+                        }, 1500);
+                    }
+                });
+            });
         }
 
         function updatePaginationButtons(totalPages) {
@@ -3885,12 +4060,16 @@ if (!$current_category) {
         var currentMediaIndex = 0;
 
         function openProductModal(cardElement) {
+            console.log('openProductModal called with:', cardElement);
+            
             var modelEl = cardElement.querySelector('.product-model');
             var descEl  = cardElement.querySelector('.product-description');
             var model       = modelEl ? modelEl.textContent.trim() : (cardElement.querySelector('.add-to-inquiry')?.getAttribute('data-model') || '');
             var name        = cardElement.querySelector('h4')?.textContent?.trim() || model;
             var imgSrc      = cardElement.querySelector('.product-image img')?.src || '';
             var description = descEl ? descEl.textContent.trim() : (cardElement.querySelector('.add-to-inquiry')?.getAttribute('data-type') || 'Industrial product');
+            
+            console.log('Product data:', {model, name, imgSrc, description});
             
             // Populate modal
             document.getElementById('modalProductName').textContent = name;
@@ -3930,7 +4109,9 @@ if (!$current_category) {
             };
             
             currentMediaIndex = 0;
+            console.log('Adding active class to modal. Modal element:', modal);
             modal.classList.add('active');
+            console.log('Modal classList after add:', modal.classList);
         }
 
         function closeModal() {
@@ -3939,13 +4120,8 @@ if (!$current_category) {
 
         // Add click listeners to all product cards
         document.addEventListener('DOMContentLoaded', function() {
-            var productCards = document.querySelectorAll('.product-card');
-            productCards.forEach(function(card) {
-                card.addEventListener('click', function(e) {
-                    if (e.target.closest('.add-to-inquiry')) return;
-                    openProductModal(card);
-                });
-            });
+            // Modal controls are now initialized here
+            // Product card clicks use event delegation (see above)
 
             // Modal controls
             modalClose.addEventListener('click', closeModal);
@@ -4112,8 +4288,4 @@ if (!$current_category) {
             </div>
         </div>
     </div>
-
-
-
-
 

@@ -3251,12 +3251,19 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         }
         .filter-group {
             margin-bottom: 22px;
+            padding-bottom: 22px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+        .filter-group:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
         }
         .filter-group-title {
             font-size: 11px;
             font-weight: 700;
             letter-spacing: 1px;
-            color: #888;
+            color: #2B11DB;
             text-transform: uppercase;
             display: flex;
             align-items: center;
