@@ -3192,7 +3192,7 @@ $category_description = $current_category['description'] ?? 'Discover our compre
                                 <li><a href="../brand.php?name=SK%20And%20GAL%20GAGE"><img src="../assets/brands/SK%20AND%20GAL%20GAGE.jpg" alt="SK And GAL GAGE" title="SK And GAL GAGE"></a></li>
                                 <li><a href="../brand.php?name=COPPUS"><img src="../assets/brands/COPPUS.jpg" alt="Coppus" title="Coppus"></a></li>
                                 <li><a href="../brand.php?name=BW%20Technologies"><img src="../assets/brands/BW%20TECHNOLOGIES.jpg" alt="BW Technologies" title="BW Technologies"></a></li>
-                                <li><a href="../brand.php?name=RAC"><img src="../assets/brands/RAE%20SYSTEMS.jpg" alt="RAE Systems" title="RAE Systems"></a></li>
+                                <li><a href="../brand.php?name=RAE%20SYSTEMS"><img src="../assets/brands/RAE%20SYSTEMS.jpg" alt="RAE Systems" title="RAE Systems"></a></li>
                                 <li><a href="../brand.php?name=WELDAS"><img src="../assets/brands/WELDAS.jpg" alt="Weldas" title="Weldas"></a></li>
                                 <li><a href="../brand.php?name=UVEX"><img src="../assets/brands/UVEX.jpg" alt="Uvex" title="Uvex"></a></li>
                                 <li><a href="../brand.php?name=ACES"><img src="../assets/brands/ACES.jpg" alt="Aces" title="Aces"></a></li>
@@ -3363,8 +3363,10 @@ $category_description = $current_category['description'] ?? 'Discover our compre
                         $brand = htmlspecialchars($product['brand'] ?? 'Industrial');
                         $description = htmlspecialchars($product['description'] ?? '');
                         $badge = htmlspecialchars($product['badge'] ?? '');
+                        $images = htmlspecialchars(json_encode($product['images'] ?? []), ENT_QUOTES);
+                        $specs = htmlspecialchars(json_encode($product['specs'] ?? []), ENT_QUOTES);
                         ?>
-                <div class="product-card">
+                <div class="product-card" data-model="<?php echo htmlspecialchars($model, ENT_QUOTES); ?>" data-type="<?php echo htmlspecialchars($type, ENT_QUOTES); ?>" data-brand="<?php echo htmlspecialchars($brand, ENT_QUOTES); ?>" data-image="<?php echo htmlspecialchars($image_src, ENT_QUOTES); ?>" data-images="<?php echo $images; ?>" data-specs="<?php echo $specs; ?>" data-description="<?php echo htmlspecialchars($description, ENT_QUOTES); ?>" style="cursor:pointer;">
                     <div class="product-image">
                         <?php if (!empty($image_src)): ?>
                             <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=&quot;bi bi-lightning-charge&quot; style=&quot;font-size: 56px; color: #ccc;&quot;></i>'">
@@ -3383,7 +3385,7 @@ $category_description = $current_category['description'] ?? 'Discover our compre
                         <?php if (!empty($description)): ?>
                             <p class="product-description"><?php echo $description; ?></p>
                         <?php endif; ?>
-                        <button class="add-to-inquiry" type="button" data-model="<?php echo $model; ?>" data-type="<?php echo $type ?: 'Equipment'; ?>" data-brand="<?php echo $brand; ?>">ADD TO INQUIRY LIST</button>
+                        <button class="add-to-inquiry" type="button">ADD TO INQUIRY LIST</button>
                     </div>
                 </div>
                         <?php
@@ -3391,14 +3393,14 @@ $category_description = $current_category['description'] ?? 'Discover our compre
                 } else {
                     // Fallback to placeholder if no products
                     ?>
-                <div class="product-card">
+                <div class="product-card" data-model="<?php echo htmlspecialchars('Arc Welding Machine', ENT_QUOTES); ?>" data-type="<?php echo htmlspecialchars('Equipment', ENT_QUOTES); ?>" data-brand="<?php echo htmlspecialchars('Industrial', ENT_QUOTES); ?>" data-image="" data-images="[]" data-specs="[]" style="cursor:pointer;">
                     <div class="product-image">
                         <i class="bi bi-lightning-charge" style="font-size: 56px; color: #ccc;"></i>
                     </div>
                     <div class="product-info">
                         <h4>Arc Welding Machine</h4>
                         <p class="product-description">No products available</p>
-                        <button class="add-to-inquiry" type="button" data-model="Arc Welding Machine" data-type="Equipment" data-brand="Industrial" disabled>ADD TO INQUIRY</button>
+                        <button class="add-to-inquiry" type="button" disabled>ADD TO INQUIRY</button>
                     </div>
                 </div>
                 <?php
@@ -4278,3 +4280,20 @@ $category_description = $current_category['description'] ?? 'Discover our compre
         </div>
     </div>
 
+<script>var CATEGORY_NAME = '<?php echo htmlspecialchars($category_name ?? 'Others', ENT_QUOTES); ?>';</script>
+<?php require_once __DIR__ . '/../includes/product_modal.php'; ?>
+
+<script>
+// -- Product Detail Modal – open on product card click --
+document.addEventListener('DOMContentLoaded', function(){
+    var grid = document.querySelectorAll('.product-card');
+    grid.forEach(function(card){
+        card.addEventListener('click', function(e){
+            if (e.target.closest('.add-to-inquiry')) return;
+            if (typeof openProductModal === 'function') {
+                openProductModal(card);
+            }
+        });
+    });
+});
+</script>

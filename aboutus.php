@@ -2377,7 +2377,7 @@ $ytLinks = andison_get_youtube_links();
                                 <li><a href="brand.php?name=SK%20And%20GAL%20GAGE"><img src="assets/brands/SK%20AND%20GAL%20GAGE.jpg" alt="SK And GAL GAGE" title="SK And GAL GAGE"></a></li>
                                 <li><a href="brand.php?name=COPPUS"><img src="assets/brands/COPPUS.jpg" alt="Coppus" title="Coppus"></a></li>
                                 <li><a href="brand.php?name=BW%20Technologies"><img src="assets/brands/BW%20TECHNOLOGIES.jpg" alt="BW Technologies" title="BW Technologies"></a></li>
-                                <li><a href="brand.php?name=RAC"><img src="assets/brands/RAE%20SYSTEMS.jpg" alt="RAE Systems" title="RAE Systems"></a></li>
+                                <li><a href="brand.php?name=RAE"><img src="assets/brands/RAE%20SYSTEMS.jpg" alt="RAE Systems" title="RAE Systems"></a></li>
                                 <li><a href="brand.php?name=WELDAS"><img src="assets/brands/WELDAS.jpg" alt="Weldas" title="Weldas"></a></li>
                                 <li><a href="brand.php?name=UVEX"><img src="assets/brands/UVEX.jpg" alt="Uvex" title="Uvex"></a></li>
                                 <li><a href="brand.php?name=ACES"><img src="assets/brands/ACES.jpg" alt="Aces" title="Aces"></a></li>
@@ -2554,7 +2554,7 @@ $ytLinks = andison_get_youtube_links();
                     <a href="brand.php?name=SK%20And%20GAL%20GAGE" class="brands-carousel-item"><img src="assets/brands/SK%20AND%20GAL%20GAGE.jpg" alt="SK And GAL GAGE"></a>
                     <a href="brand.php?name=COPPUS" class="brands-carousel-item"><img src="assets/brands/COPPUS.jpg" alt="Coppus"></a>
                     <a href="brand.php?name=BW%20Technologies" class="brands-carousel-item"><img src="assets/brands/BW%20TECHNOLOGIES.jpg" alt="BW Technologies"></a>
-                    <a href="brand.php?name=RAC" class="brands-carousel-item"><img src="assets/brands/RAE%20SYSTEMS.jpg" alt="RAE Systems"></a>
+                    <a href="brand.php?name=RAE" class="brands-carousel-item"><img src="assets/brands/RAE%20SYSTEMS.jpg" alt="RAE Systems"></a>
                     <a href="brand.php?name=WELDAS" class="brands-carousel-item"><img src="assets/brands/WELDAS.jpg" alt="Weldas"></a>
                     <a href="brand.php?name=UVEX" class="brands-carousel-item"><img src="assets/brands/UVEX.jpg" alt="Uvex"></a>
                     <a href="brand.php?name=ACES" class="brands-carousel-item"><img src="assets/brands/ACES.jpg" alt="Aces"></a>
