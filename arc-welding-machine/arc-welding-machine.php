@@ -3362,16 +3362,49 @@ if (!$current_category) {
                                 $image_src = '../' . substr($image_src, 8);
                             }
                         }
-                        $model = htmlspecialchars($product['model'] ?? '');
-                        $name = htmlspecialchars($product['name'] ?? '');
-                        $type = htmlspecialchars($product['type'] ?? 'Welding Machine');
-                        $brand = htmlspecialchars($product['brand'] ?? 'Industrial');
-                        $description = htmlspecialchars($product['description'] ?? '');
-                        $badge = htmlspecialchars($product['badge'] ?? '');
-                        $images = htmlspecialchars(json_encode($product['images'] ?? []), ENT_QUOTES);
-                        $specs = htmlspecialchars(json_encode($product['specs'] ?? []), ENT_QUOTES);
+                        $model = htmlspecialchars($product['model'] ?? '', ENT_QUOTES);
+                        $name = htmlspecialchars($product['name'] ?? '', ENT_QUOTES);
+                        $type = htmlspecialchars($product['type'] ?? 'Welding Machine', ENT_QUOTES);
+                        $brand = htmlspecialchars($product['brand'] ?? 'Industrial', ENT_QUOTES);
+                        $description = htmlspecialchars($product['description'] ?? '', ENT_QUOTES);
+                        $badge = htmlspecialchars($product['badge'] ?? '', ENT_QUOTES);
+                        
+                        // Get base image path and adjust for subdirectory
+                        $base_image = $product['image'] ?? '';
+                        if ($base_image) {
+                            // Adjust image path for subdirectory context - assets are at root level
+                            if (strpos($base_image, 'assets/') === 0) {
+                                $base_image = '../' . $base_image;
+                            } else if (strpos($base_image, 'andison/assets/') === 0) {
+                                $base_image = '../' . substr($base_image, 8);
+                            }
+                        }
+                        
+                        // Build images array: use 'images' if available, fallback to single 'image'
+                        // Apply path adjustment to images in array if needed
+                        if (!empty($product['images']) && is_array($product['images'])) {
+                            $images_array = [];
+                            foreach ($product['images'] as $img) {
+                                $adjusted_img = $img;
+                                if (strpos($adjusted_img, 'assets/') === 0) {
+                                    $adjusted_img = '../' . $adjusted_img;
+                                } else if (strpos($adjusted_img, 'andison/assets/') === 0) {
+                                    $adjusted_img = '../' . substr($adjusted_img, 8);
+                                }
+                                $images_array[] = $adjusted_img;
+                            }
+                        } else if ($base_image) {
+                            $images_array = [$base_image];
+                        } else {
+                            $images_array = [];
+                        }
+                        $images = json_encode($images_array);
+                        
+                        // Build specs array: use 'specs' if it's an array, otherwise empty
+                        $specs_array = (is_array($product['specs'] ?? null)) ? $product['specs'] : [];
+                        $specs = json_encode($specs_array);
                         ?>
-                <div class="product-card" data-model="<?php echo htmlspecialchars($model, ENT_QUOTES); ?>" data-type="<?php echo htmlspecialchars($type, ENT_QUOTES); ?>" data-brand="<?php echo htmlspecialchars($brand, ENT_QUOTES); ?>" data-image="<?php echo htmlspecialchars($image_src, ENT_QUOTES); ?>" data-images="<?php echo $images; ?>" data-specs="<?php echo $specs; ?>" data-description="<?php echo htmlspecialchars($description, ENT_QUOTES); ?>" style="cursor:pointer;">
+                <div class="product-card" data-model="<?php echo $model; ?>" data-type="<?php echo $type; ?>" data-brand="<?php echo $brand; ?>" data-image="<?php echo htmlspecialchars($image_src, ENT_QUOTES); ?>" data-images="<?php echo htmlspecialchars($images, ENT_QUOTES); ?>" data-specs="<?php echo htmlspecialchars($specs, ENT_QUOTES); ?>" data-description="<?php echo $description; ?>" style="cursor:pointer;">
                     <div class="product-image">
                         <?php if (!empty($image_src)): ?>
                             <img src="<?php echo $image_src; ?>" alt="<?php echo $name; ?>" onerror="this.parentElement.innerHTML='<i class=&quot;bi bi-lightning-charge&quot; style=&quot;font-size: 56px; color: #ccc;&quot;></i>'">
@@ -4045,97 +4078,9 @@ if (!$current_category) {
                 document.querySelector('.product-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
+    </script>
 
-        // ============================================
-        // PRODUCT MODAL FUNCTIONALITY
-        // ============================================
-        var modal = document.getElementById('productModal');
-        var modalClose = document.getElementById('modalClose');
-        var modalCloseBtn = document.getElementById('modalCloseBtn');
-        var currentProduct = null;
-        var currentMediaIndex = 0;
 
-        function openProductModal(cardElement) {
-            console.log('openProductModal called with:', cardElement);
-            
-            var modelEl = cardElement.querySelector('.product-model');
-            var descEl  = cardElement.querySelector('.product-description');
-            var model       = modelEl ? modelEl.textContent.trim() : (cardElement.querySelector('.add-to-inquiry')?.getAttribute('data-model') || '');
-            var name        = cardElement.querySelector('h4')?.textContent?.trim() || model;
-            var imgSrc      = cardElement.querySelector('.product-image img')?.src || '';
-            var description = descEl ? descEl.textContent.trim() : (cardElement.querySelector('.add-to-inquiry')?.getAttribute('data-type') || 'Industrial product');
-            
-            console.log('Product data:', {model, name, imgSrc, description});
-            
-            // Populate modal
-            document.getElementById('modalProductName').textContent = name;
-            document.getElementById('modalProductType').textContent = model;
-            document.getElementById('modalDescription').textContent = description;
-            
-            // Set up media slider
-            var mediaSlider = document.getElementById('mediaSlider');
-            mediaSlider.innerHTML = '';
-            
-            var mediaItem = document.createElement('div');
-            mediaItem.className = 'media-item active';
-            var img = document.createElement('img');
-            img.src = imgSrc;
-            img.alt = name;
-            mediaItem.appendChild(img);
-            mediaSlider.appendChild(mediaItem);
-            
-            // Setup media dots
-            var mediaDots = document.getElementById('mediaDots');
-            mediaDots.innerHTML = '<div class="media-dot active"></div>';
-            
-            // Set specs
-            var specsList = document.getElementById('modalSpecs');
-            specsList.innerHTML = `
-                <li><strong>Category:</strong> Arc Welding Equipment</li>
-                <li><strong>Model:</strong> ${model}</li>
-                <li><strong>Type:</strong> Professional Grade</li>
-                <li><strong>Support:</strong> 24/7 Technical Support</li>
-            `;
-            
-            // Store current product
-            currentProduct = {
-                model: model,
-                name: name,
-                description: description
-            };
-            
-            currentMediaIndex = 0;
-            console.log('Adding active class to modal. Modal element:', modal);
-            modal.classList.add('active');
-            console.log('Modal classList after add:', modal.classList);
-        }
-
-        function closeModal() {
-            modal.classList.remove('active');
-        }
-
-        // Add click listeners to all product cards
-        document.addEventListener('DOMContentLoaded', function() {
-            // Modal controls are now initialized here
-            // Product card clicks use event delegation (see above)
-
-            // Modal controls
-            modalClose.addEventListener('click', closeModal);
-            modalCloseBtn.addEventListener('click', closeModal);
-            
-            // Close on overlay click
-            modal.addEventListener('click', function(e) {
-                if(e.target === modal) {
-                    closeModal();
-                }
-            });
-
-            // Close on Escape key
-            document.addEventListener('keydown', function(e) {
-                if(e.key === 'Escape' && modal.classList.contains('active')) {
-                    closeModal();
-                }
-            });
 
             // Modal inquiry button
             document.getElementById('modalInquiryBtn').addEventListener('click', function() {

@@ -32,7 +32,7 @@
         <!-- Related Products -->
         <div id="relatedProductsWrap" style="display:none;flex-shrink:0;position:relative;z-index:2;">
           <div style="font-size:9px;font-weight:950;color:#2B11DB;letter-spacing:1.5px;margin-bottom:12px;text-transform:uppercase;display:flex;align-items:center;gap:6px;"><i class="bi bi-boxes"></i> MORE FROM THIS BRAND</div>
-          <div id="relatedProductsGrid" style="display:grid;grid-template-columns:repeat(2, 1fr);gap:10px;"></div>
+          <div id="relatedProductsGrid" style="display:grid;grid-template-columns:repeat(2, 1fr);grid-template-rows:repeat(2, 1fr);gap:10px;max-height:280px;overflow:hidden;"></div>
         </div>
       </div>
       
@@ -334,6 +334,11 @@
   min-height: 100px;
 }
 
+.related-product-item button,
+.related-product-item a {
+  display: none !important;
+}
+
 .related-product-item:hover {
   border-color: #2B11DB;
   box-shadow: 0 8px 24px rgba(43,17,219,0.22);
@@ -396,7 +401,7 @@
         if (mainImg) { mainImg.style.transition = ''; mainImg.style.opacity = '1'; }
     }
 
-    var _jsonPath = (typeof MODAL_JSON_PATH !== 'undefined') ? MODAL_JSON_PATH : 'Andison/data/brands_info.json';
+    var _jsonPath = (typeof MODAL_JSON_PATH !== 'undefined') ? MODAL_JSON_PATH : '/ANDISON/Andison/data/brands_info.json';
 
     /* Load product details from JSON data */
     function loadProductDetails(brand, model) {
@@ -404,10 +409,18 @@
             .then(function(r) { return r.json(); })
             .then(function(data) {
                 var brandData = data[brand];
-                if (!brandData) return;
+                if (!brandData) {
+                    console.log('Brand not found in brands_info:', brand);
+                    return;
+                }
                 
                 var product = brandData.products.find(function(p) { return p.model === model; });
-                if (!product) return;
+                if (!product) {
+                    console.log('Product not found in brands_info for brand:', brand, 'model:', model);
+                    return;
+                }
+                
+                console.log('Found product in brands_info - loading specs and images');
                 
                 // Load description
                 if (product.description) {
@@ -416,8 +429,119 @@
                 } else {
                     document.getElementById('prodDescSection').style.display = 'none';
                 }
+                
+                // Update specs from brands_info if better data available
+                if (product.specs && Array.isArray(product.specs) && product.specs.length > 0) {
+                    console.log('Loading specs from brands_info:', product.specs.length, 'specs');
+                    var table = document.getElementById('prodDetailSpecsTable');
+                    var specsSection = document.getElementById('prodSpecsSection');
+                    table.innerHTML = '';
+                    
+                    var thead = document.createElement('thead');
+                    var tbody = document.createElement('tbody');
+                    var isMultiColumn = false;
+                    var colCount = 1;
+                    
+                    // Check if any value contains pipes (multi-column data)
+                    for (var i = 0; i < product.specs.length; i++) {
+                        if (product.specs[i].value && product.specs[i].value.includes('|')) {
+                            isMultiColumn = true;
+                            var cols = product.specs[i].value.split('|').length;
+                            if (cols > colCount) colCount = cols;
+                        }
+                    }
+                    
+                    // Build table based on format
+                    if (isMultiColumn) {
+                        // Multi-column Excel-like format
+                        var headerTr = document.createElement('tr');
+                        headerTr.style.fontWeight = '700';
+                        headerTr.style.backgroundColor = '#e8eeff';
+                        
+                        for (var i = 0; i < product.specs.length; i++) {
+                            var spec = product.specs[i];
+                            if (spec.label === '' || !spec.value) continue;
+                            
+                            var th = document.createElement('th');
+                            th.textContent = spec.label;
+                            th.style.padding = '12px 14px';
+                            th.style.textAlign = 'left';
+                            th.style.borderBottom = '2px solid #2B11DB';
+                            th.style.color = '#2B11DB';
+                            th.style.fontSize = '12px';
+                            headerTr.appendChild(th);
+                        }
+                        thead.appendChild(headerTr);
+                        
+                        // Split values and create rows
+                        var maxRows = 1;
+                        for (var i = 0; i < product.specs.length; i++) {
+                            var rows = product.specs[i].value.split('|').length;
+                            if (rows > maxRows) maxRows = rows;
+                        }
+                        
+                        for (var rowIdx = 0; rowIdx < maxRows; rowIdx++) {
+                            var tr = document.createElement('tr');
+                            if (rowIdx % 2 === 0) {
+                                tr.style.backgroundColor = '#f8fafb';
+                            }
+                            
+                            for (var colIdx = 0; colIdx < product.specs.length; colIdx++) {
+                                var spec = product.specs[colIdx];
+                                if (spec.label === '' || !spec.value) continue;
+                                
+                                var values = spec.value.split('|').map(function(v) { return v.trim(); });
+                                var td = document.createElement('td');
+                                td.textContent = values[rowIdx] || '';
+                                td.style.padding = '12px 14px';
+                                td.style.borderBottom = '1px solid #e8ecf4';
+                                td.style.fontSize = '13px';
+                                tr.appendChild(td);
+                            }
+                            tbody.appendChild(tr);
+                        }
+                        table.appendChild(thead);
+                    } else {
+                        // Simple 2-column key-value format
+                        product.specs.forEach(function(s){
+                            if (s.label === '') return;
+                            var tr = document.createElement('tr');
+                            var td1 = document.createElement('td');
+                            var td2 = document.createElement('td');
+                            td1.textContent = s.label;
+                            td2.textContent = s.value || '';
+                            td1.style.fontWeight = '700';
+                            td1.style.color = '#2d3748';
+                            td1.style.backgroundColor = 'rgba(43,17,219,0.04)';
+                            tr.appendChild(td1);
+                            tr.appendChild(td2);
+                            tbody.appendChild(tr);
+                        });
+                    }
+                    
+                    table.appendChild(tbody);
+                    specsSection.style.display = 'block';
+                }
+                
+                // Update images from brands_info if better data available
+                if (product.image || (product.images && product.images.length > 0)) {
+                    var images_to_load = [];
+                    if (product.images && Array.isArray(product.images)) {
+                        images_to_load = product.images.slice();
+                    } else if (product.image) {
+                        images_to_load = [product.image];
+                    }
+                    
+                    if (images_to_load.length > 0) {
+                        console.log('Loading images from brands_info:', images_to_load.length, 'images');
+                        // Re-load images - this will update the gallery
+                        loadProductImagesFromCard(images_to_load);
+                    }
+                }
             })
-            .catch(function(){});
+            .catch(function(err){
+                console.log('Error loading product details from brands_info:', err);
+            });
     }
 
     /* Load all product images from card data */
@@ -429,7 +553,10 @@
         var thumbnailsWrap = document.getElementById('prodThumbnails');
         thumbnailsWrap.innerHTML = '';
         
+        console.log('loadProductImagesFromCard: received', productImages.length, 'images:', productImages);
+        
         if (productImages.length === 0) {
+            console.log('loadProductImagesFromCard: no images, showing placeholder');
             mainImg.src = '';
             mainImg.style.display = 'none';
             noImg.style.display = 'block';
@@ -437,7 +564,28 @@
             return;
         }
         
+        // Decode URL-encoded paths and make absolute
+        var processedImages = productImages.map(function(path) {
+            // Decode URL-encoded characters (%20 -> space, etc.)
+            var decoded = decodeURIComponent(path);
+            
+            // Convert relative paths to absolute
+            if (decoded.indexOf('assets/') === 0) {
+                return '/ANDISON/' + decoded;
+            } else if (decoded.indexOf('andison/assets/') === 0) {
+                return '/' + decoded;
+            } else if (decoded.indexOf('/ANDISON/') === 0) {
+                return decoded; // Already absolute
+            } else if (decoded.indexOf('../') === 0) {
+                // Convert relative paths from subdirectories to absolute
+                return '/ANDISON/' + decoded.replace(/^\.\.\//, '');
+            }
+            return decoded;
+        });
+        productImages = processedImages;
+        
         // Show main image
+        console.log('loadProductImagesFromCard: setting main image to:', productImages[0]);
         mainImg.src = productImages[0];
         mainImg.style.display = 'block';
         noImg.style.display = 'none';
@@ -453,6 +601,7 @@
         
         // Show thumbnails only if more than one image
         if (productImages.length > 1) {
+            console.log('loadProductImagesFromCard: showing thumbnails for', productImages.length, 'images');
             document.getElementById('prodThumbnailsWrap').style.display = 'block';
             startModalSlider();
         } else {
@@ -514,8 +663,18 @@
                     return;
                 }
                 
-                // Shuffle and take 4
+                // Shuffle and take first 4 only
                 var relatedProducts = allProducts.sort(function() { return Math.random() - 0.5; }).slice(0, 4);
+                
+                console.log('loadRelatedProducts: displaying', relatedProducts.length, 'items out of', allProducts.length, 'available');
+                
+                // Safety: limit to exactly 4 items maximum
+                relatedProducts = relatedProducts.slice(0, 4);
+                
+                if (relatedProducts.length === 0) {
+                    wrap.style.display = 'none';
+                    return;
+                }
                 
                 // Try to find matching cards on page
                 var allPageCards = document.querySelectorAll('.product-card');
@@ -528,72 +687,94 @@
                     }
                 }
                 
-                relatedProducts.forEach(function(product) {
-                    var item = document.createElement('div');
-                    item.className = 'related-product-item';
-                    item.style.cursor = 'pointer';
+                // Create items - STRICTLY limit to exactly 4 items - no more
+                var createdCount = 0;
+                for (var itemIdx = 0; itemIdx < relatedProducts.length; itemIdx++) {
+                    if (createdCount >= 4) break; // HARD STOP at 4 items
+                    createdCount++;
                     
-                    var img = document.createElement('img');
-                    img.style.maxWidth = '100%';
-                    img.style.maxHeight = '70px';
-                    img.style.objectFit = 'contain';
-                    
-                    // Try to get image from page card first, then JSON
-                    var pageCard = cardMap[product.model];
-                    var imgSrc = '';
-                    
-                    if (pageCard) {
-                        var pageImg = pageCard.querySelector('img');
-                        if (pageImg && pageImg.src && pageImg.src.trim() !== '') {
-                            imgSrc = pageImg.src;
-                        }
-                    }
-                    
-                    if (!imgSrc && product.image && product.image.trim() !== '') {
-                        imgSrc = product.image;
-                    }
-                    
-                    img.src = imgSrc || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%2270%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22100%22 height=%2270%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2212%22%3ENo Image%3C/text%3E%3C/svg%3E';
-                    
-                    var name = document.createElement('div');
-                    name.className = 'related-product-name';
-                    name.textContent = product.model;
-                    
-                    item.appendChild(img);
-                    item.appendChild(name);
-                    
-                    // Closure to capture correct brand
-                    (function(product, pageCard) {
-                        item.onclick = function(e) {
-                            e.stopPropagation();
-                            if (pageCard) {
-                                // Use the actual product card from the page
-                                openProductModal(pageCard);
-                            } else {
-                                // Create synthetic card with all product data
-                                var syntheticCard = document.createElement('div');
-                                var productBrand = product._brand || currentBrand;
-                                syntheticCard.setAttribute('data-model', product.model);
-                                syntheticCard.setAttribute('data-type', product.type || '');
-                                syntheticCard.setAttribute('data-brand', productBrand);
-                                syntheticCard.setAttribute('data-image', product.image || '');
-                                syntheticCard.setAttribute('data-badge', product.badge || '');
-                                syntheticCard.setAttribute('data-images', JSON.stringify(product.images || []));
-                                syntheticCard.setAttribute('data-specs', JSON.stringify(product.specs || []));
-                                openProductModal(syntheticCard);
+                    var product = relatedProducts[itemIdx];
+                    (function(product) {
+                        var item = document.createElement('div');
+                        item.className = 'related-product-item';
+                        item.style.cursor = 'pointer';
+                        
+                        var img = document.createElement('img');
+                        img.style.maxWidth = '100%';
+                        img.style.maxHeight = '70px';
+                        img.style.objectFit = 'contain';
+                        
+                        // Try to get image from page card first, then JSON
+                        var pageCard = cardMap[product.model];
+                        var imgSrc = '';
+                        
+                        if (pageCard) {
+                            var pageImg = pageCard.querySelector('img');
+                            if (pageImg && pageImg.src && pageImg.src.trim() !== '') {
+                                imgSrc = pageImg.src;
                             }
+                        }
+                        
+                        if (!imgSrc && product.image && product.image.trim() !== '') {
+                            imgSrc = product.image;
+                            // Decode and make absolute if needed
+                            imgSrc = decodeURIComponent(imgSrc);
+                            if (imgSrc.indexOf('assets/') === 0) {
+                                imgSrc = '/ANDISON/' + imgSrc;
+                            } else if (imgSrc.indexOf('andison/assets/') === 0) {
+                                imgSrc = '/' + imgSrc;
+                            }
+                        }
+                        
+                        img.src = imgSrc || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%2270%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22100%22 height=%2270%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2212%22%3ENo Image%3C/text%3E%3C/svg%3E';
+                        
+                        var name = document.createElement('div');
+                        name.className = 'related-product-name';
+                        name.textContent = product.model;
+                        
+                        item.appendChild(img);
+                        item.appendChild(name);
+                        
+                        // Closure to capture correct brand
+                        (function(product, pageCard) {
+                            item.onclick = function(e) {
+                                e.stopPropagation();
+                                if (pageCard) {
+                                    // Use the actual product card from the page
+                                    openProductModal(pageCard);
+                                } else {
+                                    // Create synthetic card with all product data
+                                    var syntheticCard = document.createElement('div');
+                                    var productBrand = product._brand || currentBrand;
+                                    syntheticCard.setAttribute('data-model', product.model);
+                                    syntheticCard.setAttribute('data-type', product.type || '');
+                                    syntheticCard.setAttribute('data-brand', productBrand);
+                                    syntheticCard.setAttribute('data-image', product.image || '');
+                                    syntheticCard.setAttribute('data-badge', product.badge || '');
+                                    syntheticCard.setAttribute('data-images', JSON.stringify(product.images || []));
+                                    syntheticCard.setAttribute('data-specs', JSON.stringify(product.specs || []));
+                                    openProductModal(syntheticCard);
+                                }
+                            };
+                        })(product, pageCard);
+                        
+                        item.onmouseover = function() {
+                            item.style.transform = 'translateY(-4px)';
                         };
-                    })(product, pageCard);
-                    
-                    item.onmouseover = function() {
-                        item.style.transform = 'translateY(-4px)';
-                    };
-                    item.onmouseout = function() {
-                        item.style.transform = 'translateY(0)';
-                    };
-                    
-                    grid.appendChild(item);
-                });
+                        item.onmouseout = function() {
+                            item.style.transform = 'translateY(0)';
+                        };
+                        
+                        grid.appendChild(item);
+                    })(product);
+                }
+                
+                // FINAL SAFETY: Remove any items beyond 4
+                while (grid.children.length > 4) {
+                    grid.removeChild(grid.lastChild);
+                }
+                
+                console.log('Final grid item count:', grid.children.length);
                 
                 wrap.style.display = 'block';
             })
@@ -605,6 +786,15 @@
 
     /* ── Open ── */
     window.openProductModal = function(card) {
+        if (!overlay) {
+            console.error('prodDetailOverlay not found!');
+            return;
+        }
+
+        // SHOW MODAL IMMEDIATELY - don't wait for data loading
+        overlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+
         var model    = card.getAttribute('data-model')  || '';
         var type     = card.getAttribute('data-type')   || '';
         var imgSrc   = card.getAttribute('data-image')  || '';
@@ -616,9 +806,44 @@
         try { specs = JSON.parse(specsRaw); } catch(e){}
         try { images = JSON.parse(imagesRaw); } catch(e){}
 
-        document.getElementById('prodDetailBrand').textContent = brand;
-        document.getElementById('prodDetailName').textContent  = model;
-        document.getElementById('prodDetailType').textContent  = type;
+        // DEBUG: Log the data being received
+        console.log('openProductModal called with:', {
+            model: model,
+            type: type,
+            brand: brand,
+            imgSrc: imgSrc,
+            specsCount: Array.isArray(specs) ? specs.length : 0,
+            imagesCount: Array.isArray(images) ? images.length : 0
+        });
+
+        // Update modal header info (these MUST display)
+        var brandEl = document.getElementById('prodDetailBrand');
+        var nameEl = document.getElementById('prodDetailName');
+        var typeEl = document.getElementById('prodDetailType');
+
+        if (brandEl) {
+            brandEl.textContent = brand || 'Product';
+            brandEl.style.display = brand ? 'block' : 'none';
+            console.log('Set brand to:', brand);
+        } else {
+            console.error('prodDetailBrand not found!');
+        }
+
+        if (nameEl) {
+            nameEl.textContent = model || 'Product';
+            nameEl.style.display = model ? 'block' : 'none';
+            console.log('Set name/model to:', model);
+        } else {
+            console.error('prodDetailName not found!');
+        }
+
+        if (typeEl) {
+            typeEl.textContent = type || 'Product';
+            typeEl.style.display = type ? 'block' : 'none';
+            console.log('Set type to:', type);
+        } else {
+            console.error('prodDetailType not found!');
+        }
 
         // Load product details from JSON
         loadProductDetails(brand, model);
@@ -740,40 +965,41 @@
             var seriesMatch = model.match(/([A-Z]+\d+)$/i);
             var seriesCode = seriesMatch ? seriesMatch[1] : '';
 
+            // Use absolute paths that work from any directory (brand.php, category pages, etc.)
             var patterns = [
-              'assets/brands items/' + brandFolder + '/Datasheet/' + brandFolder + ' ' + modelCode + '.pdf',
-              'assets/brands items/' + brandFolder + '/Datasheet/Datasheet ' + modelCode + '.pdf',
-              'assets/brands items/' + brandFolder + '/Datasheet/' + modelCode + '.pdf',
-              'assets/brands items/' + brandFolder + '/Datasheet/' + model + '.pdf'
+              '/ANDISON/assets/brands items/' + brandFolder + '/Datasheet/' + brandFolder + ' ' + modelCode + '.pdf',
+              '/ANDISON/assets/brands items/' + brandFolder + '/Datasheet/Datasheet ' + modelCode + '.pdf',
+              '/ANDISON/assets/brands items/' + brandFolder + '/Datasheet/' + modelCode + '.pdf',
+              '/ANDISON/assets/brands items/' + brandFolder + '/Datasheet/' + model + '.pdf'
             ];
             
             // Add series-based pattern (e.g., "KR2 Series.pdf" for YD-350KR2)
             if (seriesCode) {
-              patterns.push('assets/brands items/' + brandFolder + '/Datasheet/' + seriesCode + ' Series.pdf');
+              patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/Datasheet/' + seriesCode + ' Series.pdf');
               // Also check in product-type subdirectories (e.g., TIG Welding Machine/Datasheet/Panasonic BP4 Series.pdf)
-              patterns.push('assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + brandFolder + ' ' + seriesCode + ' Series.pdf');
-              patterns.push('assets/brands items/' + brandFolder + '/CO2,MAG,MIG Welding Machine/Datasheet/' + brandFolder + ' ' + seriesCode + ' Series.pdf');
-              patterns.push('assets/brands items/' + brandFolder + '/Arc Welding Robot/Datasheet/' + brandFolder + ' ' + seriesCode + ' Series.pdf');
+              patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + brandFolder + ' ' + seriesCode + ' Series.pdf');
+              patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/CO2,MAG,MIG Welding Machine/Datasheet/' + brandFolder + ' ' + seriesCode + ' Series.pdf');
+              patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/Arc Welding Robot/Datasheet/' + brandFolder + ' ' + seriesCode + ' Series.pdf');
               // Also check in Arc Welding Robot Brochure folder with proper casing (e.g., Panasonic G3 Welding Robot.pdf)
-              patterns.push('assets/brands items/' + brandFolder + '/Arc Welding Robot/Brochure/Panasonic ' + seriesCode + ' Welding Robot.pdf');
-              patterns.push('assets/brands items/' + brandFolder + '/Arc Welding Robot/Brochure/' + seriesCode + ' Welding Robot.pdf');
+              patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/Arc Welding Robot/Brochure/Panasonic ' + seriesCode + ' Welding Robot.pdf');
+              patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/Arc Welding Robot/Brochure/' + seriesCode + ' Welding Robot.pdf');
             }
             
             // Check in product-type subdirectories for model-specific datasheets
-            patterns.push('assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + brandFolder + ' ' + model + '.pdf');
-            patterns.push('assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + model + 'YNA.pdf');
+            patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + brandFolder + ' ' + model + '.pdf');
+            patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + model + 'YNA.pdf');
             // Convert YD model to YC for datasheet search (e.g., YD-200BL3 -> YC-200BL3YNA)
             var ycModel = model.replace(/^YD/, 'YC');
-            patterns.push('assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + brandFolder + ' ' + ycModel + 'YNA.pdf');
-            patterns.push('assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + ycModel + 'YNA.pdf');
-            patterns.push('assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + brandFolder + ' ' + ycModel + '.pdf');
-            patterns.push('assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + ycModel + '.pdf');
-            patterns.push('assets/brands items/' + brandFolder + '/CO2,MAG,MIG Welding Machine/Datasheet/' + brandFolder + ' ' + model + '.pdf');
+            patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + brandFolder + ' ' + ycModel + 'YNA.pdf');
+            patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + ycModel + 'YNA.pdf');
+            patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + brandFolder + ' ' + ycModel + '.pdf');
+            patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + ycModel + '.pdf');
+            patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/CO2,MAG,MIG Welding Machine/Datasheet/' + brandFolder + ' ' + model + '.pdf');
             
-            patterns.push('assets/brands items/' + brandNorm + '/Datasheet/' + brandNorm + modelNorm + '.pdf');
-            patterns.push('assets/brands items/' + brandNorm + '/Datasheet/datasheet' + modelNorm + '.pdf');
-            patterns.push('assets/brands items/' + brandNorm + '/Datasheet/' + modelNorm + '.pdf');
-            patterns.push('assets/brands items/' + brandNorm + '/Datasheet/' + modelFullNorm + '.pdf');
+            patterns.push('/ANDISON/assets/brands items/' + brandNorm + '/Datasheet/' + brandNorm + modelNorm + '.pdf');
+            patterns.push('/ANDISON/assets/brands items/' + brandNorm + '/Datasheet/datasheet' + modelNorm + '.pdf');
+            patterns.push('/ANDISON/assets/brands items/' + brandNorm + '/Datasheet/' + modelNorm + '.pdf');
+            patterns.push('/ANDISON/assets/brands items/' + brandNorm + '/Datasheet/' + modelFullNorm + '.pdf');
             
             console.log('[DATASHEET DEBUG] brand:', brand, '| model:', model, '| modelCode:', modelCode, '| seriesCode:', seriesCode);
             console.log('[DATASHEET DEBUG] Checking patterns:', patterns);

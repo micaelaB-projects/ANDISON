@@ -35,6 +35,36 @@ if (!$current_category) {
         )
     );
 }
+
+/**
+ * Auto-detect all numbered images for a product.
+ * e.g. "Product 1.jpg" ? also finds "Product 2.jpg", "Product 3.jpg" etc.
+ * Supports patterns:  "Name 1.ext"  "Name - 1.ext"  "Name (1).ext"  "Name - (1).ext"
+ */
+function andison_auto_images(string $webPath, array $explicit, string $baseDir): array {
+    if (!empty($explicit)) return array_values(array_filter($explicit));
+    if (!$webPath) return [];
+    $result = [$webPath];
+    $fsRel  = str_replace('%20', ' ', urldecode($webPath));
+    $fsAbs  = $baseDir . '/' . $fsRel;
+    if (!file_exists($fsAbs)) return $result;
+    $fsDir   = dirname($fsAbs);
+    $webDir  = dirname($webPath);
+    $bn      = basename($fsAbs);
+    // Match trailing: (sep)(optional-open-paren)1(optional-close-paren).ext
+    if (!preg_match('/^(.*?)(\s*-\s*|\s+)\(?1\)?(\.[^.]+)$/i', $bn, $m)) return $result;
+    $prefix   = $m[1];
+    $sep      = $m[2];
+    $ext      = $m[3];
+    $hasParen = strpos($bn, '(1)') !== false;
+    for ($n = 2; $n <= 8; $n++) {
+        $nextBn = $hasParen ? $prefix.$sep.'('.$n.')'.$ext : $prefix.$sep.$n.$ext;
+        if (file_exists($fsDir . '/' . $nextBn)) {
+            $result[] = $webDir . '/' . str_replace(' ', '%20', $nextBn);
+        } else break;
+    }
+    return $result;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -3343,25 +3373,28 @@ if (!$current_category) {
                 // Display products
                 if (!empty($all_products)) {
                     foreach ($all_products as $product) {
-                        $image_src = htmlspecialchars($product['image'] ?? '');
-                        // Adjust image path for subdirectory context - assets are at root level
-                        if ($image_src) {
-                            // If path starts with assets/, add ../ since we're in subdirectory
-                            if (strpos($image_src, 'assets/') === 0) {
-                                $image_src = '../' . $image_src;
-                            }
-                            // If path starts with andison/, convert to ../assets/ path
-                            else if (strpos($image_src, 'andison/assets/') === 0) {
-                                $image_src = '../' . substr($image_src, 8);
-                            }
-                        }
                         $model = htmlspecialchars($product['model'] ?? '');
                         $name = htmlspecialchars($product['name'] ?? '');
-                        $type = htmlspecialchars($product['type'] ?? 'Welding Machine');
                         $brand = htmlspecialchars($product['brand'] ?? 'Industrial');
+                        $type = htmlspecialchars($product['type'] ?? 'Product');
                         $description = htmlspecialchars($product['description'] ?? '');
                         $badge = htmlspecialchars($product['badge'] ?? '');
-                        $images = htmlspecialchars(json_encode($product['images'] ?? [$image_src]), ENT_QUOTES);
+                        
+                        // Get image from product JSON
+                        $image_src = $product['image'] ?? '';
+                        
+                        // Auto-detect multiple images from filesystem (like brand.php does)
+                        // Use parent directory since batteries.php is in a subdirectory
+                        $baseDir = dirname(__DIR__);
+                        $product_images = andison_auto_images($image_src, [], $baseDir);
+                        
+                        // Ensure first image is set for display
+                        if (!$image_src && !empty($product_images[0])) {
+                            $image_src = $product_images[0];
+                        }
+                        
+                        $image_src = htmlspecialchars($image_src, ENT_QUOTES);
+                        $images = htmlspecialchars(json_encode($product_images), ENT_QUOTES);
                         $specs = htmlspecialchars(json_encode($product['specs'] ?? []), ENT_QUOTES);
                         ?>
                 <div class="product-card" data-model="<?php echo htmlspecialchars($model, ENT_QUOTES); ?>" data-type="<?php echo htmlspecialchars($type, ENT_QUOTES); ?>" data-brand="<?php echo htmlspecialchars($brand, ENT_QUOTES); ?>" data-image="<?php echo htmlspecialchars($image_src, ENT_QUOTES); ?>" data-images="<?php echo $images; ?>" data-specs="<?php echo $specs; ?>" data-description="<?php echo htmlspecialchars($description, ENT_QUOTES); ?>" style="cursor:pointer;">
