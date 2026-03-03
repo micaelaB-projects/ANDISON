@@ -9,7 +9,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/ALFRA/SP%20Line%20Series/RB35SP.jpg"
+        "image": "../assets/brands%20items/ALFRA/SP-Line/RB_35_SP.jpg",
+        "images": ["../assets/brands%20items/ALFRA/SP-Line/RB_35_SP.jpg"]
     },
     {
         "id": "sp-line-series-2",
@@ -21,6 +22,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/ALFRA/SP%20Line%20Series/RB850SP.jpg"
+        "image": "../assets/brands%20items/ALFRA/SP-Line/RB_50_SP.jpg",
+        "images": ["../assets/brands%20items/ALFRA/SP-Line/RB_50_SP.jpg"]
     }
 ]

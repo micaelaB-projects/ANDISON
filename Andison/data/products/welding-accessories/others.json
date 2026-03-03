@@ -6,7 +6,8 @@
         "type": "Welding Paper and Tapes",
         "brand": "Aquasol",
         "description": "Water-soluble paper and tapes for convenient welding masking and protection applications.",
-        "image": "andison/assets/uploads/products/welding-accessories/others/aquasol-water-soluble-paper-tapes.jpg",
+        "image": "andison/assets/brands%20items/AQUASOL/Water-Soluble-Tape.jpg",
+        "images": ["andison/assets/brands%20items/AQUASOL/Water-Soluble-Tape.jpg"],
         "badge": ""
     },
     {
@@ -16,7 +17,8 @@
         "type": "Welding Cable",
         "brand": "Revolt",
         "description": "High-quality welding cable for reliable power transmission in welding operations.",
-        "image": "andison/assets/uploads/products/welding-accessories/others/revolt-welding-cable.jpg",
+        "image": "andison/assets/brands%20items/REVOLT/Welding%20Cable.JPG",
+        "images": ["andison/assets/brands%20items/REVOLT/Welding%20Cable.JPG"],
         "badge": ""
     },
     {
@@ -26,7 +28,8 @@
         "type": "Welding Blanket",
         "brand": "Revolt",
         "description": "Durable fiber glass welding blanket for heat protection and spark containment.",
-        "image": "andison/assets/uploads/products/welding-accessories/others/revolt-fiber-glass-welding-blanket.jpg",
+        "image": "andison/assets/brands%20items/REVOLT/Fiberglass%20Welding%20Blanket-1.jpg",
+        "images": ["andison/assets/brands%20items/REVOLT/Fiberglass%20Welding%20Blanket-1.jpg"],
         "badge": ""
     },
     {
@@ -36,7 +39,8 @@
         "type": "Welding Screen",
         "brand": "Weldas",
         "description": "Heavy-duty welding PVC screen 6 feet x 6 feet with grommets for arc containment and safety.",
-        "image": "andison/assets/uploads/products/welding-accessories/others/weldas-welding-pvc-screen-6x6.jpg",
+        "image": "andison/assets/brands%20items/WELDAS/Welding-PVC-Screen-6x6.jpg",
+        "images": ["andison/assets/brands%20items/WELDAS/Welding-PVC-Screen-6x6.jpg"],
         "badge": ""
     },
     {
@@ -46,7 +50,8 @@
         "type": "Welding Screen",
         "brand": "Weldas",
         "description": "Professional welding PVC screen 6 feet x 8 feet with grommets for enhanced workplace safety.",
-        "image": "andison/assets/uploads/products/welding-accessories/others/weldas-welding-pvc-screen-6x8.jpg",
+        "image": "andison/assets/brands%20items/WELDAS/Welding-PVC-Screen-6x8.jpg",
+        "images": ["andison/assets/brands%20items/WELDAS/Welding-PVC-Screen-6x8.jpg"],
         "badge": ""
     },
     {
@@ -56,7 +61,8 @@
         "type": "Torch Cable Cover",
         "brand": "Weldas",
         "description": "Protective PYTHONrap cable cover for TIG torch cables against heat and mechanical damage.",
-        "image": "andison/assets/uploads/products/welding-accessories/others/weldas-pythonrap-tig-torch-cable-cover.jpg",
+        "image": "andison/assets/brands%20items/WELDAS/Torch-Cable-Cover.jpg",
+        "images": ["andison/assets/brands%20items/WELDAS/Torch-Cable-Cover.jpg"],
         "badge": ""
     },
     {
@@ -66,7 +72,8 @@
         "type": "Absorbent Pads",
         "brand": "Spilfyter",
         "description": "Industrial oil absorbent pads for cleaning and maintenance in welding workshops.",
-        "image": "andison/assets/uploads/products/welding-accessories/others/spilfyter-oil-absorbent-pads.jpg",
+        "image": "andison/assets/brands%20items/SPILFYTER/Oil-Absorbent-Pads.jpg",
+        "images": ["andison/assets/brands%20items/SPILFYTER/Oil-Absorbent-Pads.jpg"],
         "badge": ""
     }
 ]

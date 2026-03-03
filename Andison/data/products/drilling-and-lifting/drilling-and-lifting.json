@@ -9,7 +9,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/ALFRA/B%20Line%20Series/RB35B.jpg"
+        "image": "../assets/brands%20items/ALFRA/B-Line/RB_35_B.jpg"
     },
     {
         "id": "b-line-series-2",
@@ -21,7 +21,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/ALFRA/B%20Line%20Series/RB130.jpg"
+        "image": "../assets/brands%20items/ALFRA/B-Line/RB_130_B.jpg"
     },
     {
         "id": "core-cutters-1",
@@ -33,7 +33,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/ALFRA/Cutters/HSS%20CO%20Annular.jpg"
+        "image": "../assets/brands%20items/ALFRA/Annular%20Cutter/HSS%20Co%20-%201.jpg"
     },
     {
         "id": "core-cutters-2",
@@ -45,7 +45,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/ALFRA/Cutters/TCT%20Annular.jpg"
+        "image": "../assets/brands%20items/ALFRA/Annular%20Cutter/TCT%20-%201.jpg"
     },
     {
         "id": "material-handling-lifting-1",
@@ -57,7 +57,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/ALFRA/Lifting/TML-250.jpg"
+        "image": "../assets/brands%20items/ALFRA/Lifting%20Magnet/TML250_Lasthebemagnet.jpg"
     },
     {
         "id": "material-handling-lifting-2",
@@ -69,7 +69,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/ALFRA/Lifting/TML-500.jpg"
+        "image": "../assets/brands%20items/ALFRA/Lifting%20Magnet/TML-500%20-%201.jpg"
     },
     {
         "id": "material-handling-lifting-3",
@@ -81,7 +81,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/TECHNOTEX/Lifting/Polyester%20Webbing.jpg"
+        "image": "../assets/brands%20items/2-Ton-Flat-Sling.png"
     },
     {
         "id": "rbx-line-series-1",
@@ -93,7 +93,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/ALFRA/RBX%20Line%20Series/RB330X.jpg"
+        "image": "../assets/brands%20items/ALFRA/X-Line/RB_80_X.jpg"
     },
     {
         "id": "rbx-line-series-2",
@@ -105,7 +105,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/ALFRA/RBX%20Line%20Series/RB850X.jpg"
+        "image": "../assets/brands%20items/ALFRA/X-Line/RB_50_X.jpg"
     },
     {
         "id": "rbx-line-series-3",
@@ -117,7 +117,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/ALFRA/RBX%20Line%20Series/RB880X.jpg"
+        "image": "../assets/brands%20items/ALFRA/X-Line/RB35_50_X%20Piccolo.jpg"
     },
     {
         "id": "rl-e-line-series-1",
@@ -129,7 +129,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/ALFRA/RL-E%20Line%20Series/RB60RL-E.jpg"
+        "image": "../assets/brands%20items/ALFRA/RL-E-Line/RB60RL-E%20-%201.jpg"
     },
     {
         "id": "rl-e-line-series-2",
@@ -141,7 +141,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/ALFRA/RL-E%20Line%20Series/RB90RL-E.jpg"
+        "image": "../assets/brands%20items/ALFRA/RL-E-Line/RB-100RL-E.jpg"
     },
     {
         "id": "sp-line-series-1",
@@ -153,7 +153,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/ALFRA/SP%20Line%20Series/RB35SP.jpg"
+        "image": "../assets/brands%20items/ALFRA/SP-Line/RB_35_SP.jpg"
     },
     {
         "id": "sp-line-series-2",
@@ -165,7 +165,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/ALFRA/SP%20Line%20Series/RB850SP.jpg"
+        "image": "../assets/brands%20items/ALFRA/SP-Line/RB_50_SP.jpg"
     },
     {
         "id": "v-line-series-1",
@@ -177,6 +177,6 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/ALFRA/V%20Line%20Series/V32.jpg"
+        "image": "../assets/brands%20items/ALFRA/S-Line/RB_V32%20-%201.jpg"
     }
 ]

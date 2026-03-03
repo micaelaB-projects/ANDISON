@@ -6,7 +6,8 @@
         "brand": "WELDAS",
         "type": "Working Gloves",
         "description": "Professional work gloves for general labor",
-        "image": "assets/brands%20items/WELDAS/Working%20Gloves/10-1206.jpg",
+        "image": "assets/brands%20items/WELDAS/10-1206%20-%201.jpg",
+        "images": ["assets/brands%20items/WELDAS/10-1206%20-%201.jpg"],
         "badge": ""
     },
     {
@@ -16,37 +17,41 @@
         "brand": "WELDAS",
         "type": "Working Gloves",
         "description": "Premium work gloves for durability",
-        "image": "assets/brands%20items/WELDAS/Working%20Gloves/10-2064.jpg",
+        "image": "assets/brands%20items/WELDAS/10-2064%20-%201.jpg",
+        "images": ["assets/brands%20items/WELDAS/10-2064%20-%201.jpg"],
         "badge": ""
     },
     {
         "id": "working-gloves-3",
         "name": "Hyflex Work Gloves",
         "model": "11-724",
-        "brand": "HYFLEX",
+        "brand": "ANSELL",
         "type": "Working Gloves",
         "description": "Flexible work gloves for enhanced dexterity",
-        "image": "assets/brands%20items/HYFLEX/Working%20Gloves/11-724.jpg",
+        "image": "assets/brands%20items/ANSELL/Hyflex%2011-724%20-%201.jpg",
+        "images": ["assets/brands%20items/ANSELL/Hyflex%2011-724%20-%201.jpg"],
         "badge": ""
     },
     {
         "id": "working-gloves-4",
         "name": "Hyflex Premium Gloves",
         "model": "11-735",
-        "brand": "HYFLEX",
+        "brand": "ANSELL",
         "type": "Working Gloves",
         "description": "Premium flexible work gloves",
-        "image": "assets/brands%20items/HYFLEX/Working%20Gloves/11-735.jpg",
+        "image": "assets/brands%20items/ANSELL/Hyflex%2011-735%20-%201.jpg",
+        "images": ["assets/brands%20items/ANSELL/Hyflex%2011-735%20-%201.jpg"],
         "badge": ""
     },
     {
         "id": "working-gloves-5",
         "name": "Edge Work Gloves",
         "model": "48-126",
-        "brand": "EDGE",
+        "brand": "ANSELL",
         "type": "Working Gloves",
         "description": "Durable work gloves for industrial tasks",
-        "image": "assets/brands%20items/EDGE/Working%20Gloves/48-126.jpg",
+        "image": "assets/brands%20items/ANSELL/Edge%2048-126%20-%201.png",
+        "images": ["assets/brands%20items/ANSELL/Edge%2048-126%20-%201.png"],
         "badge": ""
     },
     {

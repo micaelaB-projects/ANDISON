@@ -6,7 +6,8 @@
         "brand": "Aces",
         "type": "Welding Head and Face Protection",
         "description": "Clear polycarbonate visor for welding helmets providing excellent visibility and impact protection",
-        "image": "",
+        "image": "andison/assets/brands%20items/ACES/A388.jpg",
+        "images": ["andison/assets/brands%20items/ACES/A388.jpg"],
         "badge": ""
     },
     {
@@ -16,7 +17,8 @@
         "brand": "Aces",
         "type": "Welding Head and Face Protection",
         "description": "Hemispherical hard hat attachment for secure mounting and enhanced head protection",
-        "image": "",
+        "image": "andison/assets/brands%20items/ACES/A366.jpg",
+        "images": ["andison/assets/brands%20items/ACES/A366.jpg"],
         "badge": ""
     },
     {
@@ -26,7 +28,8 @@
         "brand": "Aces",
         "type": "Welding Head and Face Protection",
         "description": "Professional welding helmet with superior protection and comfort for extended use",
-        "image": "",
+        "image": "andison/assets/brands%20items/ACES/A288.jpg",
+        "images": ["andison/assets/brands%20items/ACES/A288.jpg"],
         "badge": ""
     },
     {
@@ -36,7 +39,8 @@
         "brand": "Aces",
         "type": "Welding Head and Face Protection",
         "description": "Welding helmet with mounting adaptor for flexible attachment options",
-        "image": "",
+        "image": "andison/assets/brands%20items/ACES/A238.jpg",
+        "images": ["andison/assets/brands%20items/ACES/A238.jpg"],
         "badge": ""
     },
     {
@@ -46,7 +50,8 @@
         "brand": "Aces",
         "type": "Welding Head and Face Protection",
         "description": "Complete headgear assembly for secure and comfortable welding protection",
-        "image": "",
+        "image": "andison/assets/brands%20items/ACES/A300.jpg",
+        "images": ["andison/assets/brands%20items/ACES/A300.jpg"],
         "badge": ""
     },
     {
@@ -56,7 +61,8 @@
         "brand": "Uvex",
         "type": "Welding Head and Face Protection",
         "description": "Premium safety helmet with integrated sweatband for maximum comfort and protection",
-        "image": "",
+        "image": "andison/assets/brands%20items/UVEX/Pheos%20B-WR%20helmet.jpg",
+        "images": ["andison/assets/brands%20items/UVEX/Pheos%20B-WR%20helmet.jpg"],
         "badge": ""
     }
 ]

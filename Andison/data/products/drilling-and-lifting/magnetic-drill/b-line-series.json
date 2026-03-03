@@ -9,7 +9,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "../../assets/brands%20items/ALFRA/B-Line/RB_35_B.jpg",
+        "images": ["../../assets/brands%20items/ALFRA/B-Line/RB_35_B.jpg"]
     },
     {
         "id": "b-line-series-2",
@@ -21,6 +22,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "../../assets/brands%20items/ALFRA/B-Line/RB_130_B.jpg",
+        "images": ["../../assets/brands%20items/ALFRA/B-Line/RB_130_B.jpg"]
     }
 ]

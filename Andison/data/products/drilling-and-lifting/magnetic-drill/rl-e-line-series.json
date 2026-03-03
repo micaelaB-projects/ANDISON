@@ -9,7 +9,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "../../assets/brands%20items/ALFRA/RL-E-Line/RB60RL-E%20-%201.jpg",
+        "images": ["../../assets/brands%20items/ALFRA/RL-E-Line/RB60RL-E%20-%201.jpg"]
     },
     {
         "id": "rl-e-line-series-2",
@@ -21,6 +22,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "../../assets/brands%20items/ALFRA/RL-E-Line/RB-100RL-E.jpg",
+        "images": ["../../assets/brands%20items/ALFRA/RL-E-Line/RB-100RL-E.jpg"]
     }
 ]

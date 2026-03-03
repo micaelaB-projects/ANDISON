@@ -6,7 +6,8 @@
         "brand": "Bosch",
         "type": "Saw",
         "description": "Lightweight metal cut off saw for precise cutting of metal materials",
-        "image": "assets/brands%20items/BOSCH/Saw/GCO 14-24J.jpg",
+        "image": "",
+        "images": [],
         "badge": ""
     },
     {
@@ -16,7 +17,8 @@
         "brand": "Bosch",
         "type": "Saw",
         "description": "Powerful hand-held circular saw for cutting wood and composite materials",
-        "image": "assets/brands%20items/BOSCH/Saw/GKS 235 Turbo.jpg",
+        "image": "",
+        "images": [],
         "badge": ""
     },
     {
@@ -26,7 +28,8 @@
         "brand": "Bosch",
         "type": "Saw",
         "description": "Professional jig saw for precise straight and curved cuts",
-        "image": "assets/brands%20items/BOSCH/Saw/GST 80PBE.jpg",
+        "image": "",
+        "images": [],
         "badge": ""
     }
 ]

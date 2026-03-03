@@ -9,7 +9,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/PANASONIC/G3%20Controller%20Series/TM-TL%20G3%20Series.jpg"
+        "image": "assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20G3%20Welding%20Robot.jpg",
+        "images": ["assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20G3%20Welding%20Robot.jpg"]
     },
     {
         "id": "g3-controller-series-2",
@@ -21,7 +22,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/PANASONIC/G3%20Controller%20Series/TM-TL%20TAWERS%20WG3%20Series.jpg"
+        "image": "assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20TAWERS%20WG3%20Welding%20Robot.jpg",
+        "images": ["assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20TAWERS%20WG3%20Welding%20Robot.jpg"]
     },
     {
         "id": "g3-controller-series-3",
@@ -33,6 +35,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/PANASONIC/G3%20Controller%20Series/Super%20Active%20TAWERS.jpg"
+        "image": "assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20TAWERS%20AWP4%20Welding%20Robot%20-%201.png",
+        "images": ["assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20TAWERS%20AWP4%20Welding%20Robot%20-%201.png"]
     }
 ]

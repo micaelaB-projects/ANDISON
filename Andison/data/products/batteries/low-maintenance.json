@@ -9,6 +9,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/MOTOLITE/Low%20Maintenance/Truckmaster.jpg"
+        "image": "../assets/brands%20items/MOTOLITE/Truckmaster.png",
+        "images": ["../assets/brands%20items/MOTOLITE/Truckmaster.png"]
     }
 ]

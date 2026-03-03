@@ -408,19 +408,42 @@
         fetch(_jsonPath)
             .then(function(r) { return r.json(); })
             .then(function(data) {
-                var brandData = data[brand];
-                if (!brandData) {
-                    console.log('Brand not found in brands_info:', brand);
-                    return;
+                var product = null;
+                
+                // Check if data is an array (category JSON format) or object (brands_info format)
+                if (Array.isArray(data)) {
+                    // Category JSON format: [ { model, brand, specs, images, ... } ]
+                    product = data.find(function(p) { 
+                        return (p.model === model || p.name === model) && 
+                               (!brand || p.brand === brand || p.brand.toLowerCase() === brand.toLowerCase());
+                    });
+                    console.log('Searching in category JSON array format, found:', !!product);
+                } else {
+                    // brands_info JSON format: { "BRAND": { products: [...] } }
+                    var brandData = data[brand];
+                    if (!brandData) {
+                        // Try case-insensitive brand search
+                        var lc = brand.toLowerCase();
+                        for (var k in data) { 
+                            if (k.toLowerCase() === lc) { 
+                                brandData = data[k]; 
+                                break; 
+                            } 
+                        }
+                    }
+                    
+                    if (brandData && brandData.products) {
+                        product = brandData.products.find(function(p) { return p.model === model; });
+                        console.log('Searching in brands_info format, found:', !!product);
+                    }
                 }
                 
-                var product = brandData.products.find(function(p) { return p.model === model; });
                 if (!product) {
-                    console.log('Product not found in brands_info for brand:', brand, 'model:', model);
+                    console.log('Product not found - brand:', brand, 'model:', model);
                     return;
                 }
                 
-                console.log('Found product in brands_info - loading specs and images');
+                console.log('Found product - loading specs and images');
                 
                 // Load description
                 if (product.description) {
@@ -430,9 +453,9 @@
                     document.getElementById('prodDescSection').style.display = 'none';
                 }
                 
-                // Update specs from brands_info if better data available
+                // Update specs
                 if (product.specs && Array.isArray(product.specs) && product.specs.length > 0) {
-                    console.log('Loading specs from brands_info:', product.specs.length, 'specs');
+                    console.log('Loading specs:', product.specs.length, 'specs');
                     var table = document.getElementById('prodDetailSpecsTable');
                     var specsSection = document.getElementById('prodSpecsSection');
                     table.innerHTML = '';
@@ -572,8 +595,10 @@
             // Convert relative paths to absolute
             if (decoded.indexOf('assets/') === 0) {
                 return '/ANDISON/' + decoded;
-            } else if (decoded.indexOf('andison/assets/') === 0) {
-                return '/' + decoded;
+            } else if (decoded.indexOf('andison/assets/') === 0 || decoded.indexOf('ANDISON/assets/') === 0) {
+                // Convert andison/assets/ or ANDISON/assets/ to /ANDISON/assets/
+                var normalized = decoded.replace(/^[aA][nN][dD][iI][sS][oO][nN]\//, '/ANDISON/');
+                return normalized.startsWith('/') ? normalized : '/' + normalized;
             } else if (decoded.indexOf('/ANDISON/') === 0) {
                 return decoded; // Already absolute
             } else if (decoded.indexOf('../') === 0) {
@@ -640,22 +665,41 @@
         fetch(_jsonPath)
             .then(function(r) { return r.json(); })
             .then(function(data) {
-                // Find the current brand data (case-insensitive)
-                var brandData = data[currentBrand];
-                if (!brandData) {
-                    var lc = currentBrand.toLowerCase();
-                    for (var k in data) { if (k.toLowerCase() === lc) { brandData = data[k]; break; } }
-                }
-                if (!brandData || !brandData.products) { wrap.style.display = 'none'; return; }
-
-                // Collect products from same brand only (image not required)
                 var allProducts = [];
-                for (var i = 0; i < brandData.products.length; i++) {
-                    var product = brandData.products[i];
-                    if (product.model && product.model !== currentModel) {
-                        product._brand = currentBrand;
-                        allProducts.push(product);
+                
+                // Check if data is an array (category JSON format) or object (brands_info format)
+                if (Array.isArray(data)) {
+                    // Category JSON format: [ { model, brand, ... } ]
+                    // Collect products from same brand only
+                    for (var i = 0; i < data.length; i++) {
+                        var product = data[i];
+                        if (product.model && product.model !== currentModel) {
+                            // Match by brand (case-insensitive)
+                            if (product.brand && product.brand.toLowerCase() === currentBrand.toLowerCase()) {
+                                product._brand = currentBrand;
+                                allProducts.push(product);
+                            }
+                        }
                     }
+                    console.log('loadRelatedProducts: found', allProducts.length, 'related products in category format');
+                } else {
+                    // brands_info JSON format: { "BRAND": { products: [...] } }
+                    var brandData = data[currentBrand];
+                    if (!brandData) {
+                        var lc = currentBrand.toLowerCase();
+                        for (var k in data) { if (k.toLowerCase() === lc) { brandData = data[k]; break; } }
+                    }
+                    if (!brandData || !brandData.products) { wrap.style.display = 'none'; return; }
+
+                    // Collect products from same brand only
+                    for (var i = 0; i < brandData.products.length; i++) {
+                        var product = brandData.products[i];
+                        if (product.model && product.model !== currentModel) {
+                            product._brand = currentBrand;
+                            allProducts.push(product);
+                        }
+                    }
+                    console.log('loadRelatedProducts: found', allProducts.length, 'related products in brands_info format');
                 }
                 
                 if (allProducts.length === 0) {
@@ -721,8 +765,12 @@
                             imgSrc = decodeURIComponent(imgSrc);
                             if (imgSrc.indexOf('assets/') === 0) {
                                 imgSrc = '/ANDISON/' + imgSrc;
-                            } else if (imgSrc.indexOf('andison/assets/') === 0) {
-                                imgSrc = '/' + imgSrc;
+                            } else if (imgSrc.indexOf('andison/assets/') === 0 || imgSrc.indexOf('ANDISON/assets/') === 0) {
+                                // Convert andison/assets/ or ANDISON/assets/ to /ANDISON/assets/
+                                imgSrc = imgSrc.replace(/^[aA][nN][dD][iI][sS][oO][nN]\//, '/ANDISON/');
+                                if (!imgSrc.startsWith('/')) {
+                                    imgSrc = '/' + imgSrc;
+                                }
                             }
                         }
                         

@@ -6,7 +6,8 @@
         "brand": "ACES",
         "type": "Welding Head and Face Protection",
         "description": "Professional polycarbonate clear visor for welding head protection",
-        "image": "assets/brands%20items/ACES/Welding%20Head%20and%20Face%20Protection/A388.jpg",
+        "image": "assets/brands%20items/ACES/A388.jpg",
+        "images": ["assets/brands%20items/ACES/A388.jpg"],
         "badge": ""
     },
     {
@@ -16,7 +17,8 @@
         "brand": "ACES",
         "type": "Welding Head and Face Protection",
         "description": "Hemispherical hard hat attachment for welding protection",
-        "image": "assets/brands%20items/ACES/Welding%20Head%20and%20Face%20Protection/A366.jpg",
+        "image": "assets/brands%20items/ACES/A366.jpg",
+        "images": ["assets/brands%20items/ACES/A366.jpg"],
         "badge": ""
     },
     {
@@ -26,7 +28,8 @@
         "brand": "ACES",
         "type": "Welding Head and Face Protection",
         "description": "Professional welding helmet for industrial welding applications",
-        "image": "assets/brands%20items/ACES/Welding%20Head%20and%20Face%20Protection/A288.jpg",
+        "image": "assets/brands%20items/ACES/A288.jpg",
+        "images": ["assets/brands%20items/ACES/A288.jpg"],
         "badge": ""
     },
     {
@@ -36,7 +39,8 @@
         "brand": "ACES",
         "type": "Welding Head and Face Protection",
         "description": "Welding helmet with mounting adaptor for versatile use",
-        "image": "assets/brands%20items/ACES/Welding%20Head%20and%20Face%20Protection/A238.jpg",
+        "image": "assets/brands%20items/ACES/A238.jpg",
+        "images": ["assets/brands%20items/ACES/A238.jpg"],
         "badge": ""
     },
     {
@@ -46,7 +50,8 @@
         "brand": "ACES",
         "type": "Welding Head and Face Protection",
         "description": "Complete headgear assembly for welding head protection",
-        "image": "assets/brands%20items/ACES/Welding%20Head%20and%20Face%20Protection/A300.jpg",
+        "image": "assets/brands%20items/ACES/A300.jpg",
+        "images": ["assets/brands%20items/ACES/A300.jpg"],
         "badge": ""
     },
     {
@@ -56,7 +61,8 @@
         "brand": "UVEX",
         "type": "Welding Head and Face Protection",
         "description": "Advanced welding helmet with integrated sweatband",
-        "image": "assets/brands%20items/UVEX/Welding%20Head%20and%20Face%20Protection/Pheos%20B-WR.jpg",
+        "image": "assets/brands%20items/UVEX/Pheos%20B-WR%20helmet.jpg",
+        "images": ["assets/brands%20items/UVEX/Pheos%20B-WR%20helmet.jpg"],
         "badge": ""
     }
 ]

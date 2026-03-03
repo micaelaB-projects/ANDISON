@@ -3,40 +3,44 @@
         "id": "vano-175-cv",
         "name": "Vano 175 CV",
         "model": "Vano 175 CV",
-        "brand": "Vano",
+        "brand": "COPPUS",
         "type": "Pneumatic Driven",
         "description": "Pneumatic Vano 175 CV portable ventilation system",
-        "image": "assets/brands%20items/VANO/Pneumatic%20Driven/Vano%20175%20CV.jpg",
+        "image": "../assets/brands%20items/COPPUS/Vano.png",
+        "images": ["../assets/brands%20items/COPPUS/Vano.png"],
         "badge": ""
     },
     {
         "id": "vano-250-cv",
         "name": "Vano 250 CV",
         "model": "Vano 250 CV",
-        "brand": "Vano",
+        "brand": "COPPUS",
         "type": "Pneumatic Driven",
         "description": "High-capacity pneumatic Vano 250 CV ventilation equipment",
-        "image": "assets/brands%20items/VANO/Pneumatic%20Driven/Vano%20250%20CV.jpg",
+        "image": "../assets/brands%20items/COPPUS/Vano.png",
+        "images": ["../assets/brands%20items/COPPUS/Vano.png"],
         "badge": ""
     },
     {
         "id": "jecta-ventilator",
         "name": "Jecta I Ventilator",
         "model": "Jecta I",
-        "brand": "Jecta",
+        "brand": "COPPUS",
         "type": "Pneumatic Driven",
         "description": "Professional-grade pneumatic Jecta ventilation system",
-        "image": "assets/brands%20items/JECTA/Pneumatic%20Driven/Jecta%20I.jpg",
+        "image": "../assets/brands%20items/COPPUS/Jectair.png",
+        "images": ["../assets/brands%20items/COPPUS/Jectair.png"],
         "badge": ""
     },
     {
         "id": "hornet-hp-ventilator",
         "name": "Hornet HP Ventilator",
         "model": "Hornet HP",
-        "brand": "Hornet",
+        "brand": "COPPUS",
         "type": "Pneumatic Driven",
         "description": "High-performance pneumatic Hornet HP ventilation equipment",
-        "image": "assets/brands%20items/HORNET/Pneumatic%20Driven/Hornet%20HP.jpg",
+        "image": "../assets/brands%20items/COPPUS/Hornet.png",
+        "images": ["../assets/brands%20items/COPPUS/Hornet.png"],
         "badge": ""
     }
 ]

@@ -1,22 +1,24 @@
 [
     {
         "id": "disposable-gloves-1",
-        "name": "Edge Disposable Gloves",
+        "name": "Ansell Edge Disposable Gloves",
         "model": "82-133",
-        "brand": "EDGE",
+        "brand": "ANSELL",
         "type": "Disposable Gloves",
         "description": "Single-use disposable gloves for general protection",
-        "image": "assets/brands%20items/EDGE/Disposable%20Gloves/82-133.jpg",
+        "image": "assets/brands%20items/ANSELL/Edge_82-133_1.png",
+        "images": ["assets/brands%20items/ANSELL/Edge_82-133_1.png"],
         "badge": ""
     },
     {
         "id": "disposable-gloves-2",
-        "name": "TouchNTuff Disposable Gloves",
+        "name": "Ansell TouchNTuff Disposable Gloves",
         "model": "92-670",
-        "brand": "TOUCHNTUFF",
+        "brand": "ANSELL",
         "type": "Disposable Gloves",
         "description": "Nitrile disposable gloves for multiple applications",
-        "image": "assets/brands%20items/TOUCHNTUFF/Disposable%20Gloves/92-670.jpg",
+        "image": "assets/brands%20items/ANSELL/Touchntuff_92-670_1.png",
+        "images": ["assets/brands%20items/ANSELL/Touchntuff_92-670_1.png"],
         "badge": ""
     }
 ]

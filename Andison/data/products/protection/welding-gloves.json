@@ -6,7 +6,8 @@
         "brand": "WELDAS",
         "type": "Welding Gloves",
         "description": "Professional welding gloves for arc and gas welding",
-        "image": "assets/brands%20items/WELDAS/Welding%20Gloves/10-0160.jpg",
+        "image": "assets/brands%20items/WELDAS/10-0160%20-%201.png",
+        "images": ["assets/brands%20items/WELDAS/10-0160%20-%201.png"],
         "badge": ""
     },
     {
@@ -16,7 +17,8 @@
         "brand": "WELDAS",
         "type": "Welding Gloves",
         "description": "Premium quality welding gloves",
-        "image": "assets/brands%20items/WELDAS/Welding%20Gloves/10-2101.jpg",
+        "image": "assets/brands%20items/WELDAS/10-2101%20-%201.jpg",
+        "images": ["assets/brands%20items/WELDAS/10-2101%20-%201.jpg"],
         "badge": ""
     },
     {
@@ -26,7 +28,8 @@
         "brand": "WELDAS",
         "type": "Welding Gloves",
         "description": "Comfortable welding gloves for extended use",
-        "image": "assets/brands%20items/WELDAS/Welding%20Gloves/10-1003.jpg",
+        "image": "assets/brands%20items/WELDAS/10-1003%20-%201.jpg",
+        "images": ["assets/brands%20items/WELDAS/10-1003%20-%201.jpg"],
         "badge": ""
     },
     {
@@ -36,7 +39,8 @@
         "brand": "WELDAS",
         "type": "Welding Gloves",
         "description": "Heavy-duty welding gloves for industrial applications",
-        "image": "assets/brands%20items/WELDAS/Welding%20Gloves/10-1009.jpg",
+        "image": "assets/brands%20items/WELDAS/10-1009%20-%201.jpg",
+        "images": ["assets/brands%20items/WELDAS/10-1009%20-%201.jpg"],
         "badge": ""
     }
 ]

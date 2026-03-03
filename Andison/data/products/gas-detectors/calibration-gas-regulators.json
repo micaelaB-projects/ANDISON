@@ -9,7 +9,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Calibration%20Gas%20Regulators/Calibration%20Gas.jpg"
+        "image": "../assets/brands%20items/BW/calibration%20gas%201.jpg",
+        "images": ["../assets/brands%20items/BW/calibration%20gas%201.jpg"]
     },
     {
         "id": "calibration-gas-regulators-2",
@@ -21,6 +22,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Calibration%20Gas%20Regulators/Gas%20Regulator.jpg"
+        "image": "../assets/brands%20items/BW/reg%20-df-1%20gas%20regulator.jpg",
+        "images": ["../assets/brands%20items/BW/reg%20-df-1%20gas%20regulator.jpg"]
     }
 ]

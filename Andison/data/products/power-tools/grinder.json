@@ -6,7 +6,8 @@
         "brand": "Bosch",
         "type": "Grinder",
         "description": "Professional angle grinder for cutting and grinding applications",
-        "image": "assets/brands%20items/BOSCH/Grinder/GWS 9-100P.jpg",
+        "image": "",
+        "images": [],
         "badge": ""
     },
     {
@@ -16,7 +17,8 @@
         "brand": "Bosch",
         "type": "Grinder",
         "description": "Straight grinder for precision grinding and finishing work",
-        "image": "assets/brands%20items/BOSCH/Grinder/GGS 3000L.jpg",
+        "image": "",
+        "images": [],
         "badge": ""
     },
     {
@@ -26,7 +28,8 @@
         "brand": "Bosch",
         "type": "Grinder",
         "description": "Heavy-duty angle grinder for industrial grinding applications",
-        "image": "assets/brands%20items/BOSCH/Grinder/GWS 2200-180.jpg",
+        "image": "",
+        "images": [],
         "badge": ""
     }
 ]

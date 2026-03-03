@@ -6,7 +6,8 @@
         "brand": "Aces",
         "type": "Welding Head and Face Protection",
         "description": "Clear polycarbonate visor for welding head protection",
-        "image": "",
+        "image": "assets/brands%20items/ACES/A388.jpg",
+        "images": ["assets/brands%20items/ACES/A388.jpg"],
         "badge": ""
     },
     {
@@ -16,7 +17,8 @@
         "brand": "Aces",
         "type": "Welding Head and Face Protection",
         "description": "Faceshield with hard hat attachment for head and face protection",
-        "image": "",
+        "image": "assets/brands%20items/ACES/A366.jpg",
+        "images": ["assets/brands%20items/ACES/A366.jpg"],
         "badge": ""
     },
     {
@@ -26,7 +28,8 @@
         "brand": "Aces",
         "type": "Welding Helmet",
         "description": "Professional welding helmet for arc welding protection",
-        "image": "",
+        "image": "assets/brands%20items/ACES/A288.jpg",
+        "images": ["assets/brands%20items/ACES/A288.jpg"],
         "badge": ""
     },
     {
@@ -36,7 +39,8 @@
         "brand": "Aces",
         "type": "Welding Helmet",
         "description": "Welding helmet with mounting adaptor for easy attachment",
-        "image": "",
+        "image": "assets/brands%20items/ACES/A238.jpg",
+        "images": ["assets/brands%20items/ACES/A238.jpg"],
         "badge": ""
     },
     {
@@ -46,7 +50,8 @@
         "brand": "Aces",
         "type": "Welding Head and Face Protection",
         "description": "Complete headgear assembly for welding operations",
-        "image": "",
+        "image": "assets/brands%20items/ACES/A300.jpg",
+        "images": ["assets/brands%20items/ACES/A300.jpg"],
         "badge": ""
     },
     {
@@ -56,7 +61,8 @@
         "brand": "Uvex",
         "type": "Welding Helmet",
         "description": "Professional welding helmet with integrated sweatband",
-        "image": "",
+        "image": "assets/brands%20items/UVEX/Pheos%20B-WR%20helmet.jpg",
+        "images": ["assets/brands%20items/UVEX/Pheos%20B-WR%20helmet.jpg"],
         "badge": ""
     }
 ]

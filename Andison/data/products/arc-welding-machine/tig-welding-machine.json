@@ -9,7 +9,7 @@
         "badge":  "",
         "price":  "",
         "specs":  "",
-        "image":  "assets/brands%20items/PANASONIC/TIG%20Welding%20Machine/YC-300WX4.jpg"
+        "image":  "../assets/brands%20items/PANASONIC/TIG%20Welding%20Machine/YC-300WX4.jpg"
     },
     {
         "id":  "tig-welding-machine-2",
@@ -21,7 +21,7 @@
         "badge":  "",
         "price":  "",
         "specs":  "",
-        "image":  "assets/brands%20items/PANASONIC/TIG%20Welding%20Machine/YC-200BL3.jpeg"
+        "image":  "../assets/brands%20items/PANASONIC/TIG%20Welding%20Machine/YC-200BL3.jpeg"
     },
     {
         "id":  "tig-welding-machine-3",
@@ -33,7 +33,7 @@
         "badge":  "",
         "price":  "",
         "specs":  "",
-        "image":  "assets/brands%20items/PANASONIC/TIG%20Welding%20Machine/YC-300BZ3.jpeg"
+        "image":  "../assets/brands%20items/PANASONIC/TIG%20Welding%20Machine/YC-300BZ3.jpeg"
     },
     {
         "id":  "tig-welding-machine-4",
@@ -45,7 +45,7 @@
         "badge":  "",
         "price":  "",
         "specs":  "",
-        "image":  "assets/brands%20items/PANASONIC/TIG%20Welding%20Machine/YC-300BP4.png"
+        "image":  "../assets/brands%20items/PANASONIC/TIG%20Welding%20Machine/YC-300BP4.png"
     },
     {
         "id":  "tig-welding-machine-5",
@@ -57,6 +57,6 @@
         "badge":  "",
         "price":  "",
         "specs":  "",
-        "image":  "assets/brands%20items/PANASONIC/TIG%20Welding%20Machine/YC-500BP4.jpg"
+        "image":  "../assets/brands%20items/PANASONIC/TIG%20Welding%20Machine/YC-500BP4.jpg"
     }
 ]

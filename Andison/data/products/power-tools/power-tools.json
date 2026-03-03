@@ -6,7 +6,8 @@
         "brand": "Weiler",
         "type": "Power Tools",
         "description": "Industrial-grade wire brushes for cleaning and surface preparation",
-        "image": "assets/brands%20items/WEILER/Accessories/Industrial Wire Brushes.jpg",
+        "image": "assets/brands%20items/WEILER/Industrial%20Brushes%201.jpg",
+        "images": ["assets/brands%20items/WEILER/Industrial%20Brushes%201.jpg"],
         "badge": ""
     },
     {
@@ -16,7 +17,8 @@
         "brand": "Garryson",
         "type": "Power Tools",
         "description": "High-performance tungsten carbide burrs for precision grinding and finishing",
-        "image": "assets/brands%20items/GARRYSON/Accessories/Tungsten Carbide Burrs.jpg",
+        "image": "assets/brands%20items/GARRYSON/Carbide%20Burrs%20-%201.jpg",
+        "images": ["assets/brands%20items/GARRYSON/Carbide%20Burrs%20-%201.jpg"],
         "badge": ""
     },
     {
@@ -26,7 +28,8 @@
         "brand": "Bosch",
         "type": "Power Tools",
         "description": "Professional impact drill for high-speed drilling and fastening applications",
-        "image": "assets/brands%20items/BOSCH/Drill%20and%20Wrench/GSB 16RE.jpg",
+        "image": "",
+        "images": [],
         "badge": ""
     },
     {
@@ -36,7 +39,8 @@
         "brand": "Bosch",
         "type": "Power Tools",
         "description": "Cordless drill driver with power and precision for drilling and fastening tasks",
-        "image": "assets/brands%20items/BOSCH/Drill%20and%20Wrench/GSR 18V-50.jpg",
+        "image": "",
+        "images": [],
         "badge": ""
     },
     {
@@ -46,7 +50,8 @@
         "brand": "Bosch",
         "type": "Power Tools",
         "description": "Compact impact wrench for high-torque fastening and loosening operations",
-        "image": "assets/brands%20items/BOSCH/Drill%20and%20Wrench/GDS 250.jpg",
+        "image": "",
+        "images": [],
         "badge": ""
     },
     {
@@ -56,7 +61,8 @@
         "brand": "Bosch",
         "type": "Power Tools",
         "description": "Professional angle grinder for cutting and grinding applications",
-        "image": "assets/brands%20items/BOSCH/Grinder/GWS 9-100P.jpg",
+        "image": "",
+        "images": [],
         "badge": ""
     },
     {
@@ -66,7 +72,8 @@
         "brand": "Bosch",
         "type": "Power Tools",
         "description": "Straight grinder for precision grinding and finishing work",
-        "image": "assets/brands%20items/BOSCH/Grinder/GGS 3000L.jpg",
+        "image": "",
+        "images": [],
         "badge": ""
     },
     {
@@ -76,7 +83,8 @@
         "brand": "Bosch",
         "type": "Power Tools",
         "description": "Heavy-duty angle grinder for industrial grinding applications",
-        "image": "assets/brands%20items/BOSCH/Grinder/GWS 2200-180.jpg",
+        "image": "",
+        "images": [],
         "badge": ""
     },
     {
@@ -86,7 +94,8 @@
         "brand": "Bosch",
         "type": "Power Tools",
         "description": "Professional rotary hammer with SDS Plus chuck for drilling and chiseling applications",
-        "image": "assets/brands%20items/BOSCH/Rotary%20and%20Demolition%20Hammer/GBH 4-32DFR.jpg",
+        "image": "",
+        "images": [],
         "badge": ""
     },
     {
@@ -96,7 +105,8 @@
         "brand": "Bosch",
         "type": "Power Tools",
         "description": "Heavy-duty demolition hammer with SDS Max chuck for powerful breaking and chiseling",
-        "image": "assets/brands%20items/BOSCH/Rotary%20and%20Demolition%20Hammer/GSH 5.jpg",
+        "image": "",
+        "images": [],
         "badge": ""
     },
     {
@@ -106,7 +116,8 @@
         "brand": "Bosch",
         "type": "Power Tools",
         "description": "Professional jack hammer for heavy demolition and breaking applications",
-        "image": "assets/brands%20items/BOSCH/Rotary%20and%20Demolition%20Hammer/GSH 16-30.jpg",
+        "image": "",
+        "images": [],
         "badge": ""
     },
     {
@@ -116,7 +127,8 @@
         "brand": "Bosch",
         "type": "Power Tools",
         "description": "Lightweight metal cut off saw for precise cutting of metal materials",
-        "image": "assets/brands%20items/BOSCH/Saw/GCO 14-24J.jpg",
+        "image": "",
+        "images": [],
         "badge": ""
     },
     {
@@ -126,7 +138,8 @@
         "brand": "Bosch",
         "type": "Power Tools",
         "description": "Powerful hand-held circular saw for cutting wood and composite materials",
-        "image": "assets/brands%20items/BOSCH/Saw/GKS 235 Turbo.jpg",
+        "image": "",
+        "images": [],
         "badge": ""
     },
     {
@@ -136,7 +149,8 @@
         "brand": "Bosch",
         "type": "Power Tools",
         "description": "Professional jig saw for precise straight and curved cuts",
-        "image": "assets/brands%20items/BOSCH/Saw/GST 80PBE.jpg",
+        "image": "",
+        "images": [],
         "badge": ""
     }
 ]

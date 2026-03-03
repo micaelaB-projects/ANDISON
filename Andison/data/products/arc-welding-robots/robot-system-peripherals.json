@@ -9,7 +9,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/PANASONIC/Robot%20System%20Peripherals/Tokin%20Arc%20Nozzle%20Cleaner.jpg"
+        "image": "assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20TAWERS%20WG3%20Welding%20Robot.jpg",
+        "images": ["assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20TAWERS%20WG3%20Welding%20Robot.jpg"]
     },
     {
         "id": "robot-system-peripherals-2",
@@ -21,7 +22,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/PANASONIC/Robot%20System%20Peripherals/Tokin%20Arc%20Portable%20Butt%20Welder.jpg"
+        "image": "assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20TAWERS%20WG4%20Welding%20Robot.jpg",
+        "images": ["assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20TAWERS%20WG4%20Welding%20Robot.jpg"]
     },
     {
         "id": "robot-system-peripherals-3",
@@ -33,7 +35,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/PANASONIC/Robot%20System%20Peripherals/Wire%20Wizard%20Wire%20Sizer.jpg"
+        "image": "assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20TAWERS%20SAWP%20Welding%20Robot.jpg",
+        "images": ["assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20TAWERS%20SAWP%20Welding%20Robot.jpg"]
     },
     {
         "id": "robot-system-peripherals-4",
@@ -45,7 +48,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/PANASONIC/Robot%20System%20Peripherals/Aer%20Evo%202.2.jpg"
+        "image": "assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20Positioner%202.webp",
+        "images": ["assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20Positioner%202.webp"]
     },
     {
         "id": "robot-system-peripherals-5",
@@ -57,6 +61,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/PANASONIC/Robot%20System%20Peripherals/Aer%20201.jpg"
+        "image": "assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20Positioner%203.jpg",
+        "images": ["assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20Positioner%203.jpg"]
     }
 ]

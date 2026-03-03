@@ -7,6 +7,7 @@
         "type": "Foot Protection",
         "description": "Durable steel toe boots for heavy industrial environments",
         "image": "",
+        "images": [],
         "badge": ""
     },
     {
@@ -17,6 +18,7 @@
         "type": "Foot Protection",
         "description": "Slip-resistant work shoes for safe footing on any surface",
         "image": "",
+        "images": [],
         "badge": ""
     }
 ]

@@ -6,7 +6,8 @@
         "brand": "Weiler",
         "type": "Accessories",
         "description": "Industrial-grade wire brushes for cleaning and surface preparation",
-        "image": "assets/brands%20items/WEILER/Accessories/Industrial Wire Brushes.jpg",
+        "image": "../assets/brands%20items/WEILER/Industrial%20Brushes%201.jpg",
+        "images": ["../assets/brands%20items/WEILER/Industrial%20Brushes%201.jpg"],
         "badge": ""
     },
     {
@@ -16,7 +17,8 @@
         "brand": "Garryson",
         "type": "Accessories",
         "description": "High-performance tungsten carbide burrs for precision grinding and finishing",
-        "image": "assets/brands%20items/GARRYSON/Accessories/Tungsten Carbide Burrs.jpg",
+        "image": "../assets/brands%20items/GARRYSON/Carbide%20Burrs%20-%201.jpg",
+        "images": ["../assets/brands%20items/GARRYSON/Carbide%20Burrs%20-%201.jpg"],
         "badge": ""
     }
 ]

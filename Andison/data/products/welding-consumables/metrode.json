@@ -6,7 +6,9 @@
         "brand": "METRODE",
         "type": "Welding Wire",
         "description": "Medium strength mild steel MIG welding wire for structural applications",
-        "image": "",
+        "image": "andison/assets/brands%20items/METRODE/Metrode.jpg",
+        "images": ["andison/assets/brands%20items/METRODE/Metrode.jpg"],
+        "specs": "",
         "badge": ""
     },
     {
@@ -16,7 +18,9 @@
         "brand": "METRODE",
         "type": "Flux-Cored Wire",
         "description": "Premium flux-cored wire for all-position welding",
-        "image": "",
+        "image": "andison/assets/brands%20items/METRODE/Metrode-Logo-rgb.jpg",
+        "images": ["andison/assets/brands%20items/METRODE/Metrode-Logo-rgb.jpg"],
+        "specs": "",
         "badge": ""
     },
     {
@@ -26,7 +30,9 @@
         "brand": "METRODE",
         "type": "Stainless Steel Wire",
         "description": "High-quality austenitic stainless steel MIG wire",
-        "image": "",
+        "image": "andison/assets/brands%20items/METRODE/Metrode.jpg",
+        "images": ["andison/assets/brands%20items/METRODE/Metrode.jpg"],
+        "specs": "",
         "badge": ""
     },
     {
@@ -36,7 +42,9 @@
         "brand": "METRODE",
         "type": "Electrode",
         "description": "Rutile coated electrode for smooth arc and easy slag removal",
-        "image": "",
+        "image": "andison/assets/brands%20items/METRODE/Metrode-Logo-rgb.jpg",
+        "images": ["andison/assets/brands%20items/METRODE/Metrode-Logo-rgb.jpg"],
+        "specs": "",
         "badge": ""
     },
     {
@@ -46,7 +54,9 @@
         "brand": "METRODE",
         "type": "Electrode",
         "description": "High strength low alloy electrode for demanding applications",
-        "image": "",
+        "image": "andison/assets/brands%20items/METRODE/Metrode.jpg",
+        "images": ["andison/assets/brands%20items/METRODE/Metrode.jpg"],
+        "specs": "",
         "badge": ""
     },
     {
@@ -56,7 +66,9 @@
         "brand": "METRODE",
         "type": "Flux-Cored Wire",
         "description": "Nickel alloy flux-cored wire for corrosion resistance",
-        "image": "",
+        "image": "andison/assets/brands%20items/METRODE/Metrode-Logo-rgb.jpg",
+        "images": ["andison/assets/brands%20items/METRODE/Metrode-Logo-rgb.jpg"],
+        "specs": "",
         "badge": ""
     },
     {
@@ -66,7 +78,9 @@
         "brand": "METRODE",
         "type": "Aluminum Wire",
         "description": "Specialized aluminum alloy welding wire",
-        "image": "",
+        "image": "andison/assets/brands%20items/METRODE/Metrode.jpg",
+        "images": ["andison/assets/brands%20items/METRODE/Metrode.jpg"],
+        "specs": "",
         "badge": ""
     },
     {
@@ -76,7 +90,9 @@
         "brand": "METRODE",
         "type": "Electrode",
         "description": "High-nickel electrode for cast iron welding",
-        "image": "",
+        "image": "andison/assets/brands%20items/METRODE/Metrode-Logo-rgb.jpg",
+        "images": ["andison/assets/brands%20items/METRODE/Metrode-Logo-rgb.jpg"],
+        "specs": "",
         "badge": ""
     }
 ]

@@ -6,7 +6,8 @@
         "brand": "SAFETY PRO",
         "type": "Body Protection",
         "description": "High visibility safety vest for industrial work",
-        "image": "assets/brands%20items/SAFETY%20PRO/Body%20Protection/HV-100.jpg",
+        "image": "",
+        "images": [],
         "badge": ""
     },
     {
@@ -16,7 +17,8 @@
         "brand": "WORKGUARD",
         "type": "Body Protection",
         "description": "Durable protective apron for welding and industrial tasks",
-        "image": "assets/brands%20items/WORKGUARD/Body%20Protection/WA-200.jpg",
+        "image": "",
+        "images": [],
         "badge": ""
     }
 ]

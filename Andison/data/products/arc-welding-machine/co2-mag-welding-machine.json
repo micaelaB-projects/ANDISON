@@ -9,7 +9,7 @@
         "badge":  "",
         "price":  "",
         "specs":  "",
-        "image":  "assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-350KR2.jpg"
+        "image":  "../assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-350KR2.jpg"
     },
     {
         "id":  "co2-mag-welding-machine-2",
@@ -21,7 +21,7 @@
         "badge":  "",
         "price":  "",
         "specs":  "",
-        "image":  "assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-500KR2.jpg"
+        "image":  "../assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-500KR2.jpg"
     },
     {
         "id":  "co2-mag-welding-machine-3",
@@ -33,7 +33,7 @@
         "badge":  "",
         "price":  "",
         "specs":  "",
-        "image":  "assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-600KH2.jpg"
+        "image":  "../assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-600KH2.jpg"
     },
     {
         "id":  "co2-mag-welding-machine-4",
@@ -45,7 +45,7 @@
         "badge":  "",
         "price":  "",
         "specs":  "",
-        "image":  "assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-350RX1.jpg"
+        "image":  "../assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-350RX1.jpg"
     },
     {
         "id":  "co2-mag-welding-machine-5",
@@ -57,7 +57,7 @@
         "badge":  "",
         "price":  "",
         "specs":  "",
-        "image":  "assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-350GR3.jpeg"
+        "image":  "../assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-350GR3.jpeg"
     },
     {
         "id":  "co2-mag-welding-machine-6",
@@ -69,7 +69,7 @@
         "badge":  "",
         "price":  "",
         "specs":  "",
-        "image":  "assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-350VR1.jpg"
+        "image":  "../assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-350VR1.jpg"
     },
     {
         "id":  "co2-mag-welding-machine-7",
@@ -81,7 +81,7 @@
         "badge":  "",
         "price":  "",
         "specs":  "",
-        "image":  "assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-400VP1.png"
+        "image":  "../assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-400VP1.png"
     },
     {
         "id":  "co2-mag-welding-machine-8",
@@ -93,6 +93,6 @@
         "badge":  "",
         "price":  "",
         "specs":  "",
-        "image":  "assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-350GZ4.jpeg"
+        "image":  "../assets/brands%20items/PANASONIC/CO2%2CMAG%2CMIG%20Welding%20Machine/YD-350GZ4.jpeg"
     }
 ]

@@ -9,7 +9,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Calibration%20Gas%20Regulators/Calibration%20Gas.jpg"
+        "image": "../assets/brands%20items/BW/calibration%20gas%201.jpg"
     },
     {
         "id": "calibration-gas-regulators-2",
@@ -21,7 +21,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Calibration%20Gas%20Regulators/Gas%20Regulator.jpg"
+        "image": "../assets/brands%20items/BW/reg-df-1%20gas%20regulator.jpg"
     },
     {
         "id": "docking-data-management-1",
@@ -33,7 +33,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Docking%20Data%20Management/IntelliDox.jpg"
+        "image": "../assets/brands%20items/BW/BW%20IntelliDoX%201.jpg"
     },
     {
         "id": "multi-gas-detector-1",
@@ -45,7 +45,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Multi%20Gas%20Detector/BW%20Clip%204.jpg"
+        "image": "../assets/brands%20items/BW/BW%20Clip4%20-%201.jpg"
     },
     {
         "id": "multi-gas-detector-2",
@@ -57,7 +57,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Multi%20Gas%20Detector/BW%20Microclip%20XL.jpg"
+        "image": "../assets/brands%20items/BW/BW%20MicroClip%20XL%201.jpg"
     },
     {
         "id": "multi-gas-detector-3",
@@ -69,7 +69,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Multi%20Gas%20Detector/BW%20MicroClip%20X3.jpg"
+        "image": "../assets/brands%20items/BW/BW%20MicroClip%20X3%20-%201.jpg"
     },
     {
         "id": "multi-gas-detector-4",
@@ -81,7 +81,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Multi%20Gas%20Detector/BW%20Max%20XT%20II.jpg"
+        "image": "../assets/brands%20items/BW/BW%20Max%20XT%20II%201.jpg"
     },
     {
         "id": "multi-gas-detector-5",
@@ -93,7 +93,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Multi%20Gas%20Detector/BW%20Icon.jpg"
+        "image": "../assets/brands%20items/BW/BW%20Icon%201.jpg"
     },
     {
         "id": "multi-gas-detector-6",
@@ -105,7 +105,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Multi%20Gas%20Detector/BW%20Flex.jpg"
+        "image": "../assets/brands%20items/BW/BW%20Flex%204%20-%201.jpg"
     },
     {
         "id": "multi-gas-detector-7",
@@ -117,7 +117,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Multi%20Gas%20Detector/BW%20Ultra.jpg"
+        "image": "../assets/brands%20items/BW/BW%20Ultra%201.jpg"
     },
     {
         "id": "multi-gas-detector-8",
@@ -129,7 +129,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Multi%20Gas%20Detector/BW%20Rigrat.jpg"
+        "image": "../assets/brands%20items/BW/BW%20RigRat%201.jpg"
     },
     {
         "id": "bw-gas-maintenance-time-single",
@@ -138,7 +138,7 @@
         "brand": "BW Technologies",
         "type": "Portable Gas Detectors",
         "description": "Portable single gas detector for maintenance",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Portable%20Gas%20Detectors/BWC1.jpg",
+        "image": "../assets/brands%20items/BW/BW%20Clip%201.jpg",
         "badge": "NEW"
     },
     {
@@ -148,7 +148,7 @@
         "brand": "BW Technologies",
         "type": "Portable Gas Detectors",
         "description": "Real-time monitoring single gas detector",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Portable%20Gas%20Detectors/BWC2.jpg",
+        "image": "../assets/brands%20items/BW/BW%20Clip%201.jpg",
         "badge": ""
     },
     {
@@ -158,7 +158,7 @@
         "brand": "BW Technologies",
         "type": "Portable Gas Detectors",
         "description": "Invisible single gas detector with multiple gas options",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Portable%20Gas%20Detectors/BWC3.jpg",
+        "image": "../assets/brands%20items/BW/BW%20Clip%202.jpg",
         "badge": ""
     },
     {
@@ -168,7 +168,7 @@
         "brand": "BW Technologies",
         "type": "Portable Gas Detectors",
         "description": "2-year multi-gas detector for common hazardous gases",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Portable%20Gas%20Detectors/BWC4.jpg",
+        "image": "../assets/brands%20items/BW/BW%20Clip4%20-%201.jpg",
         "badge": "NEW"
     },
     {
@@ -178,7 +178,7 @@
         "brand": "BW Technologies",
         "type": "Portable Gas Detectors",
         "description": "Honeywell black 4-year multi-gas detector",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Portable%20Gas%20Detectors/BWC5.jpg",
+        "image": "../assets/brands%20items/BW/BW%20Clip4%20-%201.jpg",
         "badge": "NEW"
     },
     {
@@ -188,7 +188,7 @@
         "brand": "BW Technologies",
         "type": "Portable Gas Detectors",
         "description": "Compact MicroClip multi-gas detector",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Portable%20Gas%20Detectors/BWC6.jpg",
+        "image": "../assets/brands%20items/BW/BW%20MicroClip%20XL%201.jpg",
         "badge": ""
     },
     {
@@ -198,7 +198,7 @@
         "brand": "BW Technologies",
         "type": "Portable Gas Detectors",
         "description": "Quantum detector with large LCD display",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Portable%20Gas%20Detectors/BWC7.jpg",
+        "image": "../assets/brands%20items/BW/BW%20Icon%201.jpg",
         "badge": "NEW"
     },
     {
@@ -208,7 +208,7 @@
         "brand": "BW Technologies",
         "type": "Portable Gas Detectors",
         "description": "Advanced surveillance multi-gas detector with 5 gas channels",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Portable%20Gas%20Detectors/BWC8.jpg",
+        "image": "../assets/brands%20items/BW/BW%20MicroClip%20X3%20-%201.jpg",
         "badge": "NEW"
     },
     {
@@ -218,7 +218,7 @@
         "brand": "BW Technologies",
         "type": "Portable Gas Detectors",
         "description": "Ultra multi-gas detector with 6 gas monitoring capabilities",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Portable%20Gas%20Detectors/BWC9.jpg",
+        "image": "../assets/brands%20items/BW/BW%20Ultra%201.jpg",
         "badge": ""
     },
     {
@@ -228,7 +228,7 @@
         "brand": "BW Technologies",
         "type": "Portable Gas Detectors",
         "description": "Ultra multi-gas detector with 4 gas monitoring",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Portable%20Gas%20Detectors/BWC10.jpg",
+        "image": "../assets/brands%20items/BW/BW%20Ultra%201.jpg",
         "badge": "NEW"
     },
     {
@@ -238,7 +238,7 @@
         "brand": "BW Technologies",
         "type": "Portable Gas Detectors",
         "description": "Automated instrument management and docking system",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Portable%20Gas%20Detectors/BWC11.jpg",
+        "image": "../assets/brands%20items/BW/BW%20IntelliDoX%201.jpg",
         "badge": "NEW"
     },
     {
@@ -248,7 +248,7 @@
         "brand": "BW Technologies",
         "type": "Portable Gas Detectors",
         "description": "Portable transportable multi-gas area monitoring system",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Portable%20Gas%20Detectors/BWC12.jpg",
+        "image": "../assets/brands%20items/BW/BW%20Icon%201.jpg",
         "badge": ""
     },
     {
@@ -261,7 +261,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Single%20Gas%20Detector/BW%20Clip.jpg"
+        "image": "../assets/brands%20items/BW/BW%20Clip%201.jpg"
     },
     {
         "id": "single-gas-detector-2",
@@ -273,6 +273,6 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Single%20Gas%20Detector/BW%20Solo.jpg"
+        "image": "../assets/brands%20items/BW/BW%20Solo%201.jpg"
     }
 ]

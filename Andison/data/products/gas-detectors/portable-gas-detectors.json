@@ -6,7 +6,8 @@
     "brand": "BW Technologies",
     "type": "Portable Gas Detectors",
     "description": "Portable single gas detector for maintenance",
-    "image": "assets/brands%20items/BW%20TECHNOLOGIES/Portable%20Gas%20Detectors/BWC1.jpg",
+    "image": "../assets/brands%20items/BW/BW%20Clip%201.jpg",
+    "images": ["../assets/brands%20items/BW/BW%20Clip%201.jpg"],
     "badge": "NEW"
   },
   {
@@ -16,7 +17,8 @@
     "brand": "BW Technologies",
     "type": "Portable Gas Detectors",
     "description": "Real-time monitoring single gas detector",
-    "image": "assets/brands%20items/BW%20TECHNOLOGIES/Portable%20Gas%20Detectors/BWC2.jpg",
+    "image": "../assets/brands%20items/BW/BW%20Clip%201.jpg",
+    "images": ["../assets/brands%20items/BW/BW%20Clip%201.jpg"],
     "badge": ""
   },
   {
@@ -26,7 +28,8 @@
     "brand": "BW Technologies",
     "type": "Portable Gas Detectors",
     "description": "Invisible single gas detector with multiple gas options",
-    "image": "assets/brands%20items/BW%20TECHNOLOGIES/Portable%20Gas%20Detectors/BWC3.jpg",
+    "image": "../assets/brands%20items/BW/BW%20Clip%201.jpg",
+    "images": ["../assets/brands%20items/BW/BW%20Clip%201.jpg"],
     "badge": ""
   },
   {
@@ -36,7 +39,8 @@
     "brand": "BW Technologies",
     "type": "Portable Gas Detectors",
     "description": "2-year multi-gas detector for common hazardous gases",
-    "image": "assets/brands%20items/BW%20TECHNOLOGIES/Portable%20Gas%20Detectors/BWC4.jpg",
+    "image": "../assets/brands%20items/BW/BW%20Clip4%20-%201.jpg",
+    "images": ["../assets/brands%20items/BW/BW%20Clip4%20-%201.jpg"],
     "badge": "NEW"
   },
   {
@@ -46,7 +50,8 @@
     "brand": "BW Technologies",
     "type": "Portable Gas Detectors",
     "description": "Honeywell black 4-year multi-gas detector",
-    "image": "assets/brands%20items/BW%20TECHNOLOGIES/Portable%20Gas%20Detectors/BWC5.jpg",
+    "image": "../assets/brands%20items/BW/BW%20Clip%201.jpg",
+    "images": ["../assets/brands%20items/BW/BW%20Clip%201.jpg"],
     "badge": "NEW"
   },
   {
@@ -56,7 +61,8 @@
     "brand": "BW Technologies",
     "type": "Portable Gas Detectors",
     "description": "Compact MicroClip multi-gas detector",
-    "image": "assets/brands%20items/BW%20TECHNOLOGIES/Portable%20Gas%20Detectors/BWC6.jpg",
+    "image": "../assets/brands%20items/BW/BW%20MicroClip%20X3%20-%201.jpg",
+    "images": ["../assets/brands%20items/BW/BW%20MicroClip%20X3%20-%201.jpg"],
     "badge": ""
   },
   {
@@ -66,7 +72,8 @@
     "brand": "BW Technologies",
     "type": "Portable Gas Detectors",
     "description": "Quantum detector with large LCD display",
-    "image": "assets/brands%20items/BW%20TECHNOLOGIES/Portable%20Gas%20Detectors/BWC7.jpg",
+    "image": "../assets/brands%20items/BW/BW%20Clip4%20-%201.jpg",
+    "images": ["../assets/brands%20items/BW/BW%20Clip4%20-%201.jpg"],
     "badge": "NEW"
   },
   {
@@ -76,7 +83,8 @@
     "brand": "BW Technologies",
     "type": "Portable Gas Detectors",
     "description": "Advanced surveillance multi-gas detector with 5 gas channels",
-    "image": "assets/brands%20items/BW%20TECHNOLOGIES/Portable%20Gas%20Detectors/BWC8.jpg",
+    "image": "../assets/brands%20items/BW/BW%20Ultra%201.jpg",
+    "images": ["../assets/brands%20items/BW/BW%20Ultra%201.jpg"],
     "badge": "NEW"
   },
   {
@@ -86,7 +94,8 @@
     "brand": "BW Technologies",
     "type": "Portable Gas Detectors",
     "description": "Ultra multi-gas detector with 6 gas monitoring capabilities",
-    "image": "assets/brands%20items/BW%20TECHNOLOGIES/Portable%20Gas%20Detectors/BWC9.jpg",
+    "image": "../assets/brands%20items/BW/BW%20Ultra%201.jpg",
+    "images": ["../assets/brands%20items/BW/BW%20Ultra%201.jpg"],
     "badge": ""
   },
   {
@@ -96,7 +105,8 @@
     "brand": "BW Technologies",
     "type": "Portable Gas Detectors",
     "description": "Ultra multi-gas detector with 4 gas monitoring",
-    "image": "assets/brands%20items/BW%20TECHNOLOGIES/Portable%20Gas%20Detectors/BWC10.jpg",
+    "image": "../assets/brands%20items/BW/BW%20Ultra%201.jpg",
+    "images": ["../assets/brands%20items/BW/BW%20Ultra%201.jpg"],
     "badge": "NEW"
   },
   {
@@ -106,7 +116,8 @@
     "brand": "BW Technologies",
     "type": "Portable Gas Detectors",
     "description": "Automated instrument management and docking system",
-    "image": "assets/brands%20items/BW%20TECHNOLOGIES/Portable%20Gas%20Detectors/BWC11.jpg",
+    "image": "../assets/brands%20items/BW/BW%20IntelliDoX%201.jpg",
+    "images": ["../assets/brands%20items/BW/BW%20IntelliDoX%201.jpg"],
     "badge": "NEW"
   },
   {
@@ -116,7 +127,8 @@
     "brand": "BW Technologies",
     "type": "Portable Gas Detectors",
     "description": "Portable transportable multi-gas area monitoring system",
-    "image": "assets/brands%20items/BW%20TECHNOLOGIES/Portable%20Gas%20Detectors/BWC12.jpg",
+    "image": "../assets/brands%20items/BW/BW%20Ultra%201.jpg",
+    "images": ["../assets/brands%20items/BW/BW%20Ultra%201.jpg"],
     "badge": ""
   }
 ]

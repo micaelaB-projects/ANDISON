@@ -9,7 +9,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/MOTOLITE/Special%20Batteries/Amp-Tech.jpg"
+        "image": "../assets/brands%20items/MOTOLITE/Amp-Tech.jpg",
+        "images": ["../assets/brands%20items/MOTOLITE/Amp-Tech.jpg"]
     },
     {
         "id": "special-batteries-2",
@@ -21,6 +22,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/MOTOLITE/Special%20Batteries/Solar%20Master.jpg"
+        "image": "../assets/brands%20items/MOTOLITE/Solar%20Master.png",
+        "images": ["../assets/brands%20items/MOTOLITE/Solar%20Master.png"]
     }
 ]

@@ -9,7 +9,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/PANASONIC/G4%20Controller%20Series/TM-TL%20G4%20Series.jpg"
+        "image": "assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20G4%20+%20GZ4%20Welding%20Robot%201.png",
+        "images": ["assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20G4%20+%20GZ4%20Welding%20Robot%201.png"]
     },
     {
         "id": "g4-controller-series-2",
@@ -21,7 +22,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/PANASONIC/G4%20Controller%20Series/TM-TL%20TAWERS%20WG4%20Series.jpg"
+        "image": "assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20TAWERS%20WG4%20Welding%20Robot.jpg",
+        "images": ["assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20TAWERS%20WG4%20Welding%20Robot.jpg"]
     },
     {
         "id": "g4-controller-series-3",
@@ -33,7 +35,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/PANASONIC/G4%20Controller%20Series/Active%20TAWERS%204%20AWP4-WG4%20Series.jpg"
+        "image": "assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20TAWERS%20AWP4%20Welding%20Robot%20-%201.png",
+        "images": ["assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20TAWERS%20AWP4%20Welding%20Robot%20-%201.png"]
     },
     {
         "id": "g4-controller-series-4",
@@ -45,7 +48,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/PANASONIC/G4%20Controller%20Series/Tig%20Welding%20Robot.jpg"
+        "image": "assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20Tig%20Welding%20Robot%201.png",
+        "images": ["assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20Tig%20Welding%20Robot%201.png"]
     },
     {
         "id": "g4-controller-series-5",
@@ -57,7 +61,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/PANASONIC/G4%20Controller%20Series/Plasma%20Cutting%20Robot.jpg"
+        "image": "assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20Plasma%20Cutting%20Robot%201.jpg",
+        "images": ["assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20Plasma%20Cutting%20Robot%201.jpg"]
     },
     {
         "id": "g4-controller-series-6",
@@ -69,6 +74,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/PANASONIC/G4%20Controller%20Series/Handling%20Robot%20for%20Welding.jpg"
+        "image": "assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20Positioner%201.webp",
+        "images": ["assets/brands%20items/PANASONIC/Arc%20Welding%20Robot/Panasonic%20Positioner%201.webp"]
     }
 ]

@@ -6,7 +6,8 @@
         "brand": "UVEX",
         "type": "Hearing and Respiratory Protection",
         "description": "Protective helmet with integrated earmuff for hearing protection",
-        "image": "assets/brands%20items/UVEX/Hearing%20and%20Respiratory%20Protection/K1H.jpg",
+        "image": "assets/brands%20items/UVEX/K1H%20Helmet%20Earmuff.jpg",
+        "images": ["assets/brands%20items/UVEX/K1H%20Helmet%20Earmuff.jpg"],
         "badge": ""
     },
     {
@@ -16,7 +17,8 @@
         "brand": "UVEX",
         "type": "Hearing Protection",
         "description": "Low-profile hearing protection earmuff",
-        "image": "assets/brands%20items/UVEX/Hearing%20Protection/Whisper.jpg",
+        "image": "assets/brands%20items/UVEX/Whisper.jpg",
+        "images": ["assets/brands%20items/UVEX/Whisper.jpg"],
         "badge": ""
     },
     {
@@ -26,7 +28,8 @@
         "brand": "UVEX",
         "type": "Hearing Protection",
         "description": "Adjustable hearing protection with X-fit design",
-        "image": "assets/brands%20items/UVEX/Hearing%20Protection/X-Fit.jpg",
+        "image": "assets/brands%20items/UVEX/X-Fit.jpg",
+        "images": ["assets/brands%20items/UVEX/X-Fit.jpg"],
         "badge": ""
     },
     {
@@ -36,7 +39,8 @@
         "brand": "UVEX",
         "type": "Hearing Protection",
         "description": "Hearing protection with attachment cord for safety",
-        "image": "assets/brands%20items/UVEX/Hearing%20Protection/X-Fit%20w%2F%20Cord.jpg",
+        "image": "assets/brands%20items/UVEX/X-Fit%20with%20cord.jpg",
+        "images": ["assets/brands%20items/UVEX/X-Fit%20with%20cord.jpg"],
         "badge": ""
     },
     {
@@ -46,7 +50,8 @@
         "brand": "ACES",
         "type": "Respiratory Protection",
         "description": "Respiratory protection equipment",
-        "image": "assets/brands%20items/ACES/Respiratory%20Protection/A188.jpg",
+        "image": "assets/brands%20items/ACES/A188.jpg",
+        "images": ["assets/brands%20items/ACES/A188.jpg"],
         "badge": ""
     },
     {

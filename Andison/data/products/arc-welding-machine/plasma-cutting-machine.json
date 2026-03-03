@@ -9,7 +9,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/PANASONIC/Plasma%20Cutting%20Machine/YP-060PF3.jpg"
+        "image": "../assets/brands%20items/PANASONIC/Plasma%20Cutting%20Machine/YP-060PF3.jpg"
     },
     {
         "id": "plasma-cutting-machine-2",
@@ -21,7 +21,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/PANASONIC/Plasma%20Cutting%20Machine/YP-080PF3.jpg"
+        "image": "../assets/brands%20items/PANASONIC/Plasma%20Cutting%20Machine/YP-080PF3.jpg"
     },
     {
         "id": "plasma-cutting-machine-3",
@@ -33,6 +33,6 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/PANASONIC/Plasma%20Cutting%20Machine/YP-130PF1.jpg"
+        "image": "../assets/brands%20items/PANASONIC/Plasma%20Cutting%20Machine/YP-130PF1.jpg"
     }
 ]

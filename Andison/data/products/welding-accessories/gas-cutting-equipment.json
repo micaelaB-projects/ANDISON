@@ -4,9 +4,10 @@
         "name": "KT5NX Straight Line Cutting Machine",
         "model": "KT5NX",
         "type": "Gas Cutting Equipment",
-        "brand": "Industrial",
+        "brand": "ARCAIR",
         "description": "Professional straight line gas cutting machine for precise and efficient cutting operations. High-performance cutting system for industrial applications.",
-        "image": "andison/assets/uploads/products/welding-accessories/gas-cutting-equipment/kt5nx-straight-line-cutting-machine.jpg",
+        "image": "andison/assets/brands%20items/ARCAIR/Gas-Cutting-Machine.jpg",
+        "images": ["andison/assets/brands%20items/ARCAIR/Gas-Cutting-Machine.jpg"],
         "badge": ""
     },
     {
@@ -14,9 +15,10 @@
         "name": "Single Stage Gas Regulator",
         "model": "Standard",
         "type": "Gas Cutting Equipment",
-        "brand": "Industrial",
+        "brand": "ARCAIR",
         "description": "Reliable single-stage gas regulator for use with gas cutting equipment. Provides consistent pressure control for stable cutting performance.",
-        "image": "andison/assets/uploads/products/welding-accessories/gas-cutting-equipment/single-stage-gas-regulator.jpg",
+        "image": "andison/assets/brands%20items/ARCAIR/Gas-Regulator.jpg",
+        "images": ["andison/assets/brands%20items/ARCAIR/Gas-Regulator.jpg"],
         "badge": ""
     }
 ]

@@ -9,6 +9,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/ALFRA/V%20Line%20Series/V32.jpg"
+        "image": "../assets/brands%20items/ALFRA/X-Line/RB35_50_X%20Piccolo.jpg",
+        "images": ["../assets/brands%20items/ALFRA/X-Line/RB35_50_X%20Piccolo.jpg"]
     }
 ]

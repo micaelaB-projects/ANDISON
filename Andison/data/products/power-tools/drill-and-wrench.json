@@ -6,7 +6,8 @@
         "brand": "Bosch",
         "type": "Drill and Wrench",
         "description": "Professional impact drill for high-speed drilling and fastening applications",
-        "image": "assets/brands%20items/BOSCH/Drill%20and%20Wrench/GSB 16RE.jpg",
+        "image": "",
+        "images": [],
         "badge": ""
     },
     {
@@ -16,7 +17,8 @@
         "brand": "Bosch",
         "type": "Drill and Wrench",
         "description": "Cordless drill driver with power and precision for drilling and fastening tasks",
-        "image": "assets/brands%20items/BOSCH/Drill%20and%20Wrench/GSR 18V-50.jpg",
+        "image": "",
+        "images": [],
         "badge": ""
     },
     {
@@ -26,7 +28,8 @@
         "brand": "Bosch",
         "type": "Drill and Wrench",
         "description": "Compact impact wrench for high-torque fastening and loosening operations",
-        "image": "assets/brands%20items/BOSCH/Drill%20and%20Wrench/GDS 250.jpg",
+        "image": "",
+        "images": [],
         "badge": ""
     }
 ]

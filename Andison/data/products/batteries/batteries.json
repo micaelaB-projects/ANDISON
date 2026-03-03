@@ -9,7 +9,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/MOTOLITE/Low%20Maintenance/Truckmaster.jpg"
+        "image": "../assets/brands%20items/MOTOLITE/Truckmaster.png"
     },
     {
         "id": "maintenance-free-1",
@@ -21,7 +21,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/MOTOLITE/Maintenance%20Free/Motolite%20Enduro.jpg"
+        "image": "../assets/brands%20items/MOTOLITE/Enduro.jpg"
     },
     {
         "id": "maintenance-free-2",
@@ -33,7 +33,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/MOTOLITE/Maintenance%20Free/Motolite%20Excel.jpg"
+        "image": "../assets/brands%20items/MOTOLITE/excel.png"
     },
     {
         "id": "maintenance-free-3",
@@ -45,7 +45,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/MOTOLITE/Maintenance%20Free/Motolite%20Gold.jpg"
+        "image": "../assets/brands%20items/MOTOLITE/Gold.jpg"
     },
     {
         "id": "special-batteries-1",
@@ -57,7 +57,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/MOTOLITE/Special%20Batteries/Amp-Tech.jpg"
+        "image": "../assets/brands%20items/MOTOLITE/Amp-Tech.jpg"
     },
     {
         "id": "special-batteries-2",
@@ -69,6 +69,6 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/MOTOLITE/Special%20Batteries/Solar%20Master.jpg"
+        "image": "../assets/brands%20items/MOTOLITE/Solar%20Master.png"
     }
 ]

@@ -9,7 +9,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Single%20Gas%20Detector/BW%20Clip.jpg"
+        "image": "../assets/brands%20items/BW/BW%20Clip%201.jpg",
+        "images": ["../assets/brands%20items/BW/BW%20Clip%201.jpg"]
     },
     {
         "id": "single-gas-detector-2",
@@ -21,6 +22,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Single%20Gas%20Detector/BW%20Solo.jpg"
+        "image": "../assets/brands%20items/BW/BW%20Solo%201.jpg",
+        "images": ["../assets/brands%20items/BW/BW%20Solo%201.jpg"]
     }
 ]

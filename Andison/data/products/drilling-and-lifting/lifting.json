@@ -9,7 +9,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/ALFRA/Lifting/TML-250.jpg"
+        "image": "../assets/brands%20items/ALFRA/Lifting%20Magnet/TML250_Lasthebemagnet.jpg",
+        "images": ["../assets/brands%20items/ALFRA/Lifting%20Magnet/TML250_Lasthebemagnet.jpg"]
     },
     {
         "id": "material-handling-lifting-2",
@@ -21,7 +22,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/ALFRA/Lifting/TML-500.jpg"
+        "image": "../assets/brands%20items/ALFRA/Lifting%20Magnet/TML-500%20-%201.jpg",
+        "images": ["../assets/brands%20items/ALFRA/Lifting%20Magnet/TML-500%20-%201.jpg"]
     },
     {
         "id": "material-handling-lifting-3",
@@ -33,6 +35,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/TECHNOTEX/Lifting/Polyester%20Webbing.jpg"
+        "image": "",
+        "images": []
     }
 ]

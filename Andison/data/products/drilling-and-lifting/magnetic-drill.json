@@ -6,7 +6,8 @@
         "brand": "Alfra",
         "type": "Drilling and Lifting, Cutters",
         "description": "High-speed steel annular cutter with one-touch design for efficient drilling operations",
-        "image": "andison/assets/uploads/products/drilling-and-lifting/magnetic-drill/hss-co-1-2_20260209085035_10db05d7.jpg",
+        "image": "assets/uploads/products/drilling-and-lifting/magnetic-drill/hss-co-1-2_20260209085035_10db05d7.jpg",
+        "images": ["assets/uploads/products/drilling-and-lifting/magnetic-drill/hss-co-1-2_20260209085035_10db05d7.jpg"],
         "badge": "",
         "price": "",
         "specs": ""
@@ -17,8 +18,9 @@
         "model": "RB3358",
         "brand": "Alfra",
         "type": "Drilling and Lifting, Magnetic Drill",
-        "description": "\u00d812 - 35mm Cutting Depth: 50mm Magnetic base core drill with precision engineering",
-        "image": "andison/assets/uploads/products/drilling-and-lifting/magnetic-drill/alfra-rb3358.jpg",
+        "description": "Ø12 - 35mm Cutting Depth: 50mm Magnetic base core drill with precision engineering",
+        "image": "../assets/brands%20items/ALFRA/B-Line/RB_35_B.jpg",
+        "images": ["../assets/brands%20items/ALFRA/B-Line/RB_35_B.jpg"],
         "badge": ""
     },
     {
@@ -28,7 +30,8 @@
         "brand": "Alfra",
         "type": "Drilling and Lifting, Cutters",
         "description": "Tungsten carbide tip annular cutter for superior cutting performance and durability",
-        "image": "andison/assets/uploads/products/drilling-and-lifting/magnetic-drill/alfra-tct.jpg",
+        "image": "../assets/brands%20items/ALFRA/Annular%20Cutter/TCT%20-%201.jpg",
+        "images": ["../assets/brands%20items/ALFRA/Annular%20Cutter/TCT%20-%201.jpg"],
         "badge": ""
     },
     {
@@ -37,8 +40,9 @@
         "model": "V52",
         "brand": "Alfra",
         "type": "Drilling and Lifting, Magnetic Drill",
-        "description": "\u00d812 - 32mm Cutting Depth: 50mm Low profile design for confined space operations",
-        "image": "andison/assets/uploads/products/drilling-and-lifting/magnetic-drill/alfra-v52.jpg",
+        "description": "Ø12 - 32mm Cutting Depth: 50mm Low profile design for confined space operations",
+        "image": "../assets/brands%20items/ALFRA/X-Line/RB35_50_X%20Piccolo.jpg",
+        "images": ["../assets/brands%20items/ALFRA/X-Line/RB35_50_X%20Piccolo.jpg"],
         "badge": ""
     },
     {
@@ -47,8 +51,9 @@
         "model": "RB600L-E",
         "brand": "Alfra",
         "type": "Drilling and Lifting, Magnetic Drill",
-        "description": "\u00d812 - 80mm Cutting Depth: 50mm Professional-grade magnetic base core drill",
-        "image": "andison/assets/uploads/products/drilling-and-lifting/magnetic-drill/alfra-rb600l-e.jpg",
+        "description": "Ø12 - 80mm Cutting Depth: 50mm Professional-grade magnetic base core drill",
+        "image": "../assets/brands%20items/ALFRA/RL-E-Line/RB60RL-E%20-%201.jpg",
+        "images": ["../assets/brands%20items/ALFRA/RL-E-Line/RB60RL-E%20-%201.jpg"],
         "badge": ""
     },
     {
@@ -57,8 +62,9 @@
         "model": "RB1001-E",
         "brand": "Alfra",
         "type": "Drilling and Lifting, Magnetic Drill",
-        "description": "\u00d812 - 100mm Cutting Depth: 90mm Heavy-duty magnetic base core drill for industrial applications",
-        "image": "andison/assets/uploads/products/drilling-and-lifting/magnetic-drill/alfra-rb1001-e.jpg",
+        "description": "Ø12 - 100mm Cutting Depth: 90mm Heavy-duty magnetic base core drill for industrial applications",
+        "image": "../assets/brands%20items/ALFRA/RL-E-Line/RB-100RL-E.jpg",
+        "images": ["../assets/brands%20items/ALFRA/RL-E-Line/RB-100RL-E.jpg"],
         "badge": ""
     },
     {
@@ -68,7 +74,8 @@
         "brand": "Alfra",
         "type": "Drilling and Lifting, Magnetic Drill",
         "description": "Compact magnetic base core drill for precision drilling operations",
-        "image": "",
+        "image": "../assets/brands%20items/ALFRA/B-Line/RB_35_B.jpg",
+        "images": ["../assets/brands%20items/ALFRA/B-Line/RB_35_B.jpg"],
         "badge": ""
     },
     {
@@ -78,7 +85,8 @@
         "brand": "Alfra",
         "type": "Drilling and Lifting, Magnetic Drill",
         "description": "High-performance magnetic base core drill for industrial drilling applications",
-        "image": "",
+        "image": "../assets/brands%20items/ALFRA/B-Line/RB_130_B.jpg",
+        "images": ["../assets/brands%20items/ALFRA/B-Line/RB_130_B.jpg"],
         "badge": ""
     },
     {
@@ -88,7 +96,8 @@
         "brand": "Alfra",
         "type": "Drilling and Lifting, Magnetic Drill",
         "description": "Professional-grade magnetic base core drill with precision engineering",
-        "image": "",
+        "image": "../assets/brands%20items/ALFRA/RL-E-Line/RB-100RL-E.jpg",
+        "images": ["../assets/brands%20items/ALFRA/RL-E-Line/RB-100RL-E.jpg"],
         "badge": ""
     },
     {
@@ -98,7 +107,8 @@
         "brand": "Alfra",
         "type": "Drilling and Lifting, Magnetic Drill",
         "description": "Advanced magnetic base core drill for demanding applications",
-        "image": "",
+        "image": "../assets/brands%20items/ALFRA/X-Line/RB_50_X.jpg",
+        "images": ["../assets/brands%20items/ALFRA/X-Line/RB_50_X.jpg"],
         "badge": ""
     },
     {
@@ -108,7 +118,8 @@
         "brand": "Alfra",
         "type": "Drilling and Lifting, Magnetic Drill",
         "description": "Heavy-duty magnetic base core drill for precision metalworking",
-        "image": "",
+        "image": "../assets/brands%20items/ALFRA/X-Line/RB_50_X.jpg",
+        "images": ["../assets/brands%20items/ALFRA/X-Line/RB_50_X.jpg"],
         "badge": ""
     },
     {
@@ -118,7 +129,8 @@
         "brand": "Alfra",
         "type": "Drilling and Lifting, Magnetic Drill",
         "description": "Industrial-strength magnetic base core drill for large-scale operations",
-        "image": "",
+        "image": "../assets/brands%20items/ALFRA/X-Line/RB_80_X.jpg",
+        "images": ["../assets/brands%20items/ALFRA/X-Line/RB_80_X.jpg"],
         "badge": ""
     },
     {
@@ -128,7 +140,8 @@
         "brand": "Alfra",
         "type": "Drilling and Lifting, Magnetic Drill",
         "description": "Magnetic base core drill with direct Weldon shank for enhanced performance",
-        "image": "",
+        "image": "../assets/brands%20items/ALFRA/SP-Line/RB_35_SP.jpg",
+        "images": ["../assets/brands%20items/ALFRA/SP-Line/RB_35_SP.jpg"],
         "badge": ""
     },
     {
@@ -138,7 +151,8 @@
         "brand": "Alfra",
         "type": "Drilling and Lifting, Magnetic Drill",
         "description": "Professional magnetic base core drill with superior drilling capability",
-        "image": "",
+        "image": "../assets/brands%20items/ALFRA/SP-Line/RB_50_SP.jpg",
+        "images": ["../assets/brands%20items/ALFRA/SP-Line/RB_50_SP.jpg"],
         "badge": ""
     },
     {
@@ -148,7 +162,8 @@
         "brand": "Alfra",
         "type": "Drilling and Lifting, Magnetic Drill",
         "description": "Low profile design for confined space drilling operations with excellent precision",
-        "image": "",
+        "image": "../assets/brands%20items/ALFRA/X-Line/RB35_50_X%20Piccolo.jpg",
+        "images": ["../assets/brands%20items/ALFRA/X-Line/RB35_50_X%20Piccolo.jpg"],
         "badge": ""
     }
 ]

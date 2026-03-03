@@ -9,6 +9,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Docking%20Data%20Management/IntelliDox.jpg"
+        "image": "../assets/brands%20items/BW/BW%20IntelliDoX%201.jpg",
+        "images": ["../assets/brands%20items/BW/BW%20IntelliDoX%201.jpg"]
     }
 ]

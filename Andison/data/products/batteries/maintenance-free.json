@@ -9,7 +9,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/MOTOLITE/Maintenance%20Free/Motolite%20Enduro.jpg"
+        "image": "../assets/brands%20items/MOTOLITE/Enduro.jpg",
+        "images": ["../assets/brands%20items/MOTOLITE/Enduro.jpg"]
     },
     {
         "id": "maintenance-free-2",
@@ -21,7 +22,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/MOTOLITE/Maintenance%20Free/Motolite%20Excel.jpg"
+        "image": "../assets/brands%20items/MOTOLITE/excel.png",
+        "images": ["../assets/brands%20items/MOTOLITE/excel.png"]
     },
     {
         "id": "maintenance-free-3",
@@ -33,6 +35,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/MOTOLITE/Maintenance%20Free/Motolite%20Gold.jpg"
+        "image": "../assets/brands%20items/MOTOLITE/Gold.jpg",
+        "images": ["../assets/brands%20items/MOTOLITE/Gold.jpg"]
     }
 ]

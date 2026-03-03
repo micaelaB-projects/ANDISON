@@ -9,7 +9,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "../../assets/brands%20items/ALFRA/X-Line/RB_50_X.jpg",
+        "images": ["../../assets/brands%20items/ALFRA/X-Line/RB_50_X.jpg"]
     },
     {
         "id": "rbx-line-series-2",
@@ -21,7 +22,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "../../assets/brands%20items/ALFRA/X-Line/RB_80_X.jpg",
+        "images": ["../../assets/brands%20items/ALFRA/X-Line/RB_80_X.jpg"]
     },
     {
         "id": "rbx-line-series-3",
@@ -33,6 +35,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": ""
+        "image": "../../assets/brands%20items/ALFRA/X-Line/RB_80_X.jpg",
+        "images": ["../../assets/brands%20items/ALFRA/X-Line/RB_80_X.jpg"]
     }
 ]

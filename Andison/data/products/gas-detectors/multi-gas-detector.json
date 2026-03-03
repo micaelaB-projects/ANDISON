@@ -9,7 +9,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Multi%20Gas%20Detector/BW%20Clip%204.jpg"
+        "image": "../assets/brands%20items/BW/BW%20Clip4%20-%201.jpg",
+        "images": ["../assets/brands%20items/BW/BW%20Clip4%20-%201.jpg"]
     },
     {
         "id": "multi-gas-detector-2",
@@ -21,7 +22,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Multi%20Gas%20Detector/BW%20Microclip%20XL.jpg"
+        "image": "../assets/brands%20items/BW/BW%20MicroClip%20XL%201.jpg",
+        "images": ["../assets/brands%20items/BW/BW%20MicroClip%20XL%201.jpg"]
     },
     {
         "id": "multi-gas-detector-3",
@@ -33,7 +35,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Multi%20Gas%20Detector/BW%20MicroClip%20X3.jpg"
+        "image": "../assets/brands%20items/BW/BW%20MicroClip%20X3%20-%201.jpg",
+        "images": ["../assets/brands%20items/BW/BW%20MicroClip%20X3%20-%201.jpg"]
     },
     {
         "id": "multi-gas-detector-4",
@@ -45,7 +48,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Multi%20Gas%20Detector/BW%20Max%20XT%20II.jpg"
+        "image": "../assets/brands%20items/BW/BW%20Max%20XT%20II%201.jpg",
+        "images": ["../assets/brands%20items/BW/BW%20Max%20XT%20II%201.jpg"]
     },
     {
         "id": "multi-gas-detector-5",
@@ -57,7 +61,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Multi%20Gas%20Detector/BW%20Icon.jpg"
+        "image": "../assets/brands%20items/BW/BW%20Icon%201.jpg",
+        "images": ["../assets/brands%20items/BW/BW%20Icon%201.jpg"]
     },
     {
         "id": "multi-gas-detector-6",
@@ -69,7 +74,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Multi%20Gas%20Detector/BW%20Flex.jpg"
+        "image": "../assets/brands%20items/BW/BW%20Flex%204%20-%201.jpg",
+        "images": ["../assets/brands%20items/BW/BW%20Flex%204%20-%201.jpg"]
     },
     {
         "id": "multi-gas-detector-7",
@@ -81,7 +87,8 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Multi%20Gas%20Detector/BW%20Ultra.jpg"
+        "image": "../assets/brands%20items/BW/BW%20Ultra%201.jpg",
+        "images": ["../assets/brands%20items/BW/BW%20Ultra%201.jpg"]
     },
     {
         "id": "multi-gas-detector-8",
@@ -93,6 +100,7 @@
         "badge": "",
         "price": "",
         "specs": "",
-        "image": "assets/brands%20items/BW%20TECHNOLOGIES/Multi%20Gas%20Detector/BW%20Rigrat.jpg"
+        "image": "../assets/brands%20items/BW/BW%20RigRat%201.jpg",
+        "images": ["../assets/brands%20items/BW/BW%20RigRat%201.jpg"]
     }
 ]

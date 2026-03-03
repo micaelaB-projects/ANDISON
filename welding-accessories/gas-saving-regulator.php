@@ -3919,6 +3919,10 @@ $category_description = $current_category['description'] ?? 'Discover our compre
 
 
 <script>var CATEGORY_NAME = '<?php echo htmlspecialchars($category_name ?? 'Gas Saving Regulator', ENT_QUOTES); ?>';</script>
+<script>
+// Set the path to load product details from master welding accessories JSON
+var MODAL_JSON_PATH = '/ANDISON/Andison/data/products/welding-accessories/welding-accessories-all.json';
+</script>
 <?php require_once __DIR__ . '/../includes/product_modal.php'; ?>
 
 <script>
