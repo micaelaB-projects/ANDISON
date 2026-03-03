@@ -838,7 +838,7 @@ if (!$current_category) {
         .product-image {
             width: 120px;
             height: 100px;
-            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            background: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -855,7 +855,7 @@ if (!$current_category) {
         }
 
         .product-card:hover .product-image {
-            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            background: #ffffff;
         }
 
         .product-image img {
@@ -4129,111 +4129,6 @@ if (!$current_category) {
                 }
             });
 
-            // Modal inquiry button
-            document.getElementById('modalInquiryBtn').addEventListener('click', function() {
-                if(currentProduct) {
-                    var items = JSON.parse(localStorage.getItem('inquiryItems') || '[]');
-                    var found = items.find(function(i) { 
-                        return i.model === currentProduct.model && i.name === currentProduct.name; 
-                    });
-                    
-                    if(!found) {
-                        var product = {
-                            model: currentProduct.model,
-                            name: currentProduct.name,
-                            description: currentProduct.description,
-                            qty: 1,
-                            timestamp: new Date().getTime()
-                        };
-                        items.push(product);
-                        localStorage.setItem('inquiryItems', JSON.stringify(items));
-                        
-                        // Show success message
-                        this.innerHTML = '<i class="bi bi-check-circle"></i> Added ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“';
-                        this.style.background = 'linear-gradient(135deg, #10B981 0%, #059669 100%)';
-                        
-                        // Dispatch event to update badge
-                        window.dispatchEvent(new Event('inquiryItemsUpdated'));
-                        
-                        // Reset button after 1.5 seconds and close modal
-                        var self = this;
-                        setTimeout(function() {
-                            self.innerHTML = '<i class="bi bi-plus-circle"></i> ADD TO INQUIRY LIST';
-                            self.style.background = '';
-                            closeModal();
-                        }, 1500);
-                    } else {
-                        // Already added
-                        this.innerHTML = '<i class="bi bi-check-circle"></i> Already in List ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“';
-                        this.style.background = 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)';
-                        
-                        var self = this;
-                        setTimeout(function() {
-                            self.innerHTML = '<i class="bi bi-plus-circle"></i> ADD TO INQUIRY LIST';
-                            self.style.background = '';
-                        }, 1500);
-                    }
-                }
-            });
-
-            // Regular product card buttons
-            document.querySelectorAll('.product-grid .add-to-inquiry').forEach(function(btn) {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    
-                    var model = this.getAttribute('data-model') || '';
-                    var brand = this.getAttribute('data-brand') || '';
-                    var card = this.closest('.product-card');
-                    var h4el = card ? card.querySelector('h4') : null;
-                    var descel = card ? card.querySelector('.product-description') : null;
-                    var name = (h4el ? h4el.textContent.trim() : '') || this.getAttribute('data-type') || model;
-                    var description = (descel ? descel.textContent.trim() : '') || this.getAttribute('data-type') || 'Industrial product';
-                    
-                    var items = JSON.parse(localStorage.getItem('inquiryItems') || '[]');
-                    var found = items.find(function(i) { 
-                        return i.model === model && i.name === name; 
-                    });
-                    
-                    if(!found) {
-                        var product = {
-                            model: model,
-                            name: name,
-                            description: description,
-                            brand: brand,
-                            qty: 1,
-                            timestamp: new Date().getTime()
-                        };
-                        items.push(product);
-                        localStorage.setItem('inquiryItems', JSON.stringify(items));
-                        
-                        // Show success animation
-                        var originalText = this.innerHTML;
-                        this.innerHTML = '<i class="bi bi-check-circle"></i> Added ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“';
-                        this.style.background = 'linear-gradient(135deg, #10B981 0%, #059669 100%)';
-                        
-                        // Dispatch event to update badge
-                        window.dispatchEvent(new Event('inquiryItemsUpdated'));
-                        
-                        // Reset after 1.5 seconds
-                        var self = this;
-                        setTimeout(function() {
-                            self.innerHTML = originalText;
-                            self.style.background = '';
-                        }, 1500);
-                    } else {
-                        // Already added
-                        var originalText = this.innerHTML;
-                        this.innerHTML = '<i class="bi bi-check-circle"></i> Added ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“';
-                        this.style.background = 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)';
-                        
-                        var self = this;
-                        setTimeout(function() {
-                            self.innerHTML = originalText;
-                            self.style.background = '';
-                        }, 1500);
-                    }
-                });
-            });
         });
     </script>
 

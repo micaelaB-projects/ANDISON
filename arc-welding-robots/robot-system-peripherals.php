@@ -838,7 +838,7 @@ if (!$current_category) {
         .product-image {
             width: 120px;
             height: 100px;
-            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            background: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -855,7 +855,7 @@ if (!$current_category) {
         }
 
         .product-card:hover .product-image {
-            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            background: #ffffff;
         }
 
         .product-image img {
@@ -4140,7 +4140,7 @@ if (!$current_category) {
                         localStorage.setItem('inquiryItems', JSON.stringify(items));
                         
                         // Show success message
-                        this.innerHTML = '<i class="bi bi-check-circle"></i> Added ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“';
+                        this.innerHTML = '<i class="bi bi-check-circle"></i> Added ✓';
                         this.style.background = 'linear-gradient(135deg, #10B981 0%, #059669 100%)';
                         
                         // Dispatch event to update badge
@@ -4155,7 +4155,7 @@ if (!$current_category) {
                         }, 1500);
                     } else {
                         // Already added
-                        this.innerHTML = '<i class="bi bi-check-circle"></i> Already in List ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“';
+                        this.innerHTML = '<i class="bi bi-check-circle"></i> Already in List ✓';
                         this.style.background = 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)';
                         
                         var self = this;
@@ -4199,7 +4199,7 @@ if (!$current_category) {
                         
                         // Show success animation
                         var originalText = this.innerHTML;
-                        this.innerHTML = '<i class="bi bi-check-circle"></i> Added ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“';
+                        this.innerHTML = '<i class="bi bi-check-circle"></i> Added ✓';
                         this.style.background = 'linear-gradient(135deg, #10B981 0%, #059669 100%)';
                         
                         // Dispatch event to update badge
@@ -4214,7 +4214,7 @@ if (!$current_category) {
                     } else {
                         // Already added
                         var originalText = this.innerHTML;
-                        this.innerHTML = '<i class="bi bi-check-circle"></i> Added ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“';
+                        this.innerHTML = '<i class="bi bi-check-circle"></i> Added ✓';
                         this.style.background = 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)';
                         
                         var self = this;
