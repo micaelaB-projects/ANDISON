@@ -3994,6 +3994,7 @@ if (!$current_category) {
                             name: name,
                             description: description,
                             brand: brand,
+                            image: card ? card.getAttribute('data-image') || '' : '',
                             qty: 1,
                             timestamp: new Date().getTime()
                         };

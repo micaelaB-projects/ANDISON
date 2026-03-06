@@ -1,925 +1,723 @@
 {
-    "Panasonic Connect": {
-        "description": "Leading manufacturer of welding robots and automated welding systems.",
-        "products": [
-            {
-                "product_name": "",
-                "model": "YD-350KR2",
-                "type": "Welding Robot",
-                "price": "",
-                "badge": "Available",
-                "description": "",
-                "specifications": "",
-                "image": "../assets/uploads/products/yd-350kr2_20260205_083232.jpg"
-            },
-            {
-                "model": "YD-500KR2",
-                "type": "Welding Robot",
-                "badge": "",
-                "image": "assets/brands%20items/PANASONIC/CO2,MAG,MIG Welding Machine/YD-500KR2.jpg"
-            },
-            {
-                "model": "YD-600KH2",
-                "type": "Welding Robot",
-                "badge": "",
-                "image": "assets/brands%20items/PANASONIC/CO2,MAG,MIG Welding Machine/YD-600KH2.jpg"
-            },
-            {
-                "model": "YD-350RX1",
-                "type": "Welding Robot",
-                "badge": "",
-                "image": "assets/brands%20items/PANASONIC/CO2,MAG,MIG Welding Machine/YD-350RX1.jpg"
-            },
-            {
-                "model": "YD-350GR3",
-                "type": "Welding Robot",
-                "badge": "",
-                "image": "assets/brands%20items/PANASONIC/CO2,MAG,MIG Welding Machine/YD-350GR3.jpeg"
-            },
-            {
-                "model": "YD-350VR1",
-                "type": "Welding Robot",
-                "badge": "",
-                "image": "assets/brands%20items/PANASONIC/CO2,MAG,MIG Welding Machine/YD-350VR1.jpg"
-            },
-            {
-                "model": "YD-400VP1",
-                "type": "Welding Robot",
-                "badge": "",
-                "image": "assets/brands%20items/PANASONIC/CO2,MAG,MIG Welding Machine/YD-400VP1.png"
-            },
-            {
-                "model": "YD-350GZ4",
-                "type": "Welding Robot",
-                "badge": "",
-                "image": "assets/brands%20items/PANASONIC/CO2,MAG,MIG Welding Machine/YD-350GZ4.jpeg"
-            },
-            {
-                "model": "YD-200BL3",
-                "type": "Welding Robot",
-                "badge": "",
-                "image": "assets/brands%20items/PANASONIC/TIG Welding Machine/YC-200BL3.jpeg"
-            },
-            {
-                "model": "YD-300BZ3",
-                "type": "Welding Robot",
-                "badge": "",
-                "image": "assets/brands%20items/PANASONIC/TIG Welding Machine/YC-300BZ3.jpeg"
-            },
-            {
-                "model": "YD-300BP4",
-                "type": "Welding Robot",
-                "badge": "",
-                "image": "assets/brands%20items/PANASONIC/TIG Welding Machine/YC-300BP4.png"
-            },
-            {
-                "model": "YD-500BP4",
-                "type": "Welding Robot",
-                "badge": "",
-                "image": "assets/brands%20items/PANASONIC/TIG Welding Machine/YC-500BP4.jpg"
-            },
-            {
-                "model": "YD-300WX4",
-                "type": "Welding Robot",
-                "badge": "",
-                "image": "assets/brands%20items/PANASONIC/TIG Welding Machine/YC-300WX4.jpg"
-            },
-            {
-                "model": "YP-060PF3",
-                "type": "Positioner",
-                "badge": "",
-                "image": "assets/brands%20items/PANASONIC/Arc Welding Robot/Panasonic Positioner 1.webp"
-            },
-            {
-                "model": "YP-080PF3",
-                "type": "Positioner",
-                "badge": "",
-                "image": "assets/brands%20items/PANASONIC/Arc Welding Robot/Panasonic Positioner 2.webp"
-            },
-            {
-                "model": "YP-130PF1",
-                "type": "Positioner",
-                "badge": "",
-                "image": "assets/brands%20items/PANASONIC/Arc Welding Robot/Panasonic Positioner 3.jpg"
-            },
-            {
-                "model": "TM/TL G3 Series",
-                "type": "Welding System",
-                "badge": "",
-                "image": "assets/brands%20items/PANASONIC/Arc Welding Robot/Panasonic TAWERS WG3 Welding Robot.jpg"
-            },
-            {
-                "model": "TM/TL TAWERS Series",
-                "type": "Welding System",
-                "badge": "",
-                "image": "assets/brands%20items/PANASONIC/Arc Welding Robot/Panasonic TAWERS SAWP Welding Robot.jpg"
-            },
-            {
-                "model": "Super Active TAWERS",
-                "type": "Welding System",
-                "badge": "",
-                "image": "assets/brands%20items/PANASONIC/Arc Welding Robot/Panasonic TAWERS SAWP Welding Robot.jpg"
-            },
-            {
-                "model": "TM/TL G4 Series",
-                "type": "Welding System",
-                "badge": "",
-                "image": "assets/brands%20items/PANASONIC/Arc Welding Robot/Panasonic TAWERS WG4 Welding Robot.jpg"
-            },
-            {
-                "model": "TM/TL TAWERS WG4 Series",
-                "type": "Welding System",
-                "badge": "",
-                "image": "assets/brands%20items/PANASONIC/Arc Welding Robot/Panasonic TAWERS WG4 Welding Robot.jpg"
-            },
-            {
-                "model": "Active TAWERS 4 AWP4-WG4 Series",
-                "type": "Welding System",
-                "badge": "",
-                "image": "assets/brands%20items/PANASONIC/Arc Welding Robot/Panasonic TAWERS AWP4 Welding Robot - 1.png"
-            },
-            {
-                "model": "Tig Welding Robot",
-                "type": "TIG Robot",
-                "badge": "",
-                "image": "assets/brands%20items/PANASONIC/Arc Welding Robot/Panasonic Tig Welding Robot 1.png"
-            },
-            {
-                "model": "Plasma Cutting Robot",
-                "type": "Cutting Robot",
-                "badge": "",
-                "image": "assets/brands%20items/PANASONIC/Arc Welding Robot/Panasonic Plasma Cutting Robot 1.jpg"
-            },
-            {
-                "model": "Handling Robot for Welding",
-                "type": "Handling Robot",
-                "badge": "",
-                "image": "assets/brands%20items/PANASONIC/Arc Welding Robot/Panasonic G3 Welding Robot.jpg"
-            },
-            {
-                "model": "VPRS",
-                "type": "Software/System",
-                "badge": "",
-                "image": ""
-            },
-            {
-                "model": "iWNB",
-                "type": "Software/System",
-                "badge": "",
-                "image": ""
-            },
-            {
-                "model": "i-Reporter",
-                "type": "Software/System",
-                "badge": "",
-                "image": ""
-            },
-            {
-                "model": "DTPS 3",
-                "type": "Software/System",
-                "badge": "",
-                "description": "",
-                "image": ""
-            }
-        ]
-    },
-    "BW Technologies": {
-        "description": "A manufacturer of gas detection instrumentation intended to protect personnel and facilities around the world.",
-        "products": [
-            {
-                "model": "BW Clip",
-                "type": "Gas Equipment",
-                "badge": "",
-                "image": "assets/brands%20items/BW/BW Clip 1.jpg"
-            },
-            {
-                "model": "BW Solo",
-                "type": "Gas Equipment",
-                "badge": "",
-                "image": "assets/brands%20items/BW/BW Solo 1.jpg"
-            },
-            {
-                "model": "BW Clip 4 - Low Maintenance",
-                "type": "Gas Equipment",
-                "badge": " ",
-                "image": "assets/brands%20items/BW/BW Clip4 - 1.jpg"
-            },
-            {
-                "model": "BW Microclip XL",
-                "type": "Gas Equipment",
-                "badge": "",
-                "image": "assets/brands%20items/BW/BW MicroClip XL 1.jpg"
-            },
-            {
-                "model": "BW Microclip X3",
-                "type": "Gas Equipment",
-                "badge": "",
-                "image": "assets/brands%20items/BW/BW MicroClip X3 - 2.jpg"
-            },
-            {
-                "model": "BW Max XT II",
-                "type": "Gas Equipment",
-                "badge": "",
-                "image": "assets/brands%20items/BW/BW Max XT II 1.jpg"
-            },
-            {
-                "model": "BW Icon",
-                "type": "Gas Equipment",
-                "badge": "",
-                "image": "assets/brands%20items/BW/BW Icon 1.jpg"
-            },
-            {
-                "model": "BW Flex",
-                "type": "Gas Equipment",
-                "badge": "",
-                "image": "assets/brands%20items/BW/BW Flex 4 - 1.jpg"
-            },
-            {
-                "model": "BW Ultra",
-                "type": "Gas Equipment",
-                "badge": "",
-                "image": "assets/brands%20items/BW/BW Ultra 1.jpg"
-            },
-            {
-                "model": "BW Rigrat",
-                "type": "Gas Equipment",
-                "badge": "",
-                "image": "assets/brands%20items/BW/BW RigRat 1.jpg"
-            },
-            {
-                "model": "IntelliDoX",
-                "type": "System",
-                "badge": "",
-                "image": "assets/brands%20items/BW/BW IntelliDoX 1.jpg"
-            },
-            {
-                "model": "Calibration Gas",
-                "type": "Accessory",
-                "badge": "",
-                "image": "assets/brands%20items/BW/calibration gas 1.jpg"
-            },
-            {
-                "model": "Gas Regulator",
-                "type": "Accessory",
-                "badge": "",
-                "image": "assets/brands%20items/BW/reg-df-1 gas regulator.jpg"
-            }
-        ],
-        "features": [
-            "Superior weld quality",
-            "Wide range of applications",
-            "Consistent performance",
-            "Internationally certified"
-        ]
-    },
-    "Weldcraft": {
-        "description": "Professional TIG welding torches and accessories.",
-        "products": [
-            "TIG Torches",
-            "Torch Bodies",
-            "Consumables",
-            "Accessories"
-        ],
-        "features": [
-            "Ergonomic design",
-            "Durable construction",
-            "Easy maintenance",
-            "Compatible with major brands"
-        ]
-    },
-    "Soyer": {
-        "description": "Professional welding equipment and accessories.",
-        "products": [
-            {
-                "model": "BMAS BN",
-                "type": "Welding Equipment",
-                "badge": "",
-                "image": "assets/brands%20items/SOYER/BMS-8N.png"
-            },
-            {
-                "model": "BMK - B",
-                "type": "Welding Equipment",
-                "badge": "",
-                "image": "assets/brands%20items/SOYER/BMK-8i.png"
-            },
-            {
-                "model": "BMK 12W2",
-                "type": "Welding Equipment",
-                "badge": "",
-                "image": "assets/brands%20items/SOYER/BMK-12W.png"
-            }
-        ]
-    },
-    "Alfra": {
-        "description": "High-performance magnetic base core drills and annular cutters.",
-        "products": [
-            {
-                "model": "Alfra V-Line Rotabroach V 32 Low Profile Magnetic Base Core Drill",
-                "type": "Core Drill",
-                "badge": "",
-                "image": "assets/brands%20items/ALFRA/S-Line/RB_V32 - 1.jpg"
-            },
-            {
-                "model": "Alfra B-Line Rotabroach RB 35/XE Magnetic Base Core Drill",
-                "type": "Core Drill",
-                "badge": "",
-                "image": "assets/brands%20items/ALFRA/B-Line/RB_35_B.jpg"
-            },
-            {
-                "model": "Alfra B-Line Rotabroach RB 130 Magnetic Base Core Drill",
-                "type": "Core Drill",
-                "badge": "",
-                "image": "assets/brands%20items/ALFRA/B-Line/RB_130_B.jpg"
-            },
-            {
-                "model": "Alfra RL-E Line Rotabroach RB 60 RL-E Magnetic Base Core Drill",
-                "type": "Core Drill",
-                "badge": "",
-                "image": "assets/brands%20items/ALFRA/RL-E-Line/RB60RL-E - 1.jpg"
-            },
-            {
-                "model": "Alfra RL-E Line Rotabroach RB 100 RL-E Magnetic Base Core Drill",
-                "type": "Core Drill",
-                "badge": "",
-                "image": "assets/brands%20items/ALFRA/RL-E-Line/RB-100RL-E.jpg"
-            },
-            {
-                "model": "Alfra Xcl Line Rotabroach RB 35 SP Magnetic Base Core Drill",
-                "type": "Core Drill",
-                "badge": "",
-                "image": "assets/brands%20items/ALFRA/SP-Line/RB_35_SP.jpg"
-            },
-            {
-                "model": "Alfra X-Line Rotabroach RB 35 Magnetic Base Core Drill",
-                "type": "Core Drill",
-                "badge": "",
-                "image": "assets/brands%20items/ALFRA/B-Line/RB_35_B.jpg"
-            },
-            {
-                "model": "Alfra X-Line Rotabroach RB 35 X Magnetic Base Core Drill",
-                "type": "Core Drill",
-                "badge": "",
-                "image": "assets/brands%20items/ALFRA/X-Line/RB35_50_X Piccolo.jpg"
-            },
-            {
-                "model": "Alfra X-Line Rotabroach RB 50 X Magnetic Base Core Drill",
-                "type": "Core Drill",
-                "badge": "",
-                "image": "assets/brands%20items/ALFRA/X-Line/RB_50_X.jpg"
-            },
-            {
-                "model": "Alfra X-Line Rotabroach RB 80 X Magnetic Base Core Drill",
-                "type": "Core Drill",
-                "badge": "",
-                "image": "assets/brands%20items/ALFRA/X-Line/RB_80_X.jpg"
-            },
-            {
-                "model": "Alfra X-Line Rotabroach RB 35/50 X Magnetic Base Core Drill",
-                "type": "Core Drill",
-                "badge": "",
-                "image": "assets/brands%20items/ALFRA/X-Line/RB35_50_X Piccolo.jpg"
-            },
-            {
-                "model": "Alfra HSS CO Annular",
-                "type": "Annular Cutter",
-                "badge": "",
-                "image": "assets/brands%20items/ALFRA/Annular Cutter/HSS Co - 1.jpg"
-            },
-            {
-                "model": "Alfra TCT Annular",
-                "type": "Annular Cutter",
-                "badge": "",
-                "image": "assets/brands%20items/ALFRA/Annular Cutter/TCT - 1.jpg"
-            }
-        ]
-    },
     "ACES": {
-        "description": "Premium welding safety equipment and protective gear.",
+        "description": "Premium welding safety and face protection equipment.",
         "products": [
             {
-                "model": "Aces 2118-1AF Clear",
-                "type": "Safety Equipment",
+                "id": 1061,
+                "category_id": "protection",
+                "subcategory_id": "welding-head-face-protection",
+                "brand": "ACES",
+                "product_name": "Aces A388 Polycarbonate Clear Visor",
+                "model": "A388",
+                "type": "Welding Head and Face Protection",
                 "badge": "",
-                "image": "assets/brands%20items/ACES/ACES-2118-1AF.jpg"
+                "description": "Clear polycarbonate visor for welding head protection",
+                "specifications": "",
+                "price": "",
+                "image": "assets/brands%20items/ACES/A388.jpg",
+                "created_at": "2026-03-05T08:22:58.592017+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "model": "Aces 2118-4AF Gray",
-                "type": "Safety Equipment",
+                "id": 1062,
+                "category_id": "protection",
+                "subcategory_id": "welding-head-face-protection",
+                "brand": "ACES",
+                "product_name": "Aces A366 Faceshield/Hard Hat Attachment",
+                "model": "A366",
+                "type": "Welding Head and Face Protection",
                 "badge": "",
-                "image": "assets/brands%20items/ACES/ACES-2118-4AF%20GREY.jpg"
+                "description": "Faceshield with hard hat attachment for head and face protection",
+                "specifications": "",
+                "price": "",
+                "image": "assets/brands%20items/ACES/A366.jpg",
+                "created_at": "2026-03-05T08:22:58.592017+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "model": "Aces 250B",
+                "id": 1063,
+                "category_id": "protection",
+                "subcategory_id": "welding-head-face-protection",
+                "brand": "ACES",
+                "product_name": "Aces A288 Welding Helmet",
+                "model": "A288",
                 "type": "Welding Helmet",
                 "badge": "",
-                "image": "assets/brands%20items/ACES/A188.jpg"
+                "description": "Professional welding helmet for arc welding protection",
+                "specifications": "",
+                "price": "",
+                "image": "assets/brands%20items/ACES/A288.jpg",
+                "created_at": "2026-03-05T08:22:58.592017+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "model": "Aces A38B Poly-carbonate Clear Visor",
-                "type": "Visor",
-                "badge": "",
-                "image": "assets/brands%20items/ACES/A388.jpg"
-            },
-            {
-                "model": "Aces A366 Faceshield/Hard Hat Attachment",
-                "type": "Attachment",
-                "badge": "",
-                "image": "assets/brands%20items/ACES/A366.jpg"
-            },
-            {
-                "model": "Aces A28B Welding Helmet",
+                "id": 1064,
+                "category_id": "protection",
+                "subcategory_id": "welding-head-face-protection",
+                "brand": "ACES",
+                "product_name": "Aces A238 Welding Helmet w/ Mounting Adaptor",
+                "model": "A238",
                 "type": "Welding Helmet",
                 "badge": "",
-                "image": "assets/brands%20items/ACES/A288.jpg"
+                "description": "Welding helmet with mounting adaptor for easy attachment",
+                "specifications": "",
+                "price": "",
+                "image": "assets/brands%20items/ACES/A238.jpg",
+                "created_at": "2026-03-05T08:22:58.592017+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "model": "Aces A2538 Welding Helmet w/ Mounting Adaptor",
+                "id": 1065,
+                "category_id": "protection",
+                "subcategory_id": "welding-head-face-protection",
+                "brand": "ACES",
+                "product_name": "Aces A300 Headgear Assy",
+                "model": "A300",
+                "type": "Welding Head and Face Protection",
+                "badge": "",
+                "description": "Complete headgear assembly for welding operations",
+                "specifications": "",
+                "price": "",
+                "image": "assets/brands%20items/ACES/A300.jpg",
+                "created_at": "2026-03-05T08:22:58.592017+00:00",
+                "sub_subcategory_id": null
+            },
+            {
+                "id": 1066,
+                "category_id": "welding-accessories",
+                "subcategory_id": "welding-head-and-face-protection",
+                "brand": "ACES",
+                "product_name": "Aces A388 Polycarbonate Clear Visor",
+                "model": "A388",
+                "type": "Welding Head and Face Protection",
+                "badge": "",
+                "description": "Clear polycarbonate visor for welding helmets providing excellent visibility and impact protection",
+                "specifications": "",
+                "price": "",
+                "image": "andison/assets/brands%20items/ACES/A388.jpg",
+                "created_at": "2026-03-05T08:22:58.592017+00:00",
+                "sub_subcategory_id": null
+            },
+            {
+                "id": 1067,
+                "category_id": "welding-accessories",
+                "subcategory_id": "welding-head-and-face-protection",
+                "brand": "ACES",
+                "product_name": "Aces A366 Hemispherical Hard Hat Attachment",
+                "model": "A366",
+                "type": "Welding Head and Face Protection",
+                "badge": "",
+                "description": "Hemispherical hard hat attachment for secure mounting and enhanced head protection",
+                "specifications": "",
+                "price": "",
+                "image": "andison/assets/brands%20items/ACES/A366.jpg",
+                "created_at": "2026-03-05T08:22:58.592017+00:00",
+                "sub_subcategory_id": null
+            },
+            {
+                "id": 1068,
+                "category_id": "welding-accessories",
+                "subcategory_id": "welding-head-and-face-protection",
+                "brand": "ACES",
+                "product_name": "Aces A288 Welding Helmet",
+                "model": "A288",
+                "type": "Welding Head and Face Protection",
+                "badge": "",
+                "description": "Professional welding helmet with superior protection and comfort for extended use",
+                "specifications": "",
+                "price": "",
+                "image": "andison/assets/brands%20items/ACES/A288.jpg",
+                "created_at": "2026-03-05T08:22:58.592017+00:00",
+                "sub_subcategory_id": null
+            },
+            {
+                "id": 1069,
+                "category_id": "welding-accessories",
+                "subcategory_id": "welding-head-and-face-protection",
+                "brand": "ACES",
+                "product_name": "Aces A238 Welding Helmet with Mounting Adaptor",
+                "model": "A238",
+                "type": "Welding Head and Face Protection",
+                "badge": "",
+                "description": "Welding helmet with mounting adaptor for flexible attachment options",
+                "specifications": "",
+                "price": "",
+                "image": "andison/assets/brands%20items/ACES/A238.jpg",
+                "created_at": "2026-03-05T08:22:58.592017+00:00",
+                "sub_subcategory_id": null
+            },
+            {
+                "id": 1070,
+                "category_id": "welding-accessories",
+                "subcategory_id": "welding-head-and-face-protection",
+                "brand": "ACES",
+                "product_name": "Aces A300 Headgear Assembly",
+                "model": "A300",
+                "type": "Welding Head and Face Protection",
+                "badge": "",
+                "description": "Complete headgear assembly for secure and comfortable welding protection",
+                "specifications": "",
+                "price": "",
+                "image": "andison/assets/brands%20items/ACES/A300.jpg",
+                "created_at": "2026-03-05T08:22:58.592017+00:00",
+                "sub_subcategory_id": null
+            },
+            {
+                "id": 1071,
+                "category_id": "protection",
+                "subcategory_id": "welding-head-face-protection",
+                "brand": "ACES",
+                "product_name": "Aces A388 Polycarbonate Clear Visor",
+                "model": "A388",
+                "type": "Welding Head and Face Protection",
+                "badge": "",
+                "description": "Clear polycarbonate visor for welding head protection",
+                "specifications": "",
+                "price": "",
+                "image": "assets/brands%20items/ACES/A388.jpg",
+                "created_at": "2026-03-05T08:22:58.592017+00:00",
+                "sub_subcategory_id": null
+            },
+            {
+                "id": 1072,
+                "category_id": "protection",
+                "subcategory_id": "welding-head-face-protection",
+                "brand": "ACES",
+                "product_name": "Aces A366 Faceshield/Hard Hat Attachment",
+                "model": "A366",
+                "type": "Welding Head and Face Protection",
+                "badge": "",
+                "description": "Faceshield with hard hat attachment for head and face protection",
+                "specifications": "",
+                "price": "",
+                "image": "assets/brands%20items/ACES/A366.jpg",
+                "created_at": "2026-03-05T08:22:58.592017+00:00",
+                "sub_subcategory_id": null
+            },
+            {
+                "id": 1073,
+                "category_id": "protection",
+                "subcategory_id": "welding-head-face-protection",
+                "brand": "ACES",
+                "product_name": "Aces A288 Welding Helmet",
+                "model": "A288",
                 "type": "Welding Helmet",
                 "badge": "",
-                "image": "assets/brands%20items/ACES/A238.jpg"
-            },
-            {
-                "model": "Aces Headgear w/ Polycarbonate Clear Visor",
-                "type": "Safety Equipment",
-                "badge": "",
-                "image": "assets/brands%20items/ACES/A300.jpg"
-            }
-        ]
-    },
-    "UVEX": {
-        "description": "Professional eye protection and safety equipment.",
-        "products": [
-            {
-                "model": "UVEX i VO",
-                "type": "Safety Glasses",
-                "badge": "",
-                "image": "assets/brands%20items/UVEX/I-VO_9160.265 Clear.jpg"
-            },
-            {
-                "model": "UVEX Ultra Vision",
-                "type": "Safety Glasses",
-                "badge": "",
-                "image": "assets/brands%20items/UVEX/Ultra Vision.jpg"
-            },
-            {
-                "model": "UVEX Ultrasonic",
-                "type": "Safety Glasses",
-                "badge": "",
-                "image": "assets/brands%20items/UVEX/Ultrasonic.jpg"
-            },
-            {
-                "model": "Uvex OTG",
-                "type": "Safety Glasses",
-                "badge": "",
-                "image": "assets/brands%20items/UVEX/OTG.jpg"
-            },
-            {
-                "model": "Replacement Lens",
-                "type": "Accessory",
-                "badge": "",
-                "image": "assets/brands%20items/UVEX/I-VO_9160.520 Amber.jpg"
-            },
-            {
-                "model": "Uvex KHI Helmet Earmuff",
-                "type": "Safety Equipment",
-                "badge": "",
-                "image": "assets/brands%20items/UVEX/K1H Helmet Earmuff.jpg"
-            },
-            {
-                "model": "Uvex Whisper",
-                "type": "Safety Equipment",
-                "badge": "",
-                "image": "assets/brands%20items/UVEX/Whisper.jpg"
-            },
-            {
-                "model": "Uvex X-Fit",
-                "type": "Safety Equipment",
-                "badge": "",
-                "image": "assets/brands%20items/UVEX/X-Fit.jpg"
-            },
-            {
-                "model": "Uvex X-Fit w/ Cord",
-                "type": "Safety Equipment",
-                "badge": "",
-                "image": "assets/brands%20items/UVEX/X-Fit with cord.jpg"
-            },
-            {
-                "model": "Uvex Slv-Air 2200",
-                "type": "Respirator",
-                "badge": "",
-                "image": "assets/brands%20items/UVEX/Silv-Air 2200.jpg"
-            },
-            {
-                "model": "Uvex Slv-Air 2210",
-                "type": "Respirator",
-                "badge": "",
-                "image": "assets/brands%20items/UVEX/Silv-Air 2210.jpg"
-            }
-        ]
-    },
-    "ANSELL": {
-        "description": "Premium protective gloves for industrial applications.",
-        "products": [
-            {
-                "model": "Alphatec-Solvex 37-185",
-                "type": "Gloves",
-                "badge": "",
-                "image": "assets/brands%20items/ANSELL/Solvex 37-185_1.jpg"
-            },
-            {
-                "model": "Alphatec-Solvex 37-176",
-                "type": "Gloves",
-                "badge": "",
-                "image": "assets/brands%20items/ANSELL/Solvex 37-176_1.png"
-            },
-            {
-                "model": "Hyflex 11-724",
-                "type": "Gloves",
-                "badge": "",
-                "image": "assets/brands%20items/ANSELL/Hyflex 11-724 - 1.jpg"
-            },
-            {
-                "model": "Hyflex 11-735",
-                "type": "Gloves",
-                "badge": "",
-                "image": "assets/brands%20items/ANSELL/Hyflex 11-735 - 1.jpg"
-            },
-            {
-                "model": "Edge 48-126",
-                "type": "Gloves",
-                "badge": "",
-                "image": "assets/brands%20items/ANSELL/Edge 48-126 - 1.png"
-            },
-            {
-                "model": "Edge 48-128",
-                "type": "Gloves",
-                "badge": "",
-                "image": "assets/brands%20items/ANSELL/Edge 48-128 - 1.png"
-            },
-            {
-                "model": "Edge 48-706",
-                "type": "Gloves",
-                "badge": "",
-                "image": "assets/brands%20items/ANSELL/Edge 48-706 - 1.jpg"
-            },
-            {
-                "model": "Edge 82-133",
-                "type": "Gloves",
-                "badge": "",
-                "image": "assets/brands%20items/ANSELL/Edge_82-133_1.png"
-            },
-            {
-                "model": "TouchNTuff 92-670",
-                "type": "Gloves",
-                "badge": "",
-                "image": "assets/brands%20items/ANSELL/Touchntuff_92-670_1.png"
-            }
-        ]
-    },
-    "MICROGARD": {
-        "description": "High-quality protective clothing and coveralls.",
-        "products": [
-            {
-                "product_name": "",
-                "model": "Alphatec 1500 Plus Model 111",
-                "type": "Protective Suit",
-                "price": "",
-                "badge": "",
-                "description": "",
+                "description": "Professional welding helmet for arc welding protection",
                 "specifications": "",
-                "image": "../assets/uploads/products/alphatec_1500_plus_2_20260209_080910.png"
-            },
-            {
-                "product_name": "",
-                "model": "Alphatec 2000 Standard Model 111",
-                "type": "Protective Suit",
                 "price": "",
-                "badge": "",
-                "description": "",
-                "specifications": "",
-                "image": "../assets/uploads/products/alphatec_2000_standard_1_20260209_080621.png"
+                "image": "assets/brands%20items/ACES/A288.jpg",
+                "created_at": "2026-03-05T08:22:58.592017+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "product_name": "",
-                "model": "Alphatec 2300 Plus Model 132",
-                "type": "Protective Suit",
+                "id": 1074,
+                "category_id": "protection",
+                "subcategory_id": "welding-head-face-protection",
+                "brand": "ACES",
+                "product_name": "Aces A238 Welding Helmet w/ Mounting Adaptor",
+                "model": "A238",
+                "type": "Welding Helmet",
+                "badge": "",
+                "description": "Welding helmet with mounting adaptor for easy attachment",
+                "specifications": "",
                 "price": "",
-                "badge": "",
-                "description": "",
-                "specifications": "",
-                "image": "../assets/uploads/products/alphatec_2300_plus_1_20260209_080513.png"
+                "image": "assets/brands%20items/ACES/A238.jpg",
+                "created_at": "2026-03-05T08:22:58.592017+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "product_name": "",
-                "model": "Alphatec 3000 Model 111",
-                "type": "Protective Suit",
+                "id": 1075,
+                "category_id": "protection",
+                "subcategory_id": "welding-head-face-protection",
+                "brand": "ACES",
+                "product_name": "Aces A300 Headgear Assy",
+                "model": "A300",
+                "type": "Welding Head and Face Protection",
+                "badge": "",
+                "description": "Complete headgear assembly for welding operations",
+                "specifications": "",
                 "price": "",
-                "badge": "",
-                "description": "",
-                "specifications": "",
-                "image": "../assets/uploads/products/alphatec_3000_1_20260209_080528.png"
+                "image": "assets/brands%20items/ACES/A300.jpg",
+                "created_at": "2026-03-05T08:22:58.592017+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "product_name": "",
-                "model": "Alphatec 4000 Model 111",
-                "type": "Protective Suit",
+                "id": 1076,
+                "category_id": "welding-accessories",
+                "subcategory_id": "welding-head-and-face-protection",
+                "brand": "ACES",
+                "product_name": "Aces A388 Polycarbonate Clear Visor",
+                "model": "A388",
+                "type": "Welding Head and Face Protection",
+                "badge": "",
+                "description": "Clear polycarbonate visor for welding helmets providing excellent visibility and impact protection",
+                "specifications": "",
                 "price": "",
+                "image": "andison/assets/brands%20items/ACES/A388.jpg",
+                "created_at": "2026-03-05T08:22:58.592017+00:00",
+                "sub_subcategory_id": null
+            },
+            {
+                "id": 1077,
+                "category_id": "welding-accessories",
+                "subcategory_id": "welding-head-and-face-protection",
+                "brand": "ACES",
+                "product_name": "Aces A366 Hemispherical Hard Hat Attachment",
+                "model": "A366",
+                "type": "Welding Head and Face Protection",
                 "badge": "",
-                "description": "",
+                "description": "Hemispherical hard hat attachment for secure mounting and enhanced head protection",
                 "specifications": "",
-                "image": "../assets/uploads/products/alphatec_4000_1_20260209_080548.png"
+                "price": "",
+                "image": "andison/assets/brands%20items/ACES/A366.jpg",
+                "created_at": "2026-03-05T08:22:58.592017+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "model": "Alphatec 1500 FR Plus Model",
-                "type": "Protective Suit",
+                "id": 1078,
+                "category_id": "welding-accessories",
+                "subcategory_id": "welding-head-and-face-protection",
+                "brand": "ACES",
+                "product_name": "Aces A288 Welding Helmet",
+                "model": "A288",
+                "type": "Welding Head and Face Protection",
                 "badge": "",
-                "image": "assets/brands%20items/MICROGARD/Alphatec 1500 Plus FR 1.png"
-            }
-        ]
-    },
-    "WELDAS": {
-        "description": "Professional welding safety equipment and protective gear.",
-        "products": [
-            {
-                "model": "Weldas 10-0160",
-                "type": "Welding Safety",
-                "badge": "",
-                "image": "assets/brands%20items/WELDAS/10-0160 - 1.png"
+                "description": "Professional welding helmet with superior protection and comfort for extended use",
+                "specifications": "",
+                "price": "",
+                "image": "andison/assets/brands%20items/ACES/A288.jpg",
+                "created_at": "2026-03-05T08:22:58.592017+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "model": "Weldas 10-2101",
-                "type": "Welding Safety",
+                "id": 1079,
+                "category_id": "welding-accessories",
+                "subcategory_id": "welding-head-and-face-protection",
+                "brand": "ACES",
+                "product_name": "Aces A238 Welding Helmet with Mounting Adaptor",
+                "model": "A238",
+                "type": "Welding Head and Face Protection",
                 "badge": "",
-                "image": "assets/brands%20items/WELDAS/10-2101 - 1.jpg"
+                "description": "Welding helmet with mounting adaptor for flexible attachment options",
+                "specifications": "",
+                "price": "",
+                "image": "andison/assets/brands%20items/ACES/A238.jpg",
+                "created_at": "2026-03-05T08:22:58.592017+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "model": "Weldas 10-1023",
-                "type": "Welding Safety",
+                "id": 1080,
+                "category_id": "welding-accessories",
+                "subcategory_id": "welding-head-and-face-protection",
+                "brand": "ACES",
+                "product_name": "Aces A300 Headgear Assembly",
+                "model": "A300",
+                "type": "Welding Head and Face Protection",
                 "badge": "",
-                "image": "assets/brands%20items/WELDAS/10-1003 - 1.jpg"
+                "description": "Complete headgear assembly for secure and comfortable welding protection",
+                "specifications": "",
+                "price": "",
+                "image": "andison/assets/brands%20items/ACES/A300.jpg",
+                "created_at": "2026-03-05T08:22:58.592017+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "model": "Weldas 10-1009",
-                "type": "Welding Safety",
+                "id": 447,
+                "category_id": "protection",
+                "subcategory_id": "welding-head-face-protection",
+                "brand": "Aces",
+                "product_name": "Aces A388 Polycarbonate Clear Visor",
+                "model": "A388",
+                "type": "Welding Head and Face Protection",
                 "badge": "",
-                "image": "assets/brands%20items/WELDAS/10-1009 - 1.jpg"
+                "description": "Clear polycarbonate visor for welding head protection",
+                "specifications": "",
+                "price": "",
+                "image": "assets/brands%20items/ACES/A388.jpg",
+                "created_at": "2026-03-05T03:42:09.150726+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "model": "Weldas 10-1206",
-                "type": "Welding Safety",
+                "id": 448,
+                "category_id": "protection",
+                "subcategory_id": "welding-head-face-protection",
+                "brand": "Aces",
+                "product_name": "Aces A366 Faceshield/Hard Hat Attachment",
+                "model": "A366",
+                "type": "Welding Head and Face Protection",
                 "badge": "",
-                "image": "assets/brands%20items/WELDAS/10-1206 - 1.jpg"
+                "description": "Faceshield with hard hat attachment for head and face protection",
+                "specifications": "",
+                "price": "",
+                "image": "assets/brands%20items/ACES/A366.jpg",
+                "created_at": "2026-03-05T03:42:09.150726+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "model": "Weldas 10-2064",
-                "type": "Welding Safety",
+                "id": 449,
+                "category_id": "protection",
+                "subcategory_id": "welding-head-face-protection",
+                "brand": "Aces",
+                "product_name": "Aces A288 Welding Helmet",
+                "model": "A288",
+                "type": "Welding Helmet",
                 "badge": "",
-                "image": "assets/brands%20items/WELDAS/10-2064 - 1.jpg"
+                "description": "Professional welding helmet for arc welding protection",
+                "specifications": "",
+                "price": "",
+                "image": "assets/brands%20items/ACES/A288.jpg",
+                "created_at": "2026-03-05T03:42:09.150726+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "model": "Weldas Lava Shield Welding PVC Screen with Grommets",
-                "type": "Welding Screen",
+                "id": 450,
+                "category_id": "protection",
+                "subcategory_id": "welding-head-face-protection",
+                "brand": "Aces",
+                "product_name": "Aces A238 Welding Helmet w/ Mounting Adaptor",
+                "model": "A238",
+                "type": "Welding Helmet",
                 "badge": "",
-                "image": "assets/brands%20items/WELDAS/55-5466_Yellow Welding Screen.png"
+                "description": "Welding helmet with mounting adaptor for easy attachment",
+                "specifications": "",
+                "price": "",
+                "image": "assets/brands%20items/ACES/A238.jpg",
+                "created_at": "2026-03-05T03:42:09.150726+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "model": "Weldas PYTHON\u00aeAxx Tig Torch Cable Cover",
-                "type": "Cable Cover",
+                "id": 451,
+                "category_id": "protection",
+                "subcategory_id": "welding-head-face-protection",
+                "brand": "Aces",
+                "product_name": "Aces A300 Headgear Assy",
+                "model": "A300",
+                "type": "Welding Head and Face Protection",
                 "badge": "",
-                "image": "assets/brands%20items/WELDAS/44-4022-1.png"
-            }
-        ]
-    },
-    "TANAKA": {
-        "description": "Professional gas regulators and cutting equipment.",
-        "products": [
-            {
-                "model": "Tanaka Argon Flowmeter / Regulator F22AR with adapter",
-                "type": "Regulator",
-                "badge": "",
-                "image": "assets/brands%20items/TANAKA/TANAKA F22AR - 1.jpg"
+                "description": "Complete headgear assembly for welding operations",
+                "specifications": "",
+                "price": "",
+                "image": "assets/brands%20items/ACES/A300.jpg",
+                "created_at": "2026-03-05T03:42:09.150726+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "model": "Tanaka Straight Cutting Machine KT30X",
-                "type": "Cutting Machine",
+                "id": 505,
+                "category_id": "welding-accessories",
+                "subcategory_id": "welding-head-and-face-protection",
+                "brand": "Aces",
+                "product_name": "Aces A388 Polycarbonate Clear Visor",
+                "model": "A388",
+                "type": "Welding Head and Face Protection",
                 "badge": "",
-                "image": "assets/brands%20items/TANAKA/KT-5NX-1.jpg"
-            }
-        ]
-    },
-    "CHIYODA": {
-        "description": "Gas saving regulators and welding accessories.",
-        "products": [
-            {
-                "model": "Chiyoda Economical Gas Saving Regulator",
-                "type": "Regulator",
-                "badge": "",
-                "image": "assets/brands%20items/CHIYODA/H-AR, H-CO2 Type.jpg"
-            }
-        ]
-    },
-    "HARDWORKER": {
-        "description": "Welding tools and accessories.",
-        "products": [
-            {
-                "model": "Hardworker MIG Welding Plier",
-                "type": "Welding Tool",
-                "badge": "",
-                "image": "assets/brands%20items/HARDWORKER/MO-ZERO.8 - 1.jpg"
-            }
-        ]
-    },
-    "MAGNAFLUX": {
-        "description": "Non-destructive testing and inspection solutions.",
-        "products": [
-            {
-                "model": "Magnaflux Spotcheck Cleaner / Remover SKC-S",
-                "type": "Inspection",
-                "badge": "",
-                "image": "assets/brands%20items/MAGNAFLUX/SKC-S.webp"
+                "description": "Clear polycarbonate visor for welding helmets providing excellent visibility and impact protection",
+                "specifications": "",
+                "price": "",
+                "image": "andison/assets/brands%20items/ACES/A388.jpg",
+                "created_at": "2026-03-05T03:42:09.150726+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "model": "Magnaflux Spotcheck Developer Aerosol SKD-S2",
-                "type": "Inspection",
+                "id": 506,
+                "category_id": "welding-accessories",
+                "subcategory_id": "welding-head-and-face-protection",
+                "brand": "Aces",
+                "product_name": "Aces A366 Hemispherical Hard Hat Attachment",
+                "model": "A366",
+                "type": "Welding Head and Face Protection",
                 "badge": "",
-                "image": "assets/brands%20items/MAGNAFLUX/SKD-S2.jpg"
+                "description": "Hemispherical hard hat attachment for secure mounting and enhanced head protection",
+                "specifications": "",
+                "price": "",
+                "image": "andison/assets/brands%20items/ACES/A366.jpg",
+                "created_at": "2026-03-05T03:42:09.150726+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "model": "Magnaflux Spotcheck Penetrant Aerosol SKL-SP2",
-                "type": "Inspection",
+                "id": 507,
+                "category_id": "welding-accessories",
+                "subcategory_id": "welding-head-and-face-protection",
+                "brand": "Aces",
+                "product_name": "Aces A288 Welding Helmet",
+                "model": "A288",
+                "type": "Welding Head and Face Protection",
                 "badge": "",
-                "image": "assets/brands%20items/MAGNAFLUX/SKL-SP2.webp"
+                "description": "Professional welding helmet with superior protection and comfort for extended use",
+                "specifications": "",
+                "price": "",
+                "image": "andison/assets/brands%20items/ACES/A288.jpg",
+                "created_at": "2026-03-05T03:42:09.150726+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "model": "Magnaflux Prepared Bath Black Magnetic Ink Wet Method 7HF",
-                "type": "Inspection",
+                "id": 508,
+                "category_id": "welding-accessories",
+                "subcategory_id": "welding-head-and-face-protection",
+                "brand": "Aces",
+                "product_name": "Aces A238 Welding Helmet with Mounting Adaptor",
+                "model": "A238",
+                "type": "Welding Head and Face Protection",
                 "badge": "",
-                "image": "assets/brands%20items/MAGNAFLUX/7HF.jpg"
+                "description": "Welding helmet with mounting adaptor for flexible attachment options",
+                "specifications": "",
+                "price": "",
+                "image": "andison/assets/brands%20items/ACES/A238.jpg",
+                "created_at": "2026-03-05T03:42:09.150726+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "model": "Magnaflux Prepared Bath Fluorescent Magnetic Ink Dry Method 14AM",
-                "type": "Inspection",
+                "id": 509,
+                "category_id": "welding-accessories",
+                "subcategory_id": "welding-head-and-face-protection",
+                "brand": "Aces",
+                "product_name": "Aces A300 Headgear Assembly",
+                "model": "A300",
+                "type": "Welding Head and Face Protection",
                 "badge": "",
-                "image": "assets/brands%20items/MAGNAFLUX/14HF.png"
-            }
-        ]
-    },
-    "COPPUS": {
-        "description": "Industrial ventilation and air movement equipment.",
-        "products": [
-            {
-                "model": "Coppus\u00ae MEB 12 Blower",
-                "type": "Ventilator",
-                "badge": "",
-                "image": "assets/brands%20items/COPPUS/Air-Max 12.png"
+                "description": "Complete headgear assembly for secure and comfortable welding protection",
+                "specifications": "",
+                "price": "",
+                "image": "andison/assets/brands%20items/ACES/A300.jpg",
+                "created_at": "2026-03-05T03:42:09.150726+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "model": "Turbo Vaneaxial and Centrifugal Ventilators",
-                "type": "Ventilator",
-                "badge": "",
-                "image": "assets/brands%20items/COPPUS/Reaction Fan-1.jpg"
-            },
-            {
-                "model": "Explosion Fan",
-                "type": "Ventilator",
-                "badge": "",
-                "image": "assets/brands%20items/COPPUS/Jectair.png"
-            },
-            {
-                "model": "Double Duty Heat Killer",
-                "type": "Ventilator",
-                "badge": "",
-                "image": "assets/brands%20items/COPPUS/Double-Duty-Heat-Killer-1.png"
-            },
-            {
-                "model": "Nectar and Hornet HP",
-                "type": "Ventilator",
-                "badge": "",
-                "image": "assets/brands%20items/COPPUS/Cadet.png"
-            },
-            {
-                "model": "Vano 175 CV and 250 CV",
-                "type": "Ventilator",
-                "badge": "",
-                "image": "assets/brands%20items/COPPUS/Vano.png"
-            }
-        ]
-    },
-    "BOSCH": {
-        "description": "Professional power tools for industrial applications.",
-        "products": [
-            {
-                "model": "Bosch GWS 9-100P Angle Grinder",
-                "type": "Power Tool",
-                "badge": "",
-                "image": ""
-            },
-            {
-                "model": "Bosch GWS 2200-180 Angle Grinder",
-                "type": "Power Tool",
-                "badge": "",
-                "image": ""
-            },
-            {
-                "model": "Bosch GGS 3000L Straight Grinder",
-                "type": "Power Tool",
-                "badge": "",
-                "image": ""
-            },
-            {
-                "model": "Bosch GCO 14-24J Metal Cut Off Saw",
-                "type": "Power Tool",
-                "badge": "",
-                "image": ""
-            },
-            {
-                "model": "Bosch GKS 235 Turbo Hand Held Circular Saw",
-                "type": "Power Tool",
-                "badge": "",
-                "image": ""
-            },
-            {
-                "model": "Bosch GST 80PBE Jig Saw",
-                "type": "Power Tool",
-                "badge": "",
-                "image": ""
-            },
-            {
-                "model": "Bosch GDS 250 Cordless Impact Wrench",
-                "type": "Power Tool",
-                "badge": "",
-                "image": ""
-            },
-            {
-                "model": "Bosch GSR 120-LI Cordless Drill",
-                "type": "Power Tool",
-                "badge": "",
-                "image": ""
-            },
-            {
-                "model": "Bosch GSH 5 Demolition Hammer with SDS Max",
-                "type": "Power Tool",
-                "badge": "",
-                "image": ""
-            },
-            {
-                "model": "Bosch GSR 18V-50 Cordless Drill/Driver GSR 18V-50",
-                "type": "Power Tool",
-                "badge": "",
-                "image": ""
-            },
-            {
-                "model": "Bosch GBH 4-32DFR Rotary Hammer with SDS Plus",
-                "type": "Power Tool",
-                "badge": "",
-                "image": ""
-            },
-            {
-                "model": "Bosch GSH 16-30 Demolition Jack Hammer",
-                "type": "Power Tool",
-                "badge": "",
-                "image": ""
+                "product_name": "love love",
+                "model": "wowow",
+                "type": "Batttery",
+                "price": "",
+                "badge": "Not Available",
+                "description": "love ko 'to",
+                "specifications": "maganda",
+                "image": "Andison/assets/uploads/products/received_646438704016888_20260305_092523.jpeg",
+                "category_id": "batteries",
+                "subcategory_id": "maintenance-free"
             }
         ]
     },
     "MOTOLITE": {
-        "description": "Automotive and industrial batteries.",
+        "description": "Premium automotive and industrial battery solutions for diverse applications.",
         "products": [
             {
-                "model": "Gold",
-                "type": "Battery",
-                "badge": "",
-                "image": "assets/brands%20items/MOTOLITE/Gold.jpg"
+                "id": 931,
+                "category_id": "batteries",
+                "subcategory_id": "low-maintenance",
+                "brand": "MOTOLITE",
+                "product_name": "motoyek",
+                "model": "E4234",
+                "type": "Batttery",
+                "badge": "Available",
+                "description": "WOWOWOW",
+                "specifications": "BATTTT",
+                "price": "",
+                "image": "Andison/assets/uploads/products/porsche-911-gt3-rs-3840x2160-21144_20260305_074455.jpg",
+                "created_at": "2026-03-05T06:45:09.768374+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "model": "Enduro",
-                "type": "Battery",
+                "id": 202,
+                "category_id": "batteries",
+                "subcategory_id": "batteries",
+                "brand": "Motolite",
+                "product_name": "Truckmaster",
+                "model": "Truckmaster",
+                "type": "Low Maintenance",
                 "badge": "",
-                "image": "assets/brands%20items/MOTOLITE/Enduro.jpg"
+                "description": "Reliable low-maintenance battery for truck and commercial applications",
+                "specifications": "",
+                "price": "",
+                "image": "../assets/brands%20items/MOTOLITE/Truckmaster.png",
+                "created_at": "2026-03-05T03:42:07.929594+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "model": "TruckMaster",
-                "type": "Battery",
+                "id": 203,
+                "category_id": "batteries",
+                "subcategory_id": "batteries",
+                "brand": "Motolite",
+                "product_name": "Motolite Enduro",
+                "model": "Motolite Enduro",
+                "type": "Maintenance Free",
                 "badge": "",
-                "image": "assets/brands%20items/MOTOLITE/Truckmaster.png"
+                "description": "Maintenance-free enduro battery for heavy-duty applications",
+                "specifications": "",
+                "price": "",
+                "image": "../assets/brands%20items/MOTOLITE/Enduro.jpg",
+                "created_at": "2026-03-05T03:42:07.929594+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "model": "EXCEL",
-                "type": "Maintenance Free Battery",
+                "id": 204,
+                "category_id": "batteries",
+                "subcategory_id": "batteries",
+                "brand": "Motolite",
+                "product_name": "Motolite Excel",
+                "model": "Motolite Excel",
+                "type": "Maintenance Free",
                 "badge": "",
-                "image": "assets/brands%20items/MOTOLITE/excel.png"
+                "description": "Premium maintenance-free excel battery for superior performance",
+                "specifications": "",
+                "price": "",
+                "image": "../assets/brands%20items/MOTOLITE/excel.png",
+                "created_at": "2026-03-05T03:42:07.929594+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "model": "AMP-TECH",
-                "type": "Special Battery",
+                "id": 205,
+                "category_id": "batteries",
+                "subcategory_id": "batteries",
+                "brand": "Motolite",
+                "product_name": "Motolite Gold",
+                "model": "Motolite Gold",
+                "type": "Maintenance Free",
                 "badge": "",
-                "image": "assets/brands%20items/MOTOLITE/Amp-Tech.jpg"
+                "description": "Top-tier maintenance-free gold battery with extended lifespan",
+                "specifications": "",
+                "price": "",
+                "image": "../assets/brands%20items/MOTOLITE/Gold.jpg",
+                "created_at": "2026-03-05T03:42:07.929594+00:00",
+                "sub_subcategory_id": null
             },
             {
-                "model": "SOLAR MASTER",
-                "type": "Special Battery",
+                "id": 206,
+                "category_id": "batteries",
+                "subcategory_id": "batteries",
+                "brand": "Motolite",
+                "product_name": "Amp-Tech",
+                "model": "Amp-Tech",
+                "type": "Special Batteries",
                 "badge": "",
-                "image": "assets/brands%20items/MOTOLITE/Solar Master.png"
+                "description": "Advanced special-purpose battery with high amperage capacity",
+                "specifications": "",
+                "price": "",
+                "image": "../assets/brands%20items/MOTOLITE/Amp-Tech.jpg",
+                "created_at": "2026-03-05T03:42:07.929594+00:00",
+                "sub_subcategory_id": null
+            },
+            {
+                "id": 207,
+                "category_id": "batteries",
+                "subcategory_id": "batteries",
+                "brand": "Motolite",
+                "product_name": "Solar Master",
+                "model": "Solar Master",
+                "type": "Special Batteries",
+                "badge": "",
+                "description": "Solar-powered battery system for renewable energy applications",
+                "specifications": "",
+                "price": "",
+                "image": "../assets/brands%20items/MOTOLITE/Solar%20Master.png",
+                "created_at": "2026-03-05T03:42:07.929594+00:00",
+                "sub_subcategory_id": null
+            },
+            {
+                "id": 208,
+                "category_id": "batteries",
+                "subcategory_id": "low-maintenance",
+                "brand": "Motolite",
+                "product_name": "Truckmaster",
+                "model": "Truckmaster",
+                "type": "Low Maintenance",
+                "badge": "",
+                "description": "Reliable low-maintenance battery for truck and commercial applications",
+                "specifications": "",
+                "price": "",
+                "image": "../assets/brands%20items/MOTOLITE/Truckmaster.png",
+                "created_at": "2026-03-05T03:42:07.929594+00:00",
+                "sub_subcategory_id": null
+            },
+            {
+                "id": 209,
+                "category_id": "batteries",
+                "subcategory_id": "maintenance-free",
+                "brand": "Motolite",
+                "product_name": "Motolite Enduro",
+                "model": "Motolite Enduro",
+                "type": "Maintenance Free",
+                "badge": "",
+                "description": "Maintenance-free enduro battery for heavy-duty applications",
+                "specifications": "",
+                "price": "",
+                "image": "../assets/brands%20items/MOTOLITE/Enduro.jpg",
+                "created_at": "2026-03-05T03:42:07.929594+00:00",
+                "sub_subcategory_id": null
+            },
+            {
+                "id": 210,
+                "category_id": "batteries",
+                "subcategory_id": "maintenance-free",
+                "brand": "Motolite",
+                "product_name": "Motolite Excel",
+                "model": "Motolite Excel",
+                "type": "Maintenance Free",
+                "badge": "",
+                "description": "Premium maintenance-free excel battery for superior performance",
+                "specifications": "",
+                "price": "",
+                "image": "../assets/brands%20items/MOTOLITE/excel.png",
+                "created_at": "2026-03-05T03:42:07.929594+00:00",
+                "sub_subcategory_id": null
+            },
+            {
+                "id": 211,
+                "category_id": "batteries",
+                "subcategory_id": "maintenance-free",
+                "brand": "Motolite",
+                "product_name": "Motolite Gold",
+                "model": "Motolite Gold",
+                "type": "Maintenance Free",
+                "badge": "",
+                "description": "Top-tier maintenance-free gold battery with extended lifespan",
+                "specifications": "",
+                "price": "",
+                "image": "../assets/brands%20items/MOTOLITE/Gold.jpg",
+                "created_at": "2026-03-05T03:42:07.929594+00:00",
+                "sub_subcategory_id": null
+            },
+            {
+                "id": 212,
+                "category_id": "batteries",
+                "subcategory_id": "special-batteries",
+                "brand": "Motolite",
+                "product_name": "Amp-Tech",
+                "model": "Amp-Tech",
+                "type": "Special Batteries",
+                "badge": "",
+                "description": "Advanced special-purpose battery with high amperage capacity",
+                "specifications": "",
+                "price": "",
+                "image": "../assets/brands%20items/MOTOLITE/Amp-Tech.jpg",
+                "created_at": "2026-03-05T03:42:07.929594+00:00",
+                "sub_subcategory_id": null
+            },
+            {
+                "id": 213,
+                "category_id": "batteries",
+                "subcategory_id": "special-batteries",
+                "brand": "Motolite",
+                "product_name": "Solar Master",
+                "model": "Solar Master",
+                "type": "Special Batteries",
+                "badge": "",
+                "description": "Solar-powered battery system for renewable energy applications",
+                "specifications": "",
+                "price": "",
+                "image": "../assets/brands%20items/MOTOLITE/Solar%20Master.png",
+                "created_at": "2026-03-05T03:42:07.929594+00:00",
+                "sub_subcategory_id": null
+            },
+            {
+                "product_name": "love love",
+                "model": "wowow",
+                "type": "Batttery",
+                "price": "",
+                "badge": "Not Available",
+                "description": "maganda",
+                "specifications": "owoww",
+                "image": "Andison/assets/uploads/products/img_20230830_191536_617_20260305_092932.jpg",
+                "category_id": "batteries",
+                "subcategory_id": "special-batteries"
             }
         ]
     }

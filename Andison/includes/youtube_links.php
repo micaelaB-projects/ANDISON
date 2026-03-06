@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/storage.php';
+require_once __DIR__ . '/supabase.php';
 
 if (!function_exists('andison_normalize_youtube_to_embed')) {
     function andison_normalize_youtube_to_embed(string $input): string
@@ -97,35 +98,52 @@ if (!function_exists('andison_get_youtube_links')) {
             
         ];
 
+        // Try Supabase first
+        $sbRows = andison_sb_select('youtube_links', 'order=section,sort_order&limit=100');
+        if (!empty($sbRows)) {
+            $bySection = [];
+            foreach ($sbRows as $row) {
+                $section = $row['section'] ?? '';
+                if ($section !== '') {
+                    $bySection[$section][] = $row['url'] ?? '';
+                }
+            }
+            $out = $defaults;
+            foreach ($defaults as $key => $_) {
+                if (!isset($bySection[$key])) continue;
+                $urls = array_values($bySection[$key]);
+                for ($i = 0; $i < 2; $i++) {
+                    $raw = trim((string)($urls[$i] ?? ''));
+                    if ($raw === '') { $out[$key][$i] = ''; continue; }
+                    $norm = andison_normalize_youtube_to_embed($raw);
+                    $out[$key][$i] = $norm !== '' ? $norm : '';
+                }
+            }
+            return $out;
+        }
+
+        // Fallback to local JSON
         $file = dirname(__DIR__) . '/data/youtube_links.json';
         $loaded = andison_read_json_file($file, []);
         if (!is_array($loaded)) {
             return $defaults;
         }
 
-        // Merge while preserving slots (Video 1 stays Video 1).
         $out = $defaults;
         foreach ($defaults as $key => $_defaultList) {
             if (!isset($loaded[$key]) || !is_array($loaded[$key])) {
                 continue;
             }
-
             for ($i = 0; $i < 2; $i++) {
                 if (!array_key_exists($i, $loaded[$key])) {
                     continue;
                 }
-
                 $raw = trim((string)$loaded[$key][$i]);
-                if ($raw === '') {
-                    $out[$key][$i] = '';
-                    continue;
-                }
-
+                if ($raw === '') { $out[$key][$i] = ''; continue; }
                 $norm = andison_normalize_youtube_to_embed($raw);
                 $out[$key][$i] = $norm !== '' ? $norm : '';
             }
         }
-
         return $out;
     }
 }
@@ -133,9 +151,6 @@ if (!function_exists('andison_get_youtube_links')) {
 if (!function_exists('andison_save_youtube_links')) {
     function andison_save_youtube_links(array $links): bool
     {
-        $file = dirname(__DIR__) . '/data/youtube_links.json';
-
-        // Only allow expected keys.
         $allowed = ['home_highlights'];
         $out = [];
         foreach ($allowed as $key) {
@@ -147,13 +162,22 @@ if (!function_exists('andison_save_youtube_links')) {
             $list = array_map('strval', $list);
             $list = array_map('trim', $list);
             $list = array_map('andison_normalize_youtube_to_embed', $list);
-            $out[$key] = [
-                $list[0] ?? '',
-                $list[1] ?? '',
-            ];
+            $out[$key] = [$list[0] ?? '', $list[1] ?? ''];
         }
 
-        return andison_write_json_file($file, $out);
+        // Backup to local JSON
+        $file = dirname(__DIR__) . '/data/youtube_links.json';
+        andison_write_json_file($file, $out);
+
+        // Save to Supabase
+        $rows = [];
+        foreach ($out as $section => $urls) {
+            andison_sb_delete('youtube_links', 'section=eq.' . rawurlencode($section));
+            foreach ($urls as $i => $url) {
+                $rows[] = ['section' => $section, 'url' => $url, 'sort_order' => $i];
+            }
+        }
+        return andison_sb_insert('youtube_links', $rows);
     }
 }
 

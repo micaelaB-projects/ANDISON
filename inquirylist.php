@@ -86,6 +86,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $mail_sent = mail($to, $subject, $body, $headers);
 
+        // Save inquiry to Supabase
+        require_once __DIR__ . '/Andison/includes/supabase.php';
+        $savedInquiry = andison_sb_insert_returning('inquiries', [
+            'fullname'       => $fullname,
+            'company'        => $company,
+            'email'          => $email,
+            'phone'          => $phone,
+            'address'        => $address,
+            'contact_method' => $contact_method,
+            'message'        => $message,
+        ]);
+        if ($savedInquiry !== null && !empty($savedInquiry['id'])) {
+            $itemRows = [];
+            foreach ($items as $item) {
+                $itemRows[] = [
+                    'inquiry_id' => $savedInquiry['id'],
+                    'name'       => $item['name'] ?? '',
+                    'brand'      => $item['brand'] ?? '',
+                    'qty'        => (int)($item['qty'] ?? 1),
+                ];
+            }
+            if (!empty($itemRows)) {
+                andison_sb_insert('inquiry_items', $itemRows);
+            }
+        }
+
         if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
             $upload_dir = 'uploads/';
             if (!is_dir($upload_dir)) { mkdir($upload_dir, 0755, true); }

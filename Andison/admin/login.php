@@ -56,9 +56,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_locked) {
         $password = isset($_POST['password']) ? (string)$_POST['password'] : '';
         
         if ($username !== '' && $password !== '') {
+            $storedPw = (string)($cfg['password'] ?? '');
+            $passwordOk = str_starts_with($storedPw, '$2y$')
+                ? password_verify($password, $storedPw)
+                : hash_equals($storedPw, $password);
             if (
                 hash_equals((string)($cfg['username'] ?? ''), $username)
-                && hash_equals((string)($cfg['password'] ?? ''), $password)
+                && $passwordOk
             ) {
                 $_SESSION['andison_admin'] = true;
                 $_SESSION['andison_admin_user'] = $username;
@@ -71,6 +75,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_locked) {
                     $cfgWrite['created_at'] = time();
                 }
                 @file_put_contents(__DIR__ . '/config.php', "<?php\n\nreturn " . var_export($cfgWrite, true) . ";\n", LOCK_EX);
+                // Sync last_login to Supabase
+                require_once __DIR__ . '/../includes/supabase.php';
+                andison_sb_update('admin_users', ['last_login' => date('c')], 'username=eq.' . rawurlencode($username));
                 // Regenerate session ID after successful login
                 session_regenerate_id(true);
                 header('Location: ' . $next);

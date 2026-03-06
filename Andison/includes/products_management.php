@@ -2,60 +2,69 @@
 
 declare(strict_types=1);
 
+require_once __DIR__ . '/supabase.php';
+
 function andison_get_products_for_subcategory(string $categoryId, string $subcategoryId): array
 {
+    $filter = 'category_id=eq.' . rawurlencode($categoryId)
+            . '&subcategory_id=eq.' . rawurlencode($subcategoryId)
+            . '&limit=1000';
+    $rows = andison_sb_select('products', $filter);
+
+    if (!empty($rows)) {
+        // Normalize Supabase column names to match local JSON schema
+        return array_map(function (array $row): array {
+            if (!isset($row['name']) && isset($row['product_name'])) {
+                $row['name'] = $row['product_name'];
+            }
+            if (!isset($row['specs']) && isset($row['specifications'])) {
+                $row['specs'] = $row['specifications'];
+            }
+            return $row;
+        }, $rows);
+    }
+
+    // Fallback to local JSON
     $jsonFile = __DIR__ . '/../data/products/' . urlencode($categoryId) . '/' . urlencode($subcategoryId) . '.json';
-    
-    if (!file_exists($jsonFile)) {
-        return [];
-    }
-    
+    if (!file_exists($jsonFile)) return [];
     $content = file_get_contents($jsonFile);
-    if ($content === false) {
-        return [];
-    }
-    
+    if ($content === false) return [];
     $products = json_decode($content, true);
-    
-    if (!is_array($products)) {
-        return [];
-    }
-    
-    return $products;
+    return is_array($products) ? $products : [];
 }
 
 function andison_save_products_for_subcategory(string $categoryId, string $subcategoryId, array $products): bool
 {
+    // Backup to local JSON
     $dir = __DIR__ . '/../data/products/' . urlencode($categoryId);
-    
-    // Ensure directory exists
-    if (!is_dir($dir)) {
-        mkdir($dir, 0755, true);
-    }
-    
+    if (!is_dir($dir)) mkdir($dir, 0755, true);
     $jsonFile = $dir . '/' . urlencode($subcategoryId) . '.json';
-    
-    // Write JSON with lock
     $handle = fopen($jsonFile, 'c');
-    if ($handle === false) {
-        return false;
-    }
-    
-    if (!flock($handle, LOCK_EX)) {
+    if ($handle !== false) {
+        if (flock($handle, LOCK_EX)) {
+            rewind($handle);
+            ftruncate($handle, 0);
+            fwrite($handle, json_encode($products, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+            flock($handle, LOCK_UN);
+        }
         fclose($handle);
-        return false;
     }
-    
-    rewind($handle);
-    ftruncate($handle, 0);
-    
-    $json = json_encode($products, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-    $written = fwrite($handle, $json);
-    
-    flock($handle, LOCK_UN);
-    fclose($handle);
-    
-    return $written !== false && $written > 0;
+
+    // Save to Supabase: delete existing rows then insert fresh ones
+    $filter = 'category_id=eq.' . rawurlencode($categoryId) . '&subcategory_id=eq.' . rawurlencode($subcategoryId);
+    andison_sb_delete('products', $filter);
+
+    if (empty($products)) return true;
+
+    $rows = [];
+    foreach ($products as $product) {
+        $rows[] = array_merge($product, [
+            'category_id'    => $categoryId,
+            'subcategory_id' => $subcategoryId,
+        ]);
+    }
+
+    return andison_sb_insert('products', $rows);
 }
 
 function andison_get_product_by_id(string $categoryId, string $subcategoryId, string $productId): ?array

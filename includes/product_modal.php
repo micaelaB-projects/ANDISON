@@ -48,6 +48,8 @@
             <span id="prodDetailBrand" style="font-size:9px;font-weight:950;color:#2B11DB;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:block;background:linear-gradient(135deg, rgba(43,17,219,0.12) 0%, rgba(43,17,219,0.06) 100%);padding:8px 14px;border-radius:8px;width:fit-content;border-left:3px solid #2B11DB;"></span>
             <h2 id="prodDetailName" style="font-size:42px;font-weight:980;color:#0a0a1a;margin:10px 0 12px;line-height:1.15;letter-spacing:-1px;text-shadow:0 2px 8px rgba(0,0,0,0.08);"></h2>
             <span id="prodDetailType" style="display:inline-block;background:linear-gradient(135deg, #2B11DB 0%, #1f0aa1 100%);color:#fff;font-size:10px;font-weight:950;padding:10px 20px;border-radius:24px;text-transform:uppercase;letter-spacing:1.2px;box-shadow:0 6px 16px rgba(43,17,219,0.28);"></span>
+            <div id="prodDetailSubname" style="display:none;font-size:15px;font-weight:600;color:#555;margin-top:8px;letter-spacing:0.2px;"></div>
+            <div id="prodDetailPrice" style="display:none;margin-top:10px;font-size:13px;font-weight:800;color:#2B11DB;background:rgba(43,17,219,0.08);padding:6px 14px;border-radius:20px;width:fit-content;letter-spacing:0.5px;"></div>
             <!-- Datasheet button and preview directly below the line -->
             <div id="prodDatasheetWrap" style="display:none;flex-shrink:0;position:relative;z-index:2;flex-direction:column;gap:12px;margin:24px 0 0 0;">
               <a id="prodDatasheetBtn" href="" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg, #2B11DB 0%, #1f0aa1 100%);color:#fff;padding:13px 20px;border-radius:14px;font-size:11px;font-weight:950;text-decoration:none;box-shadow:0 8px 22px rgba(43,17,219,0.3);transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;margin:0 auto 12px auto;border:1px solid rgba(255,255,255,0.2);letter-spacing:1px;text-transform:uppercase;position:relative;overflow:hidden;" onmouseover="this.style.boxShadow='0 12px 32px rgba(43,17,219,0.45)';this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 8px 22px rgba(43,17,219,0.3)';this.style.transform='translateY(0)';">
@@ -401,7 +403,7 @@
         if (mainImg) { mainImg.style.transition = ''; mainImg.style.opacity = '1'; }
     }
 
-    var _jsonPath = (typeof MODAL_JSON_PATH !== 'undefined') ? MODAL_JSON_PATH : '/ANDISON/Andison/data/brands_info.json';
+    var _jsonPath = (typeof MODAL_JSON_PATH !== 'undefined') ? MODAL_JSON_PATH : '/ANDISON/Andison/data/brands_info_api.php';
 
     /* Load product details from JSON data */
     function loadProductDetails(brand, model) {
@@ -546,18 +548,16 @@
                     specsSection.style.display = 'block';
                 }
                 
-                // Update images from brands_info if better data available
-                if (product.image || (product.images && product.images.length > 0)) {
+                // Only enrich images from JSON if the card provided none (prevents
+                // stale JSON cache paths from overwriting the correct Supabase image path)
+                if (productImages.length === 0 && (product.image || (product.images && product.images.length > 0))) {
                     var images_to_load = [];
                     if (product.images && Array.isArray(product.images)) {
                         images_to_load = product.images.slice();
                     } else if (product.image) {
                         images_to_load = [product.image];
                     }
-                    
                     if (images_to_load.length > 0) {
-                        console.log('Loading images from brands_info:', images_to_load.length, 'images');
-                        // Re-load images - this will update the gallery
                         loadProductImagesFromCard(images_to_load);
                     }
                 }
@@ -595,10 +595,9 @@
             // Convert relative paths to absolute
             if (decoded.indexOf('assets/') === 0) {
                 return '/ANDISON/' + decoded;
-            } else if (decoded.indexOf('andison/assets/') === 0 || decoded.indexOf('ANDISON/assets/') === 0) {
-                // Convert andison/assets/ or ANDISON/assets/ to /ANDISON/assets/
-                var normalized = decoded.replace(/^[aA][nN][dD][iI][sS][oO][nN]\//, '/ANDISON/');
-                return normalized.startsWith('/') ? normalized : '/' + normalized;
+            } else if (/^[aA][nN][dD][iI][sS][oO][nN]\/assets\//i.test(decoded)) {
+                // handles Andison/assets/, ANDISON/assets/, andison/assets/ — all cases
+                return '/ANDISON/' + decoded.replace(/^[^/]+\//, 'Andison/');
             } else if (decoded.indexOf('/ANDISON/') === 0) {
                 return decoded; // Already absolute
             } else if (decoded.indexOf('../') === 0) {
@@ -720,8 +719,8 @@
                     return;
                 }
                 
-                // Try to find matching cards on page
-                var allPageCards = document.querySelectorAll('.product-card');
+                // Try to find matching cards on page (brand.php uses .brand-product-card)
+                var allPageCards = document.querySelectorAll('.product-card, .brand-product-card');
                 var cardMap = {};
                 for (var i = 0; i < allPageCards.length; i++) {
                     var cardModel = allPageCards[i].getAttribute('data-model') || 
@@ -761,16 +760,21 @@
                         
                         if (!imgSrc && product.image && product.image.trim() !== '') {
                             imgSrc = product.image;
-                            // Decode and make absolute if needed
+                            // Decode percent-encoding (e.g. %20 → space)
                             imgSrc = decodeURIComponent(imgSrc);
-                            if (imgSrc.indexOf('assets/') === 0) {
+                            // Strip leading ../ sequences (stored relative to subdir pages)
+                            imgSrc = imgSrc.replace(/^(\.\.\/)+/, '');
+                            // Now normalize to absolute /ANDISON/... URL
+                            if (/^andison\/assets\/uploads/i.test(imgSrc)) {
+                                // Upload path: Andison/assets/uploads/... → /ANDISON/Andison/assets/uploads/...
+                                imgSrc = '/ANDISON/' + imgSrc.charAt(0).toUpperCase() + imgSrc.slice(1);
+                            } else if (/^andison\//i.test(imgSrc)) {
+                                // Brand-item path stored with andison/ prefix — strip it
+                                imgSrc = '/ANDISON/' + imgSrc.replace(/^andison\//i, '');
+                            } else if (imgSrc.indexOf('assets/') === 0) {
                                 imgSrc = '/ANDISON/' + imgSrc;
-                            } else if (imgSrc.indexOf('andison/assets/') === 0 || imgSrc.indexOf('ANDISON/assets/') === 0) {
-                                // Convert andison/assets/ or ANDISON/assets/ to /ANDISON/assets/
-                                imgSrc = imgSrc.replace(/^[aA][nN][dD][iI][sS][oO][nN]\//, '/ANDISON/');
-                                if (!imgSrc.startsWith('/')) {
-                                    imgSrc = '/' + imgSrc;
-                                }
+                            } else if (!imgSrc.startsWith('/') && !imgSrc.startsWith('http')) {
+                                imgSrc = '/ANDISON/' + imgSrc;
                             }
                         }
                         
@@ -854,6 +858,12 @@
         try { specs = JSON.parse(specsRaw); } catch(e){}
         try { images = JSON.parse(imagesRaw); } catch(e){}
 
+        // Extra fields from Supabase products
+        var description    = card.getAttribute('data-description')    || '';
+        var specsText      = card.getAttribute('data-specifications') || '';
+        var price          = card.getAttribute('data-price')          || '';
+        var productName    = card.getAttribute('data-product-name')   || '';
+
         // DEBUG: Log the data being received
         console.log('openProductModal called with:', {
             model: model,
@@ -893,11 +903,38 @@
             console.error('prodDetailType not found!');
         }
 
-        // Load product details from JSON
-        loadProductDetails(brand, model);
-        
-        // Load product images from card data
+        // Load product images from card data (must run BEFORE loadProductDetails so the
+        // async JSON fetch cannot overwrite the correct Supabase image path)
         loadProductImagesFromCard(images);
+
+        // Show description & price from card data immediately (no async fetch needed)
+        var descSection = document.getElementById('prodDescSection');
+        var descEl      = document.getElementById('prodDetailDesc');
+        var noDetailsEl = document.getElementById('prodNoDetails');
+        if (description) {
+            if (descEl)      descEl.textContent = description;
+            if (descSection) descSection.style.display = 'block';
+            if (noDetailsEl) noDetailsEl.style.display = 'none';
+        }
+        // Show price badge below type if available
+        var priceEl = document.getElementById('prodDetailPrice');
+        if (priceEl) {
+            if (price) { priceEl.textContent = '\u20B1 ' + price; priceEl.style.display = 'inline-block'; }
+            else        { priceEl.style.display = 'none'; }
+        }
+        // Show product name as subtitle if it differs from model
+        var prodSubnameEl = document.getElementById('prodDetailSubname');
+        if (prodSubnameEl) {
+            if (productName && productName !== model) {
+                prodSubnameEl.textContent = productName;
+                prodSubnameEl.style.display = 'block';
+            } else {
+                prodSubnameEl.style.display = 'none';
+            }
+        }
+
+        // Load additional data from JSON (description, specs) — enriches old hardcoded products
+        loadProductDetails(brand, model);
 
         /* Specs */
         var specsArr  = Array.isArray(specs) ? specs : Object.entries(specs).map(function(e){ return {label:e[0],value:e[1]}; });
@@ -991,6 +1028,38 @@
             specsSection.style.display = 'block';
         } else {
             specsSection.style.display = 'none';
+        }
+
+        // If no structured specs but text specifications available, parse and display as table
+        if (specsArr.length === 0 && specsText) {
+            var lines = specsText.split('\n').map(function(l){ return l.trim(); }).filter(Boolean);
+            if (lines.length > 0 && table) {
+                var stbody = document.createElement('tbody');
+                lines.forEach(function(line) {
+                    var tr  = document.createElement('tr');
+                    var td1 = document.createElement('td');
+                    var td2 = document.createElement('td');
+                    td1.style.cssText = 'font-weight:700;color:#2d3748;background:rgba(43,17,219,0.04);padding:10px 12px;border-bottom:1px solid #f1f3f8;width:36%;font-size:11px;vertical-align:top;';
+                    td2.style.cssText = 'padding:10px 12px;border-bottom:1px solid #f1f3f8;font-size:13px;color:#444;vertical-align:top;';
+                    var colonIdx = line.indexOf(':');
+                    if (colonIdx > 0) {
+                        td1.textContent = line.substring(0, colonIdx).trim();
+                        td2.textContent = line.substring(colonIdx + 1).trim();
+                        tr.appendChild(td1);
+                        tr.appendChild(td2);
+                    } else {
+                        td1.setAttribute('colspan', '2');
+                        td1.style.fontWeight = '400';
+                        td1.textContent = line;
+                        tr.appendChild(td1);
+                    }
+                    stbody.appendChild(tr);
+                });
+                table.innerHTML = '';
+                table.appendChild(stbody);
+                if (specsSection) specsSection.style.display = 'block';
+                if (noDetailsEl) noDetailsEl.style.display = 'none';
+            }
         }
 
         /* Load Datasheet from assets folder */

@@ -4026,6 +4026,7 @@ $email = "info@andison-industrial.com";
                             name: name,
                             description: description,
                             brand: brand,
+                            image: card ? card.getAttribute('data-image') || '' : '',
                             qty: 1,
                             timestamp: new Date().getTime()
                         };
@@ -4273,6 +4274,7 @@ $email = "info@andison-industrial.com";
                             name: name,
                             description: description,
                             brand: brand,
+                            image: card ? card.getAttribute('data-image') || '' : '',
                             qty: 1,
                             timestamp: new Date().getTime()
                         };

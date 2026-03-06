@@ -2661,11 +2661,28 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                         <?php if (!empty($brand_products)): ?>
                         <div class="brand-product-grid" id="brandProductGrid">
                             <?php foreach ($brand_products as $product):
-                                $model  = is_array($product) ? (string)($product['model'] ?? '') : (string)$product;
-                                $type   = is_array($product) ? (string)($product['type']  ?? '') : '';
-                                $img    = is_array($product) ? (string)($product['image'] ?? '') : '';
-                                $badge  = is_array($product) ? (string)($product['badge'] ?? '') : '';
+                                $model        = is_array($product) ? (string)($product['model']          ?? '') : (string)$product;
+                                $type         = is_array($product) ? (string)($product['type']           ?? '') : '';
+                                $img          = is_array($product) ? (string)($product['image']          ?? '') : '';
+                                // Normalize stored image paths so they resolve from /ANDISON/ root:
+                                // ../assets/... → assets/...  |  andison/assets/brands... → assets/brands...
+                                $img = preg_replace('/^(\.\.\/)+(?=assets\/)/i', '', $img);
+                                if (preg_match('/^andison\/assets\/brands/i', $img) && !preg_match('/^andison\/assets\/uploads/i', $img)) {
+                                    $img = preg_replace('/^andison\//i', '', $img);
+                                }
+                                $badge        = is_array($product) ? (string)($product['badge']          ?? '') : '';
+                                $product_name = is_array($product) ? (string)($product['product_name']   ?? '') : '';
+                                $description  = is_array($product) ? (string)($product['description']    ?? '') : '';
+                                $specs_text   = is_array($product) ? (string)($product['specifications'] ?? '') : '';
+                                $price        = is_array($product) ? (string)($product['price']          ?? '') : '';
                                 $explicit_imgs = is_array($product) ? (array)($product['images'] ?? []) : [];
+                                $explicit_imgs = array_map(function($p) {
+                                    $p = preg_replace('/^(\.\.\/)+(?=assets\/)/i', '', $p);
+                                    if (preg_match('/^andison\/assets\/brands/i', $p) && !preg_match('/^andison\/assets\/uploads/i', $p)) {
+                                        $p = preg_replace('/^andison\//i', '', $p);
+                                    }
+                                    return $p;
+                                }, $explicit_imgs);
                                 $images_list   = andison_auto_images($img, $explicit_imgs, __DIR__);
                             ?>
                             <?php
@@ -2680,6 +2697,10 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                                  data-image="<?php echo htmlspecialchars($img, ENT_QUOTES); ?>"
                                  data-images="<?php echo $imgs_json; ?>"
                                  data-specs="<?php echo $specs_json; ?>"
+                                 data-product-name="<?php echo htmlspecialchars($product_name, ENT_QUOTES); ?>"
+                                 data-description="<?php echo htmlspecialchars($description, ENT_QUOTES); ?>"
+                                 data-specifications="<?php echo htmlspecialchars($specs_text, ENT_QUOTES); ?>"
+                                 data-price="<?php echo htmlspecialchars($price, ENT_QUOTES); ?>"
                                  style="cursor:pointer;">
                                 <div class="brand-product-img">
                                     <?php if ($img): ?>
@@ -2899,6 +2920,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             var modelVal = btn.getAttribute('data-model') || '';
             var typeVal  = btn.getAttribute('data-type')  || '';
             var brandVal = btn.getAttribute('data-brand') || '';
+            var imageVal = btn.closest('.brand-product-card') ? (btn.closest('.brand-product-card').getAttribute('data-image') || '') : '';
             var list = [];
             try { list = JSON.parse(localStorage.getItem('inquiryItems') || '[]'); } catch(err){}
             var exists = list.some(function(x){ return x.model === modelVal && x.brand === brandVal; });
@@ -2908,6 +2930,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                     name:        modelVal,
                     description: typeVal,
                     brand:       brandVal,
+                    image:       imageVal,
                     qty:         1,
                     timestamp:   new Date().getTime()
                 });

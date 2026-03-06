@@ -7,6 +7,7 @@ andison_require_admin();
 require_once __DIR__ . '/_layout.php';
 
 require_once __DIR__ . '/../includes/brands_info.php';
+require_once __DIR__ . '/../includes/categories_info.php';
 
 $brands = andison_get_brands_info();
 $brandNames = array_keys($brands);
@@ -55,8 +56,8 @@ function andison_handle_product_upload(string $fieldName = 'image_file'): string
         return '';
     }
 
-    // Return path relative to Andison folder (one level up from admin)
-    return '../assets/uploads/products/' . $destName;
+    // Return root-relative web path (works from any page depth)
+    return 'Andison/assets/uploads/products/' . $destName;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -67,10 +68,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($action === 'update_brand') {
             $desc = isset($_POST['description']) ? trim((string)$_POST['description']) : '';
             $brands[$brand]['description'] = $desc;
-            if (andison_save_brands_info($brands)) {
+            if (andison_save_single_brand($brand, $brands[$brand])) {
                 andison_set_flash('success', 'Brand description updated.');
             } else {
-                andison_set_flash('error', 'Failed to save changes. Check file permissions for /data.');
+                andison_set_flash('error', 'Failed to save changes.');
             }
             header('Location: products.php?brand=' . urlencode($brand));
             exit;
@@ -84,6 +85,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $badge = isset($_POST['badge']) ? trim((string)$_POST['badge']) : '';
             $desc = isset($_POST['product_description']) ? trim((string)$_POST['product_description']) : '';
             $specs = isset($_POST['specifications']) ? trim((string)$_POST['specifications']) : '';
+            $catId  = isset($_POST['category_id'])    ? trim((string)$_POST['category_id'])    : '';
+            $subId  = isset($_POST['subcategory_id']) ? trim((string)$_POST['subcategory_id']) : '';
             $image = andison_handle_product_upload('image_file');
 
             if ($model === '' || $type === '') {
@@ -97,20 +100,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             $brands[$brand]['products'][] = [
-                'product_name' => $name,
-                'model' => $model,
-                'type' => $type,
-                'price' => $price,
-                'badge' => $badge,
-                'description' => $desc,
+                'product_name'   => $name,
+                'model'          => $model,
+                'type'           => $type,
+                'price'          => $price,
+                'badge'          => $badge,
+                'description'    => $desc,
                 'specifications' => $specs,
-                'image' => $image,
+                'image'          => $image,
+                'category_id'    => $catId,
+                'subcategory_id' => $subId,
             ];
 
-            if (andison_save_brands_info($brands)) {
+            if (andison_save_single_brand($brand, $brands[$brand])) {
                 andison_set_flash('success', 'Product added.');
             } else {
-                andison_set_flash('error', 'Failed to save changes. Check file permissions for /data.');
+                andison_set_flash('error', 'Failed to save changes.');
             }
 
             header('Location: products.php?brand=' . urlencode($brand));
@@ -132,6 +137,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $badge = isset($_POST['badge']) ? trim((string)$_POST['badge']) : '';
             $desc = isset($_POST['product_description']) ? trim((string)$_POST['product_description']) : '';
             $specs = isset($_POST['specifications']) ? trim((string)$_POST['specifications']) : '';
+            $catId  = isset($_POST['category_id'])    ? trim((string)$_POST['category_id'])    : '';
+            $subId  = isset($_POST['subcategory_id']) ? trim((string)$_POST['subcategory_id']) : '';
             $existingImage = (string)($brands[$brand]['products'][$idx]['image'] ?? '');
             $newImage = andison_handle_product_upload('image_file');
 
@@ -142,20 +149,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             $brands[$brand]['products'][$idx] = [
-                'product_name' => $name,
-                'model' => $model,
-                'type' => $type,
-                'price' => $price,
-                'badge' => $badge,
-                'description' => $desc,
+                'product_name'   => $name,
+                'model'          => $model,
+                'type'           => $type,
+                'price'          => $price,
+                'badge'          => $badge,
+                'description'    => $desc,
                 'specifications' => $specs,
-                'image' => $newImage !== '' ? $newImage : $existingImage,
+                'image'          => $newImage !== '' ? $newImage : $existingImage,
+                'category_id'    => $catId,
+                'subcategory_id' => $subId,
             ];
 
-            if (andison_save_brands_info($brands)) {
+            if (andison_save_single_brand($brand, $brands[$brand])) {
                 andison_set_flash('success', 'Product updated.');
             } else {
-                andison_set_flash('error', 'Failed to save changes. Check file permissions for /data.');
+                andison_set_flash('error', 'Failed to save changes.');
             }
 
             header('Location: products.php?brand=' . urlencode($brand));
@@ -166,10 +175,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $idx = isset($_POST['index']) ? (int)$_POST['index'] : -1;
             if ($idx >= 0 && isset($brands[$brand]['products'][$idx])) {
                 array_splice($brands[$brand]['products'], $idx, 1);
-                if (andison_save_brands_info($brands)) {
+                if (andison_save_single_brand($brand, $brands[$brand])) {
                     andison_set_flash('success', 'Product deleted.');
                 } else {
-                    andison_set_flash('error', 'Failed to save changes. Check file permissions for /data.');
+                    andison_set_flash('error', 'Failed to save changes.');
                 }
             }
             header('Location: products.php?brand=' . urlencode($brand));
@@ -185,6 +194,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $editIndex = isset($_GET['edit']) ? (int)$_GET['edit'] : -1;
 $brandInfo = $selectedBrand !== '' ? ($brands[$selectedBrand] ?? []) : [];
 $products = isset($brandInfo['products']) && is_array($brandInfo['products']) ? $brandInfo['products'] : [];
+$allCategories = andison_get_categories(); // for category/subcategory dropdowns
 
 andison_admin_header('Products', 'products');
 ?>
@@ -388,6 +398,8 @@ andison_admin_header('Products', 'products');
                                                     data-description="<?php echo htmlspecialchars((string)($prod['description'] ?? ''), ENT_QUOTES); ?>"
                                                     data-specifications="<?php echo htmlspecialchars((string)($prod['specifications'] ?? ''), ENT_QUOTES); ?>"
                                                     data-image="<?php echo htmlspecialchars((string)($prod['image'] ?? ''), ENT_QUOTES); ?>"
+                                                    data-category="<?php echo htmlspecialchars((string)($prod['category_id'] ?? ''), ENT_QUOTES); ?>"
+                                                    data-subcategory="<?php echo htmlspecialchars((string)($prod['subcategory_id'] ?? ''), ENT_QUOTES); ?>"
                                                     style="padding:5px 10px;font-size:11px;">
                                                 <i class="bi bi-pencil"></i> Edit
                                             </button>
@@ -430,6 +442,28 @@ andison_admin_header('Products', 'products');
             <input type="hidden" name="index" id="editIndex">
             
             <div class="edit-modal-body">
+                <!-- Category Assignment Section -->
+                <div style="margin-bottom:24px;background:linear-gradient(135deg,#eef0ff,#f5f3ff);border:1.5px solid rgba(43,17,219,0.18);border-radius:10px;padding:16px;">                    <h3 style="font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;border-bottom:2px solid rgba(43,17,219,0.12);padding-bottom:10px;"><i class="bi bi-diagram-3"></i> Category Assignment <span style="font-size:10px;font-weight:600;background:#2b11db;color:#fff;border-radius:999px;padding:2px 8px;margin-left:6px;">REQUIRED to show on site</span></h3>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+                        <div class="field" style="margin:0;">
+                            <label for="editCategory"><i class="bi bi-folder"></i> Category</label>
+                            <select id="editCategory" name="category_id" onchange="populateCategorySubcategories()" title="Select the product category">
+                                <option value="">-- None / Brand Only --</option>
+                                <?php foreach ($allCategories as $cat): ?>
+                                    <option value="<?php echo htmlspecialchars($cat['id'], ENT_QUOTES); ?>"><?php echo htmlspecialchars($cat['name']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="field" style="margin:0;">
+                            <label for="editSubcategory"><i class="bi bi-folder2-open"></i> Subcategory</label>
+                            <select id="editSubcategory" name="subcategory_id" title="Select the product subcategory">
+                                <option value="">-- Select Category First --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <p style="font-size:11px;color:#9ca3af;margin:0;"><i class="bi bi-info-circle"></i> Assign a category so this product appears on the public product pages.</p>
+                </div>
+
                 <!-- Basic Info Section -->
                 <div style="margin-bottom:24px;">
                     <h3 style="font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;"><i class="bi bi-info-circle"></i> Product Information</h3>
@@ -842,7 +876,25 @@ body.modal-open {
 
 <script>
 // Edit product modal functionality
-function openEditModal(index, name, model, type, price, badge, description, specifications, image) {
+var _andisonCategories = <?php echo json_encode(array_map(function($c){ return ['id'=>$c['id'],'name'=>$c['name'],'subcategories'=>$c['subcategories']??[]]; }, $allCategories), JSON_HEX_TAG); ?>;
+
+function populateCategorySubcategories(selectedSubId) {
+    var catId   = document.getElementById('editCategory').value;
+    var subSel  = document.getElementById('editSubcategory');
+    subSel.innerHTML = '<option value="">' + (catId ? '-- Select Subcategory --' : '-- Select Category First --') + '</option>';
+    if (!catId) return;
+    var cat = _andisonCategories.find(function(c){ return c.id === catId; });
+    if (!cat) return;
+    (cat.subcategories || []).forEach(function(sub){
+        var opt = document.createElement('option');
+        opt.value = sub.id;
+        opt.textContent = sub.name;
+        if (selectedSubId && sub.id === selectedSubId) opt.selected = true;
+        subSel.appendChild(opt);
+    });
+}
+
+function openEditModal(index, name, model, type, price, badge, description, specifications, image, catId, subId) {
     var modal = document.getElementById('editProductModal');
     document.getElementById('editIndex').value = index;
     document.getElementById('editProductName').value = name;
@@ -861,8 +913,15 @@ function openEditModal(index, name, model, type, price, badge, description, spec
     } else {
         currentImageInfo.style.display = 'none';
     }
-    
+
+    // Populate category/subcategory
+    var catSel = document.getElementById('editCategory');
+    catSel.value = catId || '';
+    populateCategorySubcategories(subId || '');
+
     modal.style.display = 'flex';
+    // Scroll modal body back to top so category dropdowns are visible
+    setTimeout(function(){ var b = modal.querySelector('.edit-modal-body'); if(b) b.scrollTop = 0; }, 10);
     // Prevent background scrolling
     document.body.style.overflow = 'hidden';
     document.body.style.paddingRight = '10px';
@@ -890,7 +949,9 @@ document.querySelectorAll('.edit-product-btn').forEach(function(btn){
         var description = this.getAttribute('data-description');
         var specifications = this.getAttribute('data-specifications');
         var image = this.getAttribute('data-image');
-        openEditModal(index, name, model, type, price, badge, description, specifications, image);
+        var catId = this.getAttribute('data-category');
+        var subId = this.getAttribute('data-subcategory');
+        openEditModal(index, name, model, type, price, badge, description, specifications, image, catId, subId);
     });
 });
 
@@ -961,11 +1022,15 @@ function openAddProductModal() {
     document.getElementById('editSpecifications').value = '';
     document.getElementById('editImageFile').value = '';
     document.getElementById('currentImageInfo').style.display = 'none';
+    document.getElementById('editCategory').value = '';
+    populateCategorySubcategories('');
     
     // Change submit button text
     form.querySelector('button[type="submit"]').innerHTML = '<i class="bi bi-save"></i> Add Product';
     
     modal.style.display = 'flex';
+    // Scroll modal body back to top so category dropdowns are visible
+    setTimeout(function(){ var b = modal.querySelector('.edit-modal-body'); if(b) b.scrollTop = 0; }, 10);
     // Prevent background scrolling
     document.body.style.overflow = 'hidden';
     document.body.style.paddingRight = '10px';

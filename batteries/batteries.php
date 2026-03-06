@@ -3987,6 +3987,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                             name: name,
                             description: description,
                             brand: brand,
+                            image: card ? card.getAttribute('data-image') || '' : '',
                             qty: 1,
                             timestamp: new Date().getTime()
                         };
@@ -4234,6 +4235,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                             name: name,
                             description: description,
                             brand: brand,
+                            image: card ? card.getAttribute('data-image') || '' : '',
                             qty: 1,
                             timestamp: new Date().getTime()
                         };

@@ -31,6 +31,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($written === false) {
             andison_set_flash('error', 'Unable to save profile. Check permissions.');
         } else {
+            // Sync profile to Supabase
+            require_once __DIR__ . '/../includes/supabase.php';
+            andison_sb_update('admin_users', [
+                'username'   => $newUser,
+                'first_name' => $first,
+                'last_name'  => $last,
+                'email'      => $email,
+            ], 'username=eq.' . rawurlencode($username));
             andison_set_flash('success', 'Profile updated.');
         }
 
@@ -49,7 +57,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        if (!hash_equals($password, $current)) {
+        $currentOk = str_starts_with($password, '$2y$')
+            ? password_verify($current, $password)
+            : hash_equals($password, $current);
+        if (!$currentOk) {
             andison_set_flash('error', 'Current password is incorrect.');
             header('Location: profile.php');
             exit;
@@ -61,8 +72,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        // Update password in config
-        $cfg['password'] = $new;
+        // Update password in config (store as bcrypt hash)
+        $cfg['password'] = password_hash($new, PASSWORD_BCRYPT);
         $out = "<?php\n\nreturn ".var_export($cfg, true).";\n";
         $written = @file_put_contents(__DIR__ . '/config.php', $out, LOCK_EX);
         if ($written === false) {
@@ -72,6 +83,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $cfgTs = andison_admin_config();
             $cfgTs['last_updated'] = time();
             @file_put_contents(__DIR__ . '/config.php', "<?php\n\nreturn " . var_export($cfgTs, true) . ";\n", LOCK_EX);
+            // Sync bcrypt hash to Supabase
+            require_once __DIR__ . '/../includes/supabase.php';
+            andison_sb_update('admin_users', [
+                'password_hash' => $cfg['password'],
+            ], 'username=eq.' . rawurlencode($username));
             andison_set_flash('success', 'Password updated successfully.');
         }
 

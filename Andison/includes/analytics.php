@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/storage.php';
+require_once __DIR__ . '/supabase.php';
 
 define('ANDISON_ANALYTICS_FILE', __DIR__ . '/../data/analytics.json');
 
@@ -110,6 +111,14 @@ function andison_track_visit(string $page = 'unknown'): void
     $data['pages'][$page] = ($data['pages'][$page] ?? 0) + 1;
 
     andison_write_json_file(ANDISON_ANALYTICS_FILE, $data);
+
+    // Mirror visit to Supabase (async — does not block page load)
+    andison_sb_insert_async('analytics', [
+        'session_key' => session_id() ?: uniqid('av_', true),
+        'page'        => $page,
+        'visited_at'  => date('c'),
+        'date_key'    => $today,
+    ]);
 }
 
 /**
@@ -117,13 +126,11 @@ function andison_track_visit(string $page = 'unknown'): void
  */
 function andison_get_analytics(): array
 {
-    $data = andison_read_json_file(ANDISON_ANALYTICS_FILE, []);
-
     $today     = date('Y-m-d');
     $weekStart = date('Y-m-d', strtotime('monday this week'));
     $month     = date('Y-m');
 
-    return array_merge([
+    $defaults = [
         'total_pageviews'  => 0,
         'unique_sessions'  => 0,
         'today_pageviews'  => 0,
@@ -137,7 +144,64 @@ function andison_get_analytics(): array
         'month_key'        => $month,
         'daily'            => [],
         'pages'            => [],
-    ], $data);
+    ];
+
+    // Primary: local JSON file — always up-to-date (written on every visit), instant read.
+    $data = andison_read_json_file(ANDISON_ANALYTICS_FILE, []);
+    if (!empty($data)) {
+        return array_merge($defaults, $data);
+    }
+
+    // Fallback: aggregate from Supabase (for fresh hosted installs with no local JSON yet).
+    $rows = andison_sb_select('analytics', 'limit=10000&order=visited_at.asc');
+    if (!empty($rows)) {
+        $allSk = $todaySk = $weekSk = $monthSk = [];
+        $daily = $brands = $categories = $pages = [];
+        foreach ($rows as $row) {
+            $sk = $row['session_key'] ?? '';
+            $dk = $row['date_key'] ?? substr((string)($row['visited_at'] ?? ''), 0, 10);
+            $bv = $row['brand_viewed'] ?? null;
+            $pg = $row['page'] ?? null;
+            if ($bv !== null && $bv !== '') {
+                $brands[$bv] = ($brands[$bv] ?? 0) + 1;
+                continue;
+            }
+            if (is_string($pg) && str_starts_with($pg, '~cat:')) {
+                $cat = substr($pg, 5);
+                $categories[$cat] = ($categories[$cat] ?? 0) + 1;
+                continue;
+            }
+            if ($sk !== '') $allSk[$sk] = true;
+            $daily[$dk] = ($daily[$dk] ?? 0) + 1;
+            if ($pg !== null && $pg !== '') $pages[$pg] = ($pages[$pg] ?? 0) + 1;
+            if ($dk === $today && $sk !== '') $todaySk[$sk] = true;
+            if ($dk >= $weekStart && $sk !== '') $weekSk[$sk] = true;
+            if (str_starts_with($dk, $month) && $sk !== '') $monthSk[$sk] = true;
+        }
+        $weekPv = 0;
+        foreach ($daily as $dk => $v) { if ($dk >= $weekStart) $weekPv += $v; }
+        $monthPv = 0;
+        foreach ($daily as $dk => $v) { if (str_starts_with($dk, $month)) $monthPv += $v; }
+        return [
+            'total_pageviews'  => array_sum($daily),
+            'unique_sessions'  => count($allSk),
+            'today_pageviews'  => $daily[$today] ?? 0,
+            'today_unique'     => count($todaySk),
+            'today_date'       => $today,
+            'week_pageviews'   => $weekPv,
+            'week_unique'      => count($weekSk),
+            'week_start'       => $weekStart,
+            'month_pageviews'  => $monthPv,
+            'month_unique'     => count($monthSk),
+            'month_key'        => $month,
+            'daily'            => $daily,
+            'pages'            => $pages,
+            'brands'           => $brands,
+            'categories'       => $categories,
+        ];
+    }
+
+    return $defaults;
 }
 
 /**
@@ -180,6 +244,21 @@ function _andison_track_entity(string $type, string $name): void
     $data[$type]        = $data[$type] ?? [];
     $data[$type][$name] = ($data[$type][$name] ?? 0) + 1;
     andison_write_json_file(ANDISON_ANALYTICS_FILE, $data);
+
+    // Mirror to Supabase
+    $sbRow = [
+        'session_key' => session_id() ?: uniqid('ae_', true),
+        'visited_at'  => date('c'),
+        'date_key'    => date('Y-m-d'),
+    ];
+    if ($type === 'brands') {
+        $sbRow['brand_viewed'] = $name;
+        $sbRow['page'] = '';
+    } else {
+        // categories — stored in page field with ~cat: prefix
+        $sbRow['page'] = '~cat:' . $name;
+    }
+    andison_sb_insert_async('analytics', $sbRow); // async — does not block page load
 }
 
 /**

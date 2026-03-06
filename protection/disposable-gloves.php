@@ -3644,6 +3644,7 @@ $category_description = $current_category['description'] ?? 'Discover our compre
                             name: name,
                             description: description,
                             brand: brand,
+                            image: card ? card.getAttribute('data-image') || '' : '',
                             qty: 1,
                             timestamp: new Date().getTime()
                         };
@@ -3891,6 +3892,7 @@ $category_description = $current_category['description'] ?? 'Discover our compre
                             name: name,
                             description: description,
                             brand: brand,
+                            image: card ? card.getAttribute('data-image') || '' : '',
                             qty: 1,
                             timestamp: new Date().getTime()
                         };
