@@ -1,0 +1,37 @@
+# ── Credentials & secrets ─────────────────────────────────────────────────────
+Andison/admin/config.php
+Andison/includes/supabase.php
+
+# ── User-uploaded files (binary, large, not source) ──────────────────────────
+uploads/
+Andison/assets/uploads/
+
+# ── Diagnostic / one-off debug scripts ────────────────────────────────────────
+_check_images.php
+_fix_image_paths.php
+_diagnose_products.php
+_brand_counts.php
+_verify_fix.php
+_dbg.php
+_brand_list.txt
+
+# ── OS & editor noise ─────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+
+# ── VS Code workspace settings (keep extensions list, ignore personal config) ─
+.vscode/*
+!.vscode/extensions.json
+
+# ── PHP error logs & temp files ───────────────────────────────────────────────
+*.log
+error_log
+php_errorlog
+
+# ── Composer (if ever added) ──────────────────────────────────────────────────
+vendor/
+composer.lock
