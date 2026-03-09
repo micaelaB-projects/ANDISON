@@ -1,6 +1,8 @@
 ﻿<?php
 require_once __DIR__ . '/andison/includes/analytics.php';
 andison_track_visit('brand');
+$_btrack = isset($_GET['name']) ? trim(strip_tags($_GET['name'])) : '';
+if ($_btrack) andison_track_brand_visit($_btrack);
 require_once __DIR__ . '/andison/includes/home_featured.php';
 require_once __DIR__ . '/andison/includes/home_slider.php';
 require_once __DIR__ . '/andison/includes/youtube_links.php';

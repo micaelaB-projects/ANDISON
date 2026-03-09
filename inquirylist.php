@@ -107,6 +107,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
         $inquiry_saved = $savedInquiry !== null && !empty($savedInquiry['id']);
 
+        // Generate and save transaction number based on the auto-incremented id
+        $transaction_no = '';
+        if ($inquiry_saved) {
+            $transaction_no = 'AIS-' . str_pad((string)$savedInquiry['id'], 4, '0', STR_PAD_LEFT);
+            andison_sb_update('inquiries', ['transaction_no' => $transaction_no], 'id=eq.' . $savedInquiry['id']);
+        }
+
         if ($inquiry_saved) {
             // Send email notification to company (best-effort)
             andison_send_inquiry_notification([
@@ -117,16 +124,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'address'        => $address,
                 'contact_method' => $contact_method,
                 'message'        => $message,
+                'transaction_no' => $transaction_no,
             ], $cleanItems);
         }
 
         if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
-            $safe_name = time() . '_' . preg_replace('~[^a-zA-Z0-9._-]+~', '_', basename($_FILES['file']['name']));
-            andison_sb_storage_upload_tmp($_FILES['file'], 'inquiry-uploads', $safe_name);
+            $allowed_mime = ['image/jpeg', 'image/png', 'application/pdf'];
+            $max_size     = 10 * 1024 * 1024; // 10 MB
+            $fi   = finfo_open(FILEINFO_MIME_TYPE);
+            $mime = (string)finfo_file($fi, $_FILES['file']['tmp_name']);
+            finfo_close($fi);
+            if (in_array($mime, $allowed_mime, true) && $_FILES['file']['size'] <= $max_size) {
+                $safe_name = time() . '_' . preg_replace('~[^a-zA-Z0-9._-]+~', '_', basename($_FILES['file']['name']));
+                andison_sb_storage_upload_tmp($_FILES['file'], 'inquiry-uploads', $safe_name);
+            }
         }
 
-        $success_message = $inquiry_saved ? "Inquiry submitted successfully! We'll contact you soon." : "Error saving inquiry. Please try again.";
-        echo "<script>alert('" . addslashes($success_message) . "'); if(" . ($inquiry_saved ? 'true' : 'false') . ") { localStorage.removeItem('inquiryItems'); window.location.href='inquirylist.php'; }</script>";
+        $success_message = $inquiry_saved
+            ? "Inquiry submitted successfully! Transaction No: {$transaction_no}. We'll contact you soon."
+            : "Error saving inquiry. Please try again.";
+        // Store popup data — rendered into the page below, shown via JS after DOM loads
+        $popup_inquiry_saved = $inquiry_saved;
+        $popup_transaction_no = $transaction_no;
+        $popup_message = $success_message;
     }
 }
 ?>
@@ -3770,6 +3790,64 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             setInterval(updateCartBadge, 500);
         })();
     </script>
+
+<?php if (!empty($popup_message)): ?>
+<!-- Inquiry Submission Popup -->
+<div id="inq-popup-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:99999;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:20px;box-shadow:0 24px 80px rgba(43,17,219,0.22);max-width:440px;width:90%;padding:0;overflow:hidden;animation:inqPopIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both;">
+        <?php if ($popup_inquiry_saved): ?>
+        <div style="background:linear-gradient(135deg,#2B11DB,#1a0a8f);padding:28px 32px 22px;text-align:center;color:#fff;">
+            <div style="font-size:48px;margin-bottom:10px;">✅</div>
+            <div style="font-size:20px;font-weight:900;letter-spacing:-0.3px;">Inquiry Submitted!</div>
+            <div style="font-size:13px;opacity:0.85;margin-top:4px;">ANDISON INDUSTRIAL</div>
+        </div>
+        <div style="padding:24px 32px;">
+            <div style="text-align:center;margin-bottom:18px;">
+                <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6b7280;margin-bottom:8px;">Transaction Number</div>
+                <div style="display:inline-block;background:rgba(43,17,219,0.08);border:2px solid rgba(43,17,219,0.18);color:#2B11DB;font-size:22px;font-weight:900;letter-spacing:2px;padding:10px 28px;border-radius:12px;"><?php echo htmlspecialchars($popup_transaction_no); ?></div>
+            </div>
+            <p style="text-align:center;color:#6b7280;font-size:14px;line-height:1.6;margin-bottom:22px;">Thank you! We've received your inquiry and will contact you shortly.</p>
+            <button onclick="closeInqPopup()" style="width:100%;padding:14px;background:linear-gradient(135deg,#2B11DB,#1a0a8f);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:900;cursor:pointer;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">OK, Got it!</button>
+        </div>
+        <?php else: ?>
+        <div style="background:linear-gradient(135deg,#ef4444,#b91c1c);padding:28px 32px 22px;text-align:center;color:#fff;">
+            <div style="font-size:48px;margin-bottom:10px;">❌</div>
+            <div style="font-size:20px;font-weight:900;">Submission Failed</div>
+        </div>
+        <div style="padding:24px 32px;">
+            <p style="text-align:center;color:#6b7280;font-size:14px;margin-bottom:22px;">There was an error saving your inquiry. Please try again.</p>
+            <button onclick="closeInqPopup()" style="width:100%;padding:14px;background:#ef4444;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:900;cursor:pointer;">Close</button>
+        </div>
+        <?php endif; ?>
+    </div>
+</div>
+<style>
+@keyframes inqPopIn{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}
+#inq-popup-overlay{display:none}
+#inq-popup-overlay.show{display:flex!important}
+</style>
+<script>
+(function(){
+    var saved = <?php echo $popup_inquiry_saved ? 'true' : 'false'; ?>;
+    var overlay = document.getElementById('inq-popup-overlay');
+    if (overlay) {
+        overlay.classList.add('show');
+    }
+    window.closeInqPopup = function() {
+        if (overlay) overlay.classList.remove('show');
+        if (saved) {
+            localStorage.removeItem('inquiryItems');
+            window.location.href = 'inquirylist.php';
+        }
+    };
+    // Close on backdrop click
+    if (overlay) {
+        overlay.addEventListener('click', function(e){ if(e.target === overlay) closeInqPopup(); });
+    }
+})();
+</script>
+<?php endif; ?>
+
 </body>
 </html>
 

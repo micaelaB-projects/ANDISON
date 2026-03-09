@@ -58,6 +58,7 @@ function andison_send_inquiry_notification(array $data, array $items): void
     $address       = htmlspecialchars($data['address'] ?? '');
     $contact_m     = htmlspecialchars($data['contact_method'] ?? 'email');
     $message       = htmlspecialchars($data['message'] ?? '');
+    $txn_no        = htmlspecialchars($data['transaction_no'] ?? '');
 
     $items_html = '';
     if (!empty($items)) {
@@ -85,10 +86,12 @@ function andison_send_inquiry_notification(array $data, array $items): void
   <div style="background:linear-gradient(135deg,#2B11DB,#1a0a8f);padding:28px 32px;color:#fff;">
     <div style="font-size:22px;font-weight:900;letter-spacing:-0.5px;">📋 New Inquiry Received</div>
     <div style="font-size:14px;opacity:0.85;margin-top:4px;">ANDISON INDUSTRIAL — Website Submission</div>
+    ' . ($txn_no ? '<div style="margin-top:10px;display:inline-block;background:rgba(255,255,255,0.18);padding:5px 16px;border-radius:999px;font-size:13px;font-weight:900;letter-spacing:1px;">' . $txn_no . '</div>' : '') . '
   </div>
   <div style="padding:28px 32px;">
     <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
       <tr><td style="padding:8px 0;font-size:13px;color:#888;width:140px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;">Full Name</td><td style="padding:8px 0;font-size:14px;font-weight:700;color:#111;">' . $fullname . '</td></tr>
+      ' . ($txn_no ? '<tr style="background:#eef0ff;"><td style="padding:8px 0;font-size:13px;color:#2B11DB;width:140px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;">Transaction No</td><td style="padding:8px 0;font-size:14px;font-weight:900;color:#2B11DB;">' . $txn_no . '</td></tr>' : '') . '
       <tr style="background:#f9fafb;"><td style="padding:8px 6px;font-size:13px;color:#888;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;">Company</td><td style="padding:8px 6px;font-size:14px;color:#111;">' . ($company ?: '—') . '</td></tr>
       <tr><td style="padding:8px 0;font-size:13px;color:#888;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;">Email</td><td style="padding:8px 0;font-size:14px;"><a href="mailto:' . $email . '" style="color:#2B11DB;">' . $email . '</a></td></tr>
       <tr style="background:#f9fafb;"><td style="padding:8px 6px;font-size:13px;color:#888;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;">Phone</td><td style="padding:8px 6px;font-size:14px;color:#111;">' . ($phone ?: '—') . '</td></tr>
@@ -113,7 +116,7 @@ function andison_send_inquiry_notification(array $data, array $items): void
 
     andison_send_mail(
         MAIL_NOTIFY_TO,
-        'New Inquiry from ' . ($data['fullname'] ?? 'a customer') . ' — ANDISON INDUSTRIAL',
+        ($txn_no ? '[' . $txn_no . '] ' : '') . 'New Inquiry from ' . ($data['fullname'] ?? 'a customer') . ' — ANDISON INDUSTRIAL',
         $body,
         $data['email'] ?? ''
     );

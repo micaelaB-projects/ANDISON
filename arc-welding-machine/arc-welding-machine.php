@@ -4,11 +4,13 @@ declare(strict_types=1);
 require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
+require_once __DIR__ . '/../andison/includes/analytics.php';
 
 // Update page name and subcategory
 $page_title = "Arc Welding Machine";
 $category_id = "arc-welding-machine";
 $subcategory_id = "arc-welding-machine";
+andison_track_visit('category'); andison_track_category_visit($category_id);
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";

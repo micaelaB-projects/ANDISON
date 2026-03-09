@@ -78,9 +78,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_locked) {
                 // Sync last_login to Supabase
                 require_once __DIR__ . '/../includes/supabase.php';
                 andison_sb_update('admin_users', ['last_login' => date('c')], 'username=eq.' . rawurlencode($username));
-                // Regenerate session ID after successful login
-                session_regenerate_id(true);
-                header('Location: ' . $next);
+                // Write session before regenerating to prevent data loss
+                session_write_close();
+                session_name('ANDISON_ADMIN');
+                session_start();
+                $_SESSION['andison_admin'] = true;
+                $_SESSION['andison_admin_user'] = $username;
+                session_regenerate_id(false);
+                // Build absolute redirect URL
+                $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+                $host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
+                $dir    = rtrim(dirname($_SERVER['PHP_SELF']), '/');
+                header('Location: ' . $scheme . '://' . $host . $dir . '/' . $next);
                 exit;
             } else {
                 // Increment failed attempts

@@ -109,6 +109,7 @@ andison_admin_header('Inquiries', 'inquiries');
 <?php foreach ($inquiries as $inq):
     $inqId     = (int)($inq['id'] ?? 0);
     $status    = htmlspecialchars($inq['status'] ?? 'new');
+    $txnNo     = htmlspecialchars($inq['transaction_no'] ?? ('AIS-' . str_pad((string)$inqId, 4, '0', STR_PAD_LEFT)));
     $fullname  = htmlspecialchars($inq['fullname'] ?? '');
     $company   = htmlspecialchars($inq['company'] ?? '');
     $email     = htmlspecialchars($inq['email'] ?? '');
@@ -133,6 +134,7 @@ andison_admin_header('Inquiries', 'inquiries');
     <div class="inq-header">
         <div>
             <div class="inq-name"><?php echo $fullname; ?></div>
+            <div style="font-size:12px;font-weight:900;color:var(--accent);letter-spacing:0.5px;margin-bottom:4px;"><?php echo $txnNo; ?></div>
             <?php if ($company): ?><div class="inq-company"><i class="bi bi-building" style="font-size:12px"></i> <?php echo $company; ?></div><?php endif; ?>
             <div class="inq-meta">
                 <?php if ($email): ?><span><i class="bi bi-envelope"></i> <a href="mailto:<?php echo $email; ?>" style="color:inherit;text-decoration:none;"><?php echo $email; ?></a></span><?php endif; ?>

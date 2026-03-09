@@ -192,6 +192,7 @@ function andison_admin_header(string $title, string $active = 'dashboard'): void
             <div class="options-bottom" style="width:100%;">
                 <div class="options-header">Options</div>
                 <a class="nav option <?php echo $active === 'profile' ? 'active' : ''; ?>" href="profile.php"><i class="bi bi-person"></i><span>Account</span></a>
+                <a class="nav option" href="logout.php" onclick="return confirm('Are you sure you want to log out?')" style="color:rgba(255,100,100,0.90);"><i class="bi bi-box-arrow-right"></i><span>Logout</span></a>
             </div>
         </div>
     </aside>

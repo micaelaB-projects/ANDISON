@@ -50,69 +50,7 @@ function andison_track_visit(string $page = 'unknown'): void
         $counted = true;
     }
 
-    $data = andison_read_json_file(ANDISON_ANALYTICS_FILE, []);
-
-    // ── Structural defaults ────────────────────────────────────────
-    $data += [
-        'total_pageviews'   => 0,
-        'unique_sessions'   => 0,
-        'today_pageviews'   => 0,
-        'today_unique'      => 0,
-        'today_date'        => $today,
-        'week_pageviews'    => 0,
-        'week_unique'       => 0,
-        'week_start'        => $weekStart,
-        'month_pageviews'   => 0,
-        'month_unique'      => 0,
-        'month_key'         => $month,
-        'daily'             => [],
-        'pages'             => [],
-    ];
-
-    // ── Reset today counters if date changed ──────────────────────
-    if ($data['today_date'] !== $today) {
-        $data['today_pageviews'] = 0;
-        $data['today_unique']    = 0;
-        $data['today_date']      = $today;
-    }
-
-    // ── Reset week counters if new week ───────────────────────────
-    if ($data['week_start'] !== $weekStart) {
-        $data['week_pageviews'] = 0;
-        $data['week_unique']    = 0;
-        $data['week_start']     = $weekStart;
-    }
-
-    // ── Reset month counters if new month ─────────────────────────
-    if ($data['month_key'] !== $month) {
-        $data['month_pageviews'] = 0;
-        $data['month_unique']    = 0;
-        $data['month_key']       = $month;
-    }
-
-    // ── Count this visit ONCE per browser session per day ─────────
-    $data['total_pageviews']++;
-    $data['today_pageviews']++;
-    $data['week_pageviews']++;
-    $data['month_pageviews']++;
-    $data['unique_sessions']++;
-    $data['today_unique']++;
-    $data['week_unique']++;
-    $data['month_unique']++;
-
-    // Daily visitor breakdown (keep last 30 days)
-    $data['daily'][$today] = ($data['daily'][$today] ?? 0) + 1;
-    if (count($data['daily']) > 30) {
-        ksort($data['daily']);
-        $data['daily'] = array_slice($data['daily'], -30, 30, true);
-    }
-
-    // Entry-page tracking (which page the visitor first landed on)
-    $data['pages'][$page] = ($data['pages'][$page] ?? 0) + 1;
-
-    andison_write_json_file(ANDISON_ANALYTICS_FILE, $data);
-
-    // Mirror visit to Supabase (async — does not block page load)
+    // Write visit to Supabase (async — does not block page load)
     andison_sb_insert_async('analytics', [
         'session_key' => session_id() ?: uniqid('av_', true),
         'page'        => $page,
@@ -146,13 +84,7 @@ function andison_get_analytics(): array
         'pages'            => [],
     ];
 
-    // Primary: local JSON file — always up-to-date (written on every visit), instant read.
-    $data = andison_read_json_file(ANDISON_ANALYTICS_FILE, []);
-    if (!empty($data)) {
-        return array_merge($defaults, $data);
-    }
-
-    // Fallback: aggregate from Supabase (for fresh hosted installs with no local JSON yet).
+    // Aggregate all data directly from Supabase.
     $rows = andison_sb_select('analytics', 'limit=10000&order=visited_at.asc');
     if (!empty($rows)) {
         $allSk = $todaySk = $weekSk = $monthSk = [];
@@ -233,21 +165,21 @@ function _andison_track_entity(string $type, string $name): void
         session_start();
     }
 
-    $sessionKey = 'ae_' . $type . '_' . md5($name) . '_' . date('Y-m-d');
+    // Deduplicate per browser session (no date — the browser session closes and reopens naturally).
+    // Old key included a date suffix which caused stuck dedup across tests on the same day.
+    $sessionKey = 'ae_' . $type . '_' . md5($name);
 
     if (session_status() === PHP_SESSION_ACTIVE) {
         if (!empty($_SESSION[$sessionKey])) return;
         $_SESSION[$sessionKey] = 1;
     }
 
-    $data = andison_read_json_file(ANDISON_ANALYTICS_FILE, []);
-    $data[$type]        = $data[$type] ?? [];
-    $data[$type][$name] = ($data[$type][$name] ?? 0) + 1;
-    andison_write_json_file(ANDISON_ANALYTICS_FILE, $data);
-
-    // Mirror to Supabase
+    // Write to Supabase (async — does not block page load)
+    // Use entity-specific session key so it never collides with the generic page-visit
+    // row (which uses bare session_id()). Without this, ignore-duplicates silently drops it.
+    $entitySessionKey = (session_id() ?: uniqid('ae_', true)) . '_' . $type[0] . '_' . substr(md5($name), 0, 8);
     $sbRow = [
-        'session_key' => session_id() ?: uniqid('ae_', true),
+        'session_key' => $entitySessionKey,
         'visited_at'  => date('c'),
         'date_key'    => date('Y-m-d'),
     ];

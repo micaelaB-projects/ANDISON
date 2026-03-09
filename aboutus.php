@@ -3152,9 +3152,23 @@ $ytLinks = andison_get_youtube_links();
 
 
     <script>
+        // Mobile FAB toggle for mini sidebar
+        (function() {
+            var fab = document.getElementById('mobileSidebarFab');
+            var sidebar = document.getElementById('miniSidebar');
+            var fabIcon = document.getElementById('mobileFabIcon');
+            if (!fab || !sidebar) return;
 
             function isMobile() { return window.innerWidth <= 768; }
 
+            function syncFab() {
+                if (!isMobile()) { fab.classList.remove('open', 'wide'); return; }
+                var isOpen = sidebar.classList.contains('mobile-visible');
+                var isExpanded = sidebar.classList.contains('expanded');
+                fab.classList.toggle('open', isOpen);
+                fab.classList.toggle('wide', isOpen && isExpanded);
+                fabIcon.className = isOpen ? 'bi bi-chevron-left' : 'bi bi-chevron-right';
+            }
 
             fab.addEventListener('click', function(e) {
                 e.stopPropagation();

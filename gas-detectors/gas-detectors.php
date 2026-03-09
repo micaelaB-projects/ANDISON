@@ -4,11 +4,13 @@ declare(strict_types=1);
 require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../andison/includes/categories_info.php';
 require_once __DIR__ . '/../andison/includes/products_management.php';
+require_once __DIR__ . '/../andison/includes/analytics.php';
 
 // Set category and subcategory for Gas Detectors
 $page_title = "Gas Detectors";
 $category_id = "gas-detectors";
 $subcategory_id = "gas-detectors";
+andison_track_visit('category'); andison_track_category_visit($category_id);
 
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";

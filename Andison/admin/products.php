@@ -36,7 +36,8 @@ function andison_handle_multi_image_upload(): array
     if (!is_array($existing)) $existing = [];
     while (count($existing) < 5) $existing[] = '';
 
-    $allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'];
+    $allowed_ext  = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'];
+    $allowed_mime = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
     $result  = [];
 
     for ($i = 0; $i < 5; $i++) {
@@ -46,7 +47,10 @@ function andison_handle_multi_image_upload(): array
         if (!empty($_FILES[$fieldName]) && $_FILES[$fieldName]['error'] === UPLOAD_ERR_OK) {
             $f   = $_FILES[$fieldName];
             $ext = strtolower(pathinfo((string)($f['name'] ?? ''), PATHINFO_EXTENSION));
-            if (in_array($ext, $allowed, true)) {
+            $fi   = finfo_open(FILEINFO_MIME_TYPE);
+            $mime = (string)finfo_file($fi, $f['tmp_name']);
+            finfo_close($fi);
+            if (in_array($ext, $allowed_ext, true) && in_array($mime, $allowed_mime, true)) {
                 $base     = andison_safe_filename(pathinfo((string)($f['name'] ?? ''), PATHINFO_FILENAME));
                 $destName = $base . '_' . date('Ymd_His') . '_' . $i . '.' . $ext;
                 $url      = andison_sb_storage_upload_tmp($f, 'product-images', $destName);

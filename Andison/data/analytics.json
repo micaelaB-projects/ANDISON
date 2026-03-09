@@ -1,14 +1,14 @@
 {
-    "total_pageviews": 28,
-    "unique_sessions": 28,
-    "today_pageviews": 2,
-    "today_unique": 2,
-    "today_date": "2026-03-05",
-    "week_pageviews": 4,
-    "week_unique": 4,
-    "week_start": "2026-03-02",
-    "month_pageviews": 4,
-    "month_unique": 4,
+    "total_pageviews": 31,
+    "unique_sessions": 31,
+    "today_pageviews": 3,
+    "today_unique": 3,
+    "today_date": "2026-03-09",
+    "week_pageviews": 3,
+    "week_unique": 3,
+    "week_start": "2026-03-09",
+    "month_pageviews": 7,
+    "month_unique": 7,
     "month_key": "2026-03",
     "daily": {
         "2026-02-19": 2,
@@ -20,14 +20,16 @@
         "2026-02-27": 1,
         "2026-03-02": 1,
         "2026-03-03": 1,
-        "2026-03-05": 2
+        "2026-03-05": 2,
+        "2026-03-09": 3
     },
     "pages": {
         "home": 12,
         "industries": 1,
         "brand": 12,
         "about": 1,
-        "services": 2
+        "services": 2,
+        "brands": 3
     },
     "brands": {
         "Metrode": 5,
