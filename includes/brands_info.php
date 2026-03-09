@@ -42,8 +42,20 @@ if (!function_exists('_andison_products_by_brand_from_json')) {
 if (!function_exists('andison_get_brands_info')) {
     function andison_get_brands_info(): array
     {
-        $brands      = andison_sb_select('brands', 'order=name');
-        $allProducts = andison_sb_select('products', 'select=*&limit=10000');
+        // ── 5-minute file cache ────────────────────────────────────────────
+        $cacheFile = __DIR__ . '/../Andison/data/_cache/brands_full.cache';
+        if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < 300) {
+            $cached = @unserialize((string)file_get_contents($cacheFile));
+            if (is_array($cached) && !empty($cached)) return $cached;
+        }
+
+        // ── Parallel Supabase fetch ────────────────────────────────────────
+        $fetched     = andison_sb_select_multi([
+            'brands'   => 'brands?order=name',
+            'products' => 'products?select=*&limit=10000',
+        ]);
+        $brands      = $fetched['brands'];
+        $allProducts = $fetched['products'];
 
         $sbByLower  = [];
         $sbOrigCase = [];
@@ -102,6 +114,10 @@ if (!function_exists('andison_get_brands_info')) {
             if (isset($processed[$lk])) continue;
             $result[$info['name']] = ['description' => '', 'products' => $info['products']];
         }
+
+        // ── Write cache ───────────────────────────────────────────────────
+        @mkdir(dirname($cacheFile), 0755, true);
+        @file_put_contents($cacheFile, serialize($result), LOCK_EX);
 
         return $result;
     }

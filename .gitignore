@@ -3,6 +3,9 @@ Andison/admin/config.php
 Andison/includes/supabase.php
 Andison/includes/mailer_config.php
 
+# ── Runtime cache (auto-generated, not source) ────────────────────────────────
+Andison/data/_cache/*.cache
+
 # ── User-uploaded files (binary, large, not source) ──────────────────────────
 uploads/
 Andison/assets/uploads/

@@ -8,7 +8,20 @@ require_once __DIR__ . '/supabase.php';
 if (!function_exists('andison_get_brands_info')) {
     function andison_get_brands_info(): array
     {
-        $brands = andison_sb_select('brands', 'order=name');
+        // ── 5-minute file cache ────────────────────────────────────────────
+        $cacheFile = dirname(__DIR__) . '/data/_cache/brands_full.cache';
+        if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < 300) {
+            $cached = @unserialize((string)file_get_contents($cacheFile));
+            if (is_array($cached) && !empty($cached)) return $cached;
+        }
+
+        // ── Parallel Supabase fetch ────────────────────────────────────────
+        $fetched     = andison_sb_select_multi([
+            'brands'   => 'brands?order=name',
+            'products' => 'products?select=*&limit=10000',
+        ]);
+        $brands      = $fetched['brands'];
+        $allProducts = $fetched['products'];
 
         if (empty($brands)) {
             $dataFile = dirname(__DIR__) . '/data/brands_info.json';
@@ -16,8 +29,7 @@ if (!function_exists('andison_get_brands_info')) {
             return (is_array($loaded) && !empty($loaded)) ? $loaded : [];
         }
 
-        // Fetch ALL products and group by brand — lowercase key for case-insensitive matching
-        $allProducts = andison_sb_select('products', 'select=*&limit=10000');
+        // Group by brand — lowercase key for case-insensitive matching
 
         $sbByLower  = [];
         $sbOrigCase = [];
@@ -58,6 +70,10 @@ if (!function_exists('andison_get_brands_info')) {
             $nm = $sbOrigCase[$lk];
             $result[$nm] = ['description' => '', 'products' => $prods];
         }
+
+        // ── Write cache ───────────────────────────────────────────────────
+        @mkdir(dirname($cacheFile), 0755, true);
+        @file_put_contents($cacheFile, serialize($result), LOCK_EX);
 
         return $result;
     }
@@ -113,7 +129,10 @@ if (!function_exists('andison_save_single_brand')) {
             $ok = andison_sb_insert('products', $productRows);
         }
 
-        // ── 3. Update local JSON cache for this brand ─────────────────────────
+        // ── 3. Bust page cache so next load re-fetches from Supabase ──────────
+        @unlink(dirname(__DIR__) . '/data/_cache/brands_full.cache');
+
+        // ── 4. Update local JSON cache for this brand ─────────────────────────
         $dataFile = dirname(__DIR__) . '/data/brands_info.json';
         $cached   = andison_read_json_file($dataFile, []);
         if (!is_array($cached)) $cached = [];
