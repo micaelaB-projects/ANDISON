@@ -20,6 +20,21 @@ function andison_get_products_for_subcategory(string $categoryId, string $subcat
             if (!isset($row['specs']) && isset($row['specifications'])) {
                 $row['specs'] = $row['specifications'];
             }
+            // Decode images JSON string from Supabase into a PHP array
+            if (isset($row['images']) && is_string($row['images'])) {
+                $decoded = json_decode($row['images'], true);
+                if (is_array($decoded)) {
+                    $row['images'] = $decoded;
+                    // Ensure image (single) reflects first element
+                    if (empty($row['image']) && !empty($decoded[0])) {
+                        $row['image'] = $decoded[0];
+                    }
+                } else {
+                    $row['images'] = $row['image'] ? [$row['image']] : [];
+                }
+            } elseif (!isset($row['images'])) {
+                $row['images'] = $row['image'] ? [$row['image']] : [];
+            }
             return $row;
         }, $rows);
     }
@@ -58,10 +73,18 @@ function andison_save_products_for_subcategory(string $categoryId, string $subca
 
     $rows = [];
     foreach ($products as $product) {
-        $rows[] = array_merge($product, [
+        $row = array_merge($product, [
             'category_id'    => $categoryId,
             'subcategory_id' => $subcategoryId,
         ]);
+        // JSON-encode images array for Supabase text column
+        // (requires: ALTER TABLE products ADD COLUMN IF NOT EXISTS images text;)
+        if (isset($row['images']) && is_array($row['images'])) {
+            $row['images'] = json_encode(array_values($row['images']));
+        } elseif (!isset($row['images'])) {
+            unset($row['images']); // omit if not present — avoids column-not-exist error
+        }
+        $rows[] = $row;
     }
 
     return andison_sb_insert('products', $rows);
@@ -98,23 +121,14 @@ function andison_admin_store_product_image(array $f, string $categoryId, string 
     if (!in_array($ext, $allowed, true)) {
         return null;
     }
-    
-    $targetDir = __DIR__ . '/../assets/uploads/products/' . urlencode($categoryId) . '/' . urlencode($subcategoryId);
-    if (!is_dir($targetDir)) {
-        mkdir($targetDir, 0755, true);
-    }
-    
-    $uniqId = bin2hex(random_bytes(4));
+
+    $uniqId    = bin2hex(random_bytes(4));
     $timestamp = date('YmdHis');
-    $name = preg_replace('~[^a-z0-9._-]+~', '_', strtolower(pathinfo((string)($f['name'] ?? ''), PATHINFO_FILENAME))) ?? 'image';
-    $filename = $name . '_' . $timestamp . '_' . $uniqId . '.' . $ext;
-    $path = $targetDir . '/' . $filename;
-    
-    if (!move_uploaded_file((string)($f['tmp_name'] ?? ''), $path)) {
-        return null;
-    }
-    
-    return 'andison/assets/uploads/products/' . urlencode($categoryId) . '/' . urlencode($subcategoryId) . '/' . $filename;
+    $name      = preg_replace('~[^a-z0-9._-]+~', '_', strtolower(pathinfo((string)($f['name'] ?? ''), PATHINFO_FILENAME))) ?? 'image';
+    $filename  = $name . '_' . $timestamp . '_' . $uniqId . '.' . $ext;
+
+    $storagePath = urlencode($categoryId) . '/' . urlencode($subcategoryId) . '/' . $filename;
+    return andison_sb_storage_upload_tmp($f, 'product-images', $storagePath);
 }
 
 

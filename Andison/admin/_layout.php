@@ -180,6 +180,12 @@ function andison_admin_header(string $title, string $active = 'dashboard'): void
             <a href="featured.php" class="<?php echo $active === 'featured' ? 'active' : ''; ?>"><i class="bi bi-star"></i> Homepage Featured</a>
             <a href="slider.php" class="<?php echo $active === 'slider' ? 'active' : ''; ?>"><i class="bi bi-images"></i> Homepage Slider</a>
             <a href="youtube.php" class="<?php echo $active === 'youtube' ? 'active' : ''; ?>"><i class="bi bi-youtube"></i> YouTube Links</a>
+            <a href="inquiries.php" class="<?php echo $active === 'inquiries' ? 'active' : ''; ?>" id="nav-inquiries"><i class="bi bi-envelope-paper"></i> Inquiries<?php
+                // Show unread badge
+                require_once __DIR__ . '/../includes/supabase.php';
+                $unread = andison_sb_select('inquiries', 'status=eq.new&select=id');
+                $unreadCount = count($unread);
+                if ($unreadCount > 0): ?> <span style="background:rgba(239,68,68,0.85);color:#fff;font-size:11px;font-weight:900;padding:2px 7px;border-radius:999px;margin-left:auto;"><?php echo $unreadCount; ?></span><?php endif; ?></a>
         </nav>
 
         <div class="bottom">

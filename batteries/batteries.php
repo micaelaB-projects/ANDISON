@@ -3386,7 +3386,8 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                         // Auto-detect multiple images from filesystem (like brand.php does)
                         // Use parent directory since batteries.php is in a subdirectory
                         $baseDir = dirname(__DIR__);
-                        $product_images = andison_auto_images($image_src, [], $baseDir);
+                        $explicit_imgs = is_array($product['images'] ?? null) ? array_values(array_filter($product['images'])) : [];
+                        $product_images = andison_auto_images($image_src, $explicit_imgs, $baseDir);
                         
                         // Ensure first image is set for display
                         if (!$image_src && !empty($product_images[0])) {
@@ -3416,7 +3417,9 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                         <?php if (!empty($description)): ?>
                             <p class="product-description"><?php echo $description; ?></p>
                         <?php endif; ?>
-                        <button class="add-to-inquiry" type="button">ADD TO INQUIRY LIST</button>
+                        <button class="add-to-inquiry" type="button"
+                            data-model="<?php echo $model; ?>"
+                            data-brand="<?php echo $brand; ?>">ADD TO INQUIRY LIST</button>
                     </div>
                 </div>
                         <?php
@@ -3933,6 +3936,8 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
 
             // Re-attach event listeners to visible product buttons
             attachProductButtonListeners();
+            // Init card-level image sliders for newly visible cards
+            if (typeof window.initCardSliders === 'function') setTimeout(window.initCardSliders, 50);
         }
 
         // ============================================
@@ -4073,204 +4078,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             }
         }
 
-        // ============================================
-        // PRODUCT MODAL FUNCTIONALITY
-        // ============================================
-        var modal = document.getElementById('productModal');
-        var modalClose = document.getElementById('modalClose');
-        var modalCloseBtn = document.getElementById('modalCloseBtn');
-        var currentProduct = null;
-        var currentMediaIndex = 0;
-
-        function openProductModal(cardElement) {
-            console.log('openProductModal called with:', cardElement);
-            
-            var modelEl = cardElement.querySelector('.product-model');
-            var descEl  = cardElement.querySelector('.product-description');
-            var model       = modelEl ? modelEl.textContent.trim() : (cardElement.querySelector('.add-to-inquiry')?.getAttribute('data-model') || '');
-            var name        = cardElement.querySelector('h4')?.textContent?.trim() || model;
-            var imgSrc      = cardElement.querySelector('.product-image img')?.src || '';
-            var description = descEl ? descEl.textContent.trim() : (cardElement.querySelector('.add-to-inquiry')?.getAttribute('data-type') || 'Industrial product');
-            
-            console.log('Product data:', {model, name, imgSrc, description});
-            
-            // Populate modal
-            document.getElementById('modalProductName').textContent = name;
-            document.getElementById('modalProductType').textContent = model;
-            document.getElementById('modalDescription').textContent = description;
-            
-            // Set up media slider
-            var mediaSlider = document.getElementById('mediaSlider');
-            mediaSlider.innerHTML = '';
-            
-            var mediaItem = document.createElement('div');
-            mediaItem.className = 'media-item active';
-            var img = document.createElement('img');
-            img.src = imgSrc;
-            img.alt = name;
-            mediaItem.appendChild(img);
-            mediaSlider.appendChild(mediaItem);
-            
-            // Setup media dots
-            var mediaDots = document.getElementById('mediaDots');
-            mediaDots.innerHTML = '<div class="media-dot active"></div>';
-            
-            // Set specs
-            var specsList = document.getElementById('modalSpecs');
-            specsList.innerHTML = `
-                <li><strong>Category:</strong> Arc Welding Equipment</li>
-                <li><strong>Model:</strong> ${model}</li>
-                <li><strong>Type:</strong> Professional Grade</li>
-                <li><strong>Support:</strong> 24/7 Technical Support</li>
-            `;
-            
-            // Store current product
-            currentProduct = {
-                model: model,
-                name: name,
-                description: description
-            };
-            
-            currentMediaIndex = 0;
-            console.log('Adding active class to modal. Modal element:', modal);
-            modal.classList.add('active');
-            console.log('Modal classList after add:', modal.classList);
-        }
-
-        function closeModal() {
-            modal.classList.remove('active');
-        }
-
-        // Add click listeners to all product cards
-        document.addEventListener('DOMContentLoaded', function() {
-            // Modal controls are now initialized here
-            // Product card clicks use event delegation (see above)
-
-            // Modal controls
-            modalClose.addEventListener('click', closeModal);
-            modalCloseBtn.addEventListener('click', closeModal);
-            
-            // Close on overlay click
-            modal.addEventListener('click', function(e) {
-                if(e.target === modal) {
-                    closeModal();
-                }
-            });
-
-            // Close on Escape key
-            document.addEventListener('keydown', function(e) {
-                if(e.key === 'Escape' && modal.classList.contains('active')) {
-                    closeModal();
-                }
-            });
-
-            // Modal inquiry button
-            document.getElementById('modalInquiryBtn').addEventListener('click', function() {
-                if(currentProduct) {
-                    var items = JSON.parse(localStorage.getItem('inquiryItems') || '[]');
-                    var found = items.find(function(i) { 
-                        return i.model === currentProduct.model && i.name === currentProduct.name; 
-                    });
-                    
-                    if(!found) {
-                        var product = {
-                            model: currentProduct.model,
-                            name: currentProduct.name,
-                            description: currentProduct.description,
-                            qty: 1,
-                            timestamp: new Date().getTime()
-                        };
-                        items.push(product);
-                        localStorage.setItem('inquiryItems', JSON.stringify(items));
-                        
-                        // Show success message
-                        this.innerHTML = '<i class="bi bi-check-circle"></i> Added ✓';
-                        this.style.background = 'linear-gradient(135deg, #10B981 0%, #059669 100%)';
-                        
-                        // Dispatch event to update badge
-                        window.dispatchEvent(new Event('inquiryItemsUpdated'));
-                        
-                        // Reset button after 1.5 seconds and close modal
-                        var self = this;
-                        setTimeout(function() {
-                            self.innerHTML = '<i class="bi bi-plus-circle"></i> ADD TO INQUIRY LIST';
-                            self.style.background = '';
-                            closeModal();
-                        }, 1500);
-                    } else {
-                        // Already added
-                        this.innerHTML = '<i class="bi bi-check-circle"></i> Already in List ✓';
-                        this.style.background = 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)';
-                        
-                        var self = this;
-                        setTimeout(function() {
-                            self.innerHTML = '<i class="bi bi-plus-circle"></i> ADD TO INQUIRY LIST';
-                            self.style.background = '';
-                        }, 1500);
-                    }
-                }
-            });
-
-            // Regular product card buttons
-            document.querySelectorAll('.product-grid .add-to-inquiry').forEach(function(btn) {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    
-                    var model = this.getAttribute('data-model') || '';
-                    var brand = this.getAttribute('data-brand') || '';
-                    var card = this.closest('.product-card');
-                    var h4el = card ? card.querySelector('h4') : null;
-                    var descel = card ? card.querySelector('.product-description') : null;
-                    var name = (h4el ? h4el.textContent.trim() : '') || this.getAttribute('data-type') || model;
-                    var description = (descel ? descel.textContent.trim() : '') || this.getAttribute('data-type') || 'Industrial product';
-                    
-                    var items = JSON.parse(localStorage.getItem('inquiryItems') || '[]');
-                    var found = items.find(function(i) { 
-                        return i.model === model && i.name === name; 
-                    });
-                    
-                    if(!found) {
-                        var product = {
-                            model: model,
-                            name: name,
-                            description: description,
-                            brand: brand,
-                            image: card ? card.getAttribute('data-image') || '' : '',
-                            qty: 1,
-                            timestamp: new Date().getTime()
-                        };
-                        items.push(product);
-                        localStorage.setItem('inquiryItems', JSON.stringify(items));
-                        
-                        // Show success animation
-                        var originalText = this.innerHTML;
-                        this.innerHTML = '<i class="bi bi-check-circle"></i> Added ✓';
-                        this.style.background = 'linear-gradient(135deg, #10B981 0%, #059669 100%)';
-                        
-                        // Dispatch event to update badge
-                        window.dispatchEvent(new Event('inquiryItemsUpdated'));
-                        
-                        // Reset after 1.5 seconds
-                        var self = this;
-                        setTimeout(function() {
-                            self.innerHTML = originalText;
-                            self.style.background = '';
-                        }, 1500);
-                    } else {
-                        // Already added
-                        var originalText = this.innerHTML;
-                        this.innerHTML = '<i class="bi bi-check-circle"></i> Added ✓';
-                        this.style.background = 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)';
-                        
-                        var self = this;
-                        setTimeout(function() {
-                            self.innerHTML = originalText;
-                            self.style.background = '';
-                        }, 1500);
-                    }
-                });
-            });
-        });
+        // openProductModal is provided by includes/product_modal.php (loaded below)
     </script>
 
 <script>var CATEGORY_NAME = '<?php echo htmlspecialchars($category_name ?? 'Category', ENT_QUOTES); ?>';</script>

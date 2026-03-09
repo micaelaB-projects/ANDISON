@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $items = json_decode($items_json, true) ?: [];
 
         // Build email content
-        $to = 'lizette.macalindol@gmail.com';
+        $to = 'ceddreyes21@gmail.com';
         $subject = 'New Inquiry Form Submission from ' . $fullname;
 
         $items_list = '';
@@ -84,10 +84,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $headers .= "From: " . $email . "\r\n";
         $headers .= "Reply-To: " . $email . "\r\n";
 
-        $mail_sent = mail($to, $subject, $body, $headers);
-
-        // Save inquiry to Supabase
+        // Save inquiry to Supabase (primary — determines success)
         require_once __DIR__ . '/Andison/includes/supabase.php';
+        require_once __DIR__ . '/Andison/includes/mailer.php';
+        $cleanItems = [];
+        foreach ($items as $item) {
+            $cleanItems[] = [
+                'name'  => $item['name'] ?? '',
+                'brand' => $item['brand'] ?? '',
+                'qty'   => (int)($item['qty'] ?? 1),
+            ];
+        }
         $savedInquiry = andison_sb_insert_returning('inquiries', [
             'fullname'       => $fullname,
             'company'        => $company,
@@ -96,33 +103,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'address'        => $address,
             'contact_method' => $contact_method,
             'message'        => $message,
+            'items'          => json_encode($cleanItems),
         ]);
-        if ($savedInquiry !== null && !empty($savedInquiry['id'])) {
-            $itemRows = [];
-            foreach ($items as $item) {
-                $itemRows[] = [
-                    'inquiry_id' => $savedInquiry['id'],
-                    'name'       => $item['name'] ?? '',
-                    'brand'      => $item['brand'] ?? '',
-                    'qty'        => (int)($item['qty'] ?? 1),
-                ];
-            }
-            if (!empty($itemRows)) {
-                andison_sb_insert('inquiry_items', $itemRows);
-            }
+        $inquiry_saved = $savedInquiry !== null && !empty($savedInquiry['id']);
+
+        if ($inquiry_saved) {
+            // Send email notification to company (best-effort)
+            andison_send_inquiry_notification([
+                'fullname'       => $fullname,
+                'company'        => $company,
+                'email'          => $email,
+                'phone'          => $phone,
+                'address'        => $address,
+                'contact_method' => $contact_method,
+                'message'        => $message,
+            ], $cleanItems);
         }
 
         if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
-            $upload_dir = 'uploads/';
-            if (!is_dir($upload_dir)) { mkdir($upload_dir, 0755, true); }
-            $file_tmp = $_FILES['file']['tmp_name'];
-            $file_name = basename($_FILES['file']['name']);
-            $file_path = $upload_dir . time() . '_' . $file_name;
-            move_uploaded_file($file_tmp, $file_path);
+            $safe_name = time() . '_' . preg_replace('~[^a-zA-Z0-9._-]+~', '_', basename($_FILES['file']['name']));
+            andison_sb_storage_upload_tmp($_FILES['file'], 'inquiry-uploads', $safe_name);
         }
 
-        $success_message = $mail_sent ? "Inquiry submitted successfully! We'll contact you soon." : "Error sending inquiry. Please try again.";
-        echo "<script>alert('" . addslashes($success_message) . "'); if(" . ($mail_sent ? 'true' : 'false') . ") { localStorage.removeItem('inquiryItems'); window.location.href='inquirylist.php'; }</script>";
+        $success_message = $inquiry_saved ? "Inquiry submitted successfully! We'll contact you soon." : "Error saving inquiry. Please try again.";
+        echo "<script>alert('" . addslashes($success_message) . "'); if(" . ($inquiry_saved ? 'true' : 'false') . ") { localStorage.removeItem('inquiryItems'); window.location.href='inquirylist.php'; }</script>";
     }
 }
 ?>

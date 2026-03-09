@@ -24,40 +24,45 @@ function andison_safe_filename(string $name): string
     return $name !== '' ? $name : 'file';
 }
 
-function andison_handle_product_upload(string $fieldName = 'image_file'): string
+/**
+ * Handle up to 5 product images (image_file_0 … image_file_4).
+ * existing_images POST param is a JSON array of current URLs to keep per slot.
+ * Returns array of image URLs (empty slots are omitted).
+ */
+function andison_handle_multi_image_upload(): array
 {
-    if (empty($_FILES[$fieldName]) || !is_array($_FILES[$fieldName])) {
-        return '';
-    }
+    $existingJson = isset($_POST['existing_images']) ? trim((string)$_POST['existing_images']) : '[]';
+    $existing     = json_decode($existingJson, true);
+    if (!is_array($existing)) $existing = [];
+    while (count($existing) < 5) $existing[] = '';
 
-    $f = $_FILES[$fieldName];
-    if (($f['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
-        return '';
-    }
-
-    $tmp = (string)($f['tmp_name'] ?? '');
-    $orig = (string)($f['name'] ?? '');
-    $ext = strtolower(pathinfo($orig, PATHINFO_EXTENSION));
     $allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'];
-    if (!in_array($ext, $allowed, true)) {
-        return '';
+    $result  = [];
+
+    for ($i = 0; $i < 5; $i++) {
+        $fieldName   = 'image_file_' . $i;
+        $existingUrl = trim((string)($existing[$i] ?? ''));
+
+        if (!empty($_FILES[$fieldName]) && $_FILES[$fieldName]['error'] === UPLOAD_ERR_OK) {
+            $f   = $_FILES[$fieldName];
+            $ext = strtolower(pathinfo((string)($f['name'] ?? ''), PATHINFO_EXTENSION));
+            if (in_array($ext, $allowed, true)) {
+                $base     = andison_safe_filename(pathinfo((string)($f['name'] ?? ''), PATHINFO_FILENAME));
+                $destName = $base . '_' . date('Ymd_His') . '_' . $i . '.' . $ext;
+                $url      = andison_sb_storage_upload_tmp($f, 'product-images', $destName);
+                if ($url !== null) {
+                    $result[] = $url;
+                    continue;
+                }
+            }
+        }
+
+        if ($existingUrl !== '') {
+            $result[] = $existingUrl;
+        }
     }
 
-    $base = andison_safe_filename(pathinfo($orig, PATHINFO_FILENAME));
-    $destDir = dirname(__DIR__) . '/assets/uploads/products';
-    if (!is_dir($destDir)) {
-        @mkdir($destDir, 0755, true);
-    }
- 
-    $destName = $base . '_' . date('Ymd_His') . '.' . $ext;
-    $destPath = $destDir . '/' . $destName;
-
-    if (!@move_uploaded_file($tmp, $destPath)) {
-        return '';
-    }
-
-    // Return root-relative web path (works from any page depth)
-    return 'Andison/assets/uploads/products/' . $destName;
+    return array_values($result);
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -87,7 +92,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $specs = isset($_POST['specifications']) ? trim((string)$_POST['specifications']) : '';
             $catId  = isset($_POST['category_id'])    ? trim((string)$_POST['category_id'])    : '';
             $subId  = isset($_POST['subcategory_id']) ? trim((string)$_POST['subcategory_id']) : '';
-            $image = andison_handle_product_upload('image_file');
+            $images = andison_handle_multi_image_upload();
+            $image  = $images[0] ?? '';
 
             if ($model === '' || $type === '') {
                 andison_set_flash('error', 'Model and Type are required.');
@@ -108,6 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'description'    => $desc,
                 'specifications' => $specs,
                 'image'          => $image,
+                'images'         => $images,
                 'category_id'    => $catId,
                 'subcategory_id' => $subId,
             ];
@@ -139,8 +146,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $specs = isset($_POST['specifications']) ? trim((string)$_POST['specifications']) : '';
             $catId  = isset($_POST['category_id'])    ? trim((string)$_POST['category_id'])    : '';
             $subId  = isset($_POST['subcategory_id']) ? trim((string)$_POST['subcategory_id']) : '';
-            $existingImage = (string)($brands[$brand]['products'][$idx]['image'] ?? '');
-            $newImage = andison_handle_product_upload('image_file');
+            $images = andison_handle_multi_image_upload();
+            // If no images submitted at all, fall back to existing product images
+            if (empty($images)) {
+                $oldImgs = $brands[$brand]['products'][$idx]['images'] ?? [];
+                if (empty($oldImgs) && !empty($brands[$brand]['products'][$idx]['image'])) {
+                    $oldImgs = [$brands[$brand]['products'][$idx]['image']];
+                }
+                $images = $oldImgs;
+            }
+            $image = $images[0] ?? '';
 
             if ($model === '' || $type === '') {
                 andison_set_flash('error', 'Model and Type are required.');
@@ -156,7 +171,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'badge'          => $badge,
                 'description'    => $desc,
                 'specifications' => $specs,
-                'image'          => $newImage !== '' ? $newImage : $existingImage,
+                'image'          => $image,
+                'images'         => $images,
                 'category_id'    => $catId,
                 'subcategory_id' => $subId,
             ];
@@ -245,12 +261,11 @@ andison_admin_header('Products', 'products');
                 <span class="prod-stat-pill"><i class="bi bi-box-seam"></i> <?php echo count($products); ?> product<?php echo count($products) !== 1 ? 's' : ''; ?></span>
             <?php endif; ?>
             <form method="get" action="products.php" style="display:flex;gap:8px;align-items:center;">
-                <select name="brand" class="prod-brand-select">
+                <select name="brand" class="prod-brand-select" onchange="this.form.submit()">
                     <?php foreach ($brandNames as $bn): ?>
                         <option value="<?php echo htmlspecialchars($bn); ?>" <?php echo $bn === $selectedBrand ? 'selected' : ''; ?>><?php echo htmlspecialchars($bn); ?></option>
                     <?php endforeach; ?>
                 </select>
-                <button class="prod-load-btn" type="submit"><i class="bi bi-arrow-repeat"></i> Switch</button>
             </form>
         </div>
     </section>
@@ -398,6 +413,11 @@ andison_admin_header('Products', 'products');
                                                     data-description="<?php echo htmlspecialchars((string)($prod['description'] ?? ''), ENT_QUOTES); ?>"
                                                     data-specifications="<?php echo htmlspecialchars((string)($prod['specifications'] ?? ''), ENT_QUOTES); ?>"
                                                     data-image="<?php echo htmlspecialchars((string)($prod['image'] ?? ''), ENT_QUOTES); ?>"
+                                                    data-images="<?php
+                                                        $prodImgs = isset($prod['images']) && is_array($prod['images']) ? $prod['images'] : [];
+                                                        if (empty($prodImgs) && !empty($prod['image'])) $prodImgs = [$prod['image']];
+                                                        echo htmlspecialchars(json_encode($prodImgs), ENT_QUOTES);
+                                                    ?>"
                                                     data-category="<?php echo htmlspecialchars((string)($prod['category_id'] ?? ''), ENT_QUOTES); ?>"
                                                     data-subcategory="<?php echo htmlspecialchars((string)($prod['subcategory_id'] ?? ''), ENT_QUOTES); ?>"
                                                     style="padding:5px 10px;font-size:11px;">
@@ -522,36 +542,18 @@ andison_admin_header('Products', 'products');
 
                 <!-- Image Section -->
                 <div style="margin-bottom:12px;">
-                    <h3 style="font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;"><i class="bi bi-image"></i> Product Image</h3>
-                    
-                    <!-- Current Image Preview -->
-                    <div id="currentImageInfo" style="display:none;margin-bottom:14px;padding:12px;background:linear-gradient(135deg,#f0f9ff,#f0fdf4);border-radius:8px;border:1px solid rgba(16,185,129,0.2);">
-                        <div style="display:flex;align-items:center;gap:12px;">
-                            <div id="currentImagePreview" style="width:80px;height:80px;border-radius:6px;background:#fff;border:1px solid #e5e7eb;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
-                                <img id="currentImageThumbnail" src="" alt="Current image" style="width:100%;height:100%;object-fit:contain;">
-                            </div>
-                            <div style="flex:1;min-width:0;">
-                                <div style="font-size:12px;font-weight:600;color:#059669;margin-bottom:4px;">Current Image</div>
-                                <div style="font-size:12px;color:#6b7280;word-break:break-word;" id="currentImagePath"></div>
-                            </div>
-                        </div>
-                    </div>
+                    <h3 style="font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;"><i class="bi bi-images"></i> Product Images <span style="font-size:10px;font-weight:500;color:#9ca3af;text-transform:none;letter-spacing:0;">Up to 5 — first slot is the main image</span></h3>
 
-                    <!-- Upload New Image -->
-                    <div class="field" style="margin:0;">
-                        <label for="editImageFile"><i class="bi bi-upload"></i> Upload New Image</label>
-                        <div class="upload-area" 
-                             onmouseover="this.style.borderColor='var(--accent)';this.style.backgroundColor='rgba(43,17,219,0.02)';this.querySelector('.upload-icon').style.transform='scale(1.1)';"
-                             onmouseout="this.style.borderColor='#e5e7eb';this.style.backgroundColor='#f9fafb';this.querySelector('.upload-icon').style.transform='scale(1)';"
-                             onclick="document.getElementById('editImageFile').click();">
-                            <div class="upload-content">
-                                <i class="bi bi-cloud-upload upload-icon"></i>
-                                <div style="font-weight:600;color:#374151;margin-top:8px;">Click to upload or drag & drop</div>
-                                <div style="font-size:12px;color:#9ca3af;margin-top:4px;">JPG, PNG, WEBP, GIF or AVIF (max 5MB)</div>
-                            </div>
-                            <input id="editImageFile" name="image_file" type="file" accept="image/*" style="display:none;" onchange="handleImagePreview(this)">
-                        </div>
-                        <div id="selectedFileName" style="margin-top:8px;font-size:12px;color:var(--accent);display:none;animation:slideInDown 0.3s ease;"><i class="bi bi-check-circle"></i> <span id="fileName"></span></div>
+                    <!-- 5-slot image grid -->
+                    <input type="hidden" name="existing_images" id="existingImagesInput" value="[]">
+                    <div id="imageSlotGrid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:6px;"></div>
+                    <div style="font-size:11px;color:#9ca3af;margin-bottom:4px;"><i class="bi bi-info-circle"></i> Click a slot to upload · click × to remove</div>
+
+                    <!-- Hidden file inputs, one per slot -->
+                    <div style="display:none;">
+                        <?php for ($s = 0; $s < 5; $s++): ?>
+                        <input type="file" id="imageFile_<?php echo $s; ?>" name="image_file_<?php echo $s; ?>" accept="image/*" onchange="previewImageSlot(this, <?php echo $s; ?>)">
+                        <?php endfor; ?>
                     </div>
                 </div>
             </div>
@@ -894,7 +896,90 @@ function populateCategorySubcategories(selectedSubId) {
     });
 }
 
-function openEditModal(index, name, model, type, price, badge, description, specifications, image, catId, subId) {
+// ── Multi-image slot state ──────────────────────────────────────────────────
+var _existingUrls = ['','','','',''];
+var _previewUrls  = [null,null,null,null,null];
+
+function _esc(str) {
+    var d = document.createElement('div');
+    d.appendChild(document.createTextNode(str));
+    return d.innerHTML;
+}
+
+function renderImageSlots() {
+    var grid = document.getElementById('imageSlotGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    for (var i = 0; i < 5; i++) {
+        (function(idx) {
+            var slot = document.createElement('div');
+            var preview = _previewUrls[idx];
+            slot.style.cssText = 'background:#f9fafb;border:2px dashed #e5e7eb;border-radius:10px;height:84px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;transition:border-color 0.2s;flex-shrink:0;';
+            if (preview) {
+                slot.style.border = '2px solid ' + (idx === 0 ? 'var(--accent)' : '#d1d5db');
+                var img = document.createElement('img');
+                img.src = preview;
+                img.style.cssText = 'max-width:100%;max-height:100%;object-fit:contain;padding:5px;';
+                img.onerror = function() { this.style.display='none'; };
+                slot.appendChild(img);
+                if (idx === 0) {
+                    var badge = document.createElement('span');
+                    badge.textContent = 'MAIN';
+                    badge.style.cssText = 'position:absolute;bottom:0;left:0;right:0;text-align:center;font-size:9px;font-weight:800;color:#fff;background:var(--accent);padding:2px 0;pointer-events:none;';
+                    slot.appendChild(badge);
+                }
+                var rm = document.createElement('button');
+                rm.type = 'button';
+                rm.innerHTML = '&times;';
+                rm.style.cssText = 'position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:rgba(239,68,68,0.85);color:#fff;border:none;cursor:pointer;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;font-weight:700;';
+                rm.onclick = function(e) { e.stopPropagation(); removeImageSlot(idx); };
+                slot.appendChild(rm);
+            } else {
+                var inner = document.createElement('div');
+                inner.style.cssText = 'text-align:center;pointer-events:none;';
+                inner.innerHTML = '<i class="bi bi-plus" style="font-size:22px;color:#d1d5db;display:block;"></i>'
+                    + '<span style="font-size:9px;color:#d1d5db;">' + (idx === 0 ? 'Main' : 'Img '+(idx+1)) + '</span>';
+                slot.appendChild(inner);
+                slot.addEventListener('mouseenter', function() { this.style.borderColor='var(--accent)'; });
+                slot.addEventListener('mouseleave', function() { this.style.borderColor='#e5e7eb'; });
+            }
+            slot.addEventListener('click', function(e) {
+                if (e.target.tagName !== 'BUTTON') {
+                    document.getElementById('imageFile_' + idx).click();
+                }
+            });
+            grid.appendChild(slot);
+        })(i);
+    }
+    var ei = document.getElementById('existingImagesInput');
+    if (ei) ei.value = JSON.stringify(_existingUrls);
+}
+
+function removeImageSlot(idx) {
+    _existingUrls[idx] = '';
+    _previewUrls[idx]  = null;
+    var fi = document.getElementById('imageFile_' + idx);
+    if (fi) fi.value = '';
+    renderImageSlots();
+}
+
+function previewImageSlot(input, idx) {
+    if (!input.files || !input.files.length) return;
+    var file = input.files[0];
+    if (!file.type.startsWith('image/')) {
+        customAlert('Please select a valid image file.'); input.value = ''; return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+        customAlert('File size must be less than 5MB.'); input.value = ''; return;
+    }
+    _existingUrls[idx] = '';
+    var reader = new FileReader();
+    reader.onload = function(e) { _previewUrls[idx] = e.target.result; renderImageSlots(); };
+    reader.readAsDataURL(file);
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
+function openEditModal(index, name, model, type, price, badge, description, specifications, image, catId, subId, imagesJson) {
     var modal = document.getElementById('editProductModal');
     document.getElementById('editIndex').value = index;
     document.getElementById('editProductName').value = name;
@@ -904,15 +989,21 @@ function openEditModal(index, name, model, type, price, badge, description, spec
     document.getElementById('editBadge').value = badge;
     document.getElementById('editDescription').value = description;
     document.getElementById('editSpecifications').value = specifications;
-    
-    var currentImageInfo = document.getElementById('currentImageInfo');
-    var currentImagePath = document.getElementById('currentImagePath');
-    if (image) {
-        currentImagePath.textContent = image;
-        currentImageInfo.style.display = 'block';
-    } else {
-        currentImageInfo.style.display = 'none';
+
+    // Populate image slots
+    _existingUrls = ['','','','',''];
+    _previewUrls  = [null,null,null,null,null];
+    var imgArr = [];
+    try { imgArr = JSON.parse(imagesJson || '[]'); } catch(e) {}
+    if (!Array.isArray(imgArr) || imgArr.length === 0) { imgArr = image ? [image] : []; }
+    for (var ii = 0; ii < Math.min(imgArr.length, 5); ii++) {
+        if (imgArr[ii]) { _existingUrls[ii] = imgArr[ii]; _previewUrls[ii] = imgArr[ii]; }
     }
+    for (var jj = 0; jj < 5; jj++) {
+        var fi = document.getElementById('imageFile_' + jj);
+        if (fi) fi.value = '';
+    }
+    renderImageSlots();
 
     // Populate category/subcategory
     var catSel = document.getElementById('editCategory');
@@ -948,10 +1039,11 @@ document.querySelectorAll('.edit-product-btn').forEach(function(btn){
         var badge = this.getAttribute('data-badge');
         var description = this.getAttribute('data-description');
         var specifications = this.getAttribute('data-specifications');
-        var image = this.getAttribute('data-image');
-        var catId = this.getAttribute('data-category');
-        var subId = this.getAttribute('data-subcategory');
-        openEditModal(index, name, model, type, price, badge, description, specifications, image, catId, subId);
+        var image  = this.getAttribute('data-image');
+        var images = this.getAttribute('data-images') || '[]';
+        var catId  = this.getAttribute('data-category');
+        var subId  = this.getAttribute('data-subcategory');
+        openEditModal(index, name, model, type, price, badge, description, specifications, image, catId, subId, images);
     });
 });
 
@@ -1020,8 +1112,11 @@ function openAddProductModal() {
     document.getElementById('editBadge').value = '';
     document.getElementById('editDescription').value = '';
     document.getElementById('editSpecifications').value = '';
-    document.getElementById('editImageFile').value = '';
-    document.getElementById('currentImageInfo').style.display = 'none';
+    // Clear image slots
+    _existingUrls = ['','','','',''];
+    _previewUrls  = [null,null,null,null,null];
+    for (var _s = 0; _s < 5; _s++) { var _fi = document.getElementById('imageFile_' + _s); if (_fi) _fi.value = ''; }
+    renderImageSlots();
     document.getElementById('editCategory').value = '';
     populateCategorySubcategories('');
     
@@ -1097,100 +1192,6 @@ document.querySelectorAll('.delete-form').forEach(function(form){
             if (confirmed) f.submit();
         });
     });
-});
-
-// Handle image preview and drag-and-drop
-function handleImagePreview(input) {
-    var fileInput = document.getElementById('editImageFile');
-    var selectedFileNameDiv = document.getElementById('selectedFileName');
-    var fileNameSpan = document.getElementById('fileName');
-    var uploadArea = fileInput.parentElement;
-    
-    if (input && input.files && input.files.length > 0) {
-        var file = input.files[0];
-        
-        // Validate file type
-        if (!file.type.startsWith('image/')) {
-            customAlert('Please select a valid image file');
-            return;
-        }
-        
-        // Validate file size (5MB max)
-        if (file.size > 5 * 1024 * 1024) {
-            customAlert('File size must be less than 5MB');
-            return;
-        }
-        
-        // Show file name with animation
-        fileNameSpan.textContent = file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
-        selectedFileNameDiv.style.display = 'block';
-        
-        // Animate the upload area
-        uploadArea.style.borderColor = 'var(--accent)';
-        uploadArea.style.backgroundColor = 'rgba(43, 17, 219, 0.05)';
-        uploadArea.style.boxShadow = '0 4px 12px rgba(43, 17, 219, 0.2)';
-        
-        // Show preview if possible
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            var currentImageThumbnail = document.getElementById('currentImageThumbnail');
-            var currentImageInfo = document.getElementById('currentImageInfo');
-            currentImageThumbnail.src = e.target.result;
-            currentImageInfo.style.display = 'block';
-            
-            // Add animation class
-            currentImageInfo.style.animation = 'none';
-            setTimeout(function() {
-                currentImageInfo.style.animation = 'slideInDown 0.3s ease';
-            }, 10);
-            
-            document.querySelector('#currentImageInfo div:last-child div:last-child').textContent = 'Selected: ' + file.name;
-        };
-        reader.readAsDataURL(file);
-    }
-}
-
-// Drag and drop handling with visual feedback
-document.addEventListener('DOMContentLoaded', function() {
-    var uploadArea = document.querySelector('.upload-area');
-    if (uploadArea) {
-        uploadArea.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            this.style.borderColor = 'var(--accent)';
-            this.style.backgroundColor = 'rgba(43, 17, 219, 0.08)';
-            this.style.transform = 'scale(1.01)';
-            this.style.boxShadow = '0 8px 24px rgba(43, 17, 219, 0.2)';
-            this.querySelector('.upload-icon').style.transform = 'scale(1.2) rotate(-5deg)';
-        });
-        
-        uploadArea.addEventListener('dragleave', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            this.style.borderColor = '#e5e7eb';
-            this.style.backgroundColor = 'linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%)';
-            this.style.transform = 'scale(1)';
-            this.style.boxShadow = 'none';
-            this.querySelector('.upload-icon').style.transform = 'scale(1)';
-        });
-        
-        uploadArea.addEventListener('drop', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            this.style.borderColor = '#e5e7eb';
-            this.style.backgroundColor = 'linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%)';
-            this.style.transform = 'scale(1)';
-            this.style.boxShadow = 'none';
-            this.querySelector('.upload-icon').style.transform = 'scale(1)';
-            
-            var files = e.dataTransfer.files;
-            if (files && files.length > 0) {
-                var fileInput = document.getElementById('editImageFile');
-                fileInput.files = files;
-                handleImagePreview(fileInput);
-            }
-        });
-    }
 });
 
 // Custom alert function

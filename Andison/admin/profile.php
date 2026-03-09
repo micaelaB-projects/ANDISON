@@ -124,17 +124,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $ext = $allowed[$mime];
-        $uploadsDir = __DIR__ . '/../assets/uploads';
-        if (!is_dir($uploadsDir)) {
-            @mkdir($uploadsDir, 0755, true);
-        }
+        require_once __DIR__ . '/../includes/supabase.php';
+        $storageName = 'profile_' . time() . '.' . $ext;
+        $webPath = andison_sb_storage_upload_tmp($file, 'profile-images', $storageName);
 
-        $targetName = 'profile_' . time() . '.' . $ext;
-        $targetPath = $uploadsDir . '/' . $targetName;
-        $webPath = 'assets/uploads/' . $targetName;
-
-        if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
-            andison_set_flash('error', 'Failed to move uploaded file.');
+        if ($webPath === null) {
+            andison_set_flash('error', 'Failed to upload profile image.');
             header('Location: profile.php');
             exit;
         }
@@ -371,7 +366,7 @@ $flash = andison_get_flash();
             <div style="display:flex;flex-direction:column;align-items:center;padding:4px 12px 16px;">
                 <div style="position:relative;margin-bottom:14px;">
                     <div id="profileCircle" style="width:110px;height:110px;border-radius:999px;overflow:hidden;border:4px solid #2B11DB;box-shadow:0 4px 20px rgba(43,17,219,0.2);background:linear-gradient(135deg,#2B11DB,#4f35e8);display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;" onclick="document.getElementById('fileInput').click();" title="Click to change photo">
-                        <img id="profileImg" src="../<?php echo $profileImage; ?>" alt="Profile"
+                        <img id="profileImg" src="<?php echo str_starts_with($profileImage, 'http') ? $profileImage : '../' . $profileImage; ?>" alt="Profile"
                              onerror="this.style.display='none';document.getElementById('profileInitials').style.display='flex';"
                              onload="this.style.display='block';document.getElementById('profileInitials').style.display='none';"
                              style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">

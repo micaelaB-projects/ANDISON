@@ -1,6 +1,7 @@
 # ── Credentials & secrets ─────────────────────────────────────────────────────
 Andison/admin/config.php
 Andison/includes/supabase.php
+Andison/includes/mailer_config.php
 
 # ── User-uploaded files (binary, large, not source) ──────────────────────────
 uploads/
@@ -14,6 +15,8 @@ _brand_counts.php
 _verify_fix.php
 _dbg.php
 _brand_list.txt
+_migrate_*.php
+_add_images_column.php
 
 # ── OS & editor noise ─────────────────────────────────────────────────────────
 .DS_Store

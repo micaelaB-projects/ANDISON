@@ -35,18 +35,8 @@ function andison_admin_store_featured_image(array $f, string $targetDir): ?strin
         return null;
     }
 
-    if (!is_dir($targetDir)) {
-        @mkdir($targetDir, 0755, true);
-    }
-
     $safe = 'featured_' . date('Ymd_His') . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-    $abs = rtrim($targetDir, '/\\') . DIRECTORY_SEPARATOR . $safe;
-
-    if (!@move_uploaded_file($f['tmp_name'], $abs)) {
-        return null;
-    }
-
-    return 'andison/assets/uploads/home/featured/' . $safe;
+    return andison_sb_storage_upload_tmp($f, 'home-images', 'featured/' . $safe);
 }
 
 function andison_admin_store_featured_video(array $f, string $targetDir): ?string
@@ -57,18 +47,8 @@ function andison_admin_store_featured_video(array $f, string $targetDir): ?strin
         return null;
     }
 
-    if (!is_dir($targetDir)) {
-        @mkdir($targetDir, 0755, true);
-    }
-
     $safe = 'featured_video_' . date('Ymd_His') . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-    $abs = rtrim($targetDir, '/\\') . DIRECTORY_SEPARATOR . $safe;
-
-    if (!@move_uploaded_file($f['tmp_name'], $abs)) {
-        return null;
-    }
-
-    return 'andison/assets/uploads/home/featured/' . $safe;
+    return andison_sb_storage_upload_tmp($f, 'home-images', 'featured/' . $safe);
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

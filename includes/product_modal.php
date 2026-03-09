@@ -905,6 +905,10 @@
 
         // Load product images from card data (must run BEFORE loadProductDetails so the
         // async JSON fetch cannot overwrite the correct Supabase image path)
+        // Fall back to single data-image if the images array is empty
+        if (images.length === 0 && imgSrc) {
+            images = [imgSrc];
+        }
         loadProductImagesFromCard(images);
 
         // Show description & price from card data immediately (no async fetch needed)
@@ -1216,5 +1220,116 @@
             this.style.transform = 'translateY(0)';
         });
     }
+})();
+</script>
+
+<style>
+/* Card-level image slider */
+.card-img-slider { position:relative; width:100%; height:100%; }
+.card-img-slider img {
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:contain; opacity:0;
+    transition:opacity 0.7s ease;
+    pointer-events:none;
+}
+.card-img-slider img.active { opacity:1; pointer-events:auto; }
+/* Tiny dots indicator */
+.card-slider-dots {
+    position:absolute; bottom:6px; left:50%; transform:translateX(-50%);
+    display:flex; gap:5px; z-index:2; pointer-events:none;
+}
+.card-slider-dots span {
+    width:5px; height:5px; border-radius:50%;
+    background:rgba(43,17,219,0.25); display:block; transition:background .3s;
+}
+.card-slider-dots span.active { background:#2B11DB; }
+</style>
+
+<script>
+/* ── Card-level image slider ──
+   Runs on every product card that has 2+ images in data-images.
+   Works for .brand-product-card (.brand-product-img) and
+   .product-card (.product-image).
+*/
+(function(){
+    function initCardSliders() {
+        var cards = document.querySelectorAll(
+            '.brand-product-card[data-images], .product-card[data-images]'
+        );
+        cards.forEach(function(card) {
+            var raw = card.getAttribute('data-images') || '[]';
+            var imgs;
+            try { imgs = JSON.parse(raw); } catch(e) { return; }
+            if (!Array.isArray(imgs) || imgs.length < 2) return;
+
+            // Already initialised?
+            if (card.getAttribute('data-slider-init')) return;
+            card.setAttribute('data-slider-init', '1');
+
+            // Find the image container
+            var wrap = card.querySelector('.brand-product-img, .product-image');
+            if (!wrap) return;
+
+            // Build slider markup inside the container
+            var sliderDiv = document.createElement('div');
+            sliderDiv.className = 'card-img-slider';
+            sliderDiv.style.cssText = 'position:relative;width:100%;height:100%;';
+
+            imgs.forEach(function(src, i) {
+                var img = document.createElement('img');
+                img.src = src;
+                img.alt = card.getAttribute('data-model') || '';
+                img.style.padding = '8px';
+                if (i === 0) img.className = 'active';
+                sliderDiv.appendChild(img);
+            });
+
+            // Dots
+            var dotsDiv = document.createElement('div');
+            dotsDiv.className = 'card-slider-dots';
+            imgs.forEach(function(_, i) {
+                var dot = document.createElement('span');
+                if (i === 0) dot.className = 'active';
+                dotsDiv.appendChild(dot);
+            });
+            sliderDiv.appendChild(dotsDiv);
+
+            // Clear the container and insert slider
+            wrap.innerHTML = '';
+            wrap.style.overflow = 'hidden';
+            wrap.appendChild(sliderDiv);
+
+            // Auto-advance
+            var idx = 0;
+            var imgEls = sliderDiv.querySelectorAll('img');
+            var dotEls = dotsDiv.querySelectorAll('span');
+            setInterval(function() {
+                imgEls[idx].classList.remove('active');
+                dotEls[idx].classList.remove('active');
+                idx = (idx + 1) % imgs.length;
+                imgEls[idx].classList.add('active');
+                dotEls[idx].classList.add('active');
+            }, 2500);
+        });
+    }
+
+    // Run after DOM ready and also after pagination re-renders cards
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCardSliders);
+    } else {
+        initCardSliders();
+    }
+
+    // Re-run when pagination changes visibility of cards
+    var _origUpdatePagination = window.updatePagination;
+    if (typeof _origUpdatePagination === 'function') {
+        window.updatePagination = function() {
+            _origUpdatePagination.apply(this, arguments);
+            setTimeout(initCardSliders, 50);
+        };
+    }
+
+    // Also expose so pagination can call it manually
+    window.initCardSliders = initCardSliders;
 })();
 </script>

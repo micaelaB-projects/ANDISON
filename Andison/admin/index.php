@@ -523,7 +523,7 @@ andison_admin_header('Dashboard', 'dashboard');
             </div>
             <div style="padding:9px;background:#f9fafb;border-radius:6px;border:1px solid #e5e7eb;">
                 <div style="font-weight:600;font-size:11px;margin-bottom:2px;"><i class="bi bi-image" style="color:#f59e0b;"></i> Image Paths</div>
-                <div style="font-size:11px;color:var(--muted);">Images are auto-saved to andison/assets/uploads/ directory</div>
+                <div style="font-size:11px;color:var(--muted);">Images are uploaded to Supabase Storage</div>
             </div>
             <div style="padding:9px;background:#f9fafb;border-radius:6px;border:1px solid #e5e7eb;">
                 <div style="font-weight:600;font-size:11px;margin-bottom:2px;"><i class="bi bi-link-45deg" style="color:#10b981;"></i> YouTube URLs</div>

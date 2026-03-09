@@ -24,6 +24,16 @@ if (!function_exists('andison_get_brands_info')) {
         foreach ($allProducts as $product) {
             $brand = trim((string)($product['brand'] ?? ''));
             if ($brand === '') continue;
+            // Decode images JSON string from Supabase into array
+            if (isset($product['images']) && is_string($product['images'])) {
+                $dec = json_decode($product['images'], true);
+                $product['images'] = is_array($dec) ? $dec : [];
+                if (empty($product['image']) && !empty($product['images'][0])) {
+                    $product['image'] = $product['images'][0];
+                }
+            } elseif (!isset($product['images'])) {
+                $product['images'] = $product['image'] ? [$product['image']] : [];
+            }
             $lk = strtolower($brand);
             $sbByLower[$lk][]  = $product;
             if (!isset($sbOrigCase[$lk])) $sbOrigCase[$lk] = $brand;
@@ -84,7 +94,13 @@ if (!function_exists('andison_save_single_brand')) {
                 'specifications' => $product['specifications'] ?? '',
                 'price'          => $product['price'] ?? '',
                 'image'          => $product['image'] ?? '',
+                'images'         => is_array($product['images'] ?? null) && !empty($product['images'])
+                                        ? json_encode(array_values($product['images']))
+                                        : null,
             ];
+            // images[] array is preserved in brands_info.json (local cache) but not sent
+            // to Supabase unless the column exists:
+            //   ALTER TABLE products ADD COLUMN IF NOT EXISTS images text;
             if (!empty($product['category_id'])) {
                 $row['category_id']    = $product['category_id'];
                 $row['subcategory_id'] = $product['subcategory_id'] ?? '';

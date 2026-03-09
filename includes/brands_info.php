@@ -50,6 +50,19 @@ if (!function_exists('andison_get_brands_info')) {
         foreach ($allProducts as $product) {
             $brand = trim((string)($product['brand'] ?? ''));
             if ($brand === '') continue;
+            // Decode images JSON string from Supabase into a PHP array
+            if (isset($product['images']) && is_string($product['images'])) {
+                $dec = json_decode($product['images'], true);
+                $product['images'] = is_array($dec) ? $dec : [];
+                if (empty($product['image']) && !empty($product['images'][0])) {
+                    $product['image'] = $product['images'][0];
+                }
+            } elseif (!isset($product['images'])) {
+                $product['images'] = $product['image'] ? [$product['image']] : [];
+            } else {
+                // null in PHP means key exists but is null — treat same as missing
+                $product['images'] = $product['image'] ? [$product['image']] : [];
+            }
             $lk = strtolower($brand);
             $sbByLower[$lk][]  = $product;
             if (!isset($sbOrigCase[$lk])) $sbOrigCase[$lk] = $brand;
