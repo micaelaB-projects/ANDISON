@@ -2,9 +2,9 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/brands_info.php';
-require_once __DIR__ . '/../andison/includes/categories_info.php';
-require_once __DIR__ . '/../andison/includes/products_management.php';
-require_once __DIR__ . '/../andison/includes/analytics.php';
+require_once __DIR__ . '/../Andison/includes/categories_info.php';
+require_once __DIR__ . '/../Andison/includes/products_management.php';
+require_once __DIR__ . '/../Andison/includes/analytics.php';
 
 // Update page name and subcategory
 $page_title = "Arc Welding Machine";
@@ -802,7 +802,7 @@ if (!$current_category) {
         }
 
         .product-grid.grid-view {
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
         }
 
         .product-card {
@@ -1147,8 +1147,9 @@ if (!$current_category) {
 
         /* Products Filters Panel */
         .product-filters {
-            width: 280px;
-            flex-shrink: 0;
+            width: 240px;
+            min-width: 180px;
+            flex-shrink: 1;
             margin-top: 120px;
         }
 
@@ -3329,25 +3330,8 @@ if (!$current_category) {
                 <!-- Product Grid -->
                 <div class="product-grid grid-view">
                 <?php 
-                // Fetch arc welding machine products from all subcategories
-                $subcategories = [
-                    'mig-welding-machine',
-                    'co2-mag-welding-machine',
-                    'stud-welding-machine',
-                    'tig-welding-machine',
-                    'plasma-cutting-machine',
-                    'accessories-and-consumables',
-                    'torch-consumables',
-                    'welding-torch-gun'
-                ];
-                
-                $all_products = [];
-                foreach ($subcategories as $subcat) {
-                    $products = andison_get_products_for_subcategory('arc-welding-machine', $subcat);
-                    if (!empty($products)) {
-                        $all_products = array_merge($all_products, $products);
-                    }
-                }
+                // Fetch all products under the arc-welding-machine category
+                $all_products = andison_get_products_for_category($category_id);
                 
                 // Display products
                 if (!empty($all_products)) {
@@ -3971,9 +3955,9 @@ if (!$current_category) {
                     e.stopPropagation();
                     e.preventDefault();
                     
-                    var model = this.getAttribute('data-model') || '';
-                    var brand = this.getAttribute('data-brand') || '';
                     var card = this.closest('.product-card');
+                    var model = this.getAttribute('data-model') || (card ? card.getAttribute('data-model') : '') || '';
+                    var brand = this.getAttribute('data-brand') || (card ? card.getAttribute('data-brand') : '') || '';
                     var h4el = card ? card.querySelector('h4') : null;
                     var descel = card ? card.querySelector('.product-description') : null;
                     var name = (h4el ? h4el.textContent.trim() : '') || model;

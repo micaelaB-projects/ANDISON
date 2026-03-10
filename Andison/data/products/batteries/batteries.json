@@ -70,5 +70,101 @@
         "price": "",
         "specs": "",
         "image": "../assets/brands%20items/MOTOLITE/Solar%20Master.png"
+    },
+    {
+        "name": "Truckmaster",
+        "model": "Truckmaster",
+        "type": "Low Maintenance",
+        "price": "",
+        "badge": "",
+        "description": "Reliable low-maintenance battery for truck and commercial applications",
+        "specs": "",
+        "image": "../assets/brands%20items/MOTOLITE/Truckmaster.png",
+        "images": [
+            "../assets/brands%20items/MOTOLITE/Truckmaster.png"
+        ],
+        "brand": "MOTOLITE",
+        "category_id": "batteries",
+        "subcategory_id": "batteries"
+    },
+    {
+        "name": "Motolite Enduro",
+        "model": "Motolite Enduro",
+        "type": "Maintenance Free",
+        "price": "",
+        "badge": "",
+        "description": "Maintenance-free enduro battery for heavy-duty applications",
+        "specs": "",
+        "image": "../assets/brands%20items/MOTOLITE/Enduro.jpg",
+        "images": [
+            "../assets/brands%20items/MOTOLITE/Enduro.jpg"
+        ],
+        "brand": "MOTOLITE",
+        "category_id": "batteries",
+        "subcategory_id": "batteries"
+    },
+    {
+        "name": "Motolite Excel",
+        "model": "Motolite Excel",
+        "type": "Maintenance Free",
+        "price": "",
+        "badge": "",
+        "description": "Premium maintenance-free excel battery for superior performance",
+        "specs": "",
+        "image": "../assets/brands%20items/MOTOLITE/excel.png",
+        "images": [
+            "../assets/brands%20items/MOTOLITE/excel.png"
+        ],
+        "brand": "MOTOLITE",
+        "category_id": "batteries",
+        "subcategory_id": "batteries"
+    },
+    {
+        "name": "Amp-Tech",
+        "model": "Amp-Tech",
+        "type": "Special Batteries",
+        "price": "",
+        "badge": "",
+        "description": "Advanced special-purpose battery with high amperage capacity",
+        "specs": "",
+        "image": "../assets/brands%20items/MOTOLITE/Amp-Tech.jpg",
+        "images": [
+            "../assets/brands%20items/MOTOLITE/Amp-Tech.jpg"
+        ],
+        "brand": "MOTOLITE",
+        "category_id": "batteries",
+        "subcategory_id": "batteries"
+    },
+    {
+        "name": "Solar Master",
+        "model": "Solar Master",
+        "type": "Special Batteries",
+        "price": "",
+        "badge": "",
+        "description": "Solar-powered battery system for renewable energy applications",
+        "specs": "",
+        "image": "../assets/brands%20items/MOTOLITE/Solar%20Master.png",
+        "images": [
+            "../assets/brands%20items/MOTOLITE/Solar%20Master.png"
+        ],
+        "brand": "MOTOLITE",
+        "category_id": "batteries",
+        "subcategory_id": "batteries"
+    },
+    {
+        "name": "Motolite Gold",
+        "model": "Motolite Gold",
+        "type": "Maintenance Free",
+        "price": "",
+        "badge": "",
+        "description": "Top-tier maintenance-free gold battery with extended lifespan",
+        "specs": "",
+        "image": "../assets/brands%20items/MOTOLITE/Gold.jpg",
+        "images": [
+            "../assets/brands%20items/MOTOLITE/Gold.jpg"
+        ],
+        "brand": "MOTOLITE",
+        "category_id": "batteries",
+        "subcategory_id": "batteries"
     }
 ]

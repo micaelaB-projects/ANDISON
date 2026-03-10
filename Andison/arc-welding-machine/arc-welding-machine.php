@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/brands_info.php';
-require_once __DIR__ . '/../andison/includes/categories_info.php';
-require_once __DIR__ . '/../andison/includes/products_management.php';
+require_once __DIR__ . '/../includes/categories_info.php';
+require_once __DIR__ . '/../includes/products_management.php';
 
 $page_title = "Arc Welding Machines";
 $category_id = "arc-welding-machine";

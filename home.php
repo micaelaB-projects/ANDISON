@@ -1,9 +1,9 @@
 <?php
-require_once __DIR__ . '/andison/includes/analytics.php';
+require_once __DIR__ . '/Andison/includes/analytics.php';
 andison_track_visit('home');
-require_once __DIR__ . '/andison/includes/home_featured.php';
-require_once __DIR__ . '/andison/includes/home_slider.php';
-require_once __DIR__ . '/andison/includes/youtube_links.php';
+require_once __DIR__ . '/Andison/includes/home_featured.php';
+require_once __DIR__ . '/Andison/includes/home_slider.php';
+require_once __DIR__ . '/Andison/includes/youtube_links.php';
 
 $featured = andison_get_home_featured();
 $slides = andison_get_home_slider();
@@ -1863,7 +1863,7 @@ $ytLinks = andison_get_youtube_links();
     </header>
 
     <!-- Sidebar Navigation (via include) -->
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/ANDISON/includes/sidebar.php'; ?>
+    <?php include __DIR__ . '/includes/sidebar.php'; ?>
 
     <!-- Hero Section -->
     <div class="page-content">

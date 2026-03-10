@@ -118,7 +118,13 @@ andison_admin_header('Inquiries', 'inquiries');
     $contact_m = htmlspecialchars($inq['contact_method'] ?? 'email');
     $msg       = htmlspecialchars($inq['message'] ?? '');
     $created   = $inq['created_at'] ?? $inq['submitted_at'] ?? null;
-    $dateStr   = $created ? date('M j, Y · g:i A', strtotime($created)) : ('Inquiry #' . $inqId);
+    if ($created) {
+        $dt = new DateTime($created, new DateTimeZone('UTC'));
+        $dt->setTimezone(new DateTimeZone('Asia/Manila'));
+        $dateStr = $dt->format('M j, Y · g:i A');
+    } else {
+        $dateStr = 'Inquiry #' . $inqId;
+    }
 
     // Items stored as JSON directly in the inquiries row
     $rawItems  = $inq['items'] ?? null;

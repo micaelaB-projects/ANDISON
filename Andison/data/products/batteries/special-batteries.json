@@ -10,7 +10,9 @@
         "price": "",
         "specs": "",
         "image": "../assets/brands%20items/MOTOLITE/Amp-Tech.jpg",
-        "images": ["../assets/brands%20items/MOTOLITE/Amp-Tech.jpg"]
+        "images": [
+            "../assets/brands%20items/MOTOLITE/Amp-Tech.jpg"
+        ]
     },
     {
         "id": "special-batteries-2",
@@ -23,6 +25,42 @@
         "price": "",
         "specs": "",
         "image": "../assets/brands%20items/MOTOLITE/Solar%20Master.png",
-        "images": ["../assets/brands%20items/MOTOLITE/Solar%20Master.png"]
+        "images": [
+            "../assets/brands%20items/MOTOLITE/Solar%20Master.png"
+        ]
+    },
+    {
+        "name": "love love",
+        "model": "wowow",
+        "type": "Batttery",
+        "price": "",
+        "badge": "Not Available",
+        "description": "maganda",
+        "specs": "owoww",
+        "image": "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/img_20230830_191536_617_20260305_092932.jpg",
+        "images": [
+            "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/img_20230830_191536_617_20260305_092932.jpg"
+        ],
+        "brand": "MOTOLITE",
+        "category_id": "batteries",
+        "subcategory_id": "special-batteries"
+    },
+    {
+        "name": "porsche",
+        "model": "nyekknyekk",
+        "type": "i love database",
+        "price": "",
+        "badge": "Limited Stock",
+        "description": "dawd",
+        "specs": "dadwawa",
+        "image": "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/screenshot_2025-03-15_203915_20260309_021918_0.png",
+        "images": [
+            "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/screenshot_2025-03-15_203915_20260309_021918_0.png",
+            "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/screenshot_3_20260309_021919_1.png",
+            "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/screenshot_2023-07-31_143437_20260309_021919_2.png"
+        ],
+        "brand": "MOTOLITE",
+        "category_id": "batteries",
+        "subcategory_id": "special-batteries"
     }
 ]

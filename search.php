@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/andison/includes/analytics.php';
+require_once __DIR__ . '/Andison/includes/analytics.php';
 andison_track_visit('search');
 $company_name = 'ANDISON INDUSTRIAL';
 

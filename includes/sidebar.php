@@ -13,7 +13,7 @@
  */
 
 // Define the site base path for all sidebar links
-$_sidebar_base = '/ANDISON/';
+$_sidebar_base = '/';
 
 // ================================================================
 // ACTIVE CATEGORY DETECTION
@@ -635,23 +635,26 @@ if (($andison_idx = array_search('ANDISON', $path_parts)) !== false && isset($pa
         border: 1px solid rgba(0, 215, 179, 0.3);
     }
 
-    /* ── Main content never shifts when sidebar opens/closes ── */
+    /* ── Main content shifts to avoid being covered by the mini sidebar ── */
+    body {
+        padding-left: 80px !important;
+        transition: padding-left 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        padding-bottom: 0 !important;
+    }
+    body.sidebar-wide {
+        padding-left: 280px !important;
+    }
+
     section,
     .page-content,
     .main-content,
     .category-container {
-        margin-left: 0 !important;
         transition: none !important;
     }
-    
+
     /* Footer remains at the bottom and scrolls with content */
     footer {
-        margin-left: 0 !important;
-        margin-right: 0 !important;
         margin-top: 40px !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        width: 100% !important;
         position: relative !important;
         bottom: auto !important;
         left: auto !important;
@@ -660,14 +663,13 @@ if (($andison_idx = array_search('ANDISON', $path_parts)) !== false && isset($pa
         transition: none !important;
         box-sizing: border-box !important;
     }
-    /* Remove body padding since footer is no longer fixed */
-    body {
-        padding-bottom: 0 !important;
-    }
 
     @media (max-width: 768px) {
-        section, footer, .page-content, .main-content, .category-container {
-            margin-left: 0 !important;
+        body {
+            padding-left: 0 !important;
+        }
+        body.sidebar-wide {
+            padding-left: 0 !important;
         }
         .mini-sidebar { display: none !important; }
         .mini-sidebar.mobile-visible { display: flex !important; }
@@ -1826,6 +1828,7 @@ if (($andison_idx = array_search('ANDISON', $path_parts)) !== false && isset($pa
                 if(window.innerWidth > 1024 && isMiniVisible){
                     miniSidebar.classList.toggle('expanded');
                     browseToggle.classList.toggle('expanded');
+                    updateBodySidebarClass();
                 } else {
                     if(mainSidebar.classList.contains('active')){
                         mainSidebar.classList.remove('active');
@@ -1838,6 +1841,13 @@ if (($andison_idx = array_search('ANDISON', $path_parts)) !== false && isset($pa
             });
         }
 
+        // ── Toggle sidebar-wide on body ──
+        function updateBodySidebarClass(){
+            if(!miniSidebar) return;
+            var isExpanded = miniSidebar.classList.contains('expanded');
+            document.body.classList.toggle('sidebar-wide', isExpanded);
+        }
+
         // ── Expand / collapse button ──
         if(expandBtn){
             expandBtn.addEventListener('click', function(e){
@@ -1845,6 +1855,7 @@ if (($andison_idx = array_search('ANDISON', $path_parts)) !== false && isset($pa
                 e.stopPropagation();
                 if(miniSidebar) miniSidebar.classList.toggle('expanded');
                 if(browseToggle) browseToggle.classList.toggle('expanded');
+                updateBodySidebarClass();
             });
         }
         
@@ -1857,6 +1868,7 @@ if (($andison_idx = array_search('ANDISON', $path_parts)) !== false && isset($pa
                 if(sidebar) sidebar.classList.toggle('expanded');
                 var browse = document.getElementById('browseToggle');
                 if(browse) browse.classList.toggle('expanded');
+                updateBodySidebarClass();
             }
         }, true);
 
@@ -1874,6 +1886,7 @@ if (($andison_idx = array_search('ANDISON', $path_parts)) !== false && isset($pa
                 e.stopPropagation();
                 if(miniSidebar) miniSidebar.classList.toggle('expanded');
                 if(browseToggle) browseToggle.classList.toggle('expanded');
+                updateBodySidebarClass();
             });
         }
         
@@ -1886,6 +1899,7 @@ if (($andison_idx = array_search('ANDISON', $path_parts)) !== false && isset($pa
                 if(sidebar) sidebar.classList.toggle('expanded');
                 var browse = document.getElementById('browseToggle');
                 if(browse) browse.classList.toggle('expanded');
+                updateBodySidebarClass();
             }
         }, true);
 

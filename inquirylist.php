@@ -126,6 +126,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'message'        => $message,
                 'transaction_no' => $transaction_no,
             ], $cleanItems);
+            // Send receipt confirmation to the customer
+            andison_send_inquiry_receipt([
+                'fullname'       => $fullname,
+                'company'        => $company,
+                'email'          => $email,
+                'phone'          => $phone,
+                'address'        => $address,
+                'contact_method' => $contact_method,
+                'message'        => $message,
+                'transaction_no' => $transaction_no,
+            ], $cleanItems);
         }
 
         if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
@@ -2991,7 +3002,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </nav>
     </header>
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/ANDISON/includes/sidebar.php'; ?>
+    <?php include __DIR__ . '/includes/sidebar.php'; ?>
     <!-- Overlay Backdrop -->
     <div class="overlay-backdrop" id="overlayBackdrop"></div>
 

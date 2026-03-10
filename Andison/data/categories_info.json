@@ -1,5 +1,51 @@
 [
     {
+        "id": "arc-welding-machine",
+        "name": "Arc Welding Machines",
+        "description": "Professional arc welding machines for industrial applications",
+        "icon": "bi-lightning-charge",
+        "subcategories": [
+            {
+                "id": "mig-welding-machine",
+                "name": "MIG Welding Machine"
+            },
+            {
+                "id": "accessories-and-consumables",
+                "name": "Accessories and Consumables",
+                "subcategories": [
+                    {
+                        "id": "welding-torch-gun",
+                        "name": "Welding Torch / Gun"
+                    },
+                    {
+                        "id": "torch-consumables",
+                        "name": "Torch Consumables"
+                    },
+                    {
+                        "id": "accessories",
+                        "name": "Accessories"
+                    }
+                ]
+            },
+            {
+                "id": "co1-mag-welding-machine",
+                "name": "CO2/MAG Welding Machine"
+            },
+            {
+                "id": "stud-welding-machine",
+                "name": "Stud Welding Machine"
+            },
+            {
+                "id": "tig-welding-machine",
+                "name": "TIG Welding Machine"
+            },
+            {
+                "id": "plasma-cutting-machine",
+                "name": "Plasma Cutting Machine"
+            }
+        ]
+    },
+    {
         "id": "arc-welding-robots",
         "name": "Arc Welding Robots",
         "description": "Robotic welding systems for automated industrial applications",
@@ -24,38 +70,64 @@
         ]
     },
     {
-        "id": "arc-welding-machine",
-        "name": "Arc Welding Machines",
-        "description": "Professional arc welding machines for industrial applications",
-        "icon": "bi-lightning-charge",
+        "id": "batteries",
+        "name": "Batteries",
+        "description": "Industrial batteries for various applications",
+        "icon": "bi-battery-full",
         "subcategories": [
             {
-                "id": "co1-mag-welding-machine",
-                "name": "CO1-MAG Welding Machine"
+                "id": "maintenance-free",
+                "name": "Maintenance Free"
             },
             {
-                "id": "mig-welding-machine",
-                "name": "MIG Welding Machine"
+                "id": "low-maintenance",
+                "name": "Low Maintenance"
             },
             {
-                "id": "stud-welding-machine",
-                "name": "Stud Welding Machine"
+                "id": "special-batteries",
+                "name": "Special Batteries"
+            }
+        ]
+    },
+    {
+        "id": "drilling-and-lifting",
+        "name": "Drilling and Lifting",
+        "description": "Specialized drilling and lifting equipment",
+        "icon": "bi-tools",
+        "subcategories": [
+            {
+                "id": "lifting",
+                "name": "Material Handling and Lifting"
             },
             {
-                "id": "tig-welding-machine",
-                "name": "TIG Welding Machine"
+                "id": "magnetic-drill",
+                "name": "Magnetic Drill",
+                "subcategories": [
+                    {
+                        "id": "b-line-series",
+                        "name": "B-Line Series"
+                    },
+                    {
+                        "id": "rl-e-line-series",
+                        "name": "RL-E Line Series"
+                    },
+                    {
+                        "id": "rbx-line-series",
+                        "name": "RBX-Line Series"
+                    },
+                    {
+                        "id": "sp-line-series",
+                        "name": "SP-Line Series"
+                    },
+                    {
+                        "id": "v-line-series",
+                        "name": "V-Line Series"
+                    }
+                ]
             },
             {
-                "id": "plasma-cutting-machine",
-                "name": "Plasma Cutting Machine"
-            },
-            {
-                "id": "accessories-and-consumables",
-                "name": "Accessories & Consumables"
-            },
-            {
-                "id": "welding-head-and-face-protection",
-                "name": "Welding Head and Face Protection"
+                "id": "cutters",
+                "name": "Core Cutters"
             }
         ]
     },
@@ -78,58 +150,12 @@
                 "name": "Portable Gas Detectors"
             },
             {
-                "id": "calibration-gas-regulators",
-                "name": "Calibration Gas Regulators"
-            },
-            {
                 "id": "docking-data-management",
-                "name": "Docking Data Management"
-            }
-        ]
-    },
-    {
-        "id": "drilling-and-lifting",
-        "name": "Drilling & Lifting",
-        "description": "Specialized drilling and lifting equipment",
-        "icon": "bi-tools",
-        "subcategories": [
-            {
-                "id": "drilling-and-lifting",
-                "name": "Drilling and Lifting"
+                "name": "Docking and Data Management"
             },
             {
-                "id": "magnetic-drill",
-                "name": "Magnetic Drill",
-                "subcategories": [
-                    {
-                        "id": "b-line-series",
-                        "name": "B-Line Series"
-                    },
-                    {
-                        "id": "rl-e-line-series",
-                        "name": "RL - E - Line Series"
-                    },
-                    {
-                        "id": "rbx-line-series",
-                        "name": "RBX - LINE SERIES"
-                    },
-                    {
-                        "id": "sp-line-series",
-                        "name": "SP - LINE SERIES"
-                    },
-                    {
-                        "id": "v-line-series",
-                        "name": "V - LINE SERIES"
-                    }
-                ]
-            },
-            {
-                "id": "cutters",
-                "name": "Core Cutters"
-            },
-            {
-                "id": "lifting",
-                "name": "Material Handling & Lifting"
+                "id": "calibration-gas-regulators",
+                "name": "Calibration Gas and Regulators"
             }
         ]
     },
@@ -141,39 +167,11 @@
         "subcategories": [
             {
                 "id": "electric-driven",
-                "name": "Electric Driven",
-                "subcategories": [
-                    {
-                        "id": "air-max-12-blower",
-                        "name": "Air Max 12 Blower"
-                    },
-                    {
-                        "id": "double-duty-heat-killer",
-                        "name": "Double Duty Heat Killer"
-                    },
-                    {
-                        "id": "vano-175-cv-and-250-cv",
-                        "name": "Vano 175 CV and 250 CV"
-                    },
-                    {
-                        "id": "cadet-vaneaxial-and-centrifugal-ventilators",
-                        "name": "Cadet Vaneaxial and Centrifugal Ventilators"
-                    }
-                ]
+                "name": "Electric Driven"
             },
             {
                 "id": "pneumatic-driven",
-                "name": "Pneumatic Driven",
-                "subcategories": [
-                    {
-                        "id": "reaction-fans",
-                        "name": "Reaction Fans"
-                    },
-                    {
-                        "id": "jecta-and-hornet-hp",
-                        "name": "Jecta I and Hornet HP"
-                    }
-                ]
+                "name": "Pneumatic Driven"
             },
             {
                 "id": "portable-ventilator-accessories",
@@ -182,29 +180,39 @@
         ]
     },
     {
+        "id": "power-tools",
+        "name": "Power Tools",
+        "description": "Heavy-duty power tools for industrial use",
+        "icon": "bi-tools",
+        "subcategories": [
+            {
+                "id": "grinder",
+                "name": "Grinder"
+            },
+            {
+                "id": "saw",
+                "name": "Saw"
+            },
+            {
+                "id": "drill-and-wrench",
+                "name": "Drill and Wrench"
+            },
+            {
+                "id": "rotary-and-demolition-hammer",
+                "name": "Rotary and Demolition Hammer"
+            },
+            {
+                "id": "accessories",
+                "name": "Accessories"
+            }
+        ]
+    },
+    {
         "id": "protection",
-        "name": "Protection Equipment",
+        "name": "Personal Protective Equipment",
         "description": "Personal protective equipment and safety gear",
         "icon": "bi-shield-check",
         "subcategories": [
-            {
-                "id": "body-protection",
-                "name": "Body Protection",
-                "subcategories": [
-                    {
-                        "id": "particulate-low-hazard",
-                        "name": "Particulate and Low Hazard"
-                    },
-                    {
-                        "id": "liquid-spray-splash",
-                        "name": "Liquid Spray and Splash"
-                    },
-                    {
-                        "id": "chemical-flame-retardant",
-                        "name": "Chemical and Flame Retardant"
-                    }
-                ]
-            },
             {
                 "id": "eye-protection",
                 "name": "Eye Protection"
@@ -214,30 +222,26 @@
                 "name": "Hand Protection",
                 "subcategories": [
                     {
-                        "id": "welding-gloves",
-                        "name": "Welding Gloves"
-                    },
-                    {
                         "id": "working-gloves",
                         "name": "Working Gloves"
+                    },
+                    {
+                        "id": "chemical-liquid-protection-gloves",
+                        "name": "Chemical and Liquid Protection Gloves"
                     },
                     {
                         "id": "disposable-gloves",
                         "name": "Disposable Gloves"
                     },
                     {
-                        "id": "chemical-liquid-protection-gloves",
-                        "name": "Chemical Liquid Protection Gloves"
+                        "id": "welding-gloves",
+                        "name": "Welding Gloves"
                     }
                 ]
             },
             {
-                "id": "foot-protection",
-                "name": "Foot Protection"
-            },
-            {
                 "id": "hearing-respiratory-protection",
-                "name": "Hearing Respiratory Protection"
+                "name": "Hearing and Respiratory Protection"
             },
             {
                 "id": "welding-head-and-face-protection",
@@ -256,6 +260,28 @@
                         "name": "Welding Mask"
                     }
                 ]
+            },
+            {
+                "id": "body-protection",
+                "name": "Body Protection",
+                "subcategories": [
+                    {
+                        "id": "chemical-flame-retardant",
+                        "name": "Chemical and Flame Retardant"
+                    },
+                    {
+                        "id": "liquid-spray-splash",
+                        "name": "Liquid Spray and Splash"
+                    },
+                    {
+                        "id": "particulate-low-hazard",
+                        "name": "Particulate and Low Hazard"
+                    }
+                ]
+            },
+            {
+                "id": "foot-protection",
+                "name": "Foot Protection"
             }
         ]
     },
@@ -296,54 +322,6 @@
         ]
     },
     {
-        "id": "batteries",
-        "name": "Batteries",
-        "description": "Industrial batteries for various applications",
-        "icon": "bi-battery-full",
-        "subcategories": [
-            {
-                "id": "maintenance-free",
-                "name": "Maintenance Free"
-            },
-            {
-                "id": "low-maintenance",
-                "name": "Low Maintenance"
-            },
-            {
-                "id": "special-batteries",
-                "name": "Special Batteries"
-            }
-        ]
-    },
-    {
-        "id": "power-tools",
-        "name": "Power Tools",
-        "description": "Heavy-duty power tools for industrial use",
-        "icon": "bi-tools",
-        "subcategories": [
-            {
-                "id": "grinder",
-                "name": "Grinder"
-            },
-            {
-                "id": "saw",
-                "name": "Saw"
-            },
-            {
-                "id": "drill-and-wrench",
-                "name": "Drill and Wrench"
-            },
-            {
-                "id": "rotary-and-demolition-hammer",
-                "name": "Rotary and Demolition Hammer"
-            },
-            {
-                "id": "accessories",
-                "name": "Accessories"
-            }
-        ]
-    },
-    {
         "id": "welding-consumables",
         "name": "Welding Consumables",
         "description": "High-quality welding consumables and materials for superior weld quality and durability",
@@ -360,4 +338,3 @@
         ]
     }
 ]
-

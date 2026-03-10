@@ -48,6 +48,52 @@ function andison_get_products_for_subcategory(string $categoryId, string $subcat
     return is_array($products) ? $products : [];
 }
 
+function andison_get_products_for_category(string $categoryId): array
+{
+    // Query Supabase for all products under this category (no subcategory filter)
+    $filter = 'category_id=eq.' . rawurlencode($categoryId) . '&limit=5000';
+    $rows = andison_sb_select('products', $filter);
+
+    if (!empty($rows)) {
+        return array_map(function (array $row): array {
+            if (!isset($row['name']) && isset($row['product_name'])) {
+                $row['name'] = $row['product_name'];
+            }
+            if (!isset($row['specs']) && isset($row['specifications'])) {
+                $row['specs'] = $row['specifications'];
+            }
+            if (isset($row['images']) && is_string($row['images'])) {
+                $decoded = json_decode($row['images'], true);
+                if (is_array($decoded)) {
+                    $row['images'] = $decoded;
+                    if (empty($row['image']) && !empty($decoded[0])) {
+                        $row['image'] = $decoded[0];
+                    }
+                } else {
+                    $row['images'] = $row['image'] ? [$row['image']] : [];
+                }
+            } elseif (!isset($row['images'])) {
+                $row['images'] = $row['image'] ? [$row['image']] : [];
+            }
+            return $row;
+        }, $rows);
+    }
+
+    // Fallback: scan all JSON files in the category directory
+    $dir = __DIR__ . '/../data/products/' . urlencode($categoryId);
+    if (!is_dir($dir)) return [];
+    $all = [];
+    foreach (glob($dir . '/*.json') as $file) {
+        $content = file_get_contents($file);
+        if ($content === false) continue;
+        $products = json_decode($content, true);
+        if (is_array($products)) {
+            $all = array_merge($all, $products);
+        }
+    }
+    return $all;
+}
+
 function andison_save_products_for_subcategory(string $categoryId, string $subcategoryId, array $products): bool
 {
     // Backup to local JSON

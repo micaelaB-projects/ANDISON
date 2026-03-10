@@ -10,7 +10,9 @@
         "price": "",
         "specs": "",
         "image": "../assets/brands%20items/MOTOLITE/Enduro.jpg",
-        "images": ["../assets/brands%20items/MOTOLITE/Enduro.jpg"]
+        "images": [
+            "../assets/brands%20items/MOTOLITE/Enduro.jpg"
+        ]
     },
     {
         "id": "maintenance-free-2",
@@ -23,7 +25,9 @@
         "price": "",
         "specs": "",
         "image": "../assets/brands%20items/MOTOLITE/excel.png",
-        "images": ["../assets/brands%20items/MOTOLITE/excel.png"]
+        "images": [
+            "../assets/brands%20items/MOTOLITE/excel.png"
+        ]
     },
     {
         "id": "maintenance-free-3",
@@ -36,6 +40,40 @@
         "price": "",
         "specs": "",
         "image": "../assets/brands%20items/MOTOLITE/Gold.jpg",
-        "images": ["../assets/brands%20items/MOTOLITE/Gold.jpg"]
+        "images": [
+            "../assets/brands%20items/MOTOLITE/Gold.jpg"
+        ]
+    },
+    {
+        "name": "love love",
+        "model": "wowow",
+        "type": "Batttery",
+        "price": "",
+        "badge": "Not Available",
+        "description": "love ko 'to",
+        "specs": "maganda",
+        "image": "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/received_646438704016888_20260305_092523.jpeg",
+        "images": [
+            "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/received_646438704016888_20260305_092523.jpeg"
+        ],
+        "brand": "ACES",
+        "category_id": "batteries",
+        "subcategory_id": "maintenance-free"
+    },
+    {
+        "name": "let me check",
+        "model": "batt123",
+        "type": "double a",
+        "price": "",
+        "badge": "New Arrival",
+        "description": "this is motolite",
+        "specs": "nyekkk",
+        "image": "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/screenshot_2023-10-10_155404_20260309_014618.png",
+        "images": [
+            "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/screenshot_2023-10-10_155404_20260309_014618.png"
+        ],
+        "brand": "MOTOLITE",
+        "category_id": "batteries",
+        "subcategory_id": "maintenance-free"
     }
 ]

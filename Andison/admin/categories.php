@@ -24,99 +24,26 @@ if ($selectedCategory && !isset($categoryList[$selectedCategory])) {
     $selectedSubcategory = '';
 }
 
-// Handle form submissions
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $action = isset($_POST['action']) ? (string)$_POST['action'] : '';
+// This page is now READ-ONLY for products.
+// All product add/edit/delete is handled exclusively in products.php (Brands admin).
+// This prevents duplicate rows and conflicting writes to the Supabase products table.
 
-    if ($action === 'add_product' && $selectedCategory && $selectedSubcategory) {
-        $name = isset($_POST['name']) ? trim((string)$_POST['name']) : '';
-        $model = isset($_POST['model']) ? trim((string)$_POST['model']) : '';
-        $badge = isset($_POST['badge']) ? trim((string)$_POST['badge']) : '';
-        $desc = isset($_POST['description']) ? trim((string)$_POST['description']) : '';
-        $price = isset($_POST['price']) ? trim((string)$_POST['price']) : '';
-        $specs = isset($_POST['specs']) ? trim((string)$_POST['specs']) : '';
-
-        if ($name && $model) {
-            $products = andison_get_products_for_subcategory($selectedCategory, $selectedSubcategory);
-
-            $image = '';
-            if (!empty($_FILES['image']) && andison_admin_is_product_image_upload($_FILES['image'])) {
-                $uploaded = andison_admin_store_product_image($_FILES['image'], $selectedCategory, $selectedSubcategory);
-                if ($uploaded) {
-                    $image = $uploaded;
-                }
-            }
-
-            $products[] = [
-                'id' => $model,
-                'name' => $name,
-                'model' => $model,
-                'type' => '',
-                'badge' => $badge,
-                'description' => $desc,
-                'price' => $price,
-                'specs' => $specs,
-                'image' => $image,
-            ];
-
-            if (andison_save_products_for_subcategory($selectedCategory, $selectedSubcategory, $products)) {
-                andison_set_flash('success', 'Product added successfully!');
-                header('Location: categories.php?cat=' . urlencode($selectedCategory) . '&sub=' . urlencode($selectedSubcategory));
-                exit;
-            }
+// Sync canonical categories JSON → Supabase
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'sync_categories') {
+    $jsonFile = __DIR__ . '/../data/categories_info.json';
+    $content  = file_get_contents($jsonFile);
+    $canonical = $content !== false ? json_decode($content, true) : null;
+    if (is_array($canonical) && !empty($canonical)) {
+        if (andison_save_categories($canonical)) {
+            andison_set_flash('success', 'Categories synced to database successfully! The product form dropdowns will now show the correct paths.');
         } else {
-            andison_set_flash('error', 'Name and Model are required!');
+            andison_set_flash('error', 'Sync failed — check your Supabase connection.');
         }
-    } elseif ($action === 'update_product' && $selectedCategory && $selectedSubcategory) {
-        $productId = isset($_POST['product_id']) ? (string)$_POST['product_id'] : '';
-        $name = isset($_POST['name']) ? trim((string)$_POST['name']) : '';
-        $badge = isset($_POST['badge']) ? trim((string)$_POST['badge']) : '';
-        $desc = isset($_POST['description']) ? trim((string)$_POST['description']) : '';
-        $price = isset($_POST['price']) ? trim((string)$_POST['price']) : '';
-        $specs = isset($_POST['specs']) ? trim((string)$_POST['specs']) : '';
-
-        if ($productId && $name) {
-            $products = andison_get_products_for_subcategory($selectedCategory, $selectedSubcategory);
-
-            foreach ($products as &$product) {
-                if (($product['id'] ?? '') === $productId) {
-                    $product['name'] = $name;
-                    $product['badge'] = $badge;
-                    $product['description'] = $desc;
-                    $product['price'] = $price;
-                    $product['specs'] = $specs;
-
-                    if (!empty($_FILES['image']) && andison_admin_is_product_image_upload($_FILES['image'])) {
-                        $uploaded = andison_admin_store_product_image($_FILES['image'], $selectedCategory, $selectedSubcategory);
-                        if ($uploaded) {
-                            $product['image'] = $uploaded;
-                        }
-                    }
-
-                    break;
-                }
-            }
-
-            if (andison_save_products_for_subcategory($selectedCategory, $selectedSubcategory, $products)) {
-                andison_set_flash('success', 'Product updated successfully!');
-                header('Location: categories.php?cat=' . urlencode($selectedCategory) . '&sub=' . urlencode($selectedSubcategory));
-                exit;
-            }
-        }
-    } elseif ($action === 'delete_product' && $selectedCategory && $selectedSubcategory) {
-        $productId = isset($_POST['product_id']) ? (string)$_POST['product_id'] : '';
-
-        $products = andison_get_products_for_subcategory($selectedCategory, $selectedSubcategory);
-        $products = array_filter($products, function($p) use ($productId) {
-            return ($p['id'] ?? '') !== $productId;
-        });
-
-        if (andison_save_products_for_subcategory($selectedCategory, $selectedSubcategory, array_values($products))) {
-            andison_set_flash('success', 'Product deleted successfully!');
-            header('Location: categories.php?cat=' . urlencode($selectedCategory) . '&sub=' . urlencode($selectedSubcategory));
-            exit;
-        }
+    } else {
+        andison_set_flash('error', 'Could not read categories JSON file.');
     }
+    header('Location: categories.php');
+    exit;
 }
 
 andison_admin_header('Categories & Products', 'categories');
@@ -346,6 +273,14 @@ andison_admin_header('Categories & Products', 'categories');
     <!-- Category Selector Header -->
     <div style="grid-column:span 12;" class="cat-section-header">
         <h2>Categories</h2>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+            <form method="post" action="categories.php" onsubmit="return confirm('Re-sync all categories and subcategories from the canonical list to the database? This will update the product form dropdowns.');">
+                <input type="hidden" name="action" value="sync_categories">
+                <button type="submit" style="background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.4);color:white;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+                    <i class="bi bi-arrow-repeat"></i> Sync Categories to Database
+                </button>
+            </form>
+        </div>
         <div class="category-tabs">
             <?php foreach ($categoryList as $cat): ?>
                 <button class="category-tab <?php echo $selectedCategory === $cat['id'] ? 'active' : ''; ?>" onclick="selectCategory('<?php echo htmlspecialchars($cat['id']); ?>')">
@@ -405,9 +340,9 @@ andison_admin_header('Categories & Products', 'categories');
                             <div style="font-size:11px;color:#9ca3af;margin-top:1px;"><?php echo count($products); ?> product<?php echo count($products) !== 1 ? 's' : ''; ?></div>
                         </div>
                     </div>
-                    <button class="btn btn-primary" onclick="openAddProductModal()" style="font-size:12px;padding:8px 16px;">
-                        <i class="bi bi-plus-lg"></i> Add Product
-                    </button>
+                    <a href="products.php" class="btn btn-primary" style="font-size:12px;padding:8px 16px;text-decoration:none;">
+                        <i class="bi bi-box-arrow-up-right"></i> Manage in Products
+                    </a>
                 </div>
 
                 <!-- Breadcrumb -->
@@ -422,8 +357,8 @@ andison_admin_header('Categories & Products', 'categories');
                     <div style="text-align:center;padding:48px 20px;">
                         <div style="width:56px;height:56px;border-radius:14px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"><i class="bi bi-inbox" style="font-size:24px;color:#d1d5db;"></i></div>
                         <div style="font-weight:600;font-size:14px;color:#374151;margin-bottom:4px;">No products yet</div>
-                        <div style="font-size:12px;color:#9ca3af;margin-bottom:14px;">Add the first product to <strong><?php echo htmlspecialchars($subName); ?></strong></div>
-                        <button class="btn btn-primary" onclick="openAddProductModal()" style="font-size:12px;padding:7px 16px;"><i class="bi bi-plus-lg"></i> Add Product</button>
+                        <div style="font-size:12px;color:#9ca3af;margin-bottom:14px;">Go to <strong>Products</strong> admin, add a product and assign it to <strong><?php echo htmlspecialchars($subName); ?></strong>.</div>
+                        <a href="products.php" class="btn btn-primary" style="font-size:12px;padding:7px 16px;text-decoration:none;"><i class="bi bi-box-arrow-up-right"></i> Go to Products</a>
                     </div>
                 <?php else: ?>
                     <div style="overflow-x:auto;border-radius:10px;border:1px solid #e5e7eb;background:white;">
@@ -474,14 +409,9 @@ andison_admin_header('Categories & Products', 'categories');
                                         </td>
                                         <td>
                                             <div class="product-actions">
-                                                <button class="btn btn-outline" onclick="openEditProductModal(<?php echo htmlspecialchars(json_encode($prod)); ?>)" style="padding:5px 10px;font-size:11px;">
+                                                <a href="products.php" class="btn btn-outline" style="padding:5px 10px;font-size:11px;text-decoration:none;" title="Edit in Products admin">
                                                     <i class="bi bi-pencil"></i> Edit
-                                                </button>
-                                                <form method="POST" style="display:inline;" onsubmit="handleDeleteProduct(event);">
-                                                    <input type="hidden" name="action" value="delete_product">
-                                                    <input type="hidden" name="product_id" value="<?php echo htmlspecialchars($prod['id']); ?>">
-                                                    <button type="submit" class="btn btn-danger" style="padding:5px 10px;font-size:11px;"><i class="bi bi-trash"></i></button>
-                                                </form>
+                                                </a>
                                             </div>
                                         </td>
                                     </tr>
@@ -495,190 +425,12 @@ andison_admin_header('Categories & Products', 'categories');
     <?php endif; ?>
 </div>
 
-<!-- Product Modal -->
-<div class="modal-backdrop" id="productModal" onclick="if(event.target===this) closeProductModal();">
-    <div class="modal-content" onclick="event.stopPropagation();">
-        <div class="modal-header">
-            <h2 id="modalTitle"><i class="bi bi-plus-circle"></i> Add Product</h2>
-            <button class="modal-close" onclick="closeProductModal()">✕</button>
-        </div>
-
-        <form method="POST" enctype="multipart/form-data" id="productForm" onsubmit="return handleProductFormSubmit(event)">
-            <input type="hidden" name="action" id="formAction" value="add_product">
-            <input type="hidden" name="product_id" id="editProductId">
-
-            <div class="field">
-                <label>Product Name *</label>
-                <input type="text" name="name" id="productName" required>
-            </div>
-
-            <div class="field">
-                <label>Model / ID *</label>
-                <input type="text" name="model" id="productModel" required>
-            </div>
-
-            <div class="field">
-                <label>Image</label>
-                <div class="image-upload-area">
-                    <div id="imagePreview"></div>
-                    <input type="file" name="image" id="productImage" accept="image/*" onchange="previewImage(event)">
-                    <small style="color: #999;">Select an image (JPG, PNG, WebP, GIF)</small>
-                </div>
-            </div>
-
-            <div class="field">
-                <label>Price</label>
-                <input type="text" name="price" id="productPrice" placeholder="e.g., $999.99">
-            </div>
-
-            <div class="field">
-                <label>Badge</label>
-                <input type="text" name="badge" id="productBadge" placeholder="e.g., NEW, FEATURED">
-            </div>
-
-            <div class="field">
-                <label>Description</label>
-                <textarea name="description" id="productDesc" rows="3" placeholder="Product description..."></textarea>
-            </div>
-
-            <div class="field">
-                <label>Specifications</label>
-                <textarea name="specs" id="productSpecs" rows="3" placeholder="Product specifications..."></textarea>
-            </div>
-
-            <div style="display: flex; gap: 12px; margin-top: 24px;">
-                <button type="submit" class="btn btn-primary" style="flex: 1;">
-                    <i class="bi bi-check-circle"></i> Save Product
-                </button>
-                <button type="button" class="btn btn-outline" onclick="closeProductModal()" style="flex: 1;">
-                    <i class="bi bi-x-circle"></i> Cancel
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Confirmation Dialog -->
-<div class="confirmation-dialog" id="confirmDialog">
-    <div class="confirmation-dialog-content">
-        <div class="confirmation-icon">
-            <i class="bi bi-question-circle-fill"></i>
-        </div>
-        <h3>Confirm Action</h3>
-        <p id="confirmMessage">Are you sure you want to add this product?</p>
-        <div class="confirmation-buttons">
-            <button type="button" class="btn-confirm" onclick="confirmProductAction()">
-                Yes, Proceed
-            </button>
-            <button type="button" class="btn-confirm-cancel" onclick="cancelProductAction()">
-                Cancel
-            </button>
-        </div>
-    </div>
-</div>
-
 <script>
-let pendingForm = null;
-let pendingFormType = null;
-
 function selectCategory(catId) {
     window.location = 'categories.php' + (catId ? '?cat=' + encodeURIComponent(catId) : '');
 }
-
 function selectSubcategory(catId, subId) {
     window.location = 'categories.php?cat=' + encodeURIComponent(catId) + '&sub=' + encodeURIComponent(subId);
-}
-
-function handleProductFormSubmit(event) {
-    event.preventDefault();
-    
-    const action = document.getElementById('formAction').value;
-    const actionText = action === 'add_product' ? 'add this product' : 'update this product';
-    document.getElementById('confirmMessage').textContent = 'Are you sure you want to ' + actionText + '?';
-    
-    pendingForm = document.getElementById('productForm');
-    pendingFormType = 'product';
-    document.getElementById('confirmDialog').classList.add('show');
-    return false;
-}
-
-function handleDeleteProduct(event) {
-    event.preventDefault();
-    
-    document.getElementById('confirmMessage').textContent = 'Are you sure you want to delete this product? This action cannot be undone.';
-    
-    pendingForm = event.target;
-    pendingFormType = 'delete';
-    document.getElementById('confirmDialog').classList.add('show');
-}
-
-function confirmProductAction() {
-    document.getElementById('confirmDialog').classList.remove('show');
-    if (pendingForm) {
-        pendingForm.submit();
-        pendingForm = null;
-        pendingFormType = null;
-    }
-}
-
-function cancelProductAction() {
-    document.getElementById('confirmDialog').classList.remove('show');
-    pendingForm = null;
-    pendingFormType = null;
-}
-
-function openAddProductModal() {
-    document.getElementById('formAction').value = 'add_product';
-    document.getElementById('modalTitle').innerHTML = '<i class="bi bi-plus-circle"></i> Add Product';
-    document.getElementById('editProductId').value = '';
-    document.getElementById('productName').value = '';
-    document.getElementById('productModel').value = '';
-    document.getElementById('productModel').disabled = false;
-    document.getElementById('productPrice').value = '';
-    document.getElementById('productBadge').value = '';
-    document.getElementById('productDesc').value = '';
-    document.getElementById('productSpecs').value = '';
-    document.getElementById('imagePreview').innerHTML = '';
-    document.getElementById('productImage').value = '';
-    document.getElementById('productModal').classList.add('show');
-}
-
-function openEditProductModal(product) {
-    document.getElementById('formAction').value = 'update_product';
-    document.getElementById('modalTitle').innerHTML = '<i class="bi bi-pencil-square"></i> Edit Product';
-    document.getElementById('editProductId').value = product.id;
-    document.getElementById('productName').value = product.name;
-    document.getElementById('productModel').value = product.model || product.id;
-    document.getElementById('productModel').disabled = true;
-    document.getElementById('productPrice').value = product.price || '';
-    document.getElementById('productBadge').value = product.badge || '';
-    document.getElementById('productDesc').value = product.description || '';
-    document.getElementById('productSpecs').value = product.specs || '';
-    document.getElementById('productImage').value = '';
-    
-    if (product.image) {
-        const imgPath = product.image.replace('andison/', '');
-        document.getElementById('imagePreview').innerHTML = '<img src="../../' + imgPath + '" class="image-preview" alt="Current">';
-    } else {
-        document.getElementById('imagePreview').innerHTML = '';
-    }
-    
-    document.getElementById('productModal').classList.add('show');
-}
-
-function closeProductModal() {
-    document.getElementById('productModal').classList.remove('show');
-}
- 
-function previewImage(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById('imagePreview').innerHTML = '<img src="' + e.target.result + '" class="image-preview" alt="Preview">';
-        };
-        reader.readAsDataURL(file);
-    }
 }
 </script>
 

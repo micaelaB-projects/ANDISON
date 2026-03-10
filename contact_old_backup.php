@@ -1,9 +1,9 @@
 <?php
-require_once __DIR__ . '/andison/includes/analytics.php';
+require_once __DIR__ . '/Andison/includes/analytics.php';
 andison_track_visit('services');
-require_once __DIR__ . '/andison/includes/home_featured.php';
-require_once __DIR__ . '/andison/includes/home_slider.php';
-require_once __DIR__ . '/andison/includes/youtube_links.php';
+require_once __DIR__ . '/Andison/includes/home_featured.php';
+require_once __DIR__ . '/Andison/includes/home_slider.php';
+require_once __DIR__ . '/Andison/includes/youtube_links.php';
 
 $featured = andison_get_home_featured();
 $slides = andison_get_home_slider();

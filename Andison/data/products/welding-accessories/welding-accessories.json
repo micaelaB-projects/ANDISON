@@ -10,7 +10,9 @@
         "price": "",
         "specs": "",
         "image": "andison/assets/brands%20items/PANASONIC/MAG-MIG-Torch.jpg",
-        "images": ["andison/assets/brands%20items/PANASONIC/MAG-MIG-Torch.jpg"]
+        "images": [
+            "andison/assets/brands%20items/PANASONIC/MAG-MIG-Torch.jpg"
+        ]
     },
     {
         "id": "panasonic-tig-torch",
@@ -23,7 +25,9 @@
         "price": "",
         "specs": "",
         "image": "andison/assets/brands%20items/PANASONIC/TIG-Torch.jpg",
-        "images": ["andison/assets/brands%20items/PANASONIC/TIG-Torch.jpg"]
+        "images": [
+            "andison/assets/brands%20items/PANASONIC/TIG-Torch.jpg"
+        ]
     },
     {
         "id": "revolt-mag-mig-torch",
@@ -36,7 +40,9 @@
         "price": "",
         "specs": "",
         "image": "andison/assets/brands%20items/REVOLT/Welding%20Torch.jpg",
-        "images": ["andison/assets/brands%20items/REVOLT/Welding%20Torch.jpg"]
+        "images": [
+            "andison/assets/brands%20items/REVOLT/Welding%20Torch.jpg"
+        ]
     },
     {
         "id": "weldcraft-tig-torch-accessories",
@@ -49,7 +55,9 @@
         "price": "",
         "specs": "",
         "image": "andison/assets/brands%20items/WELDCRAFT/Tig%20Torch-1.jpg",
-        "images": ["andison/assets/brands%20items/WELDCRAFT/Tig%20Torch-1.jpg"]
+        "images": [
+            "andison/assets/brands%20items/WELDCRAFT/Tig%20Torch-1.jpg"
+        ]
     },
     {
         "id": "truweld-accessories-consumables",
@@ -62,7 +70,9 @@
         "price": "",
         "specs": "",
         "image": "andison/assets/brands%20items/TRUWELD/Welding%20Consumables%201.jpg",
-        "images": ["andison/assets/brands%20items/TRUWELD/Welding%20Consumables%201.jpg"]
+        "images": [
+            "andison/assets/brands%20items/TRUWELD/Welding%20Consumables%201.jpg"
+        ]
     },
     {
         "id": "aircair-gouging-torch",
@@ -75,7 +85,9 @@
         "price": "",
         "specs": "",
         "image": "andison/assets/brands%20items/ARCAIR/Gouging-Torch.jpg",
-        "images": ["andison/assets/brands%20items/ARCAIR/Gouging-Torch.jpg"]
+        "images": [
+            "andison/assets/brands%20items/ARCAIR/Gouging-Torch.jpg"
+        ]
     },
     {
         "id": "water-cooling-unit",
@@ -88,7 +100,9 @@
         "price": "",
         "specs": "",
         "image": "andison/assets/brands%20items/TRUWELD/Welding%20Consumables%202.jpg",
-        "images": ["andison/assets/brands%20items/TRUWELD/Welding%20Consumables%202.jpg"]
+        "images": [
+            "andison/assets/brands%20items/TRUWELD/Welding%20Consumables%202.jpg"
+        ]
     },
     {
         "id": "torch-consumables",
@@ -101,7 +115,9 @@
         "price": "",
         "specs": "",
         "image": "andison/assets/brands%20items/WELDCRAFT/Part%20&%20Consumables-1.png",
-        "images": ["andison/assets/brands%20items/WELDCRAFT/Part%20&%20Consumables-1.png"]
+        "images": [
+            "andison/assets/brands%20items/WELDCRAFT/Part%20&%20Consumables-1.png"
+        ]
     },
     {
         "id": "hard-worker-mag-welding-plier",
@@ -114,6 +130,40 @@
         "price": "",
         "specs": "",
         "image": "andison/assets/brands%20items/HARDWORKER/Welding-Plier.jpg",
-        "images": ["andison/assets/brands%20items/HARDWORKER/Welding-Plier.jpg"]
+        "images": [
+            "andison/assets/brands%20items/HARDWORKER/Welding-Plier.jpg"
+        ]
+    },
+    {
+        "name": "Weldcraft TIG Torch and Accessories",
+        "model": "TIG Torch with Accessories",
+        "type": "TIG Torch Set",
+        "price": "",
+        "badge": "",
+        "description": "Complete Weldcraft TIG Torch Set with Accessories",
+        "specs": "",
+        "image": "andison/assets/brands%20items/WELDCRAFT/Tig%20Torch-1.jpg",
+        "images": [
+            "andison/assets/brands%20items/WELDCRAFT/Tig%20Torch-1.jpg"
+        ],
+        "brand": "Weldcraft",
+        "category_id": "welding-accessories",
+        "subcategory_id": "welding-accessories"
+    },
+    {
+        "name": "Torch Consumables",
+        "model": "Consumables",
+        "type": "Consumables",
+        "price": "",
+        "badge": "",
+        "description": "Replacement Torch Consumables and Parts",
+        "specs": "",
+        "image": "andison/assets/brands%20items/WELDCRAFT/Part%20&%20Consumables-1.png",
+        "images": [
+            "andison/assets/brands%20items/WELDCRAFT/Part%20&%20Consumables-1.png"
+        ],
+        "brand": "Weldcraft",
+        "category_id": "welding-accessories",
+        "subcategory_id": "welding-accessories"
     }
 ]

@@ -1,9 +1,9 @@
 <?php
-require_once __DIR__ . '/andison/includes/analytics.php';
+require_once __DIR__ . '/Andison/includes/analytics.php';
 andison_track_visit('brands');
-require_once __DIR__ . '/andison/includes/home_featured.php';
-require_once __DIR__ . '/andison/includes/home_slider.php';
-require_once __DIR__ . '/andison/includes/youtube_links.php';
+require_once __DIR__ . '/Andison/includes/home_featured.php';
+require_once __DIR__ . '/Andison/includes/home_slider.php';
+require_once __DIR__ . '/Andison/includes/youtube_links.php';
 
 $featured = andison_get_home_featured();
 $slides = andison_get_home_slider();
@@ -876,7 +876,7 @@ $ytLinks = andison_get_youtube_links();
 
         @media (max-width: 1024px) {
             .brands-grid {
-                grid-template-columns: repeat(4, 1fr);
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
                 gap: 20px;
             }
         }
@@ -1984,7 +1984,7 @@ $ytLinks = andison_get_youtube_links();
     </header>
 
     <!-- Sidebar (loaded from includes/sidebar.php) -->
-     <?php include $_SERVER['DOCUMENT_ROOT'] . '/ANDISON/includes/sidebar.php'; ?>
+     <?php include __DIR__ . '/includes/sidebar.php'; ?>
 
     <!-- Brands Hero -->
     <div class="page-content">

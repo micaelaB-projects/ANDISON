@@ -73,6 +73,73 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = isset($_POST['action']) ? (string)$_POST['action'] : '';
     $brand = isset($_POST['brand']) ? (string)$_POST['brand'] : '';
 
+    // ── Dedup: remove duplicate rows from Supabase products table ──────────────
+    if ($action === 'dedup_products') {
+        require_once __DIR__ . '/../includes/supabase.php';
+        $all = andison_sb_select('products', 'select=id,brand,product_name,model,category_id,subcategory_id,image&limit=10000&order=id');
+
+        $groups = [];
+        foreach ($all as $row) {
+            $key = strtolower(trim((string)($row['model'] ?? '')));
+            if ($key === '') continue;
+            $groups[$key][] = $row;
+        }
+
+        $toDelete = [];
+        foreach ($groups as $rows) {
+            if (count($rows) <= 1) continue;
+            // Score each row — keep the most complete one
+            $best      = null;
+            $bestScore = -1;
+            foreach ($rows as $row) {
+                $score = 0;
+                if (!empty($row['brand']))          $score += 4;
+                if (!empty($row['category_id']))    $score += 3;
+                if (!empty($row['subcategory_id'])) $score += 2;
+                if (!empty($row['product_name']))   $score += 1;
+                if (!empty($row['image']))          $score += 1;
+                if ($score > $bestScore) { $bestScore = $score; $best = $row; }
+            }
+            foreach ($rows as $row) {
+                if ((int)$row['id'] !== (int)$best['id']) {
+                    $toDelete[] = (int)$row['id'];
+                }
+            }
+        }
+
+        $deleted = 0;
+        if (!empty($toDelete)) {
+            foreach (array_chunk($toDelete, 100) as $chunk) {
+                if (andison_sb_delete('products', 'id=in.(' . implode(',', $chunk) . ')')) {
+                    $deleted += count($chunk);
+                }
+            }
+        }
+
+        $msg = $deleted > 0 ? "Removed {$deleted} duplicate product row(s)." : 'No duplicates found.';
+        andison_set_flash($deleted > 0 ? 'success' : 'info', $msg);
+        header('Location: products.php' . ($brand !== '' ? '?brand=' . urlencode($brand) : ''));
+        exit;
+    }
+
+    // ── Delete ALL products from Supabase ─────────────────────────────────────
+    if ($action === 'delete_all_products') {
+        require_once __DIR__ . '/../includes/supabase.php';
+        $all = andison_sb_select('products', 'select=id&limit=10000');
+        $deleted = 0;
+        if (!empty($all)) {
+            $ids = array_filter(array_map(fn($r) => isset($r['id']) ? (int)$r['id'] : null, $all));
+            foreach (array_chunk($ids, 100) as $chunk) {
+                if (andison_sb_delete('products', 'id=in.(' . implode(',', $chunk) . ')')) {
+                    $deleted += count($chunk);
+                }
+            }
+        }
+        andison_set_flash('success', "Deleted {$deleted} product row(s). You can now add products fresh.");
+        header('Location: products.php' . ($brand !== '' ? '?brand=' . urlencode($brand) : ''));
+        exit;
+    }
+
     if ($brand !== '' && isset($brands[$brand])) {
         if ($action === 'update_brand') {
             $desc = isset($_POST['description']) ? trim((string)$_POST['description']) : '';
@@ -271,6 +338,19 @@ andison_admin_header('Products', 'products');
                     <?php endforeach; ?>
                 </select>
             </form>
+            <form method="post" action="products.php<?php echo $selectedBrand !== '' ? '?brand=' . urlencode($selectedBrand) : ''; ?>" onsubmit="return confirm('Scan all products and remove duplicates?');">
+                <input type="hidden" name="action" value="dedup_products">
+                <?php if ($selectedBrand !== ''): ?><input type="hidden" name="brand" value="<?php echo htmlspecialchars($selectedBrand); ?>"><?php endif; ?>
+                <button type="submit" class="prod-load-btn" title="Remove duplicate product rows from database" style="background:rgba(239,68,68,0.18);border-color:rgba(239,68,68,0.4);">
+                    <i class="bi bi-scissors"></i> Remove Duplicates
+                </button>
+            </form>
+            <form method="post" action="products.php" onsubmit="return confirm('DELETE ALL products from the database? This cannot be undone!');">
+                <input type="hidden" name="action" value="delete_all_products">
+                <button type="submit" class="prod-load-btn" title="Wipe all products from Supabase" style="background:rgba(239,68,68,0.35);border-color:rgba(239,68,68,0.7);font-weight:700;">
+                    <i class="bi bi-trash3"></i> Delete All Products
+                </button>
+            </form>
         </div>
     </section>
 
@@ -370,6 +450,11 @@ andison_admin_header('Products', 'products');
                                         <?php if (!empty($prod['product_name'])): ?>
                                             <div style="font-size:11px;color:#9ca3af;margin-top:1px;"><?php echo htmlspecialchars((string)$prod['product_name']); ?></div>
                                         <?php endif; ?>
+                                        <?php if (empty($prod['category_id'])): ?>
+                                            <div style="margin-top:3px;"><span style="font-size:10px;font-weight:700;background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:4px;padding:1px 6px;"><i class="bi bi-exclamation-triangle-fill"></i> No Category — won't show on browse pages</span></div>
+                                        <?php else: ?>
+                                            <div style="margin-top:3px;"><span style="font-size:10px;color:#6b7280;"><i class="bi bi-folder-check"></i> <?php echo htmlspecialchars((string)$prod['category_id']); ?><?php if (!empty($prod['subcategory_id'])): ?> › <?php echo htmlspecialchars((string)$prod['subcategory_id']); ?><?php endif; ?></span></div>
+                                        <?php endif; ?>
                                     </td>
                                     <td style="color:#6b7280;font-size:12px;"><?php echo htmlspecialchars((string)($prod['type'] ?? '')); ?></td>
                                     <td>
@@ -468,10 +553,12 @@ andison_admin_header('Products', 'products');
             <div class="edit-modal-body">
                 <!-- Category Assignment Section -->
                 <div style="margin-bottom:24px;background:linear-gradient(135deg,#eef0ff,#f5f3ff);border:1.5px solid rgba(43,17,219,0.18);border-radius:10px;padding:16px;">                    <h3 style="font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;border-bottom:2px solid rgba(43,17,219,0.12);padding-bottom:10px;"><i class="bi bi-diagram-3"></i> Category Assignment <span style="font-size:10px;font-weight:600;background:#2b11db;color:#fff;border-radius:999px;padding:2px 8px;margin-left:6px;">REQUIRED to show on site</span></h3>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+                    <input type="hidden" id="finalCategoryId" name="category_id">
+                    <input type="hidden" id="finalSubcategoryId" name="subcategory_id">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:8px;">
                         <div class="field" style="margin:0;">
                             <label for="editCategory"><i class="bi bi-folder"></i> Category</label>
-                            <select id="editCategory" name="category_id" onchange="populateCategorySubcategories()" title="Select the product category">
+                            <select id="editCategory" onchange="populateCategorySubcategories('','')" title="Select the product category">
                                 <option value="">-- None / Brand Only --</option>
                                 <?php foreach ($allCategories as $cat): ?>
                                     <option value="<?php echo htmlspecialchars($cat['id'], ENT_QUOTES); ?>"><?php echo htmlspecialchars($cat['name']); ?></option>
@@ -480,12 +567,21 @@ andison_admin_header('Products', 'products');
                         </div>
                         <div class="field" style="margin:0;">
                             <label for="editSubcategory"><i class="bi bi-folder2-open"></i> Subcategory</label>
-                            <select id="editSubcategory" name="subcategory_id" title="Select the product subcategory">
+                            <select id="editSubcategory" onchange="populateSubSubcategories('');updateFinalSubcategory();" title="Select the product subcategory">
                                 <option value="">-- Select Category First --</option>
                             </select>
                         </div>
                     </div>
+                    <div id="editSubSubcategoryWrap" style="display:none;margin-bottom:8px;">
+                        <div class="field" style="margin:0;">
+                            <label for="editSubSubcategory"><i class="bi bi-folder2"></i> Sub-subcategory <span style="font-size:10px;color:#9ca3af;font-weight:400;">(optional — assign to a specific sub-page)</span></label>
+                            <select id="editSubSubcategory" onchange="updateFinalSubcategory();" title="Optional: assign to a sub-subcategory page">
+                                <option value="">-- Use Subcategory level --</option>
+                            </select>
+                        </div>
+                    </div>
                     <p style="font-size:11px;color:#9ca3af;margin:0;"><i class="bi bi-info-circle"></i> Assign a category so this product appears on the public product pages.</p>
+                    <div id="categoryLivePreview" style="margin-top:7px;font-size:11px;min-height:18px;"></div>
                 </div>
 
                 <!-- Basic Info Section -->
@@ -884,13 +980,36 @@ body.modal-open {
 // Edit product modal functionality
 var _andisonCategories = <?php echo json_encode(array_map(function($c){ return ['id'=>$c['id'],'name'=>$c['name'],'subcategories'=>$c['subcategories']??[]]; }, $allCategories), JSON_HEX_TAG); ?>;
 
-function populateCategorySubcategories(selectedSubId) {
+// Resolve whether subId is a direct subcategory or a sub-subcategory.
+// Returns { parentSubId, subSubId } so dropdowns can be set at both levels.
+function resolveSubcategoryLevel(catId, subId) {
+    if (!catId || !subId) return { parentSubId: '', subSubId: '' };
+    var cat = _andisonCategories.find(function(c){ return c.id === catId; });
+    if (!cat) return { parentSubId: subId, subSubId: '' };
+    // Direct subcategory?
+    var direct = (cat.subcategories || []).find(function(s){ return s.id === subId; });
+    if (direct) return { parentSubId: subId, subSubId: '' };
+    // Sub-subcategory?
+    for (var i = 0; i < (cat.subcategories || []).length; i++) {
+        var sub = cat.subcategories[i];
+        var deep = (sub.subcategories || []).find(function(ss){ return ss.id === subId; });
+        if (deep) return { parentSubId: sub.id, subSubId: subId };
+    }
+    return { parentSubId: subId, subSubId: '' };
+}
+
+function populateCategorySubcategories(selectedSubId, selectedSubSubId) {
     var catId   = document.getElementById('editCategory').value;
     var subSel  = document.getElementById('editSubcategory');
     subSel.innerHTML = '<option value="">' + (catId ? '-- Select Subcategory --' : '-- Select Category First --') + '</option>';
-    if (!catId) return;
+    if (!catId) {
+        document.getElementById('editSubSubcategoryWrap').style.display = 'none';
+        document.getElementById('editSubSubcategory').innerHTML = '<option value="">-- Use Subcategory level --</option>';
+        updateFinalSubcategory();
+        return;
+    }
     var cat = _andisonCategories.find(function(c){ return c.id === catId; });
-    if (!cat) return;
+    if (!cat) { updateFinalSubcategory(); return; }
     (cat.subcategories || []).forEach(function(sub){
         var opt = document.createElement('option');
         opt.value = sub.id;
@@ -898,6 +1017,83 @@ function populateCategorySubcategories(selectedSubId) {
         if (selectedSubId && sub.id === selectedSubId) opt.selected = true;
         subSel.appendChild(opt);
     });
+    populateSubSubcategories(selectedSubSubId || '');
+}
+
+function populateSubSubcategories(selectedSubSubId) {
+    var catId  = document.getElementById('editCategory').value;
+    var subId  = document.getElementById('editSubcategory').value;
+    var wrap   = document.getElementById('editSubSubcategoryWrap');
+    var subSubSel = document.getElementById('editSubSubcategory');
+    if (!catId || !subId) {
+        wrap.style.display = 'none';
+        subSubSel.innerHTML = '<option value="">-- Use Subcategory level --</option>';
+        updateFinalSubcategory();
+        return;
+    }
+    var cat = _andisonCategories.find(function(c){ return c.id === catId; });
+    if (!cat) { wrap.style.display = 'none'; updateFinalSubcategory(); return; }
+    var sub = (cat.subcategories || []).find(function(s){ return s.id === subId; });
+    if (!sub || !sub.subcategories || sub.subcategories.length === 0) {
+        wrap.style.display = 'none';
+        subSubSel.innerHTML = '<option value="">-- Use Subcategory level --</option>';
+        updateFinalSubcategory();
+        return;
+    }
+    subSubSel.innerHTML = '<option value="">-- Use Subcategory level --</option>';
+    (sub.subcategories || []).forEach(function(ss){
+        var opt = document.createElement('option');
+        opt.value = ss.id;
+        opt.textContent = ss.name;
+        if (selectedSubSubId && ss.id === selectedSubSubId) opt.selected = true;
+        subSubSel.appendChild(opt);
+    });
+    wrap.style.display = 'block';
+    updateFinalSubcategory();
+}
+
+function updateFinalSubcategory() {
+    var subId    = document.getElementById('editSubcategory').value;
+    var subSubId = document.getElementById('editSubSubcategory').value;
+    var wrap     = document.getElementById('editSubSubcategoryWrap');
+    // Use sub-subcategory when it's visible and selected; otherwise use subcategory
+    var finalSub = (wrap.style.display !== 'none' && subSubId) ? subSubId : subId;
+    // Only update hidden fields when the user has made an actual selection
+    var catId = document.getElementById('editCategory').value;
+    document.getElementById('finalCategoryId').value    = catId;
+    document.getElementById('finalSubcategoryId').value = finalSub;
+    refreshCategoryPreview();
+}
+
+function refreshCategoryPreview() {
+    var preview = document.getElementById('categoryLivePreview');
+    if (!preview) return;
+    var cat = document.getElementById('finalCategoryId').value;
+    var sub = document.getElementById('finalSubcategoryId').value;
+    if (!cat) {
+        preview.innerHTML = '<span style="color:#b45309;"><i class="bi bi-exclamation-triangle" style="font-size:10px;"></i> No category assigned — product won\'t appear in browse pages.</span>';
+        return;
+    }
+    // Resolve human-readable names
+    var catName = cat, subName = sub;
+    var catData = _andisonCategories.find(function(c){ return c.id === cat; });
+    if (catData) {
+        catName = catData.name || cat;
+        if (sub) {
+            var subData = (catData.subcategories || []).find(function(s){ return s.id === sub; });
+            if (subData) {
+                subName = subData.name || sub;
+            } else {
+                (catData.subcategories || []).forEach(function(s) {
+                    var ss = (s.subcategories || []).find(function(ss){ return ss.id === sub; });
+                    if (ss) subName = (s.name || s.id) + ' › ' + (ss.name || sub);
+                });
+            }
+        }
+    }
+    preview.innerHTML = '<i class="bi bi-check-circle-fill" style="color:#16a34a;font-size:10px;"></i> '
+        + '<span style="color:#166534;font-weight:500;">Assigned: ' + catName
+        + (sub ? ' › ' + subName : '') + '</span>';
 }
 
 // ── Multi-image slot state ──────────────────────────────────────────────────
@@ -1009,10 +1205,24 @@ function openEditModal(index, name, model, type, price, badge, description, spec
     }
     renderImageSlots();
 
-    // Populate category/subcategory
+    // Preserve originals immediately — so saving without touching dropdowns keeps existing values
+    document.getElementById('finalCategoryId').value    = catId || '';
+    document.getElementById('finalSubcategoryId').value = subId || '';
+
+    // Populate category/subcategory — resolve whether subId is 2nd or 3rd level
     var catSel = document.getElementById('editCategory');
     catSel.value = catId || '';
-    populateCategorySubcategories(subId || '');
+    var resolved = resolveSubcategoryLevel(catId || '', subId || '');
+    populateCategorySubcategories(resolved.parentSubId, resolved.subSubId);
+
+    // If dropdowns couldn't pre-fill (e.g. subcategories not in JS data), keep originals
+    if (!document.getElementById('finalCategoryId').value && catId) {
+        document.getElementById('finalCategoryId').value = catId;
+    }
+    if (!document.getElementById('finalSubcategoryId').value && subId) {
+        document.getElementById('finalSubcategoryId').value = subId;
+    }
+    refreshCategoryPreview();
 
     modal.style.display = 'flex';
     // Scroll modal body back to top so category dropdowns are visible
@@ -1072,6 +1282,15 @@ document.querySelector('.edit-product-form').addEventListener('submit', function
     
     customConfirm(message).then(function(confirmed){
         if (confirmed) {
+            // Pre-submit: ensure hidden category inputs match current dropdown state
+            var catSel = document.getElementById('editCategory');
+            var subSel = document.getElementById('editSubcategory');
+            var subSubSel = document.getElementById('editSubSubcategory');
+            var wrap = document.getElementById('editSubSubcategoryWrap');
+            var activeSubSub = (subSubSel && wrap && wrap.style.display !== 'none') ? subSubSel.value : '';
+            if (catSel && catSel.value) document.getElementById('finalCategoryId').value = catSel.value;
+            var latestSub = activeSubSub || (subSel ? subSel.value : '');
+            if (latestSub) document.getElementById('finalSubcategoryId').value = latestSub;
             f.submit();
         } else {
             // Reset modal state after cancel
@@ -1122,7 +1341,9 @@ function openAddProductModal() {
     for (var _s = 0; _s < 5; _s++) { var _fi = document.getElementById('imageFile_' + _s); if (_fi) _fi.value = ''; }
     renderImageSlots();
     document.getElementById('editCategory').value = '';
-    populateCategorySubcategories('');
+    document.getElementById('finalCategoryId').value    = '';
+    document.getElementById('finalSubcategoryId').value = '';
+    populateCategorySubcategories('', '');
     
     // Change submit button text
     form.querySelector('button[type="submit"]').innerHTML = '<i class="bi bi-save"></i> Add Product';

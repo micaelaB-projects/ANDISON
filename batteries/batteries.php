@@ -2,9 +2,9 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/brands_info.php';
-require_once __DIR__ . '/../andison/includes/categories_info.php';
-require_once __DIR__ . '/../andison/includes/products_management.php';
-require_once __DIR__ . '/../andison/includes/analytics.php';
+require_once __DIR__ . '/../Andison/includes/categories_info.php';
+require_once __DIR__ . '/../Andison/includes/products_management.php';
+require_once __DIR__ . '/../Andison/includes/analytics.php';
 
 // Update page name and subcategory
 $page_title = "Batteries";
@@ -832,7 +832,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         }
 
         .product-grid.grid-view {
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
         }
 
         .product-card {
@@ -1177,8 +1177,9 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
 
         /* Products Filters Panel */
         .product-filters {
-            width: 280px;
-            flex-shrink: 0;
+            width: 240px;
+            min-width: 180px;
+            flex-shrink: 1;
             margin-top: 120px;
         }
 
@@ -3360,17 +3361,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                 <div class="product-grid grid-view">
                 <?php 
                 // Fetch products from the current category based on $category_id and $subcategory_id
-                $all_products = andison_get_products_for_subcategory($category_id, $subcategory_id);
-                
-                // If no products found, try to fetch products from category fallback
-                if (empty($all_products) && isset($current_category['subcategories'])) {
-                    foreach ($current_category['subcategories'] as $subcat) {
-                        $products = andison_get_products_for_subcategory($category_id, $subcat['id']);
-                        if (!empty($products)) {
-                            $all_products = array_merge($all_products, $products);
-                        }
-                    }
-                }
+                $all_products = andison_get_products_for_category($category_id);
                 
                 // Display products
                 if (!empty($all_products)) {
@@ -3969,9 +3960,9 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                     e.stopPropagation();
                     e.preventDefault();
                     
-                    var model = this.getAttribute('data-model') || '';
-                    var brand = this.getAttribute('data-brand') || '';
                     var card = this.closest('.product-card');
+                    var model = this.getAttribute('data-model') || (card ? card.getAttribute('data-model') : '') || '';
+                    var brand = this.getAttribute('data-brand') || (card ? card.getAttribute('data-brand') : '') || '';
                     var h4el = card ? card.querySelector('h4') : null;
                     var descel = card ? card.querySelector('.product-description') : null;
                     var name = (h4el ? h4el.textContent.trim() : '') || model;

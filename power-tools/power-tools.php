@@ -2,9 +2,9 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/brands_info.php';
-require_once __DIR__ . '/../andison/includes/categories_info.php';
-require_once __DIR__ . '/../andison/includes/products_management.php';
-require_once __DIR__ . '/../andison/includes/analytics.php';
+require_once __DIR__ . '/../Andison/includes/categories_info.php';
+require_once __DIR__ . '/../Andison/includes/products_management.php';
+require_once __DIR__ . '/../Andison/includes/analytics.php';
 
 // Set category and subcategory for Power Tools
 $page_title = "Power Tools";
@@ -59,7 +59,7 @@ if (!$current_subcategory_info) {
 }
 
 // Get products for this category/subcategory
-$products = andison_get_products_for_subcategory($category_id, $subcategory_id);
+$products = andison_get_products_for_category($category_id);
 
 // Set page title and description
 $category_name = $current_subcategory_info['name'];
@@ -825,7 +825,7 @@ $category_description = $current_category['description'] ?? 'Discover our compre
         }
 
         .product-grid.grid-view {
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
         }
 
         .product-card {
@@ -1170,8 +1170,9 @@ $category_description = $current_category['description'] ?? 'Discover our compre
 
         /* Products Filters Panel */
         .product-filters {
-            width: 280px;
-            flex-shrink: 0;
+            width: 240px;
+            min-width: 180px;
+            flex-shrink: 1;
             margin-top: 120px;
         }
 
@@ -3944,9 +3945,9 @@ $category_description = $current_category['description'] ?? 'Discover our compre
                     e.stopPropagation();
                     e.preventDefault();
                     
-                    var model = this.getAttribute('data-model') || '';
-                    var brand = this.getAttribute('data-brand') || '';
                     var card = this.closest('.product-card');
+                    var model = this.getAttribute('data-model') || (card ? card.getAttribute('data-model') : '') || '';
+                    var brand = this.getAttribute('data-brand') || (card ? card.getAttribute('data-brand') : '') || '';
                     var h4el = card ? card.querySelector('h4') : null;
                     var descel = card ? card.querySelector('.product-description') : null;
                     var name = (h4el ? h4el.textContent.trim() : '') || model;
@@ -4198,9 +4199,9 @@ $category_description = $current_category['description'] ?? 'Discover our compre
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
                     
-                    var model = this.getAttribute('data-model') || '';
-                    var brand = this.getAttribute('data-brand') || '';
                     var card = this.closest('.product-card');
+                    var model = this.getAttribute('data-model') || (card ? card.getAttribute('data-model') : '') || '';
+                    var brand = this.getAttribute('data-brand') || (card ? card.getAttribute('data-brand') : '') || '';
                     var h4el = card ? card.querySelector('h4') : null;
                     var descel = card ? card.querySelector('.product-description') : null;
                     var name = (h4el ? h4el.textContent.trim() : '') || this.getAttribute('data-type') || model;

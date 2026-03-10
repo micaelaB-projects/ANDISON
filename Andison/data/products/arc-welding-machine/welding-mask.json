@@ -1,0 +1,36 @@
+[
+    {
+        "name": "trytr",
+        "model": "gs234",
+        "type": "756hbefa",
+        "price": "",
+        "badge": "Available",
+        "description": "effective",
+        "specs": "none",
+        "image": "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/singer-porsche-911-3840x2160-21516_20260309_095437_0.jpg",
+        "images": [
+            "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/singer-porsche-911-3840x2160-21516_20260309_095437_0.jpg",
+            "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/porsche-911-turbo-s-3840x2160-23991_20260309_095439_1.jpg",
+            "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/porsche-911-gt3-rs-3840x2160-21144_20260309_095440_2.jpg"
+        ],
+        "brand": "MOTOLITE",
+        "category_id": "arc-welding-machine",
+        "subcategory_id": "welding-mask"
+    },
+    {
+        "name": "mother mo testing",
+        "model": "042104",
+        "type": "ssvse",
+        "price": "",
+        "badge": "New Arrival",
+        "description": "",
+        "specs": "",
+        "image": "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/1709499384469_20260310_021750_0.jpg",
+        "images": [
+            "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/1709499384469_20260310_021750_0.jpg"
+        ],
+        "brand": "ACES",
+        "category_id": "arc-welding-machine",
+        "subcategory_id": "welding-mask"
+    }
+]

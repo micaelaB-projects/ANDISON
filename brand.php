@@ -1,11 +1,11 @@
-﻿<?php
-require_once __DIR__ . '/andison/includes/analytics.php';
+<?php
+require_once __DIR__ . '/Andison/includes/analytics.php';
 andison_track_visit('brand');
 $_btrack = isset($_GET['name']) ? trim(strip_tags($_GET['name'])) : '';
 if ($_btrack) andison_track_brand_visit($_btrack);
-require_once __DIR__ . '/andison/includes/home_featured.php';
-require_once __DIR__ . '/andison/includes/home_slider.php';
-require_once __DIR__ . '/andison/includes/youtube_links.php';
+require_once __DIR__ . '/Andison/includes/home_featured.php';
+require_once __DIR__ . '/Andison/includes/home_slider.php';
+require_once __DIR__ . '/Andison/includes/youtube_links.php';
 require_once __DIR__ . '/includes/brands_info.php';
 
 $featured = andison_get_home_featured();
