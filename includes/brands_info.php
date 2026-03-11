@@ -44,7 +44,7 @@ if (!function_exists('andison_get_brands_info')) {
     {
         // ── 5-minute file cache ────────────────────────────────────────────
         $cacheFile = __DIR__ . '/../Andison/data/_cache/brands_full.cache';
-        if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < 300) {
+        if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < 0) {
             $cached = @unserialize((string)file_get_contents($cacheFile));
             if (is_array($cached) && !empty($cached)) return $cached;
         }

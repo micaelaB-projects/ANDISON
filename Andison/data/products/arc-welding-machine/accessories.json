@@ -1,34 +1,14 @@
 [
     {
-        "name": "sana twice",
-        "model": "042104",
-        "type": "ssvse",
-        "price": "",
-        "badge": "Not Available",
-        "description": "sana",
-        "specs": "none",
-        "image": "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/savetwitter.net_f07hxzmwcaaeqmh_20260310_030010_0.jpg",
-        "images": [
-            "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/savetwitter.net_f07hxzmwcaaeqmh_20260310_030010_0.jpg"
-        ],
-        "brand": "ACES",
-        "category_id": "arc-welding-machine",
-        "subcategory_id": "accessories"
-    },
-    {
-        "name": "Gusto ko ako gusto",
-        "model": "gusto ko lambing",
+        "name": "ihhh ayaw q",
+        "model": "fesfe",
         "type": "gusto ko ikaw",
         "price": "",
         "badge": "Available",
-        "description": "check this out",
+        "description": "",
         "specs": "",
-        "image": "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/471609855_18481547263036973_4911466244060096630_n_20260310_051544_0.jpg",
-        "images": [
-            "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/471609855_18481547263036973_4911466244060096630_n_20260310_051544_0.jpg",
-            "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/porsche-911-singer-3840x2160-25512_20260310_051546_1.jpeg",
-            "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/singer-porsche-911-3840x2160-21516_20260310_051546_2.jpg"
-        ],
+        "image": "",
+        "images": [],
         "brand": "ACES",
         "category_id": "arc-welding-machine",
         "subcategory_id": "accessories"

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/storage.php';
 require_once __DIR__ . '/supabase.php';
 
 if (!function_exists('andison_normalize_youtube_to_embed')) {
@@ -122,29 +121,7 @@ if (!function_exists('andison_get_youtube_links')) {
             return $out;
         }
 
-        // Fallback to local JSON
-        $file = dirname(__DIR__) . '/data/youtube_links.json';
-        $loaded = andison_read_json_file($file, []);
-        if (!is_array($loaded)) {
-            return $defaults;
-        }
-
-        $out = $defaults;
-        foreach ($defaults as $key => $_defaultList) {
-            if (!isset($loaded[$key]) || !is_array($loaded[$key])) {
-                continue;
-            }
-            for ($i = 0; $i < 2; $i++) {
-                if (!array_key_exists($i, $loaded[$key])) {
-                    continue;
-                }
-                $raw = trim((string)$loaded[$key][$i]);
-                if ($raw === '') { $out[$key][$i] = ''; continue; }
-                $norm = andison_normalize_youtube_to_embed($raw);
-                $out[$key][$i] = $norm !== '' ? $norm : '';
-            }
-        }
-        return $out;
+        return $defaults;
     }
 }
 
@@ -164,10 +141,6 @@ if (!function_exists('andison_save_youtube_links')) {
             $list = array_map('andison_normalize_youtube_to_embed', $list);
             $out[$key] = [$list[0] ?? '', $list[1] ?? ''];
         }
-
-        // Backup to local JSON
-        $file = dirname(__DIR__) . '/data/youtube_links.json';
-        andison_write_json_file($file, $out);
 
         // Save to Supabase
         $rows = [];

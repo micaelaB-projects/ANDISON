@@ -3,57 +3,15 @@
         "description": "Premium welding safety and face protection equipment.",
         "products": [
             {
-                "id": 1930,
-                "category_id": "arc-welding-machine",
-                "subcategory_id": "welding-mask",
-                "brand": "ACES",
-                "product_name": "mother mo testing",
-                "model": "042104",
-                "type": "ssvse",
-                "badge": "New Arrival",
-                "description": "",
-                "specifications": "",
-                "price": "",
-                "image": "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/1709499384469_20260310_021750_0.jpg",
-                "created_at": "2026-03-10T02:00:14.350183+00:00",
-                "sub_subcategory_id": null,
-                "images": [
-                    "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/1709499384469_20260310_021750_0.jpg"
-                ]
-            },
-            {
-                "id": 1931,
-                "category_id": "arc-welding-machine",
-                "subcategory_id": "accessories",
-                "brand": "ACES",
-                "product_name": "sana twice",
-                "model": "042104",
-                "type": "ssvse",
-                "badge": "Not Available",
-                "description": "sana",
-                "specifications": "none",
-                "price": "",
-                "image": "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/savetwitter.net_f07hxzmwcaaeqmh_20260310_030010_0.jpg",
-                "created_at": "2026-03-10T02:00:14.350183+00:00",
-                "sub_subcategory_id": null,
-                "images": [
-                    "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/savetwitter.net_f07hxzmwcaaeqmh_20260310_030010_0.jpg"
-                ]
-            },
-            {
-                "product_name": "Gusto ko ako gusto",
-                "model": "gusto ko lambing",
+                "product_name": "ihhh ayaw q",
+                "model": "fesfe",
                 "type": "gusto ko ikaw",
                 "price": "",
                 "badge": "Available",
-                "description": "check this out",
+                "description": "",
                 "specifications": "",
-                "image": "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/471609855_18481547263036973_4911466244060096630_n_20260310_051544_0.jpg",
-                "images": [
-                    "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/471609855_18481547263036973_4911466244060096630_n_20260310_051544_0.jpg",
-                    "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/porsche-911-singer-3840x2160-25512_20260310_051546_1.jpeg",
-                    "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/singer-porsche-911-3840x2160-21516_20260310_051546_2.jpg"
-                ],
+                "image": "",
+                "images": [],
                 "category_id": "arc-welding-machine",
                 "subcategory_id": "accessories"
             }
@@ -61,309 +19,30 @@
     },
     "MOTOLITE": {
         "description": "Premium automotive and industrial battery solutions for diverse applications.",
-        "products": [
-            {
-                "id": 202,
-                "category_id": "batteries",
-                "subcategory_id": "batteries",
-                "brand": "Motolite",
-                "product_name": "Truckmaster",
-                "model": "Truckmaster",
-                "type": "Low Maintenance",
-                "badge": "",
-                "description": "Reliable low-maintenance battery for truck and commercial applications",
-                "specifications": "",
-                "price": "",
-                "image": "../assets/brands%20items/MOTOLITE/Truckmaster.png",
-                "created_at": "2026-03-05T03:42:07.929594+00:00",
-                "sub_subcategory_id": null,
-                "images": [
-                    "../assets/brands%20items/MOTOLITE/Truckmaster.png"
-                ]
-            },
-            {
-                "id": 203,
-                "category_id": "batteries",
-                "subcategory_id": "batteries",
-                "brand": "Motolite",
-                "product_name": "Motolite Enduro",
-                "model": "Motolite Enduro",
-                "type": "Maintenance Free",
-                "badge": "",
-                "description": "Maintenance-free enduro battery for heavy-duty applications",
-                "specifications": "",
-                "price": "",
-                "image": "../assets/brands%20items/MOTOLITE/Enduro.jpg",
-                "created_at": "2026-03-05T03:42:07.929594+00:00",
-                "sub_subcategory_id": null,
-                "images": [
-                    "../assets/brands%20items/MOTOLITE/Enduro.jpg"
-                ]
-            },
-            {
-                "id": 204,
-                "category_id": "batteries",
-                "subcategory_id": "batteries",
-                "brand": "Motolite",
-                "product_name": "Motolite Excel",
-                "model": "Motolite Excel",
-                "type": "Maintenance Free",
-                "badge": "",
-                "description": "Premium maintenance-free excel battery for superior performance",
-                "specifications": "",
-                "price": "",
-                "image": "../assets/brands%20items/MOTOLITE/excel.png",
-                "created_at": "2026-03-05T03:42:07.929594+00:00",
-                "sub_subcategory_id": null,
-                "images": [
-                    "../assets/brands%20items/MOTOLITE/excel.png"
-                ]
-            },
-            {
-                "id": 206,
-                "category_id": "batteries",
-                "subcategory_id": "batteries",
-                "brand": "Motolite",
-                "product_name": "Amp-Tech",
-                "model": "Amp-Tech",
-                "type": "Special Batteries",
-                "badge": "",
-                "description": "Advanced special-purpose battery with high amperage capacity",
-                "specifications": "",
-                "price": "",
-                "image": "../assets/brands%20items/MOTOLITE/Amp-Tech.jpg",
-                "created_at": "2026-03-05T03:42:07.929594+00:00",
-                "sub_subcategory_id": null,
-                "images": [
-                    "../assets/brands%20items/MOTOLITE/Amp-Tech.jpg"
-                ]
-            },
-            {
-                "id": 207,
-                "category_id": "batteries",
-                "subcategory_id": "batteries",
-                "brand": "Motolite",
-                "product_name": "Solar Master",
-                "model": "Solar Master",
-                "type": "Special Batteries",
-                "badge": "",
-                "description": "Solar-powered battery system for renewable energy applications",
-                "specifications": "",
-                "price": "",
-                "image": "../assets/brands%20items/MOTOLITE/Solar%20Master.png",
-                "created_at": "2026-03-05T03:42:07.929594+00:00",
-                "sub_subcategory_id": null,
-                "images": [
-                    "../assets/brands%20items/MOTOLITE/Solar%20Master.png"
-                ]
-            },
-            {
-                "id": 205,
-                "category_id": "batteries",
-                "subcategory_id": "batteries",
-                "brand": "Motolite",
-                "product_name": "Motolite Gold",
-                "model": "Motolite Gold",
-                "type": "Maintenance Free",
-                "badge": "",
-                "description": "Top-tier maintenance-free gold battery with extended lifespan",
-                "specifications": "",
-                "price": "",
-                "image": "../assets/brands%20items/MOTOLITE/Gold.jpg",
-                "created_at": "2026-03-05T03:42:07.929594+00:00",
-                "sub_subcategory_id": null,
-                "images": [
-                    "../assets/brands%20items/MOTOLITE/Gold.jpg"
-                ]
-            },
-            {
-                "id": 1289,
-                "category_id": "batteries",
-                "subcategory_id": "low-maintenance",
-                "brand": "MOTOLITE",
-                "product_name": "123testing lang sah",
-                "model": "565674",
-                "type": "dygde",
-                "badge": "Featured",
-                "description": "dawd",
-                "specifications": "dawdawdfa",
-                "price": "",
-                "image": "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/screenshot_2024-02-03_220656_20260309_014906.png",
-                "created_at": "2026-03-09T01:19:21.528838+00:00",
-                "sub_subcategory_id": null,
-                "images": [
-                    "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/screenshot_2024-02-03_220656_20260309_014906.png"
-                ]
-            },
-            {
-                "id": 1293,
-                "category_id": "batteries",
-                "subcategory_id": "maintenance-free",
-                "brand": "MOTOLITE",
-                "product_name": "let me check",
-                "model": "batt123",
-                "type": "double a",
-                "badge": "New Arrival",
-                "description": "this is motolite",
-                "specifications": "nyekkk",
-                "price": "",
-                "image": "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/screenshot_2023-10-10_155404_20260309_014618.png",
-                "created_at": "2026-03-09T01:19:21.528838+00:00",
-                "sub_subcategory_id": null,
-                "images": [
-                    "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/screenshot_2023-10-10_155404_20260309_014618.png"
-                ]
-            },
-            {
-                "id": 1303,
-                "category_id": "batteries",
-                "subcategory_id": "special-batteries",
-                "brand": "MOTOLITE",
-                "product_name": "love love",
-                "model": "wowow",
-                "type": "Batttery",
-                "badge": "Not Available",
-                "description": "maganda",
-                "specifications": "owoww",
-                "price": "",
-                "image": "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/img_20230830_191536_617_20260305_092932.jpg",
-                "created_at": "2026-03-09T01:19:21.528838+00:00",
-                "sub_subcategory_id": null,
-                "images": [
-                    "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/img_20230830_191536_617_20260305_092932.jpg"
-                ]
-            },
-            {
-                "id": 1304,
-                "category_id": "batteries",
-                "subcategory_id": "special-batteries",
-                "brand": "MOTOLITE",
-                "product_name": "porsche",
-                "model": "nyekknyekk",
-                "type": "i love database",
-                "badge": "Limited Stock",
-                "description": "dawd",
-                "specifications": "dadwawa",
-                "price": "",
-                "image": "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/screenshot_2025-03-15_203915_20260309_021918_0.png",
-                "created_at": "2026-03-09T01:19:21.528838+00:00",
-                "sub_subcategory_id": null,
-                "images": [
-                    "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/screenshot_2025-03-15_203915_20260309_021918_0.png",
-                    "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/screenshot_3_20260309_021919_1.png",
-                    "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/screenshot_2023-07-31_143437_20260309_021919_2.png"
-                ]
-            },
-            {
-                "product_name": "trytr",
-                "model": "gs234",
-                "type": "756hbefa",
-                "price": "",
-                "badge": "Available",
-                "description": "effective",
-                "specifications": "none",
-                "image": "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/singer-porsche-911-3840x2160-21516_20260309_095437_0.jpg",
-                "images": [
-                    "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/singer-porsche-911-3840x2160-21516_20260309_095437_0.jpg",
-                    "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/porsche-911-turbo-s-3840x2160-23991_20260309_095439_1.jpg",
-                    "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/porsche-911-gt3-rs-3840x2160-21144_20260309_095440_2.jpg"
-                ],
-                "category_id": "arc-welding-machine",
-                "subcategory_id": "welding-mask"
-            }
-        ]
+        "products": []
     },
     "Weldcraft": {
         "description": "",
+        "products": []
+    },
+    "Soyer": {
+        "description": "",
         "products": [
             {
-                "id": 938,
-                "category_id": null,
-                "subcategory_id": null,
-                "brand": "Weldcraft",
-                "product_name": "",
-                "model": "",
-                "type": "",
-                "badge": "",
-                "description": "",
-                "specifications": "",
+                "product_name": "TESTING !@#$%",
+                "model": "fse2325",
+                "type": "y332",
                 "price": "",
-                "image": "",
-                "created_at": "2026-03-05T06:45:17.332785+00:00",
-                "sub_subcategory_id": null,
-                "images": []
-            },
-            {
-                "id": 939,
-                "category_id": null,
-                "subcategory_id": null,
-                "brand": "Weldcraft",
-                "product_name": "",
-                "model": "",
-                "type": "",
-                "badge": "",
-                "description": "",
+                "badge": "Available",
+                "description": "Product",
                 "specifications": "",
-                "price": "",
-                "image": "",
-                "created_at": "2026-03-05T06:45:17.332785+00:00",
-                "sub_subcategory_id": null,
-                "images": []
-            },
-            {
-                "id": 940,
-                "category_id": null,
-                "subcategory_id": null,
-                "brand": "Weldcraft",
-                "product_name": "",
-                "model": "",
-                "type": "",
-                "badge": "",
-                "description": "",
-                "specifications": "",
-                "price": "",
-                "image": "",
-                "created_at": "2026-03-05T06:45:17.332785+00:00",
-                "sub_subcategory_id": null,
-                "images": []
-            },
-            {
-                "id": 495,
-                "category_id": "welding-accessories",
-                "subcategory_id": "welding-accessories",
-                "brand": "WELDCRAFT",
-                "product_name": "Weldcraft TIG Torch and Accessories",
-                "model": "TIG Torch with Accessories",
-                "type": "TIG Torch Set",
-                "badge": "",
-                "description": "Complete Weldcraft TIG Torch Set with Accessories",
-                "specifications": "",
-                "price": "",
-                "image": "andison/assets/brands%20items/WELDCRAFT/Tig%20Torch-1.jpg",
-                "created_at": "2026-03-05T03:42:09.150726+00:00",
-                "sub_subcategory_id": null,
+                "image": "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/singer-porsche-911-3840x2160-21516_20260311_025223_0.jpg",
                 "images": [
-                    "andison/assets/brands%20items/WELDCRAFT/Tig%20Torch-1.jpg"
-                ]
-            },
-            {
-                "id": 499,
-                "category_id": "welding-accessories",
-                "subcategory_id": "welding-accessories",
-                "brand": "WELDCRAFT",
-                "product_name": "Torch Consumables",
-                "model": "Consumables",
-                "type": "Consumables",
-                "badge": "",
-                "description": "Replacement Torch Consumables and Parts",
-                "specifications": "",
-                "price": "",
-                "image": "andison/assets/brands%20items/WELDCRAFT/Part%20&%20Consumables-1.png",
-                "created_at": "2026-03-05T03:42:09.150726+00:00",
-                "sub_subcategory_id": null,
-                "images": [
-                    "andison/assets/brands%20items/WELDCRAFT/Part%20&%20Consumables-1.png"
-                ]
+                    "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/singer-porsche-911-3840x2160-21516_20260311_025223_0.jpg",
+                    "https://ldsvzhzgyfewwprizrok.supabase.co/storage/v1/object/public/product-images/porsche-911-gt3-rs-3840x2160-21144_20260311_025225_1.jpg"
+                ],
+                "category_id": "batteries",
+                "subcategory_id": "special-batteries"
             }
         ]
     }

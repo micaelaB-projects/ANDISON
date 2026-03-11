@@ -13,7 +13,7 @@
  */
 
 // Define the site base path for all sidebar links
-$_sidebar_base = '/';
+$_sidebar_base = '/ANDISON/';
 
 // ================================================================
 // ACTIVE CATEGORY DETECTION

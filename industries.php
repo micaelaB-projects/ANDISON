@@ -2326,10 +2326,12 @@ $ytLinks = andison_get_youtube_links();
                         <div class="nav-dropdown">
                             <h4>Industries We Serve</h4>
                             <ul>
-                                <li><a href="industries.php#manufacturing">Manufacturing</a></li>
-                                <li><a href="industries.php#construction">Construction</a></li>
-                                <li><a href="industries.php#automotive">Automotive</a></li>
-                                <li><a href="industries.php#shipbuilding">Shipbuilding</a></li>
+                                <li><a href="industries.php#motor-vehicle">Motor Vehicle Industry</a></li>
+                                <li><a href="industries.php#metal-fabrication">Metal Fabrication and Industrial</a></li>
+                                <li><a href="industries.php#power-generation">Power Generation</a></li>
+                                <li><a href="industries.php#oil-petrochemical">Oil and Petrochemical Industry</a></li>
+                                <li><a href="industries.php#mining">Mining Industry</a></li>
+                                <li><a href="industries.php#shipyard">Shipyard</a></li>
                             </ul>
                         </div>
                     </li>
@@ -2372,7 +2374,7 @@ $ytLinks = andison_get_youtube_links();
         <div class="industry-cards">
 
             <!-- Motor Vehicle Industry -->
-            <div class="industry-card" data-industry="motor-vehicle">
+            <div class="industry-card" id="motor-vehicle" data-industry="motor-vehicle">
                 <div class="industry-card-body">
                     <h3>Motor Vehicle Industry</h3>
                     <p>This industry manufactures automobiles, motorcycles, buses, and truck vans. They have a growing presence in the Philippine market, especially with the high market for motorcycles. We offer a wide assortment of welding equipment and consumables necessary to produce world-class products.</p>
@@ -2403,7 +2405,7 @@ $ytLinks = andison_get_youtube_links();
             </div>
 
             <!-- Metal Fabrication -->
-            <div class="industry-card" data-industry="metal-fabrication">
+            <div class="industry-card" id="metal-fabrication" data-industry="metal-fabrication">
                 <div class="industry-card-body">
                     <h3>Metal Fabrication and Industrial</h3>
                     <p>Bridges, railways, refineries, shipyards, transmission lines, and other large-scale projects require steel frames and other metals to support the large infrastructures. Workers in the metal fabrication industry do welding, metal cutting, and fastening to assemble metal parts.</p>
@@ -2435,7 +2437,7 @@ $ytLinks = andison_get_youtube_links();
             </div>
 
             <!-- Power Generation -->
-            <div class="industry-card" data-industry="power-generation">
+            <div class="industry-card" id="power-generation" data-industry="power-generation">
                 <div class="industry-card-body">
                     <h3>Power Generation</h3>
                     <p>The Power Generation Industry is vital in a country's growth. They must be a reliable partner in meeting the Philippine Energy Market's ever-growing demands.</p>
@@ -2467,7 +2469,7 @@ $ytLinks = andison_get_youtube_links();
             </div>
 
             <!-- Oil and Petrochemical -->
-            <div class="industry-card" data-industry="oil-petrochemical">
+            <div class="industry-card" id="oil-petrochemical" data-industry="oil-petrochemical">
                 <div class="industry-card-body">
                     <h3>Oil and Petrochemical Industry</h3>
                     <p>Oil refineries use fractional distillation and other methods to process crude oil into more useful products like petroleum, gasoline, and other fuels. During the distillation, heavier by-products settle at the bottom. Petrochemical plants crack the by-products and further process them into more useful chemicals. Other industries use these petrochemicals to create different products.</p>
@@ -2501,7 +2503,7 @@ $ytLinks = andison_get_youtube_links();
             </div>
 
             <!-- Mining Industry -->
-            <div class="industry-card" data-industry="mining">
+            <div class="industry-card" id="mining" data-industry="mining">
                 <div class="industry-card-body">
                     <h3>Mining Industry</h3>
                     <p>This industry extracts coal, oil, metals, and other raw materials from the earth. These resources are processed by other industries to create products such as fuel, jewelry, construction materials, and everyday items. Mining is vital to the economy.</p>
@@ -2534,7 +2536,7 @@ $ytLinks = andison_get_youtube_links();
             </div>
 
             <!-- Shipyard -->
-            <div class="industry-card" data-industry="shipyard">
+            <div class="industry-card" id="shipyard" data-industry="shipyard">
                 <div class="industry-card-body">
                     <h3>Shipyard</h3>
                     <p>World trade relies heavily on freight ships because it offers a high capacity at a low cost in transporting goods. Being an archipelago, the Philippines also uses ships to ferry people to the country's many islands. Shipyards play a critical role in maintaining ships, ensuring they are seaworthy and safe.</p>
@@ -3027,7 +3029,7 @@ $ytLinks = andison_get_youtube_links();
                         card.classList.add('expanded');
                         // Scroll to card
                         setTimeout(function(){
-                            card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                            card.scrollIntoView({ behavior: 'smooth', block: 'start' });
                         }, 100);
                     }
                 });
@@ -3043,6 +3045,25 @@ $ytLinks = andison_get_youtube_links();
                     }
                 });
             });
+
+            // Auto-expand card when navigating via hash (e.g. from nav dropdown)
+            function expandFromHash() {
+                var hash = window.location.hash.replace('#', '');
+                if (!hash) return;
+                var card = document.getElementById(hash);
+                if (card && card.classList.contains('industry-card')) {
+                    card.classList.add('expanded');
+                    setTimeout(function(){
+                        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 150);
+                }
+            }
+
+            // Run on page load
+            expandFromHash();
+
+            // Also handle hash changes without page reload
+            window.addEventListener('hashchange', expandFromHash);
         })();
     </script>
 </body>

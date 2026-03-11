@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/Andison/includes/analytics.php';
 andison_track_visit('services');
 require_once __DIR__ . '/Andison/includes/home_featured.php';
@@ -2401,10 +2401,12 @@ $ytLinks = andison_get_youtube_links();
                         <div class="nav-dropdown">
                             <h4>Industries We Serve</h4>
                             <ul>
-                                <li><a href="industries.php#manufacturing">Manufacturing</a></li>
-                                <li><a href="industries.php#construction">Construction</a></li>
-                                <li><a href="industries.php#automotive">Automotive</a></li>
-                                <li><a href="industries.php#shipbuilding">Shipbuilding</a></li>
+                                <li><a href="industries.php#motor-vehicle">Motor Vehicle Industry</a></li>
+                                <li><a href="industries.php#metal-fabrication">Metal Fabrication and Industrial</a></li>
+                                <li><a href="industries.php#power-generation">Power Generation</a></li>
+                                <li><a href="industries.php#oil-petrochemical">Oil and Petrochemical Industry</a></li>
+                                <li><a href="industries.php#mining">Mining Industry</a></li>
+                                <li><a href="industries.php#shipyard">Shipyard</a></li>
                             </ul>
                         </div>
                     </li>
@@ -2614,7 +2616,6 @@ $ytLinks = andison_get_youtube_links();
         }
         .brands-carousel-item {
             flex-shrink: 0;
-            width: 130px;
             height: 80px;
             display: flex;
             align-items: center;
@@ -2739,9 +2740,8 @@ $ytLinks = andison_get_youtube_links();
 
         function getVisible() {
             var w = viewport.offsetWidth;
-            if(w >= 1000) return 7;
-            if(w >= 800)  return 6;
-            if(w >= 600)  return 5;
+            if(w >= 800)  return 5;
+            if(w >= 600)  return 4;
             if(w >= 420)  return 3;
             return 2;
         }
@@ -2789,6 +2789,10 @@ $ytLinks = andison_get_youtube_links();
             var vis  = getVisible();
             var gap  = parseFloat(window.getComputedStyle(track).gap) || 16;
             var iw   = (viewport.offsetWidth - gap * (vis - 1)) / vis;
+
+            // Apply computed width to each item so they fill the viewport evenly
+            items.forEach(function(item){ item.style.width = iw + 'px'; });
+
             var offset = currentPage * vis * (iw + gap);
             var maxOffset = (totalItems - vis) * (iw + gap);
             if(offset > maxOffset) offset = maxOffset;

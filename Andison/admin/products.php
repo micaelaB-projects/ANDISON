@@ -117,6 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $msg = $deleted > 0 ? "Removed {$deleted} duplicate product row(s)." : 'No duplicates found.';
+        @unlink(__DIR__ . '/../data/_cache/brands_full.cache');
         andison_set_flash($deleted > 0 ? 'success' : 'info', $msg);
         header('Location: products.php' . ($brand !== '' ? '?brand=' . urlencode($brand) : ''));
         exit;
@@ -135,6 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         }
+        @unlink(__DIR__ . '/../data/_cache/brands_full.cache');
         andison_set_flash('success', "Deleted {$deleted} product row(s). You can now add products fresh.");
         header('Location: products.php' . ($brand !== '' ? '?brand=' . urlencode($brand) : ''));
         exit;

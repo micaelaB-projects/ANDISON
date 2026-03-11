@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Contact information for dropdown (always needed)
 $contact_phone = "+1(234) 567 8900";
 $contact_phone2 = "+1(234) 567 8900";
@@ -2972,10 +2972,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="nav-dropdown">
                             <h4>Industries We Serve</h4>
                             <ul>
-                                <li><a href="industries.php#manufacturing">Manufacturing</a></li>
-                                <li><a href="industries.php#construction">Construction</a></li>
-                                <li><a href="industries.php#automotive">Automotive</a></li>
-                                <li><a href="industries.php#shipbuilding">Shipbuilding</a></li>
+                                <li><a href="industries.php#motor-vehicle">Motor Vehicle Industry</a></li>
+                                <li><a href="industries.php#metal-fabrication">Metal Fabrication and Industrial</a></li>
+                                <li><a href="industries.php#power-generation">Power Generation</a></li>
+                                <li><a href="industries.php#oil-petrochemical">Oil and Petrochemical Industry</a></li>
+                                <li><a href="industries.php#mining">Mining Industry</a></li>
+                                <li><a href="industries.php#shipyard">Shipyard</a></li>
                             </ul>
                         </div>
                     </li>
