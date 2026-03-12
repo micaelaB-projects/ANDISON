@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/storage.php';
 require_once __DIR__ . '/supabase.php';
 
 if (!function_exists('andison_get_home_featured')) {
@@ -30,12 +29,7 @@ if (!function_exists('andison_get_home_featured')) {
         $loaded = !empty($sbRows[0]) ? $sbRows[0] : null;
 
         if ($loaded === null) {
-            // Fallback to local JSON
-            $file = dirname(__DIR__) . '/data/home_featured.json';
-            $loaded = andison_read_json_file($file, []);
-            if (!is_array($loaded)) {
-                return $defaults;
-            }
+            return $defaults;
         }
 
         $out = $defaults;
@@ -85,10 +79,6 @@ if (!function_exists('andison_save_home_featured')) {
         foreach ($allowed as $key) {
             $out[$key] = trim((string)($data[$key] ?? ''));
         }
-
-        // Backup to local JSON
-        $file = dirname(__DIR__) . '/data/home_featured.json';
-        andison_write_json_file($file, $out);
 
         // Save to Supabase
         andison_sb_truncate('home_featured');

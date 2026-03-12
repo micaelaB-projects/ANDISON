@@ -1272,6 +1272,7 @@ if (!$current_category) {
                 <a href="#privacy">Privacy Policy</a>
                 <a href="#terms">Terms of Service</a>
                 <a href="#sitemap">Sitemap</a>
+                <a href="contact.php">Contact Us</a>
             </div>
             <div class="footer-copyright">
                 &copy; 2026 ANDISON INDUSTRIAL. All rights reserved.

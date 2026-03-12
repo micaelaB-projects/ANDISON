@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once __DIR__ . '/Andison/includes/analytics.php';
 andison_track_visit('services');
 require_once __DIR__ . '/Andison/includes/home_featured.php';
@@ -2175,6 +2175,7 @@ $ytLinks = andison_get_youtube_links();
                 <a href="#privacy">Privacy Policy</a>
                 <a href="#terms">Terms of Service</a>
                 <a href="#sitemap">Sitemap</a>
+                <a href="contact.php">Contact Us</a>
             </div>
             <div class="footer-copyright">
                 <p>&copy; 2026 <?php echo $company_name; ?>. All rights reserved.</p>

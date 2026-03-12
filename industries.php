@@ -344,7 +344,7 @@ $ytLinks = andison_get_youtube_links();
             padding: 8px 14px;
             cursor: pointer;
             font-size: 15px;
-            line: height 6px;;
+            line-height: 6px;
         }
 
         .nav-list {
@@ -1505,22 +1505,27 @@ $ytLinks = andison_get_youtube_links();
                 margin-bottom: 28px;
             }
 
+            .sidebar-overlay {
                 width: 75%;
                 max-width: 320px;
                 padding: 12px 0;
             }
 
+            .sidebar-overlay h3 {
                 font-size: 14px;
                 margin-bottom: 8px;
                 padding: 0 12px;
             }
 
+            .sidebar-list { 
                 padding: 0;
             }
 
+            .sidebar-list li { 
                 border-bottom: none;
             }
 
+            .sidebar-list a {
                 font-size: 13px;
                 padding: 10px 14px;
                 gap: 12px;
@@ -1528,31 +1533,37 @@ $ytLinks = andison_get_youtube_links();
                 align-items: center;
             }
 
+            .sidebar-list a:active {
                 background: rgba(43, 17, 219, 0.08);
             }
 
+            .sidebar-icon {
                 width: 20px;
                 height: 20px;
                 font-size: 16px;
             }
 
+            .sidebar-sublist {
                 background: #f8f9fa;
                 border-left: 3px solid #2B11DB;
                 margin: 2px 0;
                 padding: 4px 0 4px 12px;
             }
 
+            .sidebar-sublist a {
                 font-size: 12px;
                 padding: 8px 14px 8px 42px;
                 min-height: 32px;
             }
 
+            .sidebar-nested-sublist {
                 margin: 4px 0;
                 padding: 6px 0 6px 14px;
                 background: rgba(43, 17, 219, 0.06);
                 border-left: 2px solid rgba(43, 17, 219, 0.3);
             }
 
+            .sidebar-nested-sublist a {
                 font-size: 11px;
                 padding: 8px 14px 8px 36px;
                 color: #5a6b7d;
@@ -1560,12 +1571,16 @@ $ytLinks = andison_get_youtube_links();
                 margin: 0;
             }
 
+            .sidebar-nested-sublist a:hover,
+            .sidebar-nested-sublist a:active {
                 background: rgba(43, 17, 219, 0.14);
                 color: #2B11DB;
                 padding-left: 44px;
             }
         }
 
+        /* Overlay sidebar (full-height left panel) */
+        .overlay-backdrop {
             position: fixed;
             inset: 0;
             background: rgba(0,0,0,0.3);
@@ -1575,10 +1590,12 @@ $ytLinks = andison_get_youtube_links();
             z-index: 60;
         }
 
+        .overlay-backdrop.active {
             opacity: 1;
             visibility: visible;
         }
 
+        .sidebar-overlay {
             position: fixed;
             left: 0;
             top: calc(14px + 50px + 14px + 12px + 52px);
@@ -1595,9 +1612,11 @@ $ytLinks = andison_get_youtube_links();
             overflow-y: auto;
         }
 
+        .sidebar-overlay.active {
             transform: translateX(0);
         }
 
+        .sidebar-overlay h3 {
             font-size: 14px;
             margin-bottom: 10px;
             color: #222;
@@ -1605,6 +1624,7 @@ $ytLinks = andison_get_youtube_links();
             letter-spacing: 0.5px;
         }
 
+        .sidebar-list a { 
             display: flex; 
             gap: 12px; 
             padding: 10px 10px; 
@@ -1616,18 +1636,22 @@ $ytLinks = andison_get_youtube_links();
             font-size: 13px;
             min-height: 36px;
         }
+        .sidebar-list a:hover { 
             background: #f3f4f6; 
             color: #2B11DB;
             padding-left: 16px;
         }
+        .sidebar-list li a.active {
             background: #f3f4f6;
             color: #2B11DB;
             font-weight: 600;
             border-left: 4px solid #2B11DB;
             padding-left: 12px;
         }
+        .sidebar-list li a.active .sidebar-icon {
             color: #2B11DB;
         }
+        .sidebar-icon { 
             color: #5b21b6; 
             width: 24px; 
             height: 24px;
@@ -1638,9 +1662,11 @@ $ytLinks = andison_get_youtube_links();
             flex-shrink: 0;
         }
 
+        .sidebar-list a .sidebar-label {
             flex: 1;
         }
 
+        .sidebar-list a .sidebar-arrow {
             width: 20px;
             height: 20px;
             display: none;
@@ -1652,9 +1678,12 @@ $ytLinks = andison_get_youtube_links();
             margin-left: 8px;
         }
 
+        .sidebar-list a:hover .sidebar-arrow,
+        .sidebar-list li a.active .sidebar-arrow {
             display: flex;
         }
 
+        .sidebar-sublist {
             list-style: none; 
             margin: 2px 0; 
             padding: 4px 0 4px 12px;
@@ -1667,13 +1696,16 @@ $ytLinks = andison_get_youtube_links();
             display: block;
         }
         
+        .sidebar-sublist.collapsed {
             max-height: 0;
             opacity: 0;
             overflow: hidden;
         }
+        .sidebar-sublist li { 
             padding: 0; 
             border: none;
         }
+        .sidebar-sublist a { 
             color: #4b5563; 
             font-size: 12px; 
             padding: 8px 12px 8px 38px; 
@@ -1683,6 +1715,7 @@ $ytLinks = andison_get_youtube_links();
             min-height: 32px;
             align-items: center;
         }
+        .sidebar-sublist a:hover { 
             color: #2B11DB; 
             background: rgba(43, 17, 219, 0.08);
             padding-left: 52px;
@@ -1710,6 +1743,7 @@ $ytLinks = andison_get_youtube_links();
         .nested-toggle .bi { transition: transform 200ms ease; }
         .nested-toggle[aria-expanded="true"] .bi { transform: rotate(90deg); }
 
+        .sidebar-nested-sublist {
             list-style: none; 
             margin: 2px 0;
             padding: 4px 0 4px 12px;
@@ -1720,15 +1754,17 @@ $ytLinks = andison_get_youtube_links();
             background: rgba(43, 17, 219, 0.05);
             border-left: 2px solid rgba(43, 17, 219, 0.3);
         }
-        }
         
+        .sidebar-nested-sublist.collapsed {
             max-height: 0;
             opacity: 0;
             overflow: hidden;
         }
+        .sidebar-nested-sublist li { 
             padding: 0;
             border: none;
         }
+        .sidebar-nested-sublist a { 
             color: #5a6b7d; 
             font-size: 11px; 
             padding: 8px 10px 8px 32px; 
@@ -1741,6 +1777,7 @@ $ytLinks = andison_get_youtube_links();
             min-height: 30px;
             align-items: center;
         }
+        .sidebar-nested-sublist a::before {
             content: '';
             position: absolute;
             left: 12px;
@@ -1752,6 +1789,8 @@ $ytLinks = andison_get_youtube_links();
             border-radius: 50%;
             box-shadow: 0 2px 4px rgba(43, 17, 219, 0.2);
         }
+        .sidebar-nested-sublist a:hover,
+        .sidebar-nested-sublist a.active {
             color: #2B11DB;
             background: rgba(43, 17, 219, 0.12);
             padding-left: 36px;
@@ -1796,6 +1835,7 @@ $ytLinks = andison_get_youtube_links();
         }
         .sub-toggle[aria-expanded="true"] .bi { transform: rotate(180deg); }
 
+        .browse-close { 
             background: transparent; 
             border: none; 
             color: #9ca3af; 
@@ -1811,6 +1851,7 @@ $ytLinks = andison_get_youtube_links();
             transition: color 0.2s ease;
             flex-shrink: 0;
         }
+        .browse-close:hover {
             color: #374151;
         }
 
@@ -1824,6 +1865,11 @@ $ytLinks = andison_get_youtube_links();
         }
 
         /* When expanded, increase margin */
+        body.sidebar-expanded section,
+        body.sidebar-expanded footer,
+        body.sidebar-expanded .page-content,
+        body.sidebar-expanded .main-content,
+        body.sidebar-expanded .category-container {
             margin-left: 280px;
         }
 
@@ -1836,24 +1882,30 @@ $ytLinks = andison_get_youtube_links();
                 margin-left: 0 !important;
             }
 
+            .sidebar-fixed {
                 display: none !important;
             }
         }
 
+        .sidebar-fixed {
             width: 380px;
         }
 
+        .sidebar-overlay-desktop {
             display: none !important;
         }
 
         @media (max-width: 768px) {
+            .sidebar-overlay {
                 top: calc(14px + 36px + 14px + 40px);
                 width: 56px !important;
                 transform: translateX(-100%);
                 transition: transform 0.3s ease, width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             }
+            .sidebar-overlay.active {
                 transform: translateX(0);
             }
+            .sidebar-overlay.expanded {
                 width: 240px !important;
             }
             .browse-toggle {
@@ -1865,6 +1917,7 @@ $ytLinks = andison_get_youtube_links();
             .main-content, .category-container {
                 margin-left: 0 !important;
             }
+            .overlay-backdrop.active {
                 display: flex !important;
             }
         }
@@ -2579,6 +2632,7 @@ $ytLinks = andison_get_youtube_links();
                 <a href="#privacy">Privacy Policy</a>
                 <a href="#terms">Terms of Service</a>
                 <a href="#sitemap">Sitemap</a>
+                <a href="contact.php">Contact Us</a>
             </div>
             <div class="footer-copyright">
                 <p>&copy; 2026 <?php echo $company_name; ?>. All rights reserved.</p>
@@ -2820,21 +2874,35 @@ $ytLinks = andison_get_youtube_links();
     </script>
 
     <script>
-        (function(){);
+        // Sidebar overlay functionality (for backdrop close)
+        (function(){
+            var overlayBackdrop = document.querySelector('.overlay-backdrop');
+            var sidebar = document.getElementById('sidebar');
+            
+            if(overlayBackdrop) {
+                overlayBackdrop.addEventListener('click', function(){
+                    if(sidebar) sidebar.classList.remove('active');
+                    overlayBackdrop.classList.remove('active');
+                });
             }
             
+            // Sidebar sub-toggle functionality - Show popover card
+            var mainSidebarPopover = document.getElementById('miniPopover');
+            var popoverTitle = mainSidebarPopover ? mainSidebarPopover.querySelector('.mini-popover-title') : null;
+            var popoverList = mainSidebarPopover ? mainSidebarPopover.querySelector('.mini-popover-list') : null;
+            var currentMainSidebarKey = null;
             
+            function showMainSidebarPopover(toggle) {
+                if (!mainSidebarPopover || !popoverList || !popoverTitle) return;
                 
                 var sublistId = toggle.getAttribute('aria-controls');
                 var sublist = document.getElementById(sublistId);
                 if (!sublist) return;
                 
-                // Extract title from parent li's main link
                 var parentLi = toggle.closest('.has-sub');
                 var mainLink = parentLi ? parentLi.querySelector(':scope > a:not([class])') : null;
                 var title = mainLink ? mainLink.textContent.trim() : 'Items';
                 
-                // Extract items from the sublist
                 var items = [];
                 var listItems = sublist.querySelectorAll('li > a');
                 listItems.forEach(function(link) {
@@ -2844,31 +2912,32 @@ $ytLinks = andison_get_youtube_links();
                     });
                 });
                 
-                // Populate popover
                 popoverTitle.textContent = title;
                 popoverList.innerHTML = '';
                 items.forEach(function(item) {
                     var li = document.createElement('li');
+                    li.className = 'mini-popover-item';
                     li.innerHTML = '<span class="square"></span><a href="' + item.href + '">' + item.text + '</a>';
                     popoverList.appendChild(li);
                 });
                 
-                // Position popover next to toggle button
                 setTimeout(function() {
+                    mainSidebarPopover.style.left = '-9999px';
+                    mainSidebarPopover.style.top = '-9999px';
+                    mainSidebarPopover.classList.add('show');
                     
                     var toggleRect = toggle.getBoundingClientRect();
+                    var pw = mainSidebarPopover.offsetWidth;
+                    var ph = mainSidebarPopover.offsetHeight;
                     var toggleCenterY = toggleRect.top + toggleRect.height / 2;
                     
-                    // Position to the right of the toggle button
                     var left = Math.round(toggleRect.right + 14);
                     var top = Math.round(toggleCenterY - ph / 2);
                     
-                    // Adjust if off-screen horizontally
                     if (left + pw + 12 > window.innerWidth) {
                         left = Math.round(toggleRect.left - pw - 14);
                     }
                     
-                    // Adjust if off-screen vertically
                     var headerHeight = 100;
                     var minTop = headerHeight + 12;
                     var maxTop = window.innerHeight - ph - 12;
@@ -2876,10 +2945,19 @@ $ytLinks = andison_get_youtube_links();
                     if (top > maxTop) top = maxTop;
                     
                     var arrowOffset = toggleCenterY - top - 26;
-                    
+                    mainSidebarPopover.style.setProperty('--arrow-offset', arrowOffset + 'px');
+                    mainSidebarPopover.style.left = left + 'px';
+                    mainSidebarPopover.style.top = top + 'px';
+                    mainSidebarPopover.setAttribute('aria-hidden', 'false');
+                    currentMainSidebarKey = sublistId;
                 }, 5);
             }
             
+            function hideMainSidebarPopover() {
+                if (!mainSidebarPopover) return;
+                mainSidebarPopover.classList.remove('show');
+                mainSidebarPopover.setAttribute('aria-hidden', 'true');
+                currentMainSidebarKey = null;
             }
             
             var subToggles = document.querySelectorAll('.sub-toggle');
@@ -2887,18 +2965,25 @@ $ytLinks = andison_get_youtube_links();
                 toggle.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    
+                    if (currentMainSidebarKey === toggle.getAttribute('aria-controls') && mainSidebarPopover && mainSidebarPopover.classList.contains('show')) {
+                        hideMainSidebarPopover();
                     } else {
+                        showMainSidebarPopover(toggle);
                     }
                 });
             });
             
             // Close popover on outside click
             document.addEventListener('click', function(e) {
+                if (!mainSidebarPopover) return;
+                if (!mainSidebarPopover.classList.contains('show')) return;
+                if (e.target.closest('.mini-popover') || e.target.closest('.sub-toggle')) return;
+                hideMainSidebarPopover();
             });
             
             // Close popover on Escape
             document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') hideMainSidebarPopover();
             });
             
             // Nested toggle functionality
@@ -2919,9 +3004,12 @@ $ytLinks = andison_get_youtube_links();
 
     <script>
         // ============================================
+        // ACTIVE SIDEBAR CATEGORY HIGHLIGHTING
         // ============================================
         setTimeout(function(){
             var currentPath = window.location.pathname.toLowerCase();
+            var sidebar = document.getElementById('sidebar');
+            if(sidebar) {
                 var pathParts = currentPath.split('/').filter(function(p) { return p && p !== 'andison-1'; });
                 var currentCategory = null;
                 
@@ -2946,6 +3034,7 @@ $ytLinks = andison_get_youtube_links();
                 }
 
                 if(currentCategory){
+                    var links = sidebar.querySelectorAll('.sidebar-list > li > a');
                     links.forEach(function(link){
                         var href = link.getAttribute('href').toLowerCase();
                         if(href.includes(currentCategory)){

@@ -8,7 +8,7 @@ require_once __DIR__ . '/../Andison/includes/products_management.php';
 // Update page name and subcategory
 $page_title = "CO2-Mag Welding Machine";
 $category_id = "arc-welding-machine";
-$subcategory_id = "co2-mag-welding-machine";
+$subcategory_id = "co1-mag-welding-machine";
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";
@@ -31,7 +31,7 @@ if (!$current_category) {
         'name' => 'CO2-Mag Welding Machine',
         'description' => 'Discover our comprehensive range of CO2-Mag welding machines for industrial applications.',
         'subcategories' => array(
-            array('id' => 'co2-mag-welding-machine', 'name' => 'CO2-Mag Welding Machine')
+            array('id' => 'co1-mag-welding-machine', 'name' => 'CO2/MAG Welding Machine')
         )
     );
 }
@@ -3423,6 +3423,7 @@ if (!$current_category) {
                 <a href="#privacy">Privacy Policy</a>
                 <a href="#terms">Terms of Service</a>
                 <a href="#sitemap">Sitemap</a>
+                <a href="contact.php">Contact Us</a>
             </div>
             <div class="footer-copyright">
                 <p>&copy; 2026 <?php echo $company_name; ?>. All rights reserved.</p>

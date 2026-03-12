@@ -11,13 +11,7 @@ function andison_get_categories(): array
     $subsubs = andison_sb_select('sub_subcategories', 'order=name&limit=500');
 
     if (empty($cats)) {
-        // Fallback to local JSON
-        $jsonFile = __DIR__ . '/../data/categories_info.json';
-        if (!file_exists($jsonFile)) return [];
-        $content = file_get_contents($jsonFile);
-        if ($content === false) return [];
-        $decoded = json_decode($content, true);
-        return is_array($decoded) ? $decoded : [];
+        return [];
     }
 
     // Index sub-subcategories by subcategory_id
@@ -57,21 +51,6 @@ function andison_get_categories(): array
 }
 function andison_save_categories(array $categories): bool
 {
-    // Backup to local JSON
-    $jsonFile = __DIR__ . '/../data/categories_info.json';
-    $dir = dirname($jsonFile);
-    if (!is_dir($dir)) mkdir($dir, 0755, true);
-    $handle = fopen($jsonFile, 'c');
-    if ($handle !== false) {
-        if (flock($handle, LOCK_EX)) {
-            rewind($handle);
-            ftruncate($handle, 0);
-            fwrite($handle, json_encode($categories, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-            flock($handle, LOCK_UN);
-        }
-        fclose($handle);
-    }
-
     // Save to Supabase
     $catRows = $subRows = $subsubRows = [];
     foreach ($categories as $cat) {

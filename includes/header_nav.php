@@ -130,26 +130,11 @@
         filter: drop-shadow(0 -1px 0 rgba(0,0,0,0.03));
     }
 
-    .contact-dropdown:hover:not(.closed) .contact-popover,
-    .contact-dropdown:focus-within:not(.closed) .contact-popover {
+    /* click-to-open: .open class used instead of hover */
+    .contact-dropdown.open .contact-popover {
         opacity: 1;
         visibility: visible;
         transform: translateX(-50%) translateY(0) scale(1);
-    }
-
-    /* mobile: click-to-open; .open class used instead of hover */
-    @media (max-width: 768px) {
-        .contact-dropdown:hover:not(.closed) .contact-popover,
-        .contact-dropdown:focus-within:not(.closed) .contact-popover {
-            opacity: 0;
-            visibility: hidden;
-            transform: translateX(-50%) translateY(-6px) scale(0.98);
-        }
-        .contact-dropdown.open .contact-popover {
-            opacity: 1;
-            visibility: visible;
-            transform: translateX(-50%) translateY(0) scale(1);
-        }
     }
 
     .contact-close {
@@ -813,31 +798,19 @@ if (!isset($base_path)) {
             dd.addEventListener('keydown', function(e){
                 if(e.key === 'Escape') { link.blur(); pop.setAttribute('aria-hidden','true'); }
             });
-            dd.addEventListener('focusin', function(){ pop.setAttribute('aria-hidden','false'); dd.setAttribute('aria-expanded','true'); });
-            dd.addEventListener('focusout', function(){
-                setTimeout(function(){
-                    if(!dd.contains(document.activeElement)){
-                        pop.setAttribute('aria-hidden','true');
-                        dd.setAttribute('aria-expanded','false');
-                    }
-                }, 10);
-            });
-            dd.addEventListener('mouseenter', function(){
-                if(dd.classList.contains('closed')) return;
-                pop.setAttribute('aria-hidden','false'); dd.setAttribute('aria-expanded','true');
-            });
-            dd.addEventListener('mouseleave', function(){
-                pop.setAttribute('aria-hidden','true'); dd.setAttribute('aria-expanded','false');
-                dd.classList.remove('closed');
-            });
-
-            // Mobile: click to toggle
+            // Click to toggle (all screen sizes)
             dd.addEventListener('click', function(e){
-                if(window.innerWidth > 768) return;
                 e.stopPropagation();
                 var isOpen = dd.classList.contains('open');
                 document.querySelectorAll('.contact-dropdown').forEach(function(d){ d.classList.remove('open'); });
-                if(!isOpen) dd.classList.add('open');
+                if(!isOpen) {
+                    dd.classList.add('open');
+                    pop.setAttribute('aria-hidden','false');
+                    dd.setAttribute('aria-expanded','true');
+                } else {
+                    pop.setAttribute('aria-hidden','true');
+                    dd.setAttribute('aria-expanded','false');
+                }
             });
 
             // Close button
@@ -855,10 +828,14 @@ if (!isset($base_path)) {
             }
         });
 
-        // Mobile: click outside closes all
+        // Click outside closes all
         document.addEventListener('click', function(){
-            if(window.innerWidth > 768) return;
-            document.querySelectorAll('.contact-dropdown').forEach(function(d){ d.classList.remove('open'); });
+            document.querySelectorAll('.contact-dropdown').forEach(function(d){
+                d.classList.remove('open');
+                var p = d.querySelector('.contact-popover');
+                if(p) p.setAttribute('aria-hidden','true');
+                d.setAttribute('aria-expanded','false');
+            });
         });
     })();
 </script>

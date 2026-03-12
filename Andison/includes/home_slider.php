@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/storage.php';
 require_once __DIR__ . '/supabase.php';
 
 if (!function_exists('andison_get_home_slider')) {
@@ -26,23 +25,8 @@ if (!function_exists('andison_get_home_slider')) {
             return $out;
         }
 
-        // Fallback to local JSON
-        $file = dirname(__DIR__) . '/data/home_slider.json';
-        $loaded = andison_read_json_file($file, $defaults);
-        if (!is_array($loaded)) {
-            return $defaults;
-        }
-
-        $out = [];
-        for ($i = 0; $i < 4; $i++) {
-            if (isset($loaded[$i]) && is_string($loaded[$i]) && trim($loaded[$i]) !== '') {
-                $out[$i] = trim((string)$loaded[$i]);
-            } else {
-                $out[$i] = $defaults[$i] ?? '';
-            }
-        }
-
-        return $out;
+        // Fallback to hardcoded defaults
+        return $defaults;
     }
 }
 
@@ -54,10 +38,6 @@ if (!function_exists('andison_save_home_slider')) {
             $val = isset($slides[$i]) ? trim((string)$slides[$i]) : '';
             $out[$i] = $val;
         }
-
-        // Backup to local JSON
-        $file = dirname(__DIR__) . '/data/home_slider.json';
-        andison_write_json_file($file, $out);
 
         // Save to Supabase
         andison_sb_truncate('home_slider');

@@ -2,38 +2,7 @@
 declare(strict_types=1);
 
 // Pull in Supabase helpers so andison_sb_select() is available when our function runs.
-require_once __DIR__ . '/../Andison/includes/storage.php';
 require_once __DIR__ . '/../Andison/includes/supabase.php';
-
-/**
- * Scan Andison/data/products/{category}/*.json and group products by brand (lowercase key).
- */
-if (!function_exists('_andison_products_by_brand_from_json')) {
-    function _andison_products_by_brand_from_json(): array
-    {
-        $dataDir = dirname(__DIR__) . '/Andison/data/products';
-        if (!is_dir($dataDir)) return [];
-
-        $byBrand = [];
-        foreach (glob($dataDir . '/*', GLOB_ONLYDIR) as $catDir) {
-            foreach (glob($catDir . '/*.json') as $jsonFile) {
-                $raw = @file_get_contents($jsonFile);
-                if ($raw === false) continue;
-                $items = json_decode($raw, true);
-                if (!is_array($items)) continue;
-                foreach ($items as $item) {
-                    if (!is_array($item)) continue;
-                    $brand = trim((string)($item['brand'] ?? ''));
-                    if ($brand === '') continue;
-                    $lk = strtolower($brand);
-                    $byBrand[$lk]['name']         = $brand;
-                    $byBrand[$lk]['products'][]   = $item;
-                }
-            }
-        }
-        return $byBrand;
-    }
-}
 
 /**
  * Merged getter: Supabase data takes priority; category JSON files fill gaps.
@@ -80,9 +49,6 @@ if (!function_exists('andison_get_brands_info')) {
             if (!isset($sbOrigCase[$lk])) $sbOrigCase[$lk] = $brand;
         }
 
-        // Supplement with products from category JSON files
-        $jsonData = _andison_products_by_brand_from_json();
-
         $result    = [];
         $processed = [];
 
@@ -92,12 +58,9 @@ if (!function_exists('andison_get_brands_info')) {
             if ($name === '') continue;
             $lk = strtolower($name);
             $processed[$lk] = true;
-            $sbProds   = $sbByLower[$lk] ?? [];
-            $jsonProds  = $jsonData[$lk]['products'] ?? [];
-            // Prefer Supabase products; fall back to JSON if none in database
             $result[$name] = [
                 'description' => $brand['description'] ?? '',
-                'products'    => !empty($sbProds) ? $sbProds : $jsonProds,
+                'products'    => $sbByLower[$lk] ?? [],
             ];
         }
 
@@ -106,13 +69,6 @@ if (!function_exists('andison_get_brands_info')) {
             if (isset($processed[$lk])) continue;
             $nm = $sbOrigCase[$lk];
             $result[$nm] = ['description' => '', 'products' => $prods];
-            $processed[$lk] = true;
-        }
-
-        // Brands only in JSON files (not in Supabase at all)
-        foreach ($jsonData as $lk => $info) {
-            if (isset($processed[$lk])) continue;
-            $result[$info['name']] = ['description' => '', 'products' => $info['products']];
         }
 
         // ── Write cache ───────────────────────────────────────────────────

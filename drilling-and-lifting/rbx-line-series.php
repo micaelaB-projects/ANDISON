@@ -3446,6 +3446,7 @@ $category_description = $current_category['description'] ?? 'Discover our compre
                 <a href="#privacy">Privacy Policy</a>
                 <a href="#terms">Terms of Service</a>
                 <a href="#sitemap">Sitemap</a>
+                <a href="contact.php">Contact Us</a>
             </div>
             <div class="footer-copyright">
                 <p>&copy; 2026 <?php echo $company_name; ?>. All rights reserved.</p>

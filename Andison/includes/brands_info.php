@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/storage.php';
 require_once __DIR__ . '/supabase.php';
 
 if (!function_exists('andison_get_brands_info')) {
@@ -10,7 +9,7 @@ if (!function_exists('andison_get_brands_info')) {
     {
         // ── 5-minute file cache ────────────────────────────────────────────
         $cacheFile = dirname(__DIR__) . '/data/_cache/brands_full.cache';
-        if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < 0) {
+        if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < 300) {
             $cached = @unserialize((string)file_get_contents($cacheFile));
             if (is_array($cached) && !empty($cached)) return $cached;
         }
@@ -24,9 +23,7 @@ if (!function_exists('andison_get_brands_info')) {
         $allProducts = $fetched['products'];
 
         if (empty($brands)) {
-            $dataFile = dirname(__DIR__) . '/data/brands_info.json';
-            $loaded = andison_read_json_file($dataFile, []);
-            return (is_array($loaded) && !empty($loaded)) ? $loaded : [];
+            return [];
         }
 
         // Group by brand — lowercase key for case-insensitive matching
@@ -134,6 +131,7 @@ if (!function_exists('andison_save_single_brand')) {
                 'specifications' => $product['specifications'] ?? ($product['specs'] ?? ''),
                 'price'          => $product['price'] ?? '',
                 'image'          => $product['image'] ?? '',
+                'datasheet'      => $product['datasheet'] ?? '',
             ];
             // Only include 'images' when there are actual images — column may not exist
             // on all Supabase environments: ALTER TABLE products ADD COLUMN IF NOT EXISTS images text;
@@ -175,89 +173,6 @@ if (!function_exists('andison_save_single_brand')) {
 
         // ── 3. Bust page cache so next load re-fetches from Supabase ──────────
         @unlink(dirname(__DIR__) . '/data/_cache/brands_full.cache');
-
-        // ── 4. Update local JSON cache for this brand ─────────────────────────
-        $dataFile = dirname(__DIR__) . '/data/brands_info.json';
-        $cached   = andison_read_json_file($dataFile, []);
-        if (!is_array($cached)) $cached = [];
-
-        // Capture OLD category slots BEFORE overwriting, so we can clean them up
-        $oldProducts = $cached[$name]['products'] ?? [];
-        $oldCatKeys  = [];
-        foreach ($oldProducts as $op) {
-            $oCId = trim((string)($op['category_id'] ?? ''));
-            $oSId = trim((string)($op['subcategory_id'] ?? ''));
-            if ($oCId !== '' && $oSId !== '') {
-                $oldCatKeys[$oCId . '::' . $oSId] = true;
-            }
-        }
-
-        $cached[$name] = $data;
-        andison_write_json_file($dataFile, $cached);
-
-        // ── 5. Sync categorised products to local category JSON files ──────────
-        // Build new category groups from the current product list
-        $newCatGroups = [];
-        foreach ($data['products'] ?? [] as $product) {
-            $cId = trim((string)($product['category_id'] ?? ''));
-            $sId = trim((string)($product['subcategory_id'] ?? ''));
-            if ($cId === '' || $sId === '') continue;
-            $newCatGroups[$cId . '::' . $sId][] = $product;
-        }
-
-        // Process ALL keys: old ones (to clean up deleted products) + new ones (to add/update)
-        $allKeys     = array_unique(array_merge(array_keys($oldCatKeys), array_keys($newCatGroups)));
-        $productsDir = dirname(__DIR__) . '/data/products';
-
-        foreach ($allKeys as $key) {
-            [$cId, $sId] = explode('::', $key, 2);
-            $jsonFile = $productsDir . '/' . urlencode($cId) . '/' . urlencode($sId) . '.json';
-
-            // Read existing list, strip ALL entries for this brand (handles deletions & moves)
-            $existingList = [];
-            if (file_exists($jsonFile)) {
-                $raw = @file_get_contents($jsonFile);
-                if ($raw !== false) {
-                    $parsed = json_decode($raw, true);
-                    if (is_array($parsed)) {
-                        foreach ($parsed as $p) {
-                            if (($p['brand'] ?? '') !== $name) {
-                                $existingList[] = $p;
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Re-add this brand's products for this slot (empty if deleted/moved away)
-            foreach ($newCatGroups[$key] ?? [] as $product) {
-                $pName = $product['product_name'] ?? ($product['name'] ?? '');
-                $imgs  = $product['images'] ?? [];
-                if (!is_array($imgs)) $imgs = [];
-                $existingList[] = [
-                    'name'           => $pName,
-                    'model'          => $product['model'] ?? '',
-                    'type'           => $product['type'] ?? '',
-                    'price'          => $product['price'] ?? '',
-                    'badge'          => $product['badge'] ?? '',
-                    'description'    => $product['description'] ?? '',
-                    'specs'          => $product['specifications'] ?? ($product['specs'] ?? ''),
-                    'image'          => $product['image'] ?? '',
-                    'images'         => $imgs,
-                    'brand'          => $name,
-                    'category_id'    => $cId,
-                    'subcategory_id' => $sId,
-                ];
-            }
-
-            // Write the merged list back (even if empty — clears stale data)
-            $dir = dirname($jsonFile);
-            if (!is_dir($dir)) @mkdir($dir, 0755, true);
-            @file_put_contents(
-                $jsonFile,
-                json_encode($existingList, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
-            );
-        }
 
         return $ok;
     }

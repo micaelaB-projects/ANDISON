@@ -28,19 +28,17 @@ if ($selectedCategory && !isset($categoryList[$selectedCategory])) {
 // All product add/edit/delete is handled exclusively in products.php (Brands admin).
 // This prevents duplicate rows and conflicting writes to the Supabase products table.
 
-// Sync canonical categories JSON → Supabase
+// Sync canonical categories → Supabase
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'sync_categories') {
-    $jsonFile = __DIR__ . '/../data/categories_info.json';
-    $content  = file_get_contents($jsonFile);
-    $canonical = $content !== false ? json_decode($content, true) : null;
-    if (is_array($canonical) && !empty($canonical)) {
+    $canonical = andison_get_categories();
+    if (!empty($canonical)) {
         if (andison_save_categories($canonical)) {
             andison_set_flash('success', 'Categories synced to database successfully! The product form dropdowns will now show the correct paths.');
         } else {
             andison_set_flash('error', 'Sync failed — check your Supabase connection.');
         }
     } else {
-        andison_set_flash('error', 'Could not read categories JSON file.');
+        andison_set_flash('error', 'No categories found in database to sync.');
     }
     header('Location: categories.php');
     exit;

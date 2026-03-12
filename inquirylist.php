@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Contact information for dropdown (always needed)
 $contact_phone = "+1(234) 567 8900";
 $contact_phone2 = "+1(234) 567 8900";
@@ -3234,6 +3234,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <a href="#privacy">Privacy Policy</a>
                 <a href="#terms">Terms of Service</a>
                 <a href="#sitemap">Sitemap</a>
+                <a href="contact.php">Contact Us</a>
             </div>
             <div class="footer-copyright">
                 <p>&copy; 2026 <?php echo $company_name; ?>. All rights reserved.</p>

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once __DIR__ . '/Andison/includes/analytics.php';
 andison_track_visit('brand');
 $_btrack = isset($_GET['name']) ? trim(strip_tags($_GET['name'])) : '';
@@ -2759,6 +2759,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                 <a href="#privacy">Privacy Policy</a>
                 <a href="#terms">Terms of Service</a>
                 <a href="#sitemap">Sitemap</a>
+                <a href="contact.php">Contact Us</a>
             </div>
             <div class="footer-copyright">
                 <p>&copy; 2026 <?php echo $company_name; ?>. All rights reserved.</p>

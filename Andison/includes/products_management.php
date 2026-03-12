@@ -39,13 +39,8 @@ function andison_get_products_for_subcategory(string $categoryId, string $subcat
         }, $rows);
     }
 
-    // Fallback to local JSON
-    $jsonFile = __DIR__ . '/../data/products/' . urlencode($categoryId) . '/' . urlencode($subcategoryId) . '.json';
-    if (!file_exists($jsonFile)) return [];
-    $content = file_get_contents($jsonFile);
-    if ($content === false) return [];
-    $products = json_decode($content, true);
-    return is_array($products) ? $products : [];
+    // No products found in Supabase
+    return [];
 }
 
 function andison_get_products_for_category(string $categoryId): array
@@ -79,38 +74,11 @@ function andison_get_products_for_category(string $categoryId): array
         }, $rows);
     }
 
-    // Fallback: scan all JSON files in the category directory
-    $dir = __DIR__ . '/../data/products/' . urlencode($categoryId);
-    if (!is_dir($dir)) return [];
-    $all = [];
-    foreach (glob($dir . '/*.json') as $file) {
-        $content = file_get_contents($file);
-        if ($content === false) continue;
-        $products = json_decode($content, true);
-        if (is_array($products)) {
-            $all = array_merge($all, $products);
-        }
-    }
-    return $all;
+    return [];
 }
 
 function andison_save_products_for_subcategory(string $categoryId, string $subcategoryId, array $products): bool
 {
-    // Backup to local JSON
-    $dir = __DIR__ . '/../data/products/' . urlencode($categoryId);
-    if (!is_dir($dir)) mkdir($dir, 0755, true);
-    $jsonFile = $dir . '/' . urlencode($subcategoryId) . '.json';
-    $handle = fopen($jsonFile, 'c');
-    if ($handle !== false) {
-        if (flock($handle, LOCK_EX)) {
-            rewind($handle);
-            ftruncate($handle, 0);
-            fwrite($handle, json_encode($products, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-            flock($handle, LOCK_UN);
-        }
-        fclose($handle);
-    }
-
     // Save to Supabase: delete existing rows then insert fresh ones
     $filter = 'category_id=eq.' . rawurlencode($categoryId) . '&subcategory_id=eq.' . rawurlencode($subcategoryId);
     andison_sb_delete('products', $filter);

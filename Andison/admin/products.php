@@ -69,6 +69,58 @@ function andison_handle_multi_image_upload(): array
     return array_values($result);
 }
 
+/**
+ * Handle optional datasheet PDF upload (field: datasheet_file).
+ * Keeps existing URL from hidden input if no new file uploaded.
+ */
+function andison_handle_datasheet_upload(): string
+{
+    $existingUrl = isset($_POST['existing_datasheet']) ? trim((string)$_POST['existing_datasheet']) : '';
+
+    if (!empty($_FILES['datasheet_file']) && $_FILES['datasheet_file']['error'] === UPLOAD_ERR_OK) {
+        $f    = $_FILES['datasheet_file'];
+        $ext  = strtolower(pathinfo((string)($f['name'] ?? ''), PATHINFO_EXTENSION));
+        $fi   = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = (string)finfo_file($fi, $f['tmp_name']);
+        finfo_close($fi);
+        if ($ext === 'pdf' && $mime === 'application/pdf') {
+            $base     = andison_safe_filename(pathinfo((string)($f['name'] ?? ''), PATHINFO_FILENAME));
+            $destName = $base . '_' . date('Ymd_His') . '.pdf';
+            $url      = andison_sb_storage_upload_tmp($f, 'datasheets', $destName);
+            if ($url !== null) return $url;
+        }
+    }
+
+    return $existingUrl;
+}
+
+// ── CSV Template download (GET) ──────────────────────────────────────────────
+if (isset($_GET['action']) && $_GET['action'] === 'download_csv_template') {
+    andison_require_admin();
+    $headers = ['product_name','model','type','price','badge','description','specifications','category_id','subcategory_id','image_url','datasheet_url'];
+    $example = [
+        'Welding Machine XYZ',
+        'WM-1000',
+        'MIG Welding Machine',
+        '',
+        'New',
+        'High-performance MIG welder suitable for industrial use.',
+        "Input Voltage: 220V\nOutput Current: 50-200A\nDuty Cycle: 60%",
+        'arc-welding-machine',
+        'mig-welding-machine',
+        'https://example.com/image.jpg',
+        '',
+    ];
+    header('Content-Type: text/csv; charset=UTF-8');
+    header('Content-Disposition: attachment; filename="products_import_template.csv"');
+    header('Cache-Control: no-cache, no-store, must-revalidate');
+    $out = fopen('php://output', 'w');
+    fputcsv($out, $headers);
+    fputcsv($out, $example);
+    fclose($out);
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = isset($_POST['action']) ? (string)$_POST['action'] : '';
     $brand = isset($_POST['brand']) ? (string)$_POST['brand'] : '';
@@ -143,6 +195,92 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($brand !== '' && isset($brands[$brand])) {
+        if ($action === 'import_csv') {
+            $errors = [];
+            $imported = 0;
+
+            if (empty($_FILES['csv_file']) || $_FILES['csv_file']['error'] !== UPLOAD_ERR_OK) {
+                andison_set_flash('error', 'No CSV file uploaded.');
+                header('Location: products.php?brand=' . urlencode($brand));
+                exit;
+            }
+
+            $f    = $_FILES['csv_file'];
+            $ext  = strtolower(pathinfo((string)($f['name'] ?? ''), PATHINFO_EXTENSION));
+            $mime = mime_content_type($f['tmp_name']);
+            if (!in_array($ext, ['csv', 'txt'], true) || !in_array($mime, ['text/plain','text/csv','application/csv','application/vnd.ms-excel'], true)) {
+                andison_set_flash('error', 'Invalid file type. Please upload a .csv file.');
+                header('Location: products.php?brand=' . urlencode($brand));
+                exit;
+            }
+
+            $handle = fopen($f['tmp_name'], 'r');
+            if ($handle === false) {
+                andison_set_flash('error', 'Could not read CSV file.');
+                header('Location: products.php?brand=' . urlencode($brand));
+                exit;
+            }
+
+            $expectedHeaders = ['product_name','model','type','price','badge','description','specifications','category_id','subcategory_id','image_url','datasheet_url'];
+            $headerRow = fgetcsv($handle);
+            if ($headerRow === false || array_map('strtolower', array_map('trim', $headerRow)) !== $expectedHeaders) {
+                fclose($handle);
+                andison_set_flash('error', 'CSV headers do not match the template. Please download and use the official template.');
+                header('Location: products.php?brand=' . urlencode($brand));
+                exit;
+            }
+
+            if (empty($brands[$brand]['products']) || !is_array($brands[$brand]['products'])) {
+                $brands[$brand]['products'] = [];
+            }
+
+            $rowNum = 1;
+            while (($row = fgetcsv($handle)) !== false) {
+                $rowNum++;
+                if (count($row) < 9) { $errors[] = "Row {$rowNum}: too few columns, skipped."; continue; }
+
+                $row = array_pad($row, 11, '');
+                $model = trim($row[1]);
+                $type  = trim($row[2]);
+                if ($model === '' || $type === '') {
+                    $errors[] = "Row {$rowNum}: model and type are required, skipped.";
+                    continue;
+                }
+
+                $imageUrl = filter_var(trim($row[9]), FILTER_VALIDATE_URL) ? trim($row[9]) : '';
+                $datasheetUrl = filter_var(trim($row[10]), FILTER_VALIDATE_URL) ? trim($row[10]) : '';
+                $images = $imageUrl !== '' ? [$imageUrl] : [];
+
+                $brands[$brand]['products'][] = [
+                    'product_name'   => trim($row[0]),
+                    'model'          => $model,
+                    'type'           => $type,
+                    'price'          => trim($row[3]),
+                    'badge'          => trim($row[4]),
+                    'description'    => trim($row[5]),
+                    'specifications' => trim($row[6]),
+                    'category_id'    => trim($row[7]),
+                    'subcategory_id' => trim($row[8]),
+                    'image'          => $imageUrl,
+                    'images'         => $images,
+                    'datasheet'      => $datasheetUrl,
+                ];
+                $imported++;
+            }
+            fclose($handle);
+
+            if ($imported > 0) {
+                andison_save_single_brand($brand, $brands[$brand]);
+                @unlink(__DIR__ . '/../data/_cache/brands_full.cache');
+            }
+
+            $msg = "Imported {$imported} product(s).";
+            if (!empty($errors)) $msg .= ' Skipped rows: ' . implode(' | ', $errors);
+            andison_set_flash($imported > 0 ? 'success' : 'error', $msg);
+            header('Location: products.php?brand=' . urlencode($brand));
+            exit;
+        }
+
         if ($action === 'update_brand') {
             $desc = isset($_POST['description']) ? trim((string)$_POST['description']) : '';
             $brands[$brand]['description'] = $desc;
@@ -165,8 +303,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $specs = isset($_POST['specifications']) ? trim((string)$_POST['specifications']) : '';
             $catId  = isset($_POST['category_id'])    ? trim((string)$_POST['category_id'])    : '';
             $subId  = isset($_POST['subcategory_id']) ? trim((string)$_POST['subcategory_id']) : '';
-            $images = andison_handle_multi_image_upload();
-            $image  = $images[0] ?? '';
+            $images    = andison_handle_multi_image_upload();
+            $image     = $images[0] ?? '';
+            $datasheet = andison_handle_datasheet_upload();
 
             if ($model === '' || $type === '') {
                 andison_set_flash('error', 'Model and Type are required.');
@@ -188,6 +327,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'specifications' => $specs,
                 'image'          => $image,
                 'images'         => $images,
+                'datasheet'      => $datasheet,
                 'category_id'    => $catId,
                 'subcategory_id' => $subId,
             ];
@@ -228,7 +368,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 $images = $oldImgs;
             }
-            $image = $images[0] ?? '';
+            $image     = $images[0] ?? '';
+            $datasheet = andison_handle_datasheet_upload();
+            // Keep existing datasheet if none uploaded and no new URL provided
+            if ($datasheet === '') {
+                $datasheet = (string)($brands[$brand]['products'][$idx]['datasheet'] ?? '');
+            }
 
             if ($model === '' || $type === '') {
                 andison_set_flash('error', 'Model and Type are required.');
@@ -246,6 +391,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'specifications' => $specs,
                 'image'          => $image,
                 'images'         => $images,
+                'datasheet'      => $datasheet,
                 'category_id'    => $catId,
                 'subcategory_id' => $subId,
             ];
@@ -284,6 +430,18 @@ $editIndex = isset($_GET['edit']) ? (int)$_GET['edit'] : -1;
 $brandInfo = $selectedBrand !== '' ? ($brands[$selectedBrand] ?? []) : [];
 $products = isset($brandInfo['products']) && is_array($brandInfo['products']) ? $brandInfo['products'] : [];
 $allCategories = andison_get_categories(); // for category/subcategory dropdowns
+
+// Build flat ID→name lookup for display in the product table
+$_catNameMap = [];
+foreach ($allCategories as $_cat) {
+    $_catNameMap[(string)$_cat['id']] = (string)$_cat['name'];
+    foreach ($_cat['subcategories'] ?? [] as $_sub) {
+        $_catNameMap[(string)$_sub['id']] = (string)$_sub['name'];
+        foreach ($_sub['subcategories'] ?? [] as $_ss) {
+            $_catNameMap[(string)$_ss['id']] = (string)$_ss['name'];
+        }
+    }
+}
 
 andison_admin_header('Products', 'products');
 ?>
@@ -391,6 +549,7 @@ andison_admin_header('Products', 'products');
                     </div>
                 </div>
                 <button class="btn btn-primary" type="button" onclick="openAddProductModal();" style="font-size:12px;padding:8px 16px;"><i class="bi bi-plus-lg"></i> Add Product</button>
+                <button class="btn btn-secondary" type="button" onclick="openImportCsvModal();" style="font-size:12px;padding:8px 16px;margin-left:8px;background:#6b7280;border-color:#6b7280;color:white;border-radius:8px;"><i class="bi bi-upload"></i> Import CSV</button>
             </div>
 
             <!-- Search Bar -->
@@ -425,10 +584,6 @@ andison_admin_header('Products', 'products');
                                 </td>
                             </tr>
                         <?php else: ?>
-                            <?php 
-                                $totalProducts = count($products);
-                                $displayLimit = 10;
-                            ?>
                             <?php foreach ($products as $i => $prod): ?>
                                 <?php if (!is_array($prod)) { continue; } ?>
                                 <?php
@@ -441,11 +596,10 @@ andison_admin_header('Products', 'products');
                                     elseif ($badge === 'Best Seller') $badgeClass = 'prod-badge-bestseller';
                                     elseif ($badge === 'Limited Stock') $badgeClass = 'prod-badge-limited';
                                 ?>
-                                <tr class="product-row <?php echo $i >= $displayLimit ? 'hidden-row' : ''; ?>" 
+                                <tr class="product-row" 
                                     data-model="<?php echo htmlspecialchars(strtolower((string)($prod['model'] ?? '')), ENT_QUOTES); ?>" 
                                     data-type="<?php echo htmlspecialchars(strtolower((string)($prod['type'] ?? '')), ENT_QUOTES); ?>" 
-                                    data-badge="<?php echo htmlspecialchars(strtolower((string)($prod['badge'] ?? '')), ENT_QUOTES); ?>" 
-                                    style="<?php echo $i >= $displayLimit ? 'display:none;' : ''; ?>">
+                                    data-badge="<?php echo htmlspecialchars(strtolower((string)($prod['badge'] ?? '')), ENT_QUOTES); ?>">
                                     <td><span class="prod-num"><?php echo (int)$i + 1; ?></span></td>
                                     <td>
                                         <div style="font-weight:600;font-size:13px;color:#111827;"><?php echo htmlspecialchars((string)($prod['model'] ?? '')); ?></div>
@@ -455,7 +609,11 @@ andison_admin_header('Products', 'products');
                                         <?php if (empty($prod['category_id'])): ?>
                                             <div style="margin-top:3px;"><span style="font-size:10px;font-weight:700;background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:4px;padding:1px 6px;"><i class="bi bi-exclamation-triangle-fill"></i> No Category — won't show on browse pages</span></div>
                                         <?php else: ?>
-                                            <div style="margin-top:3px;"><span style="font-size:10px;color:#6b7280;"><i class="bi bi-folder-check"></i> <?php echo htmlspecialchars((string)$prod['category_id']); ?><?php if (!empty($prod['subcategory_id'])): ?> › <?php echo htmlspecialchars((string)$prod['subcategory_id']); ?><?php endif; ?></span></div>
+                                            <?php
+                                                $dispCat = $_catNameMap[(string)$prod['category_id']] ?? (string)$prod['category_id'];
+                                                $dispSub = !empty($prod['subcategory_id']) ? ($_catNameMap[(string)$prod['subcategory_id']] ?? (string)$prod['subcategory_id']) : '';
+                                            ?>
+                                            <div style="margin-top:3px;"><span style="font-size:10px;color:#6b7280;"><i class="bi bi-folder-check"></i> <?php echo htmlspecialchars($dispCat); ?><?php if ($dispSub !== ''): ?> › <?php echo htmlspecialchars($dispSub); ?><?php endif; ?></span></div>
                                         <?php endif; ?>
                                     </td>
                                     <td style="color:#6b7280;font-size:12px;"><?php echo htmlspecialchars((string)($prod['type'] ?? '')); ?></td>
@@ -511,6 +669,7 @@ andison_admin_header('Products', 'products');
                                                     ?>"
                                                     data-category="<?php echo htmlspecialchars((string)($prod['category_id'] ?? ''), ENT_QUOTES); ?>"
                                                     data-subcategory="<?php echo htmlspecialchars((string)($prod['subcategory_id'] ?? ''), ENT_QUOTES); ?>"
+                                                    data-datasheet="<?php echo htmlspecialchars((string)($prod['datasheet'] ?? ''), ENT_QUOTES); ?>"
                                                     style="padding:5px 10px;font-size:11px;">
                                                 <i class="bi bi-pencil"></i> Edit
                                             </button>
@@ -529,13 +688,7 @@ andison_admin_header('Products', 'products');
                 </table>
             </div>
             
-            <?php if (!empty($products) && count($products) > 10): ?>
-                <div style="text-align:center;margin-top:12px;">
-                    <button id="seeMoreBtn" type="button" onclick="toggleSeeMore()" style="display:inline-flex;align-items:center;gap:6px;padding:8px 20px;font-size:12px;font-weight:600;color:var(--accent);background:rgba(43,17,219,0.06);border:1.5px solid rgba(43,17,219,0.15);border-radius:8px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(43,17,219,0.1)'" onmouseout="this.style.background='rgba(43,17,219,0.06)'">
-                        <i class="bi bi-chevron-down"></i> Show <?php echo count($products) - 10; ?> more products
-                    </button>
-                </div>
-            <?php endif; ?>
+
         </section>
     <?php endif; ?>
 
@@ -636,9 +789,27 @@ andison_admin_header('Products', 'products');
                         <textarea id="editDescription" name="product_description" rows="3" placeholder="Add product benefits and key features..." style="resize:vertical;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;"></textarea>
                     </div>
                     
-                    <div class="field" style="margin:0;">
+                    <div class="field" style="margin:0;margin-bottom:12px;">
                         <label for="editSpecifications">Specifications</label>
                         <textarea id="editSpecifications" name="specifications" rows="3" placeholder="Technical specs, dimensions, power requirements, etc..." style="resize:vertical;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;"></textarea>
+                    </div>
+
+                    <div class="field" style="margin:0;">
+                        <label for="datasheetFile"><i class="bi bi-file-earmark-pdf" style="color:#dc2626;"></i> Datasheet (PDF)</label>
+                        <input type="hidden" name="existing_datasheet" id="existingDatasheetInput" value="">
+                        <div id="datasheetPreview" style="display:none;margin-bottom:8px;padding:10px 12px;background:#fef2f2;border:1.5px solid #fecaca;border-radius:8px;display:flex;align-items:center;gap:10px;">
+                            <i class="bi bi-file-earmark-pdf-fill" style="color:#dc2626;font-size:20px;flex-shrink:0;"></i>
+                            <div style="flex:1;min-width:0;">
+                                <div style="font-size:12px;font-weight:600;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="datasheetFileName">datasheet.pdf</div>
+                                <a id="datasheetLink" href="#" target="_blank" style="font-size:10px;color:#2b11db;">View / Download</a>
+                            </div>
+                            <button type="button" onclick="removeDatasheet()" style="background:rgba(239,68,68,0.1);border:1px solid #fecaca;color:#dc2626;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;"><i class="bi bi-x-lg"></i> Remove</button>
+                        </div>
+                        <label for="datasheetFile" style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:2px dashed #e5e7eb;border-radius:8px;cursor:pointer;font-size:13px;color:#6b7280;font-weight:400;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='#e5e7eb'">
+                            <i class="bi bi-upload" style="font-size:16px;"></i> Click to upload a PDF datasheet
+                        </label>
+                        <input type="file" id="datasheetFile" name="datasheet_file" accept=".pdf,application/pdf" style="display:none;" onchange="handleDatasheetSelect(this)">
+                        <div style="font-size:11px;color:#9ca3af;margin-top:4px;"><i class="bi bi-info-circle"></i> PDF only · max 10 MB</div>
                     </div>
                 </div>
 
@@ -1171,8 +1342,8 @@ function previewImageSlot(input, idx) {
     if (!file.type.startsWith('image/')) {
         customAlert('Please select a valid image file.'); input.value = ''; return;
     }
-    if (file.size > 5 * 1024 * 1024) {
-        customAlert('File size must be less than 5MB.'); input.value = ''; return;
+    if (file.size > 100 * 1024 * 1024) {
+        customAlert('File size must be less than 100MB.'); input.value = ''; return;
     }
     _existingUrls[idx] = '';
     var reader = new FileReader();
@@ -1181,7 +1352,7 @@ function previewImageSlot(input, idx) {
 }
 // ─────────────────────────────────────────────────────────────────────────────
 
-function openEditModal(index, name, model, type, price, badge, description, specifications, image, catId, subId, imagesJson) {
+function openEditModal(index, name, model, type, price, badge, description, specifications, image, catId, subId, imagesJson, datasheet) {
     var modal = document.getElementById('editProductModal');
     document.getElementById('editIndex').value = index;
     document.getElementById('editProductName').value = name;
@@ -1191,6 +1362,9 @@ function openEditModal(index, name, model, type, price, badge, description, spec
     document.getElementById('editBadge').value = badge;
     document.getElementById('editDescription').value = description;
     document.getElementById('editSpecifications').value = specifications;
+
+    // Populate datasheet
+    setDatasheetPreview(datasheet || '');
 
     // Populate image slots
     _existingUrls = ['','','','',''];
@@ -1257,9 +1431,10 @@ document.querySelectorAll('.edit-product-btn').forEach(function(btn){
         var specifications = this.getAttribute('data-specifications');
         var image  = this.getAttribute('data-image');
         var images = this.getAttribute('data-images') || '[]';
-        var catId  = this.getAttribute('data-category');
-        var subId  = this.getAttribute('data-subcategory');
-        openEditModal(index, name, model, type, price, badge, description, specifications, image, catId, subId, images);
+        var catId     = this.getAttribute('data-category');
+        var subId     = this.getAttribute('data-subcategory');
+        var datasheet = this.getAttribute('data-datasheet') || '';
+        openEditModal(index, name, model, type, price, badge, description, specifications, image, catId, subId, images, datasheet);
     });
 });
 
@@ -1337,6 +1512,8 @@ function openAddProductModal() {
     document.getElementById('editBadge').value = '';
     document.getElementById('editDescription').value = '';
     document.getElementById('editSpecifications').value = '';
+    // Clear datasheet
+    setDatasheetPreview('');
     // Clear image slots
     _existingUrls = ['','','','',''];
     _previewUrls  = [null,null,null,null,null];
@@ -1359,27 +1536,38 @@ function openAddProductModal() {
     document.body.classList.add('modal-open');
 }
 
-// See More functionality
-function toggleSeeMore() {
-    var hiddenRows = document.querySelectorAll('.product-row.hidden-row');
-    var btn = document.getElementById('seeMoreBtn');
-    var isExpanded = btn.getAttribute('data-expanded') === 'true';
-    
-    if (isExpanded) {
-        // Collapse - hide rows again
-        hiddenRows.forEach(function(row){
-            row.style.display = 'none';
-        });
-        btn.innerHTML = '<i class="bi bi-chevron-down"></i> See More (' + hiddenRows.length + ' hidden)';
-        btn.setAttribute('data-expanded', 'false');
+// Datasheet helpers
+function setDatasheetPreview(url) {
+    document.getElementById('existingDatasheetInput').value = url || '';
+    var preview = document.getElementById('datasheetPreview');
+    var fi = document.getElementById('datasheetFile');
+    if (fi) fi.value = '';
+    if (url) {
+        var parts = url.split('/');
+        document.getElementById('datasheetFileName').textContent = decodeURIComponent(parts[parts.length - 1]) || 'datasheet.pdf';
+        document.getElementById('datasheetLink').href = url;
+        preview.style.display = 'flex';
     } else {
-        // Expand - show all rows
-        hiddenRows.forEach(function(row){
-            row.style.display = '';
-        });
-        btn.innerHTML = '<i class="bi bi-chevron-up"></i> See Less';
-        btn.setAttribute('data-expanded', 'true');
+        preview.style.display = 'none';
     }
+}
+function removeDatasheet() {
+    setDatasheetPreview('');
+}
+function handleDatasheetSelect(input) {
+    if (!input.files || !input.files.length) return;
+    var file = input.files[0];
+    if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+        customAlert('Please select a PDF file.'); input.value = ''; return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+        customAlert('File size must be less than 10 MB.'); input.value = ''; return;
+    }
+    // Show selected file name in preview (actual upload happens on form submit)
+    document.getElementById('existingDatasheetInput').value = '';
+    document.getElementById('datasheetFileName').textContent = file.name;
+    document.getElementById('datasheetLink').href = '#';
+    document.getElementById('datasheetPreview').style.display = 'flex';
 }
 
 // Image preview modal
@@ -1474,6 +1662,72 @@ function customAlert(message) {
         });
     }
 })();
+</script>
+
+<!-- ── CSV Import Modal ──────────────────────────────────────────────────── -->
+<div id="importCsvModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;">
+    <div style="background:white;border-radius:14px;width:100%;max-width:480px;margin:20px;box-shadow:0 20px 60px rgba(0,0,0,0.25);overflow:hidden;">
+        <div style="padding:20px 24px 16px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;justify-content:space-between;">
+            <div style="font-size:16px;font-weight:700;color:#111827;"><i class="bi bi-upload" style="margin-right:8px;color:#6b7280;"></i>Import Products from CSV</div>
+            <button type="button" onclick="closeImportCsvModal();" style="background:none;border:none;font-size:20px;color:#9ca3af;cursor:pointer;line-height:1;">&times;</button>
+        </div>
+        <div style="padding:20px 24px;">
+            <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:12px 14px;margin-bottom:18px;font-size:12px;color:#0369a1;line-height:1.6;">
+                <strong>Instructions:</strong><br>
+                1. Download the template CSV below.<br>
+                2. Fill in your products — one row per product.<br>
+                3. <code>model</code> and <code>type</code> columns are required.<br>
+                4. Use image/datasheet URLs (not file uploads).<br>
+                5. Save as CSV (UTF-8) and import here.
+            </div>
+            <a href="products.php?action=download_csv_template" download style="display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:#2563eb;text-decoration:none;background:#eff6ff;border:1px solid #bfdbfe;padding:7px 14px;border-radius:7px;margin-bottom:18px;">
+                <i class="bi bi-file-earmark-spreadsheet"></i> Download Template (CSV)
+            </a>
+            <form id="importCsvForm" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="action" value="import_csv">
+                <input type="hidden" name="brand" id="importCsvBrand" value="<?php echo htmlspecialchars($selectedBrand, ENT_QUOTES); ?>">
+                <div style="margin-bottom:16px;">
+                    <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Select CSV File</label>
+                    <input type="file" name="csv_file" id="csvFileInput" accept=".csv,text/csv" required
+                        style="width:100%;font-size:12px;padding:8px 10px;border:1px solid #d1d5db;border-radius:7px;cursor:pointer;box-sizing:border-box;">
+                    <div id="csvFileInfo" style="font-size:11px;color:#6b7280;margin-top:4px;"></div>
+                </div>
+                <div style="display:flex;gap:10px;justify-content:flex-end;">
+                    <button type="button" onclick="closeImportCsvModal();" style="padding:8px 18px;font-size:12px;border-radius:7px;border:1px solid #d1d5db;background:white;color:#374151;cursor:pointer;font-weight:500;">Cancel</button>
+                    <button type="submit" id="importCsvSubmit" style="padding:8px 18px;font-size:12px;border-radius:7px;border:none;background:#2563eb;color:white;cursor:pointer;font-weight:600;"><i class="bi bi-upload"></i> Import</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function openImportCsvModal() {
+    var modal = document.getElementById('importCsvModal');
+    modal.style.display = 'flex';
+    document.getElementById('csvFileInput').value = '';
+    document.getElementById('csvFileInfo').textContent = '';
+}
+function closeImportCsvModal() {
+    document.getElementById('importCsvModal').style.display = 'none';
+}
+document.getElementById('csvFileInput').addEventListener('change', function() {
+    var info = document.getElementById('csvFileInfo');
+    if (this.files && this.files[0]) {
+        var size = (this.files[0].size / 1024).toFixed(1);
+        info.textContent = this.files[0].name + ' (' + size + ' KB)';
+    } else {
+        info.textContent = '';
+    }
+});
+document.getElementById('importCsvModal').addEventListener('click', function(e) {
+    if (e.target === this) closeImportCsvModal();
+});
+document.getElementById('importCsvForm').addEventListener('submit', function() {
+    var btn = document.getElementById('importCsvSubmit');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Importing...';
+});
 </script>
 
 <?php

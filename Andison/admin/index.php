@@ -159,9 +159,9 @@ andison_admin_header('Dashboard', 'dashboard');
     </section>
 
     <!-- Brand & Category Analytics -->
-    <section class="card" style="grid-column:span 6;">
-        <h2 style="font-size:13px;margin-bottom:10px;"><i class="bi bi-building"></i> Brand Views</h2>
-        <div id="an-brands-list">
+    <section class="card" style="grid-column:span 6;height:400px;display:flex;flex-direction:column;">
+        <h2 style="font-size:13px;margin-bottom:10px;flex-shrink:0;"><i class="bi bi-building"></i> Brand Views</h2>
+        <div id="an-brands-list" style="flex:1;overflow-y:auto;padding-right:6px;">
             <?php if (empty($analyticsBrands)): ?>
                 <div style="color:#9ca3af;font-size:13px;">No brand visits recorded yet.</div>
             <?php else: ?>
@@ -184,9 +184,9 @@ andison_admin_header('Dashboard', 'dashboard');
         </div>
     </section>
 
-    <section class="card" style="grid-column:span 6;">
-        <h2 style="font-size:13px;margin-bottom:10px;"><i class="bi bi-tag"></i> Category Views</h2>
-        <div id="an-categories-list">
+    <section class="card" style="grid-column:span 6;height:400px;display:flex;flex-direction:column;">
+        <h2 style="font-size:13px;margin-bottom:10px;flex-shrink:0;"><i class="bi bi-tag"></i> Category Views</h2>
+        <div id="an-categories-list" style="flex:1;overflow-y:auto;padding-right:6px;">
             <?php if (empty($analyticsCategories)): ?>
                 <div style="color:#9ca3af;font-size:13px;">No category visits recorded yet.</div>
             <?php else: ?>
