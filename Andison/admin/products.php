@@ -9,7 +9,7 @@ require_once __DIR__ . '/_layout.php';
 require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../includes/categories_info.php';
 
-$brands = andison_get_brands_info();
+$brands = andison_get_brands_info(true);
 $brandNames = array_keys($brands);
 $selectedBrand = isset($_GET['brand']) ? (string)$_GET['brand'] : ($brandNames[0] ?? '');
 if ($selectedBrand === '' || !isset($brands[$selectedBrand])) {
@@ -200,14 +200,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             fclose($handle);
 
+            $saveOk = true;
             if ($imported > 0) {
-                andison_save_single_brand($brand, $brands[$brand]);
+                $saveOk = andison_save_single_brand($brand, $brands[$brand]);
                 @unlink(__DIR__ . '/../data/_cache/brands_full.cache');
             }
 
             $msg = "Imported {$imported} product(s).";
             if (!empty($errors)) $msg .= ' Skipped rows: ' . implode(' | ', $errors);
-            andison_set_flash($imported > 0 ? 'success' : 'error', $msg);
+            if ($imported > 0 && !$saveOk) {
+                andison_set_flash('error', 'Import blocked to protect existing products. Please refresh the page and try again.');
+            } else {
+                andison_set_flash($imported > 0 ? 'success' : 'error', $msg);
+            }
             header('Location: products.php?brand=' . urlencode($brand));
             exit;
         }
@@ -218,7 +223,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (andison_save_single_brand($brand, $brands[$brand])) {
                 andison_set_flash('success', 'Brand description updated.');
             } else {
-                andison_set_flash('error', 'Failed to save changes.');
+                andison_set_flash('error', 'Save blocked to protect existing products. Please refresh and try again.');
             }
             header('Location: products.php?brand=' . urlencode($brand));
             exit;
@@ -266,7 +271,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (andison_save_single_brand($brand, $brands[$brand])) {
                 andison_set_flash('success', 'Product added.');
             } else {
-                andison_set_flash('error', 'Failed to save changes.');
+                andison_set_flash('error', 'Save blocked to protect existing products. Please refresh and try again.');
             }
 
             header('Location: products.php?brand=' . urlencode($brand));
@@ -330,7 +335,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (andison_save_single_brand($brand, $brands[$brand])) {
                 andison_set_flash('success', 'Product updated.');
             } else {
-                andison_set_flash('error', 'Failed to save changes.');
+                andison_set_flash('error', 'Save blocked to protect existing products. Please refresh and try again.');
             }
 
             header('Location: products.php?brand=' . urlencode($brand));
@@ -341,10 +346,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $idx = isset($_POST['index']) ? (int)$_POST['index'] : -1;
             if ($idx >= 0 && isset($brands[$brand]['products'][$idx])) {
                 array_splice($brands[$brand]['products'], $idx, 1);
-                if (andison_save_single_brand($brand, $brands[$brand])) {
+                if (andison_save_single_brand($brand, $brands[$brand], [
+                    'allowEmptyProducts' => true,
+                    'allowProductCountDecrease' => true,
+                ])) {
                     andison_set_flash('success', 'Product deleted.');
                 } else {
-                    andison_set_flash('error', 'Failed to save changes.');
+                    andison_set_flash('error', 'Failed to delete product safely. Please refresh and try again.');
                 }
             }
             header('Location: products.php?brand=' . urlencode($brand));
@@ -719,8 +727,29 @@ andison_admin_header('Products', 'products');
                     </div>
                     
                     <div class="field" style="margin:0;margin-bottom:12px;">
-                        <label for="editSpecifications">Specifications</label>
-                        <textarea id="editSpecifications" name="specifications" rows="3" placeholder="Technical specs, dimensions, power requirements, etc..." style="resize:vertical;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;"></textarea>
+                        <label for="editSpecificationsText">Specifications (Text)</label>
+                        <textarea id="editSpecificationsText" rows="3" placeholder="Technical specs, dimensions, power requirements, etc..." style="resize:vertical;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;"></textarea>
+                        <input type="hidden" id="editSpecifications" name="specifications" value="">
+                        <div style="font-size:11px;color:#9ca3af;margin-top:4px;"><i class="bi bi-info-circle"></i> This displays as plain text on the client side.</div>
+                    </div>
+
+                    <div class="field" style="margin:0;margin-bottom:12px;">
+                        <label><i class="bi bi-table"></i> Specifications Table (Optional)</label>
+                        <div style="overflow:auto;border:1px solid #e5e7eb;border-radius:10px;background:#fff;">
+                            <table id="specTableBuilder" style="width:100%;border-collapse:separate;border-spacing:0;min-width:420px;">
+                                <thead id="specTableHead"></thead>
+                                <tbody id="specTableBody"></tbody>
+                            </table>
+                        </div>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+                            <button type="button" onclick="addSpecTableDataRow()" style="display:inline-flex;align-items:center;gap:6px;background:#eef2ff;border:1px solid #c7d2fe;color:#2b11db;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
+                                <i class="bi bi-plus-lg"></i> Add Row
+                            </button>
+                            <button type="button" onclick="addSpecTableColumn()" style="display:inline-flex;align-items:center;gap:6px;background:#ecfdf5;border:1px solid #a7f3d0;color:#047857;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
+                                <i class="bi bi-layout-three-columns"></i> Add Column
+                            </button>
+                        </div>
+                        <div style="font-size:11px;color:#9ca3af;margin-top:6px;"><i class="bi bi-info-circle"></i> Use Add Row and Add Column to build a full specification table.</div>
                     </div>
 
                     <div class="field" style="margin:0;">
@@ -1302,6 +1331,354 @@ function syncTypePresetFromInput() {
     preset.value = hasMatch ? val : '__custom__';
 }
 
+function normalizeSpecTableRows(rows) {
+    if (!Array.isArray(rows)) return [];
+    return rows.map(function(row) {
+        if (Array.isArray(row)) {
+            return {
+                label: String(row[0] || '').trim(),
+                value: String(row[1] || '').trim(),
+            };
+        }
+        if (row && typeof row === 'object') {
+            return {
+                label: String(row.label || row.key || '').trim(),
+                value: String(row.value || '').trim(),
+            };
+        }
+        return { label: '', value: '' };
+    }).filter(function(row) {
+        return row.label !== '' || row.value !== '';
+    });
+}
+
+function isDefaultSpecHeaderLabel(header, idx) {
+    var h = String(header || '').trim().toLowerCase();
+    if (h === '') return true;
+    if (h === ('column ' + (idx + 1)).toLowerCase()) return true;
+    if (idx === 0 && h === 'parameter') return true;
+    if (idx === 1 && h === 'value') return true;
+    return false;
+}
+
+function parseSpecificationsForEditor(rawSpecifications) {
+    var source = String(rawSpecifications || '').trim();
+    var result = {
+        text: '',
+        table: [],
+    };
+
+    if (!source) return result;
+
+    try {
+        var parsed = JSON.parse(source);
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+            var hasTable = Array.isArray(parsed.table);
+            if (parsed.format === 'andison_specs_v1' || hasTable) {
+                result.text = String(parsed.text || '').trim();
+                result.table = normalizeSpecTableRows(parsed.table || []);
+                return result;
+            }
+        }
+    } catch (e) {
+        // Legacy plain text specifications are valid.
+    }
+
+    result.text = source;
+    return result;
+}
+
+function specTableRowsToMatrix(tableRows) {
+    var rows = normalizeSpecTableRows(tableRows);
+    if (rows.length === 0) {
+        return {
+            headers: ['Parameter', 'Value'],
+            rows: [['', '']],
+        };
+    }
+
+    var keyValueRows = rows.every(function(item) {
+        return String(item.value || '').indexOf('|') === -1;
+    });
+
+    if (keyValueRows) {
+        return {
+            headers: ['Parameter', 'Value'],
+            rows: rows.map(function(item) {
+                return [String(item.label || ''), String(item.value || '')];
+            }),
+        };
+    }
+
+    var headers = [];
+    var columns = [];
+    var maxRows = 1;
+
+    rows.forEach(function(item, idx) {
+        var label = String(item.label || '').trim();
+        headers.push(label !== '' ? label : ('Column ' + (idx + 1)));
+
+        var colValues = String(item.value || '')
+            .split('|')
+            .map(function(v) { return v.trim(); });
+        columns.push(colValues);
+        if (colValues.length > maxRows) maxRows = colValues.length;
+    });
+
+    var matrixRows = [];
+    for (var r = 0; r < maxRows; r++) {
+        var row = [];
+        for (var c = 0; c < headers.length; c++) {
+            row.push(columns[c][r] || '');
+        }
+        matrixRows.push(row);
+    }
+
+    return {
+        headers: headers,
+        rows: matrixRows,
+    };
+}
+
+function matrixToSpecTableRows(headers, rows) {
+    if (!Array.isArray(headers) || headers.length === 0) return [];
+
+    var normalizedRows = Array.isArray(rows) ? rows : [];
+    var tableRows = [];
+    var hasMeaningfulData = false;
+
+    for (var c = 0; c < headers.length; c++) {
+        var header = String(headers[c] || '').trim();
+        var colValues = [];
+
+        for (var r = 0; r < normalizedRows.length; r++) {
+            var row = normalizedRows[r];
+            var cell = '';
+            if (Array.isArray(row) && c < row.length) {
+                cell = String(row[c] || '').trim();
+            }
+            colValues.push(cell);
+        }
+
+        while (colValues.length > 0 && colValues[colValues.length - 1] === '') {
+            colValues.pop();
+        }
+
+        var hasValues = colValues.some(function(v) { return v !== ''; });
+        var defaultHeader = isDefaultSpecHeaderLabel(header, c);
+
+        if (!hasValues && defaultHeader) {
+            continue;
+        }
+
+        var finalLabel = header !== '' ? header : ('Column ' + (c + 1));
+        tableRows.push({
+            label: finalLabel,
+            value: colValues.join('|'),
+        });
+
+        if (hasValues || !defaultHeader) {
+            hasMeaningfulData = true;
+        }
+    }
+
+    return hasMeaningfulData ? tableRows : [];
+}
+
+var _specTableHeaders = ['Parameter', 'Value'];
+var _specTableRows = [['', '']];
+
+function normalizeSpecTableState() {
+    if (!Array.isArray(_specTableHeaders)) _specTableHeaders = [];
+    if (_specTableHeaders.length === 0) _specTableHeaders = ['Parameter', 'Value'];
+
+    if (!Array.isArray(_specTableRows)) _specTableRows = [];
+    if (_specTableRows.length === 0) {
+        _specTableRows = [new Array(_specTableHeaders.length).fill('')];
+    }
+
+    _specTableRows = _specTableRows.map(function(row) {
+        var next = Array.isArray(row) ? row.slice(0, _specTableHeaders.length) : [];
+        while (next.length < _specTableHeaders.length) next.push('');
+        return next;
+    });
+}
+
+function renderSpecTableBuilder() {
+    normalizeSpecTableState();
+
+    var head = document.getElementById('specTableHead');
+    var body = document.getElementById('specTableBody');
+    if (!head || !body) return;
+
+    head.innerHTML = '';
+    body.innerHTML = '';
+
+    var headRow = document.createElement('tr');
+    _specTableHeaders.forEach(function(header, colIdx) {
+        var th = document.createElement('th');
+        th.style.cssText = 'padding:8px;border-bottom:1px solid #e5e7eb;background:#f8fafc;vertical-align:middle;';
+
+        var wrap = document.createElement('div');
+        wrap.style.cssText = 'display:flex;align-items:center;gap:6px;';
+
+        var input = document.createElement('input');
+        input.type = 'text';
+        input.value = header;
+        input.placeholder = 'Column ' + (colIdx + 1);
+        input.style.cssText = 'width:100%;padding:7px 9px;border:1.5px solid #dbe1ea;border-radius:7px;font-size:11px;font-weight:700;color:#1f2937;background:#fff;';
+        input.addEventListener('input', function() {
+            _specTableHeaders[colIdx] = this.value;
+            syncSpecificationsHiddenField();
+        });
+        wrap.appendChild(input);
+
+        if (_specTableHeaders.length > 1) {
+            var removeColBtn = document.createElement('button');
+            removeColBtn.type = 'button';
+            removeColBtn.innerHTML = '&times;';
+            removeColBtn.title = 'Remove column';
+            removeColBtn.style.cssText = 'width:24px;height:24px;border-radius:6px;border:1px solid #fecaca;background:#fef2f2;color:#dc2626;font-size:16px;line-height:1;cursor:pointer;flex-shrink:0;';
+            removeColBtn.addEventListener('click', function() {
+                removeSpecTableColumn(colIdx);
+            });
+            wrap.appendChild(removeColBtn);
+        }
+
+        th.appendChild(wrap);
+        headRow.appendChild(th);
+    });
+
+    var actionHead = document.createElement('th');
+    actionHead.style.cssText = 'width:42px;padding:8px;border-bottom:1px solid #e5e7eb;background:#f8fafc;';
+    headRow.appendChild(actionHead);
+    head.appendChild(headRow);
+
+    _specTableRows.forEach(function(row, rowIdx) {
+        var tr = document.createElement('tr');
+        if (rowIdx % 2 === 1) tr.style.backgroundColor = '#fcfdff';
+
+        for (var colIdx = 0; colIdx < _specTableHeaders.length; colIdx++) {
+            var td = document.createElement('td');
+            td.style.cssText = 'padding:6px 8px;border-bottom:1px solid #eef2f6;';
+
+            var cellInput = document.createElement('input');
+            cellInput.type = 'text';
+            cellInput.value = row[colIdx] || '';
+            cellInput.className = 'spec-table-input';
+            cellInput.style.cssText = 'width:100%;padding:7px 9px;border:1.5px solid #e5e7eb;border-radius:7px;font-size:12px;';
+            (function(r, c, inputEl) {
+                inputEl.addEventListener('input', function() {
+                    _specTableRows[r][c] = this.value;
+                    syncSpecificationsHiddenField();
+                });
+            })(rowIdx, colIdx, cellInput);
+
+            td.appendChild(cellInput);
+            tr.appendChild(td);
+        }
+
+        var actionTd = document.createElement('td');
+        actionTd.style.cssText = 'padding:6px 8px;border-bottom:1px solid #eef2f6;text-align:center;';
+        var removeRowBtn = document.createElement('button');
+        removeRowBtn.type = 'button';
+        removeRowBtn.innerHTML = '<i class="bi bi-trash"></i>';
+        removeRowBtn.title = 'Remove row';
+        removeRowBtn.style.cssText = 'width:28px;height:28px;border-radius:7px;border:1px solid #fecaca;background:#fef2f2;color:#dc2626;cursor:pointer;';
+        (function(r) {
+            removeRowBtn.addEventListener('click', function() {
+                removeSpecTableDataRow(r);
+            });
+        })(rowIdx);
+        actionTd.appendChild(removeRowBtn);
+        tr.appendChild(actionTd);
+
+        body.appendChild(tr);
+    });
+}
+
+function addSpecTableColumn(label) {
+    normalizeSpecTableState();
+    _specTableHeaders.push(String(label || ('Column ' + (_specTableHeaders.length + 1))));
+    _specTableRows = _specTableRows.map(function(row) {
+        row.push('');
+        return row;
+    });
+    renderSpecTableBuilder();
+    syncSpecificationsHiddenField();
+}
+
+function removeSpecTableColumn(colIdx) {
+    normalizeSpecTableState();
+    if (_specTableHeaders.length <= 1) return;
+    _specTableHeaders.splice(colIdx, 1);
+    _specTableRows = _specTableRows.map(function(row) {
+        row.splice(colIdx, 1);
+        return row;
+    });
+    renderSpecTableBuilder();
+    syncSpecificationsHiddenField();
+}
+
+function addSpecTableDataRow(initialValues) {
+    normalizeSpecTableState();
+    var row = new Array(_specTableHeaders.length).fill('');
+    if (Array.isArray(initialValues)) {
+        for (var i = 0; i < Math.min(initialValues.length, row.length); i++) {
+            row[i] = String(initialValues[i] || '');
+        }
+    }
+    _specTableRows.push(row);
+    renderSpecTableBuilder();
+    syncSpecificationsHiddenField();
+}
+
+function removeSpecTableDataRow(rowIdx) {
+    normalizeSpecTableState();
+    if (_specTableRows.length <= 1) {
+        _specTableRows[0] = new Array(_specTableHeaders.length).fill('');
+    } else {
+        _specTableRows.splice(rowIdx, 1);
+    }
+    renderSpecTableBuilder();
+    syncSpecificationsHiddenField();
+}
+
+function syncSpecificationsHiddenField() {
+    var hiddenInput = document.getElementById('editSpecifications');
+    var textArea = document.getElementById('editSpecificationsText');
+    if (!hiddenInput || !textArea) return;
+
+    var textValue = String(textArea.value || '').trim();
+    var tableRows = matrixToSpecTableRows(_specTableHeaders, _specTableRows);
+
+    if (tableRows.length === 0) {
+        hiddenInput.value = textValue;
+        return;
+    }
+
+    hiddenInput.value = JSON.stringify({
+        format: 'andison_specs_v1',
+        text: textValue,
+        table: tableRows,
+    });
+}
+
+function setSpecificationsEditor(rawSpecifications) {
+    var parsed = parseSpecificationsForEditor(rawSpecifications);
+    var textArea = document.getElementById('editSpecificationsText');
+    if (!textArea) return;
+
+    textArea.value = parsed.text;
+
+    var matrix = specTableRowsToMatrix(parsed.table);
+    _specTableHeaders = matrix.headers;
+    _specTableRows = matrix.rows;
+
+    renderSpecTableBuilder();
+    syncSpecificationsHiddenField();
+}
+
 // ── Multi-image slot state ──────────────────────────────────────────────────
 var _existingUrls = ['','','','',''];
 var _previewUrls  = [null,null,null,null,null];
@@ -1474,7 +1851,7 @@ function openEditModal(index, name, model, type, price, badge, description, spec
     document.getElementById('editPrice').value = price;
     document.getElementById('editBadge').value = badge;
     document.getElementById('editDescription').value = description;
-    document.getElementById('editSpecifications').value = specifications;
+    setSpecificationsEditor(specifications);
 
     // Populate datasheet
     setDatasheetPreview(datasheet || '');
@@ -1582,6 +1959,7 @@ document.querySelector('.edit-product-form').addEventListener('submit', function
             var catSel = document.getElementById('editCategory');
             if (catSel) document.getElementById('finalCategoryId').value = catSel.value || '';
             updateFinalSubcategory();
+            syncSpecificationsHiddenField();
             f.submit();
         } else {
             // Reset modal state after cancel
@@ -1626,7 +2004,7 @@ function openAddProductModal() {
     document.getElementById('editPrice').value = '';
     document.getElementById('editBadge').value = '';
     document.getElementById('editDescription').value = '';
-    document.getElementById('editSpecifications').value = '';
+    setSpecificationsEditor('');
     // Clear datasheet
     setDatasheetPreview('');
     // Clear image slots
@@ -1719,6 +2097,13 @@ var _typeInput = document.getElementById('editType');
 if (_typeInput) {
     _typeInput.addEventListener('input', syncTypePresetFromInput);
 }
+
+var _specTextInput = document.getElementById('editSpecificationsText');
+if (_specTextInput) {
+    _specTextInput.addEventListener('input', syncSpecificationsHiddenField);
+}
+
+setSpecificationsEditor('');
 
 // Delete forms
 document.querySelectorAll('.delete-form').forEach(function(form){

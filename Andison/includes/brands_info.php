@@ -38,12 +38,15 @@ if (!function_exists('andison_normalize_product_images')) {
 }
 
 if (!function_exists('andison_get_brands_info')) {
-    function andison_get_brands_info(): array
+    function andison_get_brands_info(bool $forceFresh = false): array
     {
         // ── 5-minute file cache ────────────────────────────────────────────
         $cacheFile = dirname(__DIR__) . '/data/_cache/brands_full.cache';
-        if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < 300) {
+        $cached = null;
+        if (file_exists($cacheFile)) {
             $cached = @unserialize((string)file_get_contents($cacheFile));
+        }
+        if (!$forceFresh && file_exists($cacheFile) && (time() - filemtime($cacheFile)) < 300) {
             if (is_array($cached) && !empty($cached)) return $cached;
         }
 
@@ -52,10 +55,24 @@ if (!function_exists('andison_get_brands_info')) {
             'brands'   => 'brands?order=name',
             'products' => 'products?select=*&limit=10000',
         ]);
-        $brands      = $fetched['brands'];
-        $allProducts = $fetched['products'];
+        $brandsRaw      = $fetched['brands'] ?? [];
+        $allProductsRaw = $fetched['products'] ?? [];
+
+        $looksLikeList = static function ($value): bool {
+            return is_array($value) && ($value === [] || array_keys($value) === range(0, count($value) - 1));
+        };
+
+        // If Supabase returns an error object instead of a rows list, prefer last known cache.
+        if (!$looksLikeList($brandsRaw) || !$looksLikeList($allProductsRaw)) {
+            if (is_array($cached) && !empty($cached)) return $cached;
+            return [];
+        }
+
+        $brands      = $brandsRaw;
+        $allProducts = $allProductsRaw;
 
         if (empty($brands)) {
+            if (is_array($cached) && !empty($cached)) return $cached;
             return [];
         }
 
@@ -113,77 +130,114 @@ if (!function_exists('andison_get_brands_info')) {
  * Safer than saving all brands — only touches the one brand that changed.
  */
 if (!function_exists('andison_save_single_brand')) {
-    function andison_save_single_brand(string $name, array $data): bool
+    function andison_save_single_brand(string $name, array $data, array $options = []): bool
     {
         if ($name === '') return false;
 
-        // ── 1. Save brand row (update if exists, insert if new) ──────────────
-        $existing = andison_sb_select('brands', 'select=id&name=eq.' . rawurlencode($name) . '&limit=1');
-        if (!empty($existing)) {
-            andison_sb_update('brands', ['description' => $data['description'] ?? ''], 'name=eq.' . rawurlencode($name));
-        } else {
-            andison_sb_insert('brands', [['name' => $name, 'description' => $data['description'] ?? '']]);
+        $allowEmptyProducts = !empty($options['allowEmptyProducts']);
+        $allowProductCountDecrease = !empty($options['allowProductCountDecrease']);
+
+        $lockDir = dirname(__DIR__) . '/data/_cache/locks';
+        @mkdir($lockDir, 0755, true);
+        $lockFile = $lockDir . '/brand_' . md5(strtolower($name)) . '.lock';
+        $lockHandle = @fopen($lockFile, 'c');
+        if (is_resource($lockHandle)) {
+            @flock($lockHandle, LOCK_EX);
         }
 
-        // ── 2. Replace this brand's products: delete all then re-insert ───────
-        // Delete by brand name first (primary key for brand-owned rows)
-        andison_sb_delete('products', 'brand=eq.' . rawurlencode($name));
-
-        // Never delete other brands' rows here.
-        // This save path is scoped to a single brand only.
-
-        $productRows = [];
-        foreach ($data['products'] ?? [] as $product) {
-            $images = andison_normalize_product_images($product);
-            $row = [
-                'brand'          => $name,
-                'product_name'   => $product['product_name'] ?? ($product['name'] ?? ''),
-                'model'          => $product['model'] ?? '',
-                'type'           => $product['type'] ?? '',
-                'badge'          => $product['badge'] ?? '',
-                'description'    => $product['description'] ?? '',
-                'specifications' => $product['specifications'] ?? ($product['specs'] ?? ''),
-                'price'          => $product['price'] ?? '',
-                'image'          => $product['image'] ?? ($images[0] ?? ''),
-                'datasheet'      => $product['datasheet'] ?? '',
-                // Keep row keys consistent across the full batch so image-enabled rows
-                // do not get stripped when another product in the same brand has no image yet.
-                'images'         => json_encode($images),
-                'category_id'    => trim((string)($product['category_id'] ?? '')),
-                'subcategory_id' => trim((string)($product['subcategory_id'] ?? '')),
-            ];
-            $productRows[] = $row;
-        }
-
-        $ok = true;
-        if (!empty($productRows)) {
-            $ok = andison_sb_insert('products', $productRows);
-            // If insert failed, retry without 'images' column (may not exist in all schemas)
-            // but KEEP category_id and subcategory_id so category assignment is preserved.
-            if (!$ok) {
-                $noImgRows = array_map(function (array $r): array {
-                    unset($r['images']);
-                    return $r;
-                }, $productRows);
-                $ok = andison_sb_insert('products', $noImgRows);
+        $buildProductRows = static function (array $products, string $brandName): array {
+            $rows = [];
+            foreach ($products as $product) {
+                $images = andison_normalize_product_images($product);
+                $rows[] = [
+                    'brand'          => $brandName,
+                    'product_name'   => $product['product_name'] ?? ($product['name'] ?? ''),
+                    'model'          => $product['model'] ?? '',
+                    'type'           => $product['type'] ?? '',
+                    'badge'          => $product['badge'] ?? '',
+                    'description'    => $product['description'] ?? '',
+                    'specifications' => $product['specifications'] ?? ($product['specs'] ?? ''),
+                    'price'          => $product['price'] ?? '',
+                    'image'          => $product['image'] ?? ($images[0] ?? ''),
+                    'datasheet'      => $product['datasheet'] ?? '',
+                    'images'         => json_encode($images),
+                    'category_id'    => trim((string)($product['category_id'] ?? '')),
+                    'subcategory_id' => trim((string)($product['subcategory_id'] ?? '')),
+                ];
             }
-            // Final fallback: core columns only — always include category assignment
+            return $rows;
+        };
+
+        $insertWithFallback = static function (array $rows): bool {
+            if (empty($rows)) return true;
+
+            $ok = andison_sb_insert('products', $rows);
+            if ($ok) return true;
+
+            $noImgRows = array_map(static function (array $r): array {
+                unset($r['images']);
+                return $r;
+            }, $rows);
+            $ok = andison_sb_insert('products', $noImgRows);
+            if ($ok) return true;
+
+            $strippedRows = array_map(static function (array $r): array {
+                return array_intersect_key($r, array_flip([
+                    'brand', 'product_name', 'model', 'type', 'badge',
+                    'description', 'specifications', 'price', 'image', 'datasheet',
+                    'category_id', 'subcategory_id',
+                ]));
+            }, $rows);
+            return andison_sb_insert('products', $strippedRows);
+        };
+
+        try {
+            // ── 1. Save brand row (update if exists, insert if new) ──────────────
+            $existing = andison_sb_select('brands', 'select=id&name=eq.' . rawurlencode($name) . '&limit=1');
+            if (!empty($existing)) {
+                andison_sb_update('brands', ['description' => $data['description'] ?? ''], 'name=eq.' . rawurlencode($name));
+            } else {
+                andison_sb_insert('brands', [['name' => $name, 'description' => $data['description'] ?? '']]);
+            }
+
+            $existingProductRows = andison_sb_select('products', 'brand=eq.' . rawurlencode($name) . '&limit=10000');
+            $incomingProducts = is_array($data['products'] ?? null) ? $data['products'] : [];
+
+            // Guard against stale/partial payloads that could wipe products.
+            if ((!$allowProductCountDecrease && count($incomingProducts) < count($existingProductRows)) ||
+                (!$allowEmptyProducts && empty($incomingProducts) && !empty($existingProductRows))) {
+                return false;
+            }
+
+            // ── 2. Replace this brand's products: delete all then re-insert ───────
+            // Delete by brand name first (primary key for brand-owned rows)
+            if (!andison_sb_delete('products', 'brand=eq.' . rawurlencode($name))) {
+                return false;
+            }
+
+            $ok = true;
+            if (!empty($incomingProducts)) {
+                $ok = $insertWithFallback($buildProductRows($incomingProducts, $name));
+                if (!$ok && !empty($existingProductRows)) {
+                    // Best-effort rollback to the pre-delete product set.
+                    $insertWithFallback($buildProductRows($existingProductRows, $name));
+                }
+            }
+
             if (!$ok) {
-                $strippedRows = array_map(function (array $r): array {
-                    return array_intersect_key($r, array_flip([
-                        'brand', 'product_name', 'model', 'type', 'badge',
-                        'description', 'specifications', 'price', 'image',
-                        'category_id', 'subcategory_id',
-                    ]));
-                }, $productRows);
-                $ok = andison_sb_insert('products', $strippedRows);
+                return false;
+            }
+
+            // ── 3. Bust page cache so next load re-fetches from Supabase ──────────
+            @unlink(dirname(__DIR__) . '/data/_cache/brands_full.cache');
+
+            return true;
+        } finally {
+            if (is_resource($lockHandle)) {
+                @flock($lockHandle, LOCK_UN);
+                @fclose($lockHandle);
             }
         }
-
-        // ── 3. Bust page cache so next load re-fetches from Supabase ──────────
-        @unlink(dirname(__DIR__) . '/data/_cache/brands_full.cache');
-
-        return $ok;
     }
 }
 
@@ -192,7 +246,10 @@ if (!function_exists('andison_save_brands_info')) {
     {
         $allOk = true;
         foreach ($brands as $name => $data) {
-            if (!andison_save_single_brand($name, $data)) {
+            if (!andison_save_single_brand($name, $data, [
+                'allowEmptyProducts' => true,
+                'allowProductCountDecrease' => true,
+            ])) {
                 $allOk = false;
             }
         }

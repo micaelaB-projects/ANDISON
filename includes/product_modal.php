@@ -65,10 +65,11 @@
                         <div id="prodDetailDesc" style="font-size:13px;color:#444;line-height:1.8;margin:0;font-weight:500;"></div>
           </div>
           
-          <!-- Specs table -->
+                    <!-- Specs -->
           <div id="prodSpecsSection" style="display:none;margin-bottom:24px;">
             <div style="font-size:9px;font-weight:950;color:#2B11DB;letter-spacing:1.2px;margin-bottom:14px;text-transform:uppercase;display:flex;align-items:center;gap:6px;"><i class="bi bi-speedometer2"></i> SPECIFICATIONS</div>
-            <div style="border-radius:14px;box-shadow:0 6px 18px rgba(43,17,219,0.12);overflow:hidden;border:1px solid rgba(43,17,219,0.08);">
+                        <div id="prodDetailSpecsText" style="display:none;margin:0 0 12px;padding:12px 14px;border-radius:12px;border-left:4px solid #2B11DB;background:linear-gradient(135deg, rgba(43,17,219,0.06) 0%, rgba(43,17,219,0.02) 100%);font-size:13px;color:#3f4459;line-height:1.75;white-space:pre-line;"></div>
+                        <div id="prodSpecsTableWrap" style="display:none;border-radius:14px;box-shadow:0 6px 18px rgba(43,17,219,0.12);overflow:hidden;border:1px solid rgba(43,17,219,0.08);">
               <table id="prodDetailSpecsTable" style="width:100%;border-collapse:collapse;font-size:12px;">
                 <thead>
                   <tr>
@@ -491,6 +492,197 @@
         return htmlParts.join('');
     }
 
+    function normalizeSpecsArray(specsValue) {
+        if (Array.isArray(specsValue)) {
+            return specsValue.map(function(item) {
+                if (item && typeof item === 'object') {
+                    return {
+                        label: String(item.label || item.key || '').trim(),
+                        value: String(item.value || '').trim(),
+                    };
+                }
+                return { label: '', value: '' };
+            }).filter(function(item) {
+                return item.label !== '' || item.value !== '';
+            });
+        }
+
+        if (specsValue && typeof specsValue === 'object') {
+            return Object.entries(specsValue).map(function(entry) {
+                return {
+                    label: String(entry[0] || '').trim(),
+                    value: String(entry[1] || '').trim(),
+                };
+            }).filter(function(item) {
+                return item.label !== '' || item.value !== '';
+            });
+        }
+
+        return [];
+    }
+
+    function parseSpecificationPayload(rawText) {
+        var payload = {
+            text: '',
+            table: [],
+        };
+
+        var source = String(rawText || '').trim();
+        if (!source) return payload;
+
+        try {
+            var parsed = JSON.parse(source);
+            if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+                var hasTable = Array.isArray(parsed.table);
+                var looksLikePayload = parsed.format === 'andison_specs_v1' || hasTable;
+                if (looksLikePayload) {
+                    payload.text = String(parsed.text || '').trim();
+                    if (hasTable) {
+                        payload.table = parsed.table.map(function(row) {
+                            if (Array.isArray(row)) {
+                                return {
+                                    label: String(row[0] || '').trim(),
+                                    value: String(row[1] || '').trim(),
+                                };
+                            }
+                            if (row && typeof row === 'object') {
+                                return {
+                                    label: String(row.label || row.key || '').trim(),
+                                    value: String(row.value || '').trim(),
+                                };
+                            }
+                            return { label: '', value: '' };
+                        }).filter(function(item) {
+                            return item.label !== '' || item.value !== '';
+                        });
+                    }
+                    return payload;
+                }
+            }
+        } catch (e) {
+            // Plain text specifications are valid and expected.
+        }
+
+        payload.text = source;
+        return payload;
+    }
+
+    function renderSpecsTable(specsArr, table) {
+        if (!table) return false;
+        table.innerHTML = '';
+        if (!Array.isArray(specsArr) || specsArr.length === 0) return false;
+
+        var thead = document.createElement('thead');
+        var tbody = document.createElement('tbody');
+        var isMultiColumn = false;
+
+        for (var i = 0; i < specsArr.length; i++) {
+            if (specsArr[i].value && specsArr[i].value.includes('|')) {
+                isMultiColumn = true;
+                break;
+            }
+        }
+
+        if (isMultiColumn) {
+            var headerTr = document.createElement('tr');
+            headerTr.style.fontWeight = '700';
+            headerTr.style.backgroundColor = '#e8eeff';
+
+            for (var h = 0; h < specsArr.length; h++) {
+                var hSpec = specsArr[h];
+                if (hSpec.label === '' || !hSpec.value) continue;
+
+                var th = document.createElement('th');
+                th.textContent = hSpec.label;
+                th.style.padding = '12px 14px';
+                th.style.textAlign = 'left';
+                th.style.borderBottom = '2px solid #2B11DB';
+                th.style.color = '#2B11DB';
+                th.style.fontSize = '12px';
+                headerTr.appendChild(th);
+            }
+            thead.appendChild(headerTr);
+
+            var maxRows = 1;
+            for (var r = 0; r < specsArr.length; r++) {
+                var splitLen = specsArr[r].value.split('|').length;
+                if (splitLen > maxRows) maxRows = splitLen;
+            }
+
+            for (var rowIdx = 0; rowIdx < maxRows; rowIdx++) {
+                var tr = document.createElement('tr');
+                if (rowIdx % 2 === 0) tr.style.backgroundColor = '#f8fafb';
+
+                for (var colIdx = 0; colIdx < specsArr.length; colIdx++) {
+                    var colSpec = specsArr[colIdx];
+                    if (colSpec.label === '' || !colSpec.value) continue;
+
+                    var values = colSpec.value.split('|').map(function(v) { return v.trim(); });
+                    var td = document.createElement('td');
+                    td.textContent = values[rowIdx] || '';
+                    td.style.padding = '12px 14px';
+                    td.style.borderBottom = '1px solid #e8ecf4';
+                    td.style.fontSize = '13px';
+                    tr.appendChild(td);
+                }
+                tbody.appendChild(tr);
+            }
+            table.appendChild(thead);
+        } else {
+            specsArr.forEach(function(s) {
+                if (s.label === '') return;
+                var tr = document.createElement('tr');
+                var td1 = document.createElement('td');
+                var td2 = document.createElement('td');
+                td1.textContent = s.label;
+                td2.textContent = s.value || '';
+                td1.style.fontWeight = '700';
+                td1.style.color = '#2d3748';
+                td1.style.backgroundColor = 'rgba(43,17,219,0.04)';
+                tr.appendChild(td1);
+                tr.appendChild(td2);
+                tbody.appendChild(tr);
+            });
+        }
+
+        table.appendChild(tbody);
+        return true;
+    }
+
+    function renderSpecifications(specsValue, rawSpecsText) {
+        var specsSection = document.getElementById('prodSpecsSection');
+        var specsTextEl = document.getElementById('prodDetailSpecsText');
+        var tableWrap = document.getElementById('prodSpecsTableWrap');
+        var table = document.getElementById('prodDetailSpecsTable');
+
+        if (!specsSection || !table) return false;
+
+        var specsArr = normalizeSpecsArray(specsValue);
+        var payload = parseSpecificationPayload(rawSpecsText);
+        var hasText = payload.text !== '';
+
+        if (specsTextEl) {
+            if (hasText) {
+                specsTextEl.textContent = payload.text;
+                specsTextEl.style.display = 'block';
+            } else {
+                specsTextEl.textContent = '';
+                specsTextEl.style.display = 'none';
+            }
+        }
+
+        var tableRows = specsArr.length > 0 ? specsArr : payload.table;
+        var hasTable = renderSpecsTable(tableRows, table);
+
+        if (tableWrap) {
+            tableWrap.style.display = hasTable ? 'block' : 'none';
+        }
+
+        var hasAny = hasText || hasTable;
+        specsSection.style.display = hasAny ? 'block' : 'none';
+        return hasAny;
+    }
+
     function startModalSlider() {
         stopModalSlider();
         if (productImages.length < 2) return;
@@ -518,7 +710,7 @@
     var _jsonPath = (typeof MODAL_JSON_PATH !== 'undefined') ? MODAL_JSON_PATH : '/ANDISON/Andison/data/brands_info_api.php';
 
     /* Load product details from JSON data */
-    function loadProductDetails(brand, model) {
+    function loadProductDetails(brand, model, fallbackSpecs, fallbackSpecsText) {
         fetch(_jsonPath)
             .then(function(r) { return r.json(); })
             .then(function(data) {
@@ -567,98 +759,12 @@
                     document.getElementById('prodDescSection').style.display = 'none';
                 }
                 
-                // Update specs
-                if (product.specs && Array.isArray(product.specs) && product.specs.length > 0) {
-                    console.log('Loading specs:', product.specs.length, 'specs');
-                    var table = document.getElementById('prodDetailSpecsTable');
-                    var specsSection = document.getElementById('prodSpecsSection');
-                    table.innerHTML = '';
-                    
-                    var thead = document.createElement('thead');
-                    var tbody = document.createElement('tbody');
-                    var isMultiColumn = false;
-                    var colCount = 1;
-                    
-                    // Check if any value contains pipes (multi-column data)
-                    for (var i = 0; i < product.specs.length; i++) {
-                        if (product.specs[i].value && product.specs[i].value.includes('|')) {
-                            isMultiColumn = true;
-                            var cols = product.specs[i].value.split('|').length;
-                            if (cols > colCount) colCount = cols;
-                        }
-                    }
-                    
-                    // Build table based on format
-                    if (isMultiColumn) {
-                        // Multi-column Excel-like format
-                        var headerTr = document.createElement('tr');
-                        headerTr.style.fontWeight = '700';
-                        headerTr.style.backgroundColor = '#e8eeff';
-                        
-                        for (var i = 0; i < product.specs.length; i++) {
-                            var spec = product.specs[i];
-                            if (spec.label === '' || !spec.value) continue;
-                            
-                            var th = document.createElement('th');
-                            th.textContent = spec.label;
-                            th.style.padding = '12px 14px';
-                            th.style.textAlign = 'left';
-                            th.style.borderBottom = '2px solid #2B11DB';
-                            th.style.color = '#2B11DB';
-                            th.style.fontSize = '12px';
-                            headerTr.appendChild(th);
-                        }
-                        thead.appendChild(headerTr);
-                        
-                        // Split values and create rows
-                        var maxRows = 1;
-                        for (var i = 0; i < product.specs.length; i++) {
-                            var rows = product.specs[i].value.split('|').length;
-                            if (rows > maxRows) maxRows = rows;
-                        }
-                        
-                        for (var rowIdx = 0; rowIdx < maxRows; rowIdx++) {
-                            var tr = document.createElement('tr');
-                            if (rowIdx % 2 === 0) {
-                                tr.style.backgroundColor = '#f8fafb';
-                            }
-                            
-                            for (var colIdx = 0; colIdx < product.specs.length; colIdx++) {
-                                var spec = product.specs[colIdx];
-                                if (spec.label === '' || !spec.value) continue;
-                                
-                                var values = spec.value.split('|').map(function(v) { return v.trim(); });
-                                var td = document.createElement('td');
-                                td.textContent = values[rowIdx] || '';
-                                td.style.padding = '12px 14px';
-                                td.style.borderBottom = '1px solid #e8ecf4';
-                                td.style.fontSize = '13px';
-                                tr.appendChild(td);
-                            }
-                            tbody.appendChild(tr);
-                        }
-                        table.appendChild(thead);
-                    } else {
-                        // Simple 2-column key-value format
-                        product.specs.forEach(function(s){
-                            if (s.label === '') return;
-                            var tr = document.createElement('tr');
-                            var td1 = document.createElement('td');
-                            var td2 = document.createElement('td');
-                            td1.textContent = s.label;
-                            td2.textContent = s.value || '';
-                            td1.style.fontWeight = '700';
-                            td1.style.color = '#2d3748';
-                            td1.style.backgroundColor = 'rgba(43,17,219,0.04)';
-                            tr.appendChild(td1);
-                            tr.appendChild(td2);
-                            tbody.appendChild(tr);
-                        });
-                    }
-                    
-                    table.appendChild(tbody);
-                    specsSection.style.display = 'block';
-                }
+                // Update specifications (plain text + optional table)
+                var specsToRender = (Array.isArray(product.specs) && product.specs.length > 0)
+                    ? product.specs
+                    : (fallbackSpecs || []);
+                var specsTextToRender = product.specifications || fallbackSpecsText || '';
+                renderSpecifications(specsToRender, specsTextToRender);
                 
                 // Only enrich images from JSON if the card provided none (prevents
                 // stale JSON cache paths from overwriting the correct Supabase image path)
@@ -1051,132 +1157,12 @@
         }
 
         // Load additional data from JSON (description, specs) — enriches old hardcoded products
-        loadProductDetails(brand, model);
+        loadProductDetails(brand, model, specs, specsText);
 
-        /* Specs */
-        var specsArr  = Array.isArray(specs) ? specs : Object.entries(specs).map(function(e){ return {label:e[0],value:e[1]}; });
-        var table     = document.getElementById('prodDetailSpecsTable');
-        var specsSection = document.getElementById('prodSpecsSection');
-        table.innerHTML = '';
-        if (specsArr.length > 0) {
-            var thead = document.createElement('thead');
-            var tbody = document.createElement('tbody');
-            var isMultiColumn = false;
-            var colCount = 1;
-            
-            // Check if any value contains pipes (multi-column data)
-            for (var i = 0; i < specsArr.length; i++) {
-                if (specsArr[i].value && specsArr[i].value.includes('|')) {
-                    isMultiColumn = true;
-                    var cols = specsArr[i].value.split('|').length;
-                    if (cols > colCount) colCount = cols;
-                }
-            }
-            
-            // Build table based on format
-            if (isMultiColumn) {
-                // Multi-column Excel-like format
-                var headerTr = document.createElement('tr');
-                headerTr.style.fontWeight = '700';
-                headerTr.style.backgroundColor = '#e8eeff';
-                
-                for (var i = 0; i < specsArr.length; i++) {
-                    var spec = specsArr[i];
-                    if (spec.label === '' || !spec.value) continue; // Skip empty rows
-                    
-                    var th = document.createElement('th');
-                    th.textContent = spec.label;
-                    th.style.padding = '12px 14px';
-                    th.style.textAlign = 'left';
-                    th.style.borderBottom = '2px solid #2B11DB';
-                    th.style.color = '#2B11DB';
-                    th.style.fontSize = '12px';
-                    headerTr.appendChild(th);
-                }
-                thead.appendChild(headerTr);
-                
-                // Split values and create rows
-                var maxRows = 1;
-                for (var i = 0; i < specsArr.length; i++) {
-                    var rows = specsArr[i].value.split('|').length;
-                    if (rows > maxRows) maxRows = rows;
-                }
-                
-                for (var rowIdx = 0; rowIdx < maxRows; rowIdx++) {
-                    var tr = document.createElement('tr');
-                    if (rowIdx % 2 === 0) {
-                        tr.style.backgroundColor = '#f8fafb';
-                    }
-                    
-                    for (var colIdx = 0; colIdx < specsArr.length; colIdx++) {
-                        var spec = specsArr[colIdx];
-                        if (spec.label === '' || !spec.value) continue;
-                        
-                        var values = spec.value.split('|').map(function(v) { return v.trim(); });
-                        var td = document.createElement('td');
-                        td.textContent = values[rowIdx] || '';
-                        td.style.padding = '12px 14px';
-                        td.style.borderBottom = '1px solid #e8ecf4';
-                        td.style.fontSize = '13px';
-                        tr.appendChild(td);
-                    }
-                    tbody.appendChild(tr);
-                }
-                table.appendChild(thead);
-            } else {
-                // Simple 2-column key-value format
-                specsArr.forEach(function(s){
-                    if (s.label === '') return; // Skip empty rows
-                    var tr = document.createElement('tr');
-                    var td1 = document.createElement('td');
-                    var td2 = document.createElement('td');
-                    td1.textContent = s.label;
-                    td2.textContent = s.value;
-                    td1.style.fontWeight = '700';
-                    td1.style.color = '#2d3748';
-                    td1.style.backgroundColor = 'rgba(43,17,219,0.04)';
-                    tr.appendChild(td1);
-                    tr.appendChild(td2);
-                    tbody.appendChild(tr);
-                });
-            }
-            
-            table.appendChild(tbody);
-            specsSection.style.display = 'block';
-        } else {
-            specsSection.style.display = 'none';
-        }
-
-        // If no structured specs but text specifications available, parse and display as table
-        if (specsArr.length === 0 && specsText) {
-            var lines = specsText.split('\n').map(function(l){ return l.trim(); }).filter(Boolean);
-            if (lines.length > 0 && table) {
-                var stbody = document.createElement('tbody');
-                lines.forEach(function(line) {
-                    var tr  = document.createElement('tr');
-                    var td1 = document.createElement('td');
-                    var td2 = document.createElement('td');
-                    td1.style.cssText = 'font-weight:700;color:#2d3748;background:rgba(43,17,219,0.04);padding:10px 12px;border-bottom:1px solid #f1f3f8;width:36%;font-size:11px;vertical-align:top;';
-                    td2.style.cssText = 'padding:10px 12px;border-bottom:1px solid #f1f3f8;font-size:13px;color:#444;vertical-align:top;';
-                    var colonIdx = line.indexOf(':');
-                    if (colonIdx > 0) {
-                        td1.textContent = line.substring(0, colonIdx).trim();
-                        td2.textContent = line.substring(colonIdx + 1).trim();
-                        tr.appendChild(td1);
-                        tr.appendChild(td2);
-                    } else {
-                        td1.setAttribute('colspan', '2');
-                        td1.style.fontWeight = '400';
-                        td1.textContent = line;
-                        tr.appendChild(td1);
-                    }
-                    stbody.appendChild(tr);
-                });
-                table.innerHTML = '';
-                table.appendChild(stbody);
-                if (specsSection) specsSection.style.display = 'block';
-                if (noDetailsEl) noDetailsEl.style.display = 'none';
-            }
+        /* Specifications (plain text + optional table) */
+        var hasSpecs = renderSpecifications(specs, specsText);
+        if (hasSpecs && noDetailsEl) {
+            noDetailsEl.style.display = 'none';
         }
 
         /* Load Datasheet from assets folder */
