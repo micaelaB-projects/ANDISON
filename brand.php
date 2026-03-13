@@ -476,7 +476,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             padding: 8px 14px;
             cursor: pointer;
             font-size: 15px;
-            line: height 6px;;
+            line-height: 1.6;
         }
 
         .nav-list {
@@ -1331,10 +1331,9 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
 
         /* Footer */
         footer {
-            background: linear-gradient(135deg, #1a0d7a 0%, #2B11DB 100%);
-            color: white;
-            padding: 60px 0 40px;
-            text-align: center;
+            background: linear-gradient(135deg, #2209c9 0%, #2b11db 52%, #1b0893 100%);
+            color: #eef1ff;
+            padding: 56px 0 0;
             margin-top: auto;
             width: 100vw;
             position: relative;
@@ -1342,57 +1341,229 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             right: 0;
             margin-left: 0;
             margin-right: 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.14);
+            overflow: hidden;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            inset: -180px -200px auto auto;
+            width: 420px;
+            height: 420px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0) 72%);
+            pointer-events: none;
         }
 
         .footer-content {
-            width: 100%;
-            margin: 0;
-            padding: 0 20px;
+            max-width: 1260px;
+            margin: 0 auto;
+            padding: 0 26px 20px;
+            position: relative;
+            z-index: 1;
             display: flex;
             flex-direction: column;
-            gap: 28px;
+            gap: 34px;
         }
 
-        .footer-links {
+        .footer-main-grid {
+            display: grid;
+            grid-template-columns: minmax(240px, 1.25fr) minmax(220px, 1fr) minmax(220px, 1fr) minmax(200px, 1fr);
+            gap: 32px;
+            align-items: start;
+        }
+
+        .footer-brand-logo {
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
+        .footer-brand-logo img {
+            width: 228px;
+            max-width: 100%;
+            height: auto;
+            filter: brightness(0) invert(1);
+        }
+
+        .footer-brand-blurb {
+            font-size: 10px;
+            line-height: 1.58;
+            margin: 0;
+            color: rgba(239, 243, 255, 0.9);
+            max-width: 330px;
+        }
+
+        .footer-col-title {
+            margin: 4px 0 14px;
+            color: #ffffff;
+            font-size: 10px;
+            line-height: 1.05;
+            letter-spacing: 0.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .footer-contact-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
             display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        .footer-links a {
-            color: rgba(255, 255, 255, 0.95);
+        .footer-contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            color: rgba(240, 244, 255, 0.92);
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        .footer-contact-item i {
+            color: #dde4ff;
+            font-size: 10px;
+            margin-top: 4px;
+            flex-shrink: 0;
+        }
+
+        .footer-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: transparent !important;
+            border: 0 !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+        }
+
+        .footer-nav-links a {
+            color: rgba(255, 255, 255, 0.96);
             text-decoration: none;
-            font-size: 15px;
+            font-size: 10px;
             font-weight: 600;
             transition: all 0.3s ease;
             position: relative;
-            padding-bottom: 4px;
+            width: fit-content;
+            line-height: 1.2;
+            background: transparent !important;
         }
 
-        .footer-links a::after {
+        .footer-nav-links a::after {
             content: '';
             position: absolute;
-            bottom: 0;
+            bottom: -3px;
             left: 0;
             width: 0;
             height: 2px;
-            background: #00D7B3;
+            background: #ffffff;
             transition: width 0.3s ease;
         }
 
-        .footer-links a:hover::after {
+        .footer-nav-links a:hover::after {
             width: 100%;
         }
 
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.16);
+            padding: 18px 86px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 14px;
+            position: relative;
+        }
+
         .footer-copyright {
-            font-size: 14px;
-            opacity: 0.85;
+            font-size: 10px;
+            opacity: 0.95;
             font-weight: 500;
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
-            padding-top: 24px;
+            margin: 0;
+            color: rgba(243, 247, 255, 0.95);
+            width: 100%;
+            text-align: center;
+        }
+
+        .footer-copyright strong {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .footer-scroll-top {
+            position: absolute;
+            right: 26px;
+            bottom: 20px;
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            border: none;
+            background: #f1f4ff;
+            color: #2b11db;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: transform 0.24s ease, box-shadow 0.24s ease;
+            z-index: 2;
+        }
+
+        .footer-scroll-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 26px rgba(0, 0, 0, 0.28);
+        }
+
+        @media (max-width: 1180px) {
+            .footer-main-grid {
+                grid-template-columns: repeat(2, minmax(220px, 1fr));
+                gap: 24px 28px;
+            }
+
+            .footer-col-title {
+                font-size: 10px;
+            }
+
+            .footer-nav-links a {
+                font-size: 10px;
+            }
+
+            .footer-copyright {
+                font-size: 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .footer-main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-col-title {
+                font-size: 10px;
+            }
+
+            .footer-nav-links a {
+                font-size: 10px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                align-items: center;
+                padding-bottom: 80px;
+                padding-right: 0;
+                padding-left: 0;
+            }
+
+            .footer-copyright {
+                font-size: 10px;
+            }
+
+            .footer-scroll-top {
+                width: 46px;
+                height: 46px;
+                right: 20px;
+                bottom: 18px;
+            }
         }
 
         /* Responsive */
@@ -1751,7 +1922,6 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         }
 
         .scroll-animate { opacity: 0; transform: translateY(40px); transition: opacity 0s ease, transform 0s ease; }
-        .scroll-animate.visible { }
 
         /* Match brands.php staggered reveal timings (faster) */
         .product-card { opacity: 1; transform: translateY(0); will-change: transform,opacity; }
@@ -1900,24 +2070,9 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         }
 
         
-        .footer-links a {
+        .footer-nav-links a {
             position: relative;
             animation: textFadeIn 0.6s ease;
-        }
-
-        .footer-links a::before {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: #00d4aa;
-            transition: width 0.3s ease;
-        }
-
-        .footer-links a:hover::before {
-            width: 100%;
         }
 
         /* Stagger text animations */
@@ -2760,16 +2915,53 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
     <!-- Footer -->
     <footer>
         <div class="footer-content">
-            <div class="footer-links">
-                <a href="#privacy">Privacy Policy</a>
-                <a href="#terms">Terms of Service</a>
-                <a href="#sitemap">Sitemap</a>
-                <a href="contact.php">Contact Us</a>
+            <div class="footer-main-grid">
+                <div class="footer-brand-col">
+                    <a href="home.php" class="footer-brand-logo" aria-label="Andison Industrial Home">
+                        <img src="assets/HOME/image-removebg-preview.png" alt="Andison Industrial">
+                    </a>
+                    <p class="footer-brand-blurb">Andison Industrial Sales Inc., is a leading local industrial supply company, delivering high quality solutions, representing various world-class brands since 1994.</p>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Manila</h4>
+                    <ul class="footer-contact-list">
+                        <li class="footer-contact-item"><i class="bi bi-geo-alt-fill"></i><span>Andison Bldg., Ground Flr. 917-919 Luzon St., Sta. Cruz, Manila, 1003 Philippines</span></li>
+                        <li class="footer-contact-item"><i class="bi bi-telephone-fill"></i><span>Phone: (+632) 8584-4958</span></li>
+                        <li class="footer-contact-item"><i class="bi bi-telephone-fill"></i><span>(+632) 8243-2873</span></li>
+                        <li class="footer-contact-item"><i class="bi bi-printer-fill"></i><span>Fax: (+632) 8252-9224</span></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Calabarzon</h4>
+                    <ul class="footer-contact-list">
+                        <li class="footer-contact-item"><i class="bi bi-geo-alt-fill"></i><span>29B P. Zamora Street, Batangas City, 4200 Philippines</span></li>
+                        <li class="footer-contact-item"><i class="bi bi-telephone-fill"></i><span>Phone: (+6343) 425 4126</span></li>
+                        <li class="footer-contact-item"><i class="bi bi-printer-fill"></i><span>Fax: (+6343) 723-3108</span></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Navigation</h4>
+                    <nav class="footer-nav-links" aria-label="Footer navigation">
+                        <a href="home.php">Home</a>
+                        <a href="industries.php">Industries and Services</a>
+                        <a href="aboutus.php">Our Company</a>
+                        <a href="brands.php">Products</a>
+                        <a href="contact.php">Contact Us</a>
+                    </nav>
+                </div>
             </div>
-            <div class="footer-copyright">
-                <p>&copy; 2026 <?php echo $company_name; ?>. All rights reserved.</p>
+
+            <div class="footer-bottom">
+                <p class="footer-copyright">Copyright 2021 <strong>Andison Industrial Sales Inc.</strong></p>
             </div>
         </div>
+
+        <button class="footer-scroll-top" type="button" id="footerScrollTop" aria-label="Scroll to top">
+            <i class="bi bi-chevron-up"></i>
+        </button>
     </footer>
 
     <script>
@@ -3165,10 +3357,17 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             });
 
             // Animate footer links on hover
-            var footerLinks = document.querySelectorAll('.footer-links a');
+            var footerLinks = document.querySelectorAll('.footer-nav-links a');
             footerLinks.forEach(function(link, index){
                 link.style.animationDelay = (index * 0.1) + 's';
             });
+
+            var scrollTopBtn = document.getElementById('footerScrollTop');
+            if (scrollTopBtn) {
+                scrollTopBtn.addEventListener('click', function(){
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
 
 
         })();

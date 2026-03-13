@@ -2875,6 +2875,7 @@ $ytLinks = andison_get_youtube_links();
             </div>
         </div>
     </footer>
+    <?php require_once __DIR__ . '/includes/footer_modernize.php'; ?>
     <script>
         // Manage aria states for contact dropdown (improves accessibility)
         (function(){

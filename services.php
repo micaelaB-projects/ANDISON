@@ -2182,6 +2182,7 @@ $ytLinks = andison_get_youtube_links();
             </div>
         </div>
     </footer>
+    <?php require_once __DIR__ . '/includes/footer_modernize.php'; ?>
     </div><!-- /.page-content -->
     <script>
         (function(){

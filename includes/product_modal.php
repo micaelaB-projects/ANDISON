@@ -1407,6 +1407,311 @@
 </script>
 
 <style>
+/* Shared modern footer for legacy product/category pages */
+footer.footer-modernized {
+    background: linear-gradient(135deg, #2209c9 0%, #2b11db 52%, #1b0893 100%) !important;
+    color: #eef1ff !important;
+    padding: 56px 0 0 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.14) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+footer.footer-modernized::before {
+    content: '';
+    position: absolute;
+    inset: -180px -200px auto auto;
+    width: 420px;
+    height: 420px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0) 72%);
+    pointer-events: none;
+}
+
+footer.footer-modernized .footer-content {
+    max-width: 1260px;
+    margin: 0 auto;
+    padding: 0 26px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+    position: relative;
+    z-index: 1;
+}
+
+footer.footer-modernized .footer-main-grid {
+    display: grid;
+    grid-template-columns: minmax(240px, 1.25fr) minmax(220px, 1fr) minmax(220px, 1fr) minmax(200px, 1fr);
+    gap: 32px;
+    align-items: start;
+}
+
+footer.footer-modernized .footer-brand-logo {
+    display: inline-block;
+    margin-bottom: 12px;
+}
+
+footer.footer-modernized .footer-brand-logo img {
+    width: 228px;
+    max-width: 100%;
+    height: auto;
+    filter: brightness(0) invert(1);
+}
+
+footer.footer-modernized .footer-brand-blurb {
+    margin: 0;
+    font-size: 10px;
+    line-height: 1.58;
+    color: rgba(239, 243, 255, 0.9);
+    max-width: 330px;
+}
+
+footer.footer-modernized .footer-col-title {
+    margin: 4px 0 14px;
+    color: #ffffff;
+    font-size: 10px;
+    line-height: 1.05;
+    letter-spacing: 0.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+footer.footer-modernized .footer-contact-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+footer.footer-modernized .footer-contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: rgba(240, 244, 255, 0.92);
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+footer.footer-modernized .footer-contact-item i {
+    color: #dde4ff;
+    font-size: 10px;
+    margin-top: 4px;
+    flex-shrink: 0;
+}
+
+footer.footer-modernized .footer-nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+footer.footer-modernized .footer-nav-links a {
+    color: rgba(255, 255, 255, 0.96);
+    text-decoration: none;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.2;
+    width: fit-content;
+    position: relative;
+    background: transparent !important;
+}
+
+footer.footer-modernized .footer-nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #ffffff;
+    transition: width 0.3s ease;
+}
+
+footer.footer-modernized .footer-nav-links a:hover::after {
+    width: 100%;
+}
+
+footer.footer-modernized .footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
+    padding: 18px 86px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    position: relative;
+}
+
+footer.footer-modernized .footer-copyright {
+    margin: 0;
+    font-size: 10px;
+    color: rgba(243, 247, 255, 0.95);
+    font-weight: 500;
+    width: 100%;
+    text-align: center;
+}
+
+footer.footer-modernized .footer-copyright strong {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+footer.footer-modernized .footer-scroll-top {
+    position: absolute;
+    right: 26px;
+    bottom: 20px;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    border: none;
+    background: #f1f4ff;
+    color: #2b11db;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.24s ease, box-shadow 0.24s ease;
+    z-index: 2;
+}
+
+footer.footer-modernized .footer-scroll-top:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 26px rgba(0, 0, 0, 0.28);
+}
+
+@media (max-width: 1180px) {
+    footer.footer-modernized .footer-main-grid {
+        grid-template-columns: repeat(2, minmax(220px, 1fr));
+        gap: 24px 28px;
+    }
+
+    footer.footer-modernized .footer-col-title { font-size: 10px; }
+    footer.footer-modernized .footer-nav-links a { font-size: 10px; }
+    footer.footer-modernized .footer-copyright { font-size: 10px; }
+}
+
+@media (max-width: 768px) {
+    footer.footer-modernized .footer-main-grid { grid-template-columns: 1fr; }
+    footer.footer-modernized .footer-col-title { font-size: 10px; }
+    footer.footer-modernized .footer-nav-links a { font-size: 10px; }
+
+    footer.footer-modernized .footer-bottom {
+        flex-direction: column;
+        align-items: center;
+        padding-right: 0;
+        padding-left: 0;
+        padding-bottom: 80px;
+    }
+
+    footer.footer-modernized .footer-copyright { font-size: 10px; }
+
+    footer.footer-modernized .footer-scroll-top {
+        width: 46px;
+        height: 46px;
+        right: 20px;
+        bottom: 18px;
+    }
+}
+</style>
+
+<script>
+/* Upgrade legacy footer markup to the new multi-column layout on product/category pages */
+(function(){
+    function modernizeLegacyFooter() {
+        var footer = document.querySelector('footer');
+        if (!footer) return;
+        if (footer.classList.contains('footer-modernized')) return;
+
+        var footerContent = footer.querySelector('.footer-content');
+        var legacyLinks = footer.querySelector('.footer-links');
+        var legacyCopyright = footer.querySelector('.footer-copyright');
+
+        // Only transform pages still using the old footer block.
+        if (!footerContent || !legacyLinks || !legacyCopyright || footer.querySelector('.footer-main-grid')) {
+            return;
+        }
+
+        footer.classList.add('footer-modernized');
+
+        var copyrightText = (legacyCopyright.textContent || '').trim();
+        if (!copyrightText) {
+            copyrightText = 'Copyright 2021 Andison Industrial Sales Inc.';
+        }
+
+        footerContent.innerHTML = ''
+            + '<div class="footer-main-grid">'
+                + '<div class="footer-brand-col">'
+                    + '<a href="/ANDISON/home.php" class="footer-brand-logo" aria-label="Andison Industrial Home">'
+                        + '<img src="/ANDISON/assets/HOME/image-removebg-preview.png" alt="Andison Industrial">'
+                    + '</a>'
+                    + '<p class="footer-brand-blurb">Andison Industrial Sales Inc., is a leading local industrial supply company, delivering high quality solutions, representing various world-class brands since 1994.</p>'
+                + '</div>'
+
+                + '<div class="footer-col">'
+                    + '<h4 class="footer-col-title">Manila</h4>'
+                    + '<ul class="footer-contact-list">'
+                        + '<li class="footer-contact-item"><i class="bi bi-geo-alt-fill"></i><span>Andison Bldg., Ground Flr. 917-919 Luzon St., Sta. Cruz, Manila, 1003 Philippines</span></li>'
+                        + '<li class="footer-contact-item"><i class="bi bi-telephone-fill"></i><span>Phone: (+632) 8584-4958</span></li>'
+                        + '<li class="footer-contact-item"><i class="bi bi-telephone-fill"></i><span>(+632) 8243-2873</span></li>'
+                        + '<li class="footer-contact-item"><i class="bi bi-printer-fill"></i><span>Fax: (+632) 8252-9224</span></li>'
+                    + '</ul>'
+                + '</div>'
+
+                + '<div class="footer-col">'
+                    + '<h4 class="footer-col-title">Calabarzon</h4>'
+                    + '<ul class="footer-contact-list">'
+                        + '<li class="footer-contact-item"><i class="bi bi-geo-alt-fill"></i><span>29B P. Zamora Street, Batangas City, 4200 Philippines</span></li>'
+                        + '<li class="footer-contact-item"><i class="bi bi-telephone-fill"></i><span>Phone: (+6343) 425 4126</span></li>'
+                        + '<li class="footer-contact-item"><i class="bi bi-printer-fill"></i><span>Fax: (+6343) 723-3108</span></li>'
+                    + '</ul>'
+                + '</div>'
+
+                + '<div class="footer-col">'
+                    + '<h4 class="footer-col-title">Navigation</h4>'
+                    + '<nav class="footer-nav-links" aria-label="Footer navigation">'
+                        + '<a href="/ANDISON/home.php">Home</a>'
+                        + '<a href="/ANDISON/industries.php">Industries and Services</a>'
+                        + '<a href="/ANDISON/aboutus.php">Our Company</a>'
+                        + '<a href="/ANDISON/brands.php">Products</a>'
+                        + '<a href="/ANDISON/contact.php">Contact Us</a>'
+                    + '</nav>'
+                + '</div>'
+            + '</div>'
+            + '<div class="footer-bottom">'
+                + '<p class="footer-copyright">' + copyrightText + '</p>'
+            + '</div>';
+
+        if (!footer.querySelector('.footer-scroll-top')) {
+            var btn = document.createElement('button');
+            btn.className = 'footer-scroll-top';
+            btn.type = 'button';
+            btn.setAttribute('aria-label', 'Scroll to top');
+            btn.innerHTML = '<i class="bi bi-chevron-up"></i>';
+            btn.addEventListener('click', function(){
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            footer.appendChild(btn);
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function(){
+            modernizeLegacyFooter();
+            setTimeout(modernizeLegacyFooter, 80);
+        });
+    } else {
+        modernizeLegacyFooter();
+        setTimeout(modernizeLegacyFooter, 80);
+    }
+})();
+</script>
+
+<style>
 /* Product descriptions should only appear in the modal, not on listing cards */
 .product-card .product-description {
     display: none !important;
