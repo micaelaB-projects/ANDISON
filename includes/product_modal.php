@@ -1711,6 +1711,64 @@ footer.footer-modernized .footer-scroll-top:hover {
 })();
 </script>
 
+<script>
+/* Limit category pagination to 4 page numbers plus prev/next arrows */
+(function(){
+    function installCompactPagination() {
+        if (typeof window.updatePaginationButtons !== 'function') return;
+
+        window.updatePaginationButtons = function(totalPages) {
+            var paginationDiv = document.querySelector('.pagination');
+            if (!paginationDiv) return;
+
+            totalPages = Math.max(1, parseInt(totalPages, 10) || 1);
+            var current = Math.max(1, Math.min(totalPages, parseInt(window.currentPage, 10) || 1));
+            var maxVisiblePages = 4;
+
+            var startPage = current - Math.floor(maxVisiblePages / 2);
+            if (startPage < 1) startPage = 1;
+
+            var endPage = startPage + maxVisiblePages - 1;
+            if (endPage > totalPages) {
+                endPage = totalPages;
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            var html = '';
+
+            html += '<a href="#" class="' + (current === 1 ? 'disabled' : '') + '" onclick="goToPage(' + (current - 1) + '); return false;" title="Previous"><i class="bi bi-chevron-left"></i></a>';
+
+            for (var i = startPage; i <= endPage; i++) {
+                if (i === current) {
+                    html += '<span class="active">' + i + '</span>';
+                } else {
+                    html += '<a href="#" onclick="goToPage(' + i + '); return false;">' + i + '</a>';
+                }
+            }
+
+            html += '<a href="#" class="' + (current === totalPages ? 'disabled' : '') + '" onclick="goToPage(' + (current + 1) + '); return false;" title="Next"><i class="bi bi-chevron-right"></i></a>';
+            html += '<span class="page-info">Page ' + current + ' of ' + totalPages + '</span>';
+
+            paginationDiv.innerHTML = html;
+        };
+
+        if (typeof window.updatePagination === 'function') {
+            window.updatePagination();
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function(){
+            installCompactPagination();
+            setTimeout(installCompactPagination, 80);
+        });
+    } else {
+        installCompactPagination();
+        setTimeout(installCompactPagination, 80);
+    }
+})();
+</script>
+
 <style>
 /* Keep nav/contact popovers above the product modal overlay when hovering header */
 header {
