@@ -4,39 +4,69 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/supabase.php';
 
+function andison_normalize_product_row(array $row): array
+{
+    if (!isset($row['name']) && isset($row['product_name'])) {
+        $row['name'] = $row['product_name'];
+    }
+    if (!isset($row['specs']) && isset($row['specifications'])) {
+        $row['specs'] = $row['specifications'];
+    }
+    if (isset($row['images']) && is_string($row['images'])) {
+        $decoded = json_decode($row['images'], true);
+        if (is_array($decoded)) {
+            $row['images'] = $decoded;
+            if (empty($row['image']) && !empty($decoded[0])) {
+                $row['image'] = $decoded[0];
+            }
+        } else {
+            $row['images'] = $row['image'] ? [$row['image']] : [];
+        }
+    } elseif (!isset($row['images'])) {
+        $row['images'] = $row['image'] ? [$row['image']] : [];
+    }
+    return $row;
+}
+
 function andison_get_products_for_subcategory(string $categoryId, string $subcategoryId): array
 {
-    $filter = 'category_id=eq.' . rawurlencode($categoryId)
-            . '&subcategory_id=eq.' . rawurlencode($subcategoryId)
-            . '&limit=1000';
-    $rows = andison_sb_select('products', $filter);
+    // Include products assigned directly to this subcategory AND its child sub-subcategories.
+    // This lets parent subcategory pages show nested products while sub-subcategory pages
+    // still show only their exact assignments.
+    $targetIds = [$subcategoryId];
+    $children = andison_sb_select(
+        'sub_subcategories',
+        'select=id&subcategory_id=eq.' . rawurlencode($subcategoryId) . '&limit=500'
+    );
+    foreach ($children as $child) {
+        $childId = trim((string)($child['id'] ?? ''));
+        if ($childId !== '') {
+            $targetIds[] = $childId;
+        }
+    }
+    $targetIds = array_values(array_unique(array_filter($targetIds)));
+
+    $rows = [];
+    foreach ($targetIds as $targetSubId) {
+        $filter = 'category_id=eq.' . rawurlencode($categoryId)
+                . '&subcategory_id=eq.' . rawurlencode($targetSubId)
+                . '&limit=1000';
+        $rows = array_merge($rows, andison_sb_select('products', $filter));
+    }
+
+    // Deduplicate merged rows.
+    $deduped = [];
+    foreach ($rows as $row) {
+        $key = isset($row['id'])
+            ? 'id:' . (string)$row['id']
+            : 'mk:' . strtolower(trim((string)($row['model'] ?? ''))) . '::' . strtolower(trim((string)($row['subcategory_id'] ?? '')));
+        $deduped[$key] = $row;
+    }
+    $rows = array_values($deduped);
 
     if (!empty($rows)) {
-        // Normalize Supabase column names to match local JSON schema
-        return array_map(function (array $row): array {
-            if (!isset($row['name']) && isset($row['product_name'])) {
-                $row['name'] = $row['product_name'];
-            }
-            if (!isset($row['specs']) && isset($row['specifications'])) {
-                $row['specs'] = $row['specifications'];
-            }
-            // Decode images JSON string from Supabase into a PHP array
-            if (isset($row['images']) && is_string($row['images'])) {
-                $decoded = json_decode($row['images'], true);
-                if (is_array($decoded)) {
-                    $row['images'] = $decoded;
-                    // Ensure image (single) reflects first element
-                    if (empty($row['image']) && !empty($decoded[0])) {
-                        $row['image'] = $decoded[0];
-                    }
-                } else {
-                    $row['images'] = $row['image'] ? [$row['image']] : [];
-                }
-            } elseif (!isset($row['images'])) {
-                $row['images'] = $row['image'] ? [$row['image']] : [];
-            }
-            return $row;
-        }, $rows);
+        // Normalize Supabase column names to match local JSON schema.
+        return array_map('andison_normalize_product_row', $rows);
     }
 
     // No products found in Supabase
@@ -50,28 +80,7 @@ function andison_get_products_for_category(string $categoryId): array
     $rows = andison_sb_select('products', $filter);
 
     if (!empty($rows)) {
-        return array_map(function (array $row): array {
-            if (!isset($row['name']) && isset($row['product_name'])) {
-                $row['name'] = $row['product_name'];
-            }
-            if (!isset($row['specs']) && isset($row['specifications'])) {
-                $row['specs'] = $row['specifications'];
-            }
-            if (isset($row['images']) && is_string($row['images'])) {
-                $decoded = json_decode($row['images'], true);
-                if (is_array($decoded)) {
-                    $row['images'] = $decoded;
-                    if (empty($row['image']) && !empty($decoded[0])) {
-                        $row['image'] = $decoded[0];
-                    }
-                } else {
-                    $row['images'] = $row['image'] ? [$row['image']] : [];
-                }
-            } elseif (!isset($row['images'])) {
-                $row['images'] = $row['image'] ? [$row['image']] : [];
-            }
-            return $row;
-        }, $rows);
+        return array_map('andison_normalize_product_row', $rows);
     }
 
     return [];

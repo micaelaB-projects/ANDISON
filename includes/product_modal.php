@@ -62,7 +62,7 @@
           <!-- Description -->
           <div id="prodDescSection" style="display:none;margin-bottom:22px;padding:18px 20px;background:linear-gradient(135deg, rgba(43,17,219,0.06) 0%, rgba(43,17,219,0.03) 100%);border-radius:14px;border-left:4px solid #2B11DB;">
             <div style="font-size:9px;font-weight:950;color:#2B11DB;letter-spacing:1.2px;margin-bottom:10px;text-transform:uppercase;display:flex;align-items:center;gap:6px;"><i class="bi bi-file-text"></i> OVERVIEW</div>
-            <p id="prodDetailDesc" style="font-size:13px;color:#444;line-height:1.8;margin:0;font-weight:500;"></p>
+                        <div id="prodDetailDesc" style="font-size:13px;color:#444;line-height:1.8;margin:0;font-weight:500;"></div>
           </div>
           
           <!-- Specs table -->
@@ -277,6 +277,33 @@
   margin-bottom:12px;
 }
 
+/* Modal description formatter output */
+#prodDetailDesc .prod-desc-paragraph {
+    margin: 0 0 12px;
+    text-align: justify;
+    text-justify: inter-word;
+    word-break: break-word;
+}
+
+#prodDetailDesc .prod-desc-heading {
+    margin: 10px 0 6px;
+    font-weight: 700;
+    color: #3d4254;
+}
+
+#prodDetailDesc .prod-desc-list {
+    margin: 0 0 10px;
+    padding-left: 24px;
+    list-style: disc;
+}
+
+#prodDetailDesc .prod-desc-list li {
+    margin: 0 0 6px;
+    line-height: 1.75;
+    text-align: justify;
+    text-justify: inter-word;
+}
+
 /* Scrollbar Styling for all scrollable areas */
 [style*="overflow-y:auto"]::-webkit-scrollbar {
   width: 10px;
@@ -379,6 +406,91 @@
     var currentImageIndex = 0;
     var modalSliderTimer = null;
 
+    function escapeHtml(value) {
+        return String(value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function preserveInlineSpacing(value) {
+        var escaped = escapeHtml(value).replace(/\t/g, '    ');
+        return escaped.replace(/  +/g, function(spaces) {
+            return ' ' + new Array(spaces.length).join('&nbsp;');
+        });
+    }
+
+    function formatDescriptionHtml(rawText) {
+        var normalized = String(rawText || '')
+            .replace(/\r\n?/g, '\n')
+            .replace(/\u00A0/g, ' ')
+            .replace(/[\u200B-\u200D\uFEFF]/g, '');
+
+        var lines = normalized.split('\n');
+        var htmlParts = [];
+        var paragraphBuffer = [];
+        var listBuffer = [];
+
+        function flushParagraph() {
+            if (!paragraphBuffer.length) return;
+            var paragraphText = paragraphBuffer.join(' ').trim();
+            if (paragraphText !== '') {
+                htmlParts.push('<p class="prod-desc-paragraph">' + preserveInlineSpacing(paragraphText) + '</p>');
+            }
+            paragraphBuffer = [];
+        }
+
+        function flushList() {
+            if (!listBuffer.length) return;
+            var listHtml = '<ul class="prod-desc-list">';
+            for (var i = 0; i < listBuffer.length; i++) {
+                listHtml += '<li>' + preserveInlineSpacing(listBuffer[i]) + '</li>';
+            }
+            listHtml += '</ul>';
+            htmlParts.push(listHtml);
+            listBuffer = [];
+        }
+
+        for (var i = 0; i < lines.length; i++) {
+            var rawLine = lines[i].replace(/\s+$/g, '');
+            var trimmed = rawLine.trim();
+
+            if (trimmed === '') {
+                flushList();
+                flushParagraph();
+                continue;
+            }
+
+            if (/^features:?$/i.test(trimmed)) {
+                flushList();
+                flushParagraph();
+                htmlParts.push('<p class="prod-desc-heading">' + preserveInlineSpacing(trimmed) + '</p>');
+                continue;
+            }
+
+            var bulletMatch = rawLine.match(/^\s*(?:[-*•●◦▪▫■□]+|[^\x00-\x7F])\s*(.+)$/);
+            if (bulletMatch && bulletMatch[1]) {
+                flushParagraph();
+                listBuffer.push(bulletMatch[1]);
+                continue;
+            }
+
+            flushList();
+            paragraphBuffer.push(rawLine);
+        }
+
+        flushList();
+        flushParagraph();
+
+        if (!htmlParts.length) {
+            return '<p class="prod-desc-paragraph">' + preserveInlineSpacing(normalized.trim()) + '</p>';
+        }
+
+        return htmlParts.join('');
+    }
+
     function startModalSlider() {
         stopModalSlider();
         if (productImages.length < 2) return;
@@ -449,7 +561,7 @@
                 
                 // Load description
                 if (product.description) {
-                    document.getElementById('prodDetailDesc').textContent = product.description;
+                    document.getElementById('prodDetailDesc').innerHTML = formatDescriptionHtml(product.description);
                     document.getElementById('prodDescSection').style.display = 'block';
                 } else {
                     document.getElementById('prodDescSection').style.display = 'none';
@@ -803,6 +915,7 @@
                                     syntheticCard.setAttribute('data-brand', productBrand);
                                     syntheticCard.setAttribute('data-image', product.image || '');
                                     syntheticCard.setAttribute('data-badge', product.badge || '');
+                                    syntheticCard.setAttribute('data-datasheet', product.datasheet || product.datasheet_url || '');
                                     syntheticCard.setAttribute('data-images', JSON.stringify(product.images || []));
                                     syntheticCard.setAttribute('data-specs', JSON.stringify(product.specs || []));
                                     openProductModal(syntheticCard);
@@ -916,7 +1029,7 @@
         var descEl      = document.getElementById('prodDetailDesc');
         var noDetailsEl = document.getElementById('prodNoDetails');
         if (description) {
-            if (descEl)      descEl.textContent = description;
+            if (descEl)      descEl.innerHTML = formatDescriptionHtml(description);
             if (descSection) descSection.style.display = 'block';
             if (noDetailsEl) noDetailsEl.style.display = 'none';
         }
@@ -1070,77 +1183,147 @@
         var datasheetWrap = document.getElementById('prodDatasheetWrap');
         var datasheetBtn = document.getElementById('prodDatasheetBtn');
         datasheetWrap.style.display = 'none';
-        // Try to find datasheet for this product model
-        if (brand && model) {
-            function normalize(str) {
-              return str.replace(/\s+/g, '').replace(/_/g, '').toLowerCase();
-            }
-            var brandFolder = brand;
-            if (brand === 'Panasonic Connect') brandFolder = 'PANASONIC';
-            var brandNorm = normalize(brandFolder);
-            var modelCode = model.split(/[^A-Za-z0-9]+/).filter(function(p){ return p.match(/^[A-Z0-9]+[-\d]*$/i); })[0] || model.split(/\s/)[0];
-            var modelNorm = normalize(modelCode);
-            var modelFullNorm = normalize(model);
-            
-            // Extract series code (e.g., "KR2" from "YD-350KR2")
-            var seriesMatch = model.match(/([A-Z]+\d+)$/i);
-            var seriesCode = seriesMatch ? seriesMatch[1] : '';
 
-            // Use absolute paths that work from any directory (brand.php, category pages, etc.)
-            var patterns = [
-              '/ANDISON/assets/brands items/' + brandFolder + '/Datasheet/' + brandFolder + ' ' + modelCode + '.pdf',
-              '/ANDISON/assets/brands items/' + brandFolder + '/Datasheet/Datasheet ' + modelCode + '.pdf',
-              '/ANDISON/assets/brands items/' + brandFolder + '/Datasheet/' + modelCode + '.pdf',
-              '/ANDISON/assets/brands items/' + brandFolder + '/Datasheet/' + model + '.pdf'
-            ];
-            
-            // Add series-based pattern (e.g., "KR2 Series.pdf" for YD-350KR2)
-            if (seriesCode) {
-              patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/Datasheet/' + seriesCode + ' Series.pdf');
-              // Also check in product-type subdirectories (e.g., TIG Welding Machine/Datasheet/Panasonic BP4 Series.pdf)
-              patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + brandFolder + ' ' + seriesCode + ' Series.pdf');
-              patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/CO2,MAG,MIG Welding Machine/Datasheet/' + brandFolder + ' ' + seriesCode + ' Series.pdf');
-              patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/Arc Welding Robot/Datasheet/' + brandFolder + ' ' + seriesCode + ' Series.pdf');
-              // Also check in Arc Welding Robot Brochure folder with proper casing (e.g., Panasonic G3 Welding Robot.pdf)
-              patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/Arc Welding Robot/Brochure/Panasonic ' + seriesCode + ' Welding Robot.pdf');
-              patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/Arc Welding Robot/Brochure/' + seriesCode + ' Welding Robot.pdf');
-            }
-            
-            // Check in product-type subdirectories for model-specific datasheets
-            patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + brandFolder + ' ' + model + '.pdf');
-            patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + model + 'YNA.pdf');
-            // Convert YD model to YC for datasheet search (e.g., YD-200BL3 -> YC-200BL3YNA)
-            var ycModel = model.replace(/^YD/, 'YC');
-            patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + brandFolder + ' ' + ycModel + 'YNA.pdf');
-            patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + ycModel + 'YNA.pdf');
-            patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + brandFolder + ' ' + ycModel + '.pdf');
-            patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + ycModel + '.pdf');
-            patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/CO2,MAG,MIG Welding Machine/Datasheet/' + brandFolder + ' ' + model + '.pdf');
-            
-            patterns.push('/ANDISON/assets/brands items/' + brandNorm + '/Datasheet/' + brandNorm + modelNorm + '.pdf');
-            patterns.push('/ANDISON/assets/brands items/' + brandNorm + '/Datasheet/datasheet' + modelNorm + '.pdf');
-            patterns.push('/ANDISON/assets/brands items/' + brandNorm + '/Datasheet/' + modelNorm + '.pdf');
-            patterns.push('/ANDISON/assets/brands items/' + brandNorm + '/Datasheet/' + modelFullNorm + '.pdf');
-            
-            console.log('[DATASHEET DEBUG] brand:', brand, '| model:', model, '| modelCode:', modelCode, '| seriesCode:', seriesCode);
-            console.log('[DATASHEET DEBUG] Checking patterns:', patterns);
-            (function tryDatasheet(i) {
-              if (i >= patterns.length) {
-                return;
-              }
-              fetch(patterns[i].replace(/%20/g, ' '), { method: 'HEAD' })
-                .then(function(r) {
-                  if (r.ok) {
-                    console.log('[DATASHEET DEBUG] FOUND:', patterns[i]);
-                    datasheetBtn.href = patterns[i];
-                    datasheetWrap.style.display = 'flex';
-                  } else {
-                    tryDatasheet(i+1);
-                  }
-                })
-                .catch(function(){ tryDatasheet(i+1); });
-            })(0);
-        }
+                function showDatasheet(url) {
+                        var clean = String(url || '').trim();
+                        if (!clean) return false;
+                        datasheetBtn.href = clean;
+                        datasheetWrap.style.display = 'flex';
+                        return true;
+                }
+
+                function tryLegacyDatasheetSearch() {
+                        if (!(brand && model)) return;
+
+                        function normalize(str) {
+                            return str.replace(/\s+/g, '').replace(/_/g, '').toLowerCase();
+                        }
+                        var brandFolder = brand;
+                        if (brand === 'Panasonic Connect') brandFolder = 'PANASONIC';
+                        var brandNorm = normalize(brandFolder);
+                        var modelCode = model.split(/[^A-Za-z0-9]+/).filter(function(p){ return p.match(/^[A-Z0-9]+[-\d]*$/i); })[0] || model.split(/\s/)[0];
+                        var modelNorm = normalize(modelCode);
+                        var modelFullNorm = normalize(model);
+
+                        // Extract series code (e.g., "KR2" from "YD-350KR2")
+                        var seriesMatch = model.match(/([A-Z]+\d+)$/i);
+                        var seriesCode = seriesMatch ? seriesMatch[1] : '';
+
+                        // Use absolute paths that work from any directory (brand.php, category pages, etc.)
+                        var patterns = [
+                            '/ANDISON/assets/brands items/' + brandFolder + '/Datasheet/' + brandFolder + ' ' + modelCode + '.pdf',
+                            '/ANDISON/assets/brands items/' + brandFolder + '/Datasheet/Datasheet ' + modelCode + '.pdf',
+                            '/ANDISON/assets/brands items/' + brandFolder + '/Datasheet/' + modelCode + '.pdf',
+                            '/ANDISON/assets/brands items/' + brandFolder + '/Datasheet/' + model + '.pdf'
+                        ];
+
+                        // Add series-based pattern (e.g., "KR2 Series.pdf" for YD-350KR2)
+                        if (seriesCode) {
+                            patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/Datasheet/' + seriesCode + ' Series.pdf');
+                            // Also check in product-type subdirectories (e.g., TIG Welding Machine/Datasheet/Panasonic BP4 Series.pdf)
+                            patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + brandFolder + ' ' + seriesCode + ' Series.pdf');
+                            patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/CO2,MAG,MIG Welding Machine/Datasheet/' + brandFolder + ' ' + seriesCode + ' Series.pdf');
+                            patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/Arc Welding Robot/Datasheet/' + brandFolder + ' ' + seriesCode + ' Series.pdf');
+                            // Also check in Arc Welding Robot Brochure folder with proper casing (e.g., Panasonic G3 Welding Robot.pdf)
+                            patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/Arc Welding Robot/Brochure/Panasonic ' + seriesCode + ' Welding Robot.pdf');
+                            patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/Arc Welding Robot/Brochure/' + seriesCode + ' Welding Robot.pdf');
+                        }
+
+                        // Check in product-type subdirectories for model-specific datasheets
+                        patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + brandFolder + ' ' + model + '.pdf');
+                        patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + model + 'YNA.pdf');
+                        // Convert YD model to YC for datasheet search (e.g., YD-200BL3 -> YC-200BL3YNA)
+                        var ycModel = model.replace(/^YD/, 'YC');
+                        patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + brandFolder + ' ' + ycModel + 'YNA.pdf');
+                        patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + ycModel + 'YNA.pdf');
+                        patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + brandFolder + ' ' + ycModel + '.pdf');
+                        patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/TIG Welding Machine/Datasheet/' + ycModel + '.pdf');
+                        patterns.push('/ANDISON/assets/brands items/' + brandFolder + '/CO2,MAG,MIG Welding Machine/Datasheet/' + brandFolder + ' ' + model + '.pdf');
+
+                        patterns.push('/ANDISON/assets/brands items/' + brandNorm + '/Datasheet/' + brandNorm + modelNorm + '.pdf');
+                        patterns.push('/ANDISON/assets/brands items/' + brandNorm + '/Datasheet/datasheet' + modelNorm + '.pdf');
+                        patterns.push('/ANDISON/assets/brands items/' + brandNorm + '/Datasheet/' + modelNorm + '.pdf');
+                        patterns.push('/ANDISON/assets/brands items/' + brandNorm + '/Datasheet/' + modelFullNorm + '.pdf');
+
+                        console.log('[DATASHEET DEBUG] brand:', brand, '| model:', model, '| modelCode:', modelCode, '| seriesCode:', seriesCode);
+                        console.log('[DATASHEET DEBUG] Checking legacy patterns:', patterns);
+                        (function tryDatasheet(i) {
+                            if (i >= patterns.length) {
+                                return;
+                            }
+                            fetch(patterns[i].replace(/%20/g, ' '), { method: 'HEAD' })
+                                .then(function(r) {
+                                    if (r.ok) {
+                                        console.log('[DATASHEET DEBUG] LEGACY FOUND:', patterns[i]);
+                                        showDatasheet(patterns[i]);
+                                    } else {
+                                        tryDatasheet(i+1);
+                                    }
+                                })
+                                .catch(function(){ tryDatasheet(i+1); });
+                        })(0);
+                }
+
+                var directDatasheet = (card.getAttribute('data-datasheet') || '').trim();
+                if (!showDatasheet(directDatasheet) && brand && model) {
+                        // Preferred source: live products API (Supabase-backed).
+                        fetch('/ANDISON/Andison/data/brands_info_api.php', { cache: 'no-store' })
+                                .then(function(r) { return r.json(); })
+                                .then(function(data) {
+                                        var datasheetUrl = '';
+                                        var targetBrand = String(brand || '').toLowerCase();
+                                        var targetModel = String(model || '').toLowerCase();
+
+                                        function getProductDatasheet(p) {
+                                                if (!p || typeof p !== 'object') return '';
+                                                return String(p.datasheet || p.datasheet_url || p.datasheetUrl || '').trim();
+                                        }
+
+                                        function scanProducts(list) {
+                                                if (!Array.isArray(list)) return '';
+                                                for (var i = 0; i < list.length; i++) {
+                                                        var pModel = String((list[i] && list[i].model) || '').toLowerCase();
+                                                        if (pModel === targetModel) {
+                                                                var ds = getProductDatasheet(list[i]);
+                                                                if (ds) return ds;
+                                                        }
+                                                }
+                                                return '';
+                                        }
+
+                                        var brandData = data[brand];
+                                        if (!brandData) {
+                                                for (var key in data) {
+                                                        if (String(key).toLowerCase() === targetBrand) {
+                                                                brandData = data[key];
+                                                                break;
+                                                        }
+                                                }
+                                        }
+
+                                        if (brandData && Array.isArray(brandData.products)) {
+                                                datasheetUrl = scanProducts(brandData.products);
+                                        }
+
+                                        // Fallback scan across all brands by model.
+                                        if (!datasheetUrl) {
+                                                for (var bKey in data) {
+                                                        var bData = data[bKey];
+                                                        if (bData && Array.isArray(bData.products)) {
+                                                                datasheetUrl = scanProducts(bData.products);
+                                                                if (datasheetUrl) break;
+                                                        }
+                                                }
+                                        }
+
+                                        if (!showDatasheet(datasheetUrl)) {
+                                                tryLegacyDatasheetSearch();
+                                        }
+                                })
+                                .catch(function() {
+                                        tryLegacyDatasheetSearch();
+                                });
+                }
 
         currentDetailItem = { name: model, type: type, brand: brand };
         detailInquiryBtn.textContent      = 'ADD TO INQUIRY LIST';
@@ -1224,6 +1407,11 @@
 </script>
 
 <style>
+/* Product descriptions should only appear in the modal, not on listing cards */
+.product-card .product-description {
+    display: none !important;
+}
+
 /* Card-level image slider */
 .card-img-slider { position:relative; width:100%; height:100%; }
 .card-img-slider img {

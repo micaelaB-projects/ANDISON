@@ -2677,8 +2677,10 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                                 $badge        = is_array($product) ? (string)($product['badge']          ?? '') : '';
                                 $product_name = is_array($product) ? (string)($product['product_name']   ?? '') : '';
                                 $description  = is_array($product) ? (string)($product['description']    ?? '') : '';
+                                $card_subtitle = trim($product_name);
                                 $specs_text   = is_array($product) ? (string)($product['specifications'] ?? '') : '';
                                 $price        = is_array($product) ? (string)($product['price']          ?? '') : '';
+                                $datasheet    = is_array($product) ? (string)($product['datasheet']      ?? '') : '';
                                 $explicit_imgs = is_array($product) ? (array)($product['images'] ?? []) : [];
                                 $explicit_imgs = array_map(function($p) {
                                     $p = preg_replace('/^(\.\.\/)+(?=assets\/)/i', '', $p);
@@ -2705,6 +2707,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                                  data-description="<?php echo htmlspecialchars($description, ENT_QUOTES); ?>"
                                  data-specifications="<?php echo htmlspecialchars($specs_text, ENT_QUOTES); ?>"
                                  data-price="<?php echo htmlspecialchars($price, ENT_QUOTES); ?>"
+                                 data-datasheet="<?php echo htmlspecialchars($datasheet, ENT_QUOTES); ?>"
                                  style="cursor:pointer;">
                                 <div class="brand-product-img">
                                     <?php if ($img): ?>
@@ -2721,7 +2724,9 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                                         <span style="font-size:11px;background:#2B11DB;color:#fff;padding:2px 7px;border-radius:3px;margin-bottom:6px;display:inline-block;"><?php echo htmlspecialchars($badge); ?></span>
                                     <?php endif; ?>
                                     <div class="brand-product-name"><?php echo htmlspecialchars($model); ?></div>
-                                    <div class="brand-product-type"><?php echo htmlspecialchars($type) ?: 'Professional grade solutions for your industrial needs'; ?></div>
+                                    <?php if ($card_subtitle !== ''): ?>
+                                        <div class="brand-product-type"><?php echo htmlspecialchars($card_subtitle); ?></div>
+                                    <?php endif; ?>
                                 </div>
                                 <button class="brand-add-inquiry"
                                         data-model="<?php echo htmlspecialchars($model, ENT_QUOTES); ?>"

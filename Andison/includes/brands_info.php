@@ -4,6 +4,39 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/supabase.php';
 
+if (!function_exists('andison_normalize_product_images')) {
+    function andison_normalize_product_images(array $product): array
+    {
+        $images = $product['images'] ?? null;
+
+        if (is_string($images)) {
+            $decoded = json_decode($images, true);
+            $images = is_array($decoded) ? $decoded : [];
+        }
+
+        if (!is_array($images)) {
+            $images = [];
+        }
+
+        $normalized = [];
+        foreach ($images as $imageUrl) {
+            $imageUrl = trim((string)$imageUrl);
+            if ($imageUrl !== '') {
+                $normalized[] = $imageUrl;
+            }
+        }
+
+        if (empty($normalized)) {
+            $singleImage = trim((string)($product['image'] ?? ''));
+            if ($singleImage !== '') {
+                $normalized[] = $singleImage;
+            }
+        }
+
+        return array_values(array_unique($normalized));
+    }
+}
+
 if (!function_exists('andison_get_brands_info')) {
     function andison_get_brands_info(): array
     {
@@ -96,31 +129,12 @@ if (!function_exists('andison_save_single_brand')) {
         // Delete by brand name first (primary key for brand-owned rows)
         andison_sb_delete('products', 'brand=eq.' . rawurlencode($name));
 
-        // Also delete any stale duplicate rows that have the same model + category slot
-        // but were saved under a different brand name (e.g. via categories admin or old import).
-        // We do this per category slot to avoid touching other brands' products.
-        $catSlots = [];
-        foreach ($data['products'] ?? [] as $p) {
-            $cId = trim((string)($p['category_id'] ?? ''));
-            $sId = trim((string)($p['subcategory_id'] ?? ''));
-            if ($cId !== '' && $sId !== '') {
-                $catSlots[$cId . '::' . $sId][] = trim((string)($p['model'] ?? ''));
-            }
-        }
-        foreach ($catSlots as $slot => $models) {
-            [$cId, $sId] = explode('::', $slot, 2);
-            foreach (array_filter(array_unique($models)) as $mdl) {
-                andison_sb_delete(
-                    'products',
-                    'category_id=eq.' . rawurlencode($cId)
-                    . '&subcategory_id=eq.' . rawurlencode($sId)
-                    . '&model=eq.' . rawurlencode($mdl)
-                );
-            }
-        }
+        // Never delete other brands' rows here.
+        // This save path is scoped to a single brand only.
 
         $productRows = [];
         foreach ($data['products'] ?? [] as $product) {
+            $images = andison_normalize_product_images($product);
             $row = [
                 'brand'          => $name,
                 'product_name'   => $product['product_name'] ?? ($product['name'] ?? ''),
@@ -130,19 +144,14 @@ if (!function_exists('andison_save_single_brand')) {
                 'description'    => $product['description'] ?? '',
                 'specifications' => $product['specifications'] ?? ($product['specs'] ?? ''),
                 'price'          => $product['price'] ?? '',
-                'image'          => $product['image'] ?? '',
+                'image'          => $product['image'] ?? ($images[0] ?? ''),
                 'datasheet'      => $product['datasheet'] ?? '',
+                // Keep row keys consistent across the full batch so image-enabled rows
+                // do not get stripped when another product in the same brand has no image yet.
+                'images'         => json_encode($images),
+                'category_id'    => trim((string)($product['category_id'] ?? '')),
+                'subcategory_id' => trim((string)($product['subcategory_id'] ?? '')),
             ];
-            // Only include 'images' when there are actual images — column may not exist
-            // on all Supabase environments: ALTER TABLE products ADD COLUMN IF NOT EXISTS images text;
-            if (is_array($product['images'] ?? null) && !empty($product['images'])) {
-                $row['images'] = json_encode(array_values($product['images']));
-            }
-            // Only include category fields when set — avoids failing if columns don't exist yet
-            if (!empty($product['category_id'])) {
-                $row['category_id']    = $product['category_id'];
-                $row['subcategory_id'] = $product['subcategory_id'] ?? '';
-            }
             $productRows[] = $row;
         }
 
