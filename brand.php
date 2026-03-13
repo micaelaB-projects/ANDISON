@@ -2730,68 +2730,10 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                 <h2 class="brand-products-title">Our Products</h2>
 
                 <?php
-                // Build product type list
-                $all_types = [];
-                foreach ($brand_products as $p) {
-                    if (is_array($p) && !empty($p['type'])) {
-                        $all_types[] = $p['type'];
-                    }
-                }
-                $unique_types = array_values(array_unique($all_types));
                 $total_products = count($brand_products);
                 ?>
 
                 <div class="brand-products-layout">
-
-                    <!-- Filter Sidebar -->
-                    <aside class="brand-filter-sidebar">
-                        <div class="filter-group">
-                            <div class="filter-group-title">Categories</div>
-                            <div class="filter-item">
-                                <input type="checkbox" id="cat-all" class="filter-cat" value="all" checked>
-                                <label for="cat-all">All Products</label>
-                                <span class="filter-count"><?php echo $total_products; ?></span>
-                            </div>
-                            <div class="filter-item">
-                                <input type="checkbox" id="cat-popular" class="filter-tag-check" value="popular">
-                                <label for="cat-popular">Popular</label>
-                            </div>
-                            <div class="filter-item">
-                                <input type="checkbox" id="cat-new" class="filter-tag-check" value="new">
-                                <label for="cat-new">New Items</label>
-                            </div>
-                        </div>
-
-                        <?php if (!empty($unique_types)): ?>
-                        <div class="filter-group">
-                            <div class="filter-group-title">Product Type</div>
-                            <?php foreach ($unique_types as $i => $t): ?>
-                            <div class="filter-item">
-                                <input type="checkbox" id="type-<?php echo $i; ?>" class="filter-type-check" value="<?php echo htmlspecialchars($t, ENT_QUOTES); ?>">
-                                <label for="type-<?php echo $i; ?>"><?php echo htmlspecialchars($t); ?></label>
-                            </div>
-                            <?php endforeach; ?>
-                        </div>
-                        <?php endif; ?>
-
-                        <div class="filter-group">
-                            <div class="filter-group-title">Tags</div>
-                            <div class="filter-item">
-                                <input type="checkbox" id="tag-industrial" class="filter-tag-check" value="industrial">
-                                <label for="tag-industrial">Industrial</label>
-                            </div>
-                            <div class="filter-item">
-                                <input type="checkbox" id="tag-professional" class="filter-tag-check" value="professional">
-                                <label for="tag-professional">Professional</label>
-                            </div>
-                            <div class="filter-item">
-                                <input type="checkbox" id="tag-premium" class="filter-tag-check" value="premium">
-                                <label for="tag-premium">Premium</label>
-                            </div>
-                        </div>
-
-                        <button class="clear-filters-btn" id="clearFiltersBtn">Clear All Filters</button>
-                    </aside>
 
                     <!-- Products Main -->
                     <div class="brand-products-main">

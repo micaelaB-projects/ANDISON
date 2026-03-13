@@ -1712,6 +1712,21 @@ footer.footer-modernized .footer-scroll-top:hover {
 </script>
 
 <style>
+/* Remove legacy category-page filter sidebar and use full-width product area */
+.category-content .product-filters {
+    display: none !important;
+}
+
+.category-content {
+    gap: 0 !important;
+}
+
+.category-content .main-product-area {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
 /* Product descriptions should only appear in the modal, not on listing cards */
 .product-card .product-description {
     display: none !important;
