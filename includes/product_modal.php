@@ -1712,6 +1712,16 @@ footer.footer-modernized .footer-scroll-top:hover {
 </script>
 
 <style>
+/* Keep nav/contact popovers above the product modal overlay when hovering header */
+header {
+    z-index: 10050 !important;
+}
+
+header .nav-dropdown,
+header .contact-popover {
+    z-index: 10060 !important;
+}
+
 /* Remove legacy category-page filter sidebar and use full-width product area */
 .category-content .product-filters {
     display: none !important;
