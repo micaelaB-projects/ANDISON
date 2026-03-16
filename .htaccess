@@ -1,0 +1,24 @@
+# Production hardening for Apache
+
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Block direct web access to diagnostic and one-off maintenance scripts
+    RewriteRule ^(?:_dbg|_check_images|_diagnose_products|_fix_image_paths|_verify_fix|test_analytics|_brand_counts|_add_images_column)\.php$ - [F,L,NC]
+    RewriteRule ^_migrate_.*\.php$ - [F,L,NC]
+
+    # Block direct web access to diagnostic text outputs
+    RewriteRule ^_brand_list\.txt$ - [F,L,NC]
+</IfModule>
+
+# Protect dotenv files if present
+<FilesMatch "^\.env">
+    Require all denied
+</FilesMatch>
+
+# Prevent accidental access to hidden dot-files (except .well-known)
+<FilesMatch "^\.(?!well-known/)">
+    Require all denied
+</FilesMatch>

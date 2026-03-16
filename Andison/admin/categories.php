@@ -58,7 +58,6 @@ andison_admin_header('Categories & Products', 'categories');
     .category-tab i { font-size:13px; }
 
     /* ── Subcategory Tabs ─────────────────────────────── */
-    .sub-section { }
     .sub-section-title { display:flex;align-items:center;gap:8px;margin-bottom:12px; }
     .sub-section-title .sub-label { font-size:12px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px; }
     .sub-section-title .sub-cat-name { font-size:13px;font-weight:700;color:#111827; }

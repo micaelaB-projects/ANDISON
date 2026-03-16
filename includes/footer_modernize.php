@@ -233,7 +233,21 @@ footer.footer-modernized .footer-scroll-top:hover {
             copyrightText = 'Copyright 2021 Andison Industrial Sales Inc.';
         }
 
-        footerContent.innerHTML = ''
+        var footerBase = (function() {
+            var parts = window.location.pathname.split('/').filter(function(part) {
+                return part !== '';
+            });
+            for (var i = 0; i < parts.length; i++) {
+                var lower = parts[i].toLowerCase();
+                if (lower === 'andison' || lower === 'andison-1') {
+                    return '/' + parts.slice(0, i + 1).join('/');
+                }
+            }
+            return '';
+        })();
+
+        footerContent.innerHTML = (
+            ''
             + '<div class="footer-main-grid">'
                 + '<div class="footer-brand-col">'
                     + '<a href="/ANDISON/home.php" class="footer-brand-logo" aria-label="Andison Industrial Home">'
@@ -274,7 +288,8 @@ footer.footer-modernized .footer-scroll-top:hover {
             + '</div>'
             + '<div class="footer-bottom">'
                 + '<p class="footer-copyright">' + copyrightText + '</p>'
-            + '</div>';
+            + '</div>'
+        ).replace(/\/ANDISON(?=\/)/g, footerBase);
 
         if (!footer.querySelector('.footer-scroll-top')) {
             var btn = document.createElement('button');

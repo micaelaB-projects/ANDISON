@@ -1,4 +1,14 @@
 <?php
+if (PHP_SAPI !== 'cli') {
+	$configuredToken = getenv('ANDISON_DEBUG_TOKEN');
+	$configuredToken = $configuredToken === false ? '' : trim((string)$configuredToken);
+	$providedToken = isset($_GET['token']) ? trim((string)$_GET['token']) : '';
+	if ($configuredToken === '' || !hash_equals($configuredToken, $providedToken)) {
+		http_response_code(403);
+		exit('Debug endpoint disabled.');
+	}
+}
+
 require "C:/xampp/htdocs/ANDISON-1/Andison/includes/storage.php";
 define("ANDISON_ANALYTICS_FILE", "C:/xampp/htdocs/ANDISON-1/Andison/data/analytics.json");
 require "C:/xampp/htdocs/ANDISON-1/Andison/includes/analytics.php";

@@ -315,7 +315,7 @@ if (!$current_category) {
             padding: 8px 14px;
             cursor: pointer;
             font-size: 15px;
-            line: height 6px;;
+            line-height: 1.6;
         }
 
         .nav-list {

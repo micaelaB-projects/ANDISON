@@ -68,7 +68,7 @@
                     <!-- Specs -->
           <div id="prodSpecsSection" style="display:none;margin-bottom:24px;">
             <div style="font-size:9px;font-weight:950;color:#2B11DB;letter-spacing:1.2px;margin-bottom:14px;text-transform:uppercase;display:flex;align-items:center;gap:6px;"><i class="bi bi-speedometer2"></i> SPECIFICATIONS</div>
-                        <div id="prodDetailSpecsText" style="display:none;margin:0 0 12px;padding:12px 14px;border-radius:12px;border-left:4px solid #2B11DB;background:linear-gradient(135deg, rgba(43,17,219,0.06) 0%, rgba(43,17,219,0.02) 100%);font-size:13px;color:#3f4459;line-height:1.75;white-space:pre-line;"></div>
+                        <div id="prodDetailSpecsText" style="display:none;margin:0 0 12px;padding:12px 14px;border-radius:12px;border-left:4px solid #2B11DB;background:linear-gradient(135deg, rgba(43,17,219,0.06) 0%, rgba(43,17,219,0.02) 100%);font-size:13px;color:#3f4459;line-height:1.75;"></div>
                         <div id="prodSpecsTableWrap" style="display:none;border-radius:14px;box-shadow:0 6px 18px rgba(43,17,219,0.12);overflow:hidden;border:1px solid rgba(43,17,219,0.08);">
               <table id="prodDetailSpecsTable" style="width:100%;border-collapse:collapse;font-size:12px;">
                 <thead>
@@ -305,6 +305,24 @@
     text-justify: inter-word;
 }
 
+#prodDetailSpecsText .prod-specs-list {
+    margin: 0;
+    padding-left: 20px;
+    list-style: disc;
+}
+
+#prodDetailSpecsText .prod-specs-list li {
+    margin: 0 0 6px;
+    line-height: 1.7;
+    word-break: break-word;
+}
+
+#prodDetailSpecsText .prod-specs-paragraph {
+    margin: 0;
+    line-height: 1.7;
+    word-break: break-word;
+}
+
 /* Scrollbar Styling for all scrollable areas */
 [style*="overflow-y:auto"]::-webkit-scrollbar {
   width: 10px;
@@ -407,6 +425,43 @@
     var currentImageIndex = 0;
     var modalSliderTimer = null;
 
+    function resolveBasePath() {
+        var pathParts = window.location.pathname.split('/').filter(function(part) {
+            return part !== '';
+        });
+        var markers = ['andison', 'andison-1'];
+        for (var i = 0; i < pathParts.length; i++) {
+            if (markers.indexOf(pathParts[i].toLowerCase()) !== -1) {
+                return '/' + pathParts.slice(0, i + 1).join('/');
+            }
+        }
+        return '';
+    }
+
+    var _modalBase = resolveBasePath();
+
+    function resolveModalPath(path) {
+        var raw = String(path || '').trim();
+        if (!raw) return '';
+
+        if (/^(?:https?:)?\/\//i.test(raw) || raw.indexOf('data:') === 0 || raw.indexOf('blob:') === 0) {
+            return raw;
+        }
+
+        raw = raw.replace(/\\/g, '/');
+        if (raw.indexOf('/ANDISON/') === 0) {
+            raw = raw.substring('/ANDISON'.length);
+        }
+        raw = raw.replace(/^\/andison\//i, '/Andison/');
+        raw = raw.replace(/^(\.\.\/)+/, '');
+
+        if (raw.indexOf('/') === 0) {
+            return (_modalBase !== '' ? _modalBase : '') + raw;
+        }
+
+        return (_modalBase !== '' ? _modalBase + '/' : '/') + raw.replace(/^\.\//, '');
+    }
+
     function escapeHtml(value) {
         return String(value || '')
             .replace(/&/g, '&amp;')
@@ -492,6 +547,51 @@
         return htmlParts.join('');
     }
 
+    function formatSpecificationsHtml(rawText) {
+        var normalized = String(rawText || '')
+            .replace(/\r\n?/g, '\n')
+            .replace(/\u00A0/g, ' ')
+            .replace(/[\u200B-\u200D\uFEFF]/g, '');
+
+        var lines = normalized.split('\n');
+        var items = [];
+
+        for (var i = 0; i < lines.length; i++) {
+            var rawLine = lines[i].replace(/\s+$/g, '');
+            var trimmed = rawLine.trim();
+            if (trimmed === '') continue;
+
+            if (/^specifications?:?$/i.test(trimmed)) {
+                continue;
+            }
+
+            var bulletMatch = rawLine.match(/^\s*(?:[-*•●◦▪▫■□·]+|[^\x00-\x7F])\s*(.+)$/);
+            if (bulletMatch && bulletMatch[1]) {
+                items.push(bulletMatch[1].trim());
+                continue;
+            }
+
+            if (items.length > 0) {
+                items[items.length - 1] = (items[items.length - 1] + ' ' + trimmed).trim();
+            } else {
+                items.push(trimmed);
+            }
+        }
+
+        if (items.length === 0) {
+            var fallback = normalized.trim();
+            if (fallback === '') return '';
+            return '<p class="prod-specs-paragraph">' + preserveInlineSpacing(fallback) + '</p>';
+        }
+
+        var html = '<ul class="prod-specs-list">';
+        for (var j = 0; j < items.length; j++) {
+            html += '<li>' + preserveInlineSpacing(items[j]) + '</li>';
+        }
+        html += '</ul>';
+        return html;
+    }
+
     function normalizeSpecsArray(specsValue) {
         if (Array.isArray(specsValue)) {
             return specsValue.map(function(item) {
@@ -525,6 +625,7 @@
         var payload = {
             text: '',
             table: [],
+            matrix: null,
         };
 
         var source = String(rawText || '').trim();
@@ -533,6 +634,79 @@
         try {
             var parsed = JSON.parse(source);
             if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+                var hasMatrix = parsed.tableMatrix && typeof parsed.tableMatrix === 'object';
+                var looksLikeV2 = parsed.format === 'andison_specs_v2' || hasMatrix;
+
+                if (looksLikeV2) {
+                    payload.text = String(parsed.text || '').trim();
+                    var matrixRaw = parsed.tableMatrix || {};
+                    var headers = Array.isArray(matrixRaw.headers)
+                        ? matrixRaw.headers.map(function(h){ return String(h || '').trim(); }).filter(function(h){ return h !== ''; })
+                        : [];
+                    if (headers.length > 0) {
+                        var rows = Array.isArray(matrixRaw.rows) ? matrixRaw.rows : [];
+                        var normalizedRows = rows.map(function(row) {
+                            var out = Array.isArray(row) ? row.slice(0, headers.length) : [];
+                            while (out.length < headers.length) out.push('');
+                            return out.map(function(cell) { return String(cell || '').trim(); });
+                        });
+
+                        var mode = matrixRaw.mode === 'grouped-pairs' ? 'grouped-pairs' : 'standard';
+                        var groups = [];
+                        if (mode === 'grouped-pairs') {
+                            var dataCols = Math.max(1, headers.length - 1);
+                            var rawGroups = Array.isArray(matrixRaw.groups) ? matrixRaw.groups : [];
+                            groups = rawGroups.map(function(g) {
+                                if (g && typeof g === 'object' && !Array.isArray(g)) {
+                                    var spanObj = parseInt(g.span, 10);
+                                    return {
+                                        title: String(g.title || g.label || g.name || '').trim(),
+                                        span: (isFinite(spanObj) && spanObj > 0) ? spanObj : 1,
+                                    };
+                                }
+                                return { title: String(g || '').trim(), span: 2 };
+                            });
+
+                            if (groups.length === 0) {
+                                groups = [{ title: 'Free Air', span: dataCols }];
+                            }
+
+                            var remaining = dataCols;
+                            for (var gi = 0; gi < groups.length; gi++) {
+                                var groupsLeft = groups.length - gi - 1;
+                                if (gi === groups.length - 1) {
+                                    groups[gi].span = Math.max(1, remaining);
+                                    remaining = 0;
+                                    break;
+                                }
+                                var maxSpan = Math.max(1, remaining - groupsLeft);
+                                var s = groups[gi].span;
+                                if (!isFinite(s) || s < 1) s = 1;
+                                if (s > maxSpan) s = maxSpan;
+                                groups[gi].span = s;
+                                remaining -= s;
+                            }
+                            if (remaining > 0 && groups.length > 0) {
+                                groups[groups.length - 1].span += remaining;
+                            }
+
+                            groups = groups.map(function(g, idx) {
+                                var title = String(g.title || '').trim();
+                                if (title === '') title = idx === 0 ? 'Free Air' : ('Group ' + (idx + 1));
+                                return { title: title, span: g.span };
+                            });
+                        }
+
+                        payload.matrix = {
+                            mode: mode,
+                            headers: headers,
+                            rows: normalizedRows,
+                            groups: groups,
+                        };
+                    }
+                    return payload;
+                }
+
                 var hasTable = Array.isArray(parsed.table);
                 var looksLikePayload = parsed.format === 'andison_specs_v1' || hasTable;
                 if (looksLikePayload) {
@@ -567,8 +741,163 @@
         return payload;
     }
 
-    function renderSpecsTable(specsArr, table) {
+    function renderSpecMatrixTable(matrix, table) {
+        if (!matrix || !Array.isArray(matrix.headers) || matrix.headers.length === 0 || !table) return false;
+
+        table.innerHTML = '';
+
+        var headers = matrix.headers.map(function(h) { return String(h || '').trim(); });
+        var rows = Array.isArray(matrix.rows) ? matrix.rows : [];
+        var mode = matrix.mode === 'grouped-pairs' ? 'grouped-pairs' : 'standard';
+
+        var thead = document.createElement('thead');
+        var tbody = document.createElement('tbody');
+
+        if (mode === 'grouped-pairs' && headers.length >= 2) {
+            var dataColCount = Math.max(1, headers.length - 1);
+            var rawGroups = Array.isArray(matrix.groups) ? matrix.groups : [];
+            var groups = rawGroups.map(function(g) {
+                if (g && typeof g === 'object' && !Array.isArray(g)) {
+                    var spanObj = parseInt(g.span, 10);
+                    return {
+                        title: String(g.title || g.label || g.name || '').trim(),
+                        span: (isFinite(spanObj) && spanObj > 0) ? spanObj : 1,
+                    };
+                }
+                return { title: String(g || '').trim(), span: 2 };
+            });
+
+            if (groups.length === 0) {
+                groups = [{ title: 'Free Air', span: dataColCount }];
+            }
+
+            var remainingCols = dataColCount;
+            for (var gi = 0; gi < groups.length; gi++) {
+                var groupsLeft = groups.length - gi - 1;
+                if (gi === groups.length - 1) {
+                    groups[gi].span = Math.max(1, remainingCols);
+                    remainingCols = 0;
+                    break;
+                }
+
+                var maxSpan = Math.max(1, remainingCols - groupsLeft);
+                var s = groups[gi].span;
+                if (!isFinite(s) || s < 1) s = 1;
+                if (s > maxSpan) s = maxSpan;
+                groups[gi].span = s;
+                remainingCols -= s;
+            }
+
+            if (remainingCols > 0 && groups.length > 0) {
+                groups[groups.length - 1].span += remainingCols;
+            }
+
+            var topTr = document.createElement('tr');
+
+            var firstTop = document.createElement('th');
+            firstTop.rowSpan = 2;
+            firstTop.textContent = headers[0] || 'Model';
+            firstTop.style.padding = '12px 10px';
+            firstTop.style.textAlign = 'center';
+            firstTop.style.borderBottom = '1px solid #4b5563';
+            firstTop.style.background = 'linear-gradient(180deg,#2f3238 0%,#1f2126 100%)';
+            firstTop.style.color = '#fff';
+            firstTop.style.fontSize = '11px';
+            firstTop.style.fontWeight = '900';
+            topTr.appendChild(firstTop);
+
+            for (var g = 0; g < groups.length; g++) {
+                var gTh = document.createElement('th');
+                var span = parseInt(groups[g].span, 10);
+                if (!isFinite(span) || span < 1) span = 1;
+                gTh.colSpan = span;
+                gTh.textContent = groups[g].title || (g === 0 ? 'Free Air' : ('Group ' + (g + 1)));
+                gTh.style.padding = '10px 8px';
+                gTh.style.textAlign = 'center';
+                gTh.style.borderBottom = '1px solid #4b5563';
+                gTh.style.background = 'linear-gradient(180deg,#2f3238 0%,#1f2126 100%)';
+                gTh.style.color = '#fff';
+                gTh.style.fontSize = '11px';
+                gTh.style.fontWeight = '900';
+                topTr.appendChild(gTh);
+            }
+
+            thead.appendChild(topTr);
+
+            var subTr = document.createElement('tr');
+            for (var c = 1; c < headers.length; c++) {
+                var subTh = document.createElement('th');
+                subTh.textContent = headers[c] || ('Column ' + c);
+                subTh.style.padding = '8px 8px';
+                subTh.style.textAlign = 'center';
+                subTh.style.borderBottom = '1px solid #4b5563';
+                subTh.style.background = 'linear-gradient(180deg,#26292f 0%,#1a1c21 100%)';
+                subTh.style.color = '#f3f4f6';
+                subTh.style.fontSize = '10px';
+                subTh.style.fontWeight = '800';
+                subTr.appendChild(subTh);
+            }
+            thead.appendChild(subTr);
+        } else {
+            var headerTr = document.createElement('tr');
+            headerTr.style.fontWeight = '700';
+            headerTr.style.backgroundColor = '#e8eeff';
+
+            for (var h = 0; h < headers.length; h++) {
+                var th = document.createElement('th');
+                th.textContent = headers[h] || ('Column ' + (h + 1));
+                th.style.padding = '12px 14px';
+                th.style.textAlign = 'left';
+                th.style.borderBottom = '2px solid #2B11DB';
+                th.style.color = '#2B11DB';
+                th.style.fontSize = '12px';
+                headerTr.appendChild(th);
+            }
+            thead.appendChild(headerTr);
+        }
+
+        var renderedRows = 0;
+        for (var r = 0; r < rows.length; r++) {
+            var row = Array.isArray(rows[r]) ? rows[r] : [];
+            var safeRow = row.slice(0, headers.length);
+            while (safeRow.length < headers.length) safeRow.push('');
+
+            var rowHasAnyData = safeRow.some(function(cell) { return String(cell || '').trim() !== ''; });
+            if (!rowHasAnyData) continue;
+
+            var tr = document.createElement('tr');
+            if (renderedRows % 2 === 0) tr.style.backgroundColor = '#f8fafb';
+
+            for (var col = 0; col < headers.length; col++) {
+                var td = document.createElement('td');
+                td.textContent = safeRow[col] || '';
+                td.style.padding = mode === 'grouped-pairs' ? '10px 10px' : '12px 14px';
+                td.style.borderBottom = '1px solid #e8ecf4';
+                td.style.fontSize = '13px';
+                if (col === 0) {
+                    td.style.fontWeight = '700';
+                    td.style.color = '#2d3748';
+                    td.style.backgroundColor = mode === 'grouped-pairs' ? 'rgba(17,24,39,0.04)' : 'rgba(43,17,219,0.04)';
+                }
+                tr.appendChild(td);
+            }
+            tbody.appendChild(tr);
+            renderedRows++;
+        }
+
+        table.appendChild(thead);
+        table.appendChild(tbody);
+
+        return headers.length > 0;
+    }
+
+    function renderSpecsTable(specsArr, table, matrix) {
         if (!table) return false;
+
+        if (matrix && renderSpecMatrixTable(matrix, table)) {
+            return true;
+        }
+
         table.innerHTML = '';
         if (!Array.isArray(specsArr) || specsArr.length === 0) return false;
 
@@ -663,16 +992,21 @@
 
         if (specsTextEl) {
             if (hasText) {
-                specsTextEl.textContent = payload.text;
+                specsTextEl.innerHTML = formatSpecificationsHtml(payload.text);
                 specsTextEl.style.display = 'block';
             } else {
-                specsTextEl.textContent = '';
+                specsTextEl.innerHTML = '';
                 specsTextEl.style.display = 'none';
             }
         }
 
-        var tableRows = specsArr.length > 0 ? specsArr : payload.table;
-        var hasTable = renderSpecsTable(tableRows, table);
+        var hasTable = false;
+        if (payload.matrix) {
+            hasTable = renderSpecsTable([], table, payload.matrix);
+        } else {
+            var tableRows = specsArr.length > 0 ? specsArr : payload.table;
+            hasTable = renderSpecsTable(tableRows, table, null);
+        }
 
         if (tableWrap) {
             tableWrap.style.display = hasTable ? 'block' : 'none';
@@ -707,7 +1041,7 @@
         if (mainImg) { mainImg.style.transition = ''; mainImg.style.opacity = '1'; }
     }
 
-    var _jsonPath = (typeof MODAL_JSON_PATH !== 'undefined') ? MODAL_JSON_PATH : '/ANDISON/Andison/data/brands_info_api.php';
+    var _jsonPath = resolveModalPath((typeof MODAL_JSON_PATH !== 'undefined') ? MODAL_JSON_PATH : 'Andison/data/brands_info_api.php');
 
     /* Load product details from JSON data */
     function loadProductDetails(brand, model, fallbackSpecs, fallbackSpecsText) {
@@ -811,18 +1145,14 @@
             var decoded = decodeURIComponent(path);
             
             // Convert relative paths to absolute
-            if (decoded.indexOf('assets/') === 0) {
-                return '/ANDISON/' + decoded;
-            } else if (/^[aA][nN][dD][iI][sS][oO][nN]\/assets\//i.test(decoded)) {
+            if (/^[aA][nN][dD][iI][sS][oO][nN]\/assets\//i.test(decoded)) {
                 // handles Andison/assets/, ANDISON/assets/, andison/assets/ — all cases
-                return '/ANDISON/' + decoded.replace(/^[^/]+\//, 'Andison/');
-            } else if (decoded.indexOf('/ANDISON/') === 0) {
-                return decoded; // Already absolute
+                decoded = decoded.replace(/^[^/]+\//, 'Andison/');
             } else if (decoded.indexOf('../') === 0) {
                 // Convert relative paths from subdirectories to absolute
-                return '/ANDISON/' + decoded.replace(/^\.\.\//, '');
+                decoded = decoded.replace(/^(\.\.\/)+/, '');
             }
-            return decoded;
+            return resolveModalPath(decoded);
         });
         productImages = processedImages;
         
@@ -994,6 +1324,10 @@
                             } else if (!imgSrc.startsWith('/') && !imgSrc.startsWith('http')) {
                                 imgSrc = '/ANDISON/' + imgSrc;
                             }
+                        }
+
+                        if (imgSrc) {
+                            imgSrc = resolveModalPath(imgSrc);
                         }
                         
                         img.src = imgSrc || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%2270%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22100%22 height=%2270%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2212%22%3ENo Image%3C/text%3E%3C/svg%3E';
@@ -1171,7 +1505,7 @@
         datasheetWrap.style.display = 'none';
 
                 function showDatasheet(url) {
-                        var clean = String(url || '').trim();
+                    var clean = resolveModalPath(url);
                         if (!clean) return false;
                         datasheetBtn.href = clean;
                         datasheetWrap.style.display = 'flex';
@@ -1237,11 +1571,12 @@
                             if (i >= patterns.length) {
                                 return;
                             }
-                            fetch(patterns[i].replace(/%20/g, ' '), { method: 'HEAD' })
+                            var candidate = resolveModalPath(patterns[i].replace(/%20/g, ' '));
+                            fetch(candidate, { method: 'HEAD' })
                                 .then(function(r) {
                                     if (r.ok) {
-                                        console.log('[DATASHEET DEBUG] LEGACY FOUND:', patterns[i]);
-                                        showDatasheet(patterns[i]);
+                                        console.log('[DATASHEET DEBUG] LEGACY FOUND:', candidate);
+                                        showDatasheet(candidate);
                                     } else {
                                         tryDatasheet(i+1);
                                     }
@@ -1250,10 +1585,10 @@
                         })(0);
                 }
 
-                var directDatasheet = (card.getAttribute('data-datasheet') || '').trim();
+                var directDatasheet = resolveModalPath((card.getAttribute('data-datasheet') || '').trim());
                 if (!showDatasheet(directDatasheet) && brand && model) {
                         // Preferred source: live products API (Supabase-backed).
-                        fetch('/ANDISON/Andison/data/brands_info_api.php', { cache: 'no-store' })
+                    fetch(resolveModalPath('Andison/data/brands_info_api.php'), { cache: 'no-store' })
                                 .then(function(r) { return r.json(); })
                                 .then(function(data) {
                                         var datasheetUrl = '';
@@ -1629,7 +1964,21 @@ footer.footer-modernized .footer-scroll-top:hover {
             copyrightText = 'Copyright 2021 Andison Industrial Sales Inc.';
         }
 
-        footerContent.innerHTML = ''
+        var footerBase = (function() {
+            var parts = window.location.pathname.split('/').filter(function(part) {
+                return part !== '';
+            });
+            for (var i = 0; i < parts.length; i++) {
+                var lower = parts[i].toLowerCase();
+                if (lower === 'andison' || lower === 'andison-1') {
+                    return '/' + parts.slice(0, i + 1).join('/');
+                }
+            }
+            return '';
+        })();
+
+        footerContent.innerHTML = (
+            ''
             + '<div class="footer-main-grid">'
                 + '<div class="footer-brand-col">'
                     + '<a href="/ANDISON/home.php" class="footer-brand-logo" aria-label="Andison Industrial Home">'
@@ -1670,7 +2019,8 @@ footer.footer-modernized .footer-scroll-top:hover {
             + '</div>'
             + '<div class="footer-bottom">'
                 + '<p class="footer-copyright">' + copyrightText + '</p>'
-            + '</div>';
+            + '</div>'
+        ).replace(/\/ANDISON(?=\/)/g, footerBase);
 
         if (!footer.querySelector('.footer-scroll-top')) {
             var btn = document.createElement('button');
@@ -1895,3 +2245,4 @@ header .contact-popover {
     window.initCardSliders = initCardSliders;
 })();
 </script>
+

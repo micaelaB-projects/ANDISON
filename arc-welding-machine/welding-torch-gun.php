@@ -6,9 +6,9 @@ require_once __DIR__ . '/../Andison/includes/categories_info.php';
 require_once __DIR__ . '/../Andison/includes/products_management.php';
 
 // Update page name and subcategory
-$page_title = "CO2-Mag Welding Machine";
+$page_title = "Welding Torch / Gun";
 $category_id = "arc-welding-machine";
-$subcategory_id = "co2-mag-welding-machine";
+$subcategory_id = "welding-torch-gun";
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";
@@ -28,10 +28,10 @@ if (!$current_category) {
     // Fallback: create a default category object
     $current_category = array(
         'id' => $category_id,
-        'name' => 'CO2-Mag Welding Machine',
-        'description' => 'Discover our comprehensive range of CO2-Mag welding machines for industrial applications.',
+        'name' => 'Welding Torch / Gun',
+        'description' => 'Discover our comprehensive range of welding torch and gun solutions for industrial applications.',
         'subcategories' => array(
-            array('id' => 'co2-mag-welding-machine', 'name' => 'CO2-Mag Welding Machine')
+            array('id' => 'welding-torch-gun', 'name' => 'Welding Torch / Gun')
         )
     );
 }
@@ -42,8 +42,8 @@ if (!$current_category) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php 
-    $category_name = 'CO2-Mag Welding Machine';
-    $category_description = 'Discover our comprehensive range of CO2-Mag welding machines for industrial applications.';
+    $category_name = 'Welding Torch / Gun';
+    $category_description = 'Discover our comprehensive range of welding torch and gun solutions for industrial applications.';
     ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -356,7 +356,7 @@ if (!$current_category) {
             padding: 8px 14px;
             cursor: pointer;
             font-size: 15px;
-            line: height 6px;;
+            line-height: 1.6;
         }
 
         .nav-list {
@@ -1318,7 +1318,6 @@ if (!$current_category) {
 
         .category-description {
             display: none;
-        }
             margin: 0 0 60px 0;
             line-height: 1.7;
             max-width: 650px;
@@ -1897,7 +1896,7 @@ if (!$current_category) {
         }
 
         .scroll-animate { opacity: 0; transform: translateY(40px); transition: opacity 0s ease, transform 0s ease; }
-        .scroll-animate.visible { }
+        
 
         /* Match brands.php staggered reveal timings (faster) */
         .product-card { opacity: 1; transform: translateY(0); will-change: transform,opacity; }
@@ -3239,7 +3238,7 @@ if (!$current_category) {
     </header>
 
         <div class="category-content">
-            <h2>CO2-Mag Welding Machine</h2>
+            <h2>Welding Torch / Gun</h2>
             
             <!-- Left Filters Panel -->
             <div class="product-filters">
@@ -3330,7 +3329,7 @@ if (!$current_category) {
                 <!-- Product Grid -->
                 <div class="product-grid grid-view">
                 <?php 
-                // Fetch CO2-Mag welding machine products
+                // Fetch Welding Torch / Gun products
                 $all_products = andison_get_products_for_subcategory($category_id, $subcategory_id);
                 
                 // Display products

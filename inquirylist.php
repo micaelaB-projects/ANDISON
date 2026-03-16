@@ -25,6 +25,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Parse items JSON
         $items = json_decode($items_json, true) ?: [];
 
+        // Parse and validate optional attachment early so we can reuse it for DB + email.
+        $attachment = [
+            'is_present'    => false,
+            'is_valid'      => false,
+            'tmp_path'      => '',
+            'original_name' => '',
+            'safe_name'     => '',
+            'mime'          => '',
+            'size'          => 0,
+            'public_url'    => '',
+            'error'         => '',
+        ];
+
+        if (isset($_FILES['file']) && is_array($_FILES['file'])) {
+            $uploadErr = (int)($_FILES['file']['error'] ?? UPLOAD_ERR_NO_FILE);
+            if ($uploadErr !== UPLOAD_ERR_NO_FILE) {
+                $attachment['is_present'] = true;
+
+                if ($uploadErr !== UPLOAD_ERR_OK) {
+                    $attachment['error'] = 'Upload failed (code ' . $uploadErr . ').';
+                } else {
+                    $allowedMime = ['image/jpeg', 'image/png', 'application/pdf'];
+                    $maxSize     = 10 * 1024 * 1024; // 10 MB
+                    $tmpPath     = (string)($_FILES['file']['tmp_name'] ?? '');
+                    $rawName     = (string)($_FILES['file']['name'] ?? 'attachment');
+                    $fileSize    = (int)($_FILES['file']['size'] ?? 0);
+
+                    if ($tmpPath === '' || !is_file($tmpPath)) {
+                        $attachment['error'] = 'Temporary upload file is missing.';
+                    } elseif ($fileSize <= 0 || $fileSize > $maxSize) {
+                        $attachment['error'] = 'Attachment must be 10 MB or smaller.';
+                    } else {
+                        $fi = finfo_open(FILEINFO_MIME_TYPE);
+                        $mime = $fi ? (string)finfo_file($fi, $tmpPath) : '';
+                        if ($fi) {
+                            finfo_close($fi);
+                        }
+
+                        if (!in_array($mime, $allowedMime, true)) {
+                            $attachment['error'] = 'Only JPG, PNG, and PDF files are allowed.';
+                        } else {
+                            $safeBase = preg_replace('~[^a-zA-Z0-9._-]+~', '_', basename($rawName));
+                            $rand = substr(md5((string)microtime(true)), 0, 8);
+                            try {
+                                $rand = bin2hex(random_bytes(4));
+                            } catch (Throwable $e) {
+                                // Fallback hash above is sufficient if CSPRNG is unavailable.
+                            }
+
+                            $attachment['is_valid']      = true;
+                            $attachment['tmp_path']      = $tmpPath;
+                            $attachment['original_name'] = $rawName;
+                            $attachment['safe_name']     = time() . '_' . $rand . '_' . $safeBase;
+                            $attachment['mime']          = $mime;
+                            $attachment['size']          = $fileSize;
+                        }
+                    }
+                }
+            }
+        }
+
         // Build email content
         $to = 'ceddreyes21@gmail.com';
         $subject = 'New Inquiry Form Submission from ' . $fullname;
@@ -114,45 +175,117 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             andison_sb_update('inquiries', ['transaction_no' => $transaction_no], 'id=eq.' . $savedInquiry['id']);
         }
 
-        if ($inquiry_saved) {
-            // Send email notification to company (best-effort)
-            andison_send_inquiry_notification([
-                'fullname'       => $fullname,
-                'company'        => $company,
-                'email'          => $email,
-                'phone'          => $phone,
-                'address'        => $address,
-                'contact_method' => $contact_method,
-                'message'        => $message,
-                'transaction_no' => $transaction_no,
-            ], $cleanItems);
-            // Send receipt confirmation to the customer
-            andison_send_inquiry_receipt([
-                'fullname'       => $fullname,
-                'company'        => $company,
-                'email'          => $email,
-                'phone'          => $phone,
-                'address'        => $address,
-                'contact_method' => $contact_method,
-                'message'        => $message,
-                'transaction_no' => $transaction_no,
-            ], $cleanItems);
+        $attachment_note = '';
+        if ($inquiry_saved && $attachment['is_valid']) {
+            andison_sb_storage_create_bucket('inquiry-uploads', true);
+            $uploadedUrl = andison_sb_storage_upload_tmp($_FILES['file'], 'inquiry-uploads', $attachment['safe_name']);
+
+            if (is_string($uploadedUrl) && $uploadedUrl !== '') {
+                $attachment['public_url'] = $uploadedUrl;
+
+                $attachmentPayload = [
+                    'name'         => $attachment['original_name'],
+                    'storage_name' => $attachment['safe_name'],
+                    'mime'         => $attachment['mime'],
+                    'size'         => $attachment['size'],
+                    'url'          => $attachment['public_url'],
+                ];
+
+                $attachmentUpdate = [];
+                $inquiryColumns = array_keys($savedInquiry);
+
+                if (in_array('attachment_url', $inquiryColumns, true)) {
+                    $attachmentUpdate['attachment_url'] = $attachment['public_url'];
+                }
+                if (in_array('attachment_name', $inquiryColumns, true)) {
+                    $attachmentUpdate['attachment_name'] = $attachment['original_name'];
+                }
+                if (in_array('attachment_filename', $inquiryColumns, true)) {
+                    $attachmentUpdate['attachment_filename'] = $attachment['original_name'];
+                }
+                if (in_array('attachment_mime', $inquiryColumns, true)) {
+                    $attachmentUpdate['attachment_mime'] = $attachment['mime'];
+                }
+                if (in_array('attachment_size', $inquiryColumns, true)) {
+                    $attachmentUpdate['attachment_size'] = $attachment['size'];
+                }
+                if (in_array('attachment_path', $inquiryColumns, true)) {
+                    $attachmentUpdate['attachment_path'] = $attachment['safe_name'];
+                }
+                if (in_array('file_url', $inquiryColumns, true)) {
+                    $attachmentUpdate['file_url'] = $attachment['public_url'];
+                }
+                if (in_array('file_name', $inquiryColumns, true)) {
+                    $attachmentUpdate['file_name'] = $attachment['original_name'];
+                }
+                if (in_array('file_mime', $inquiryColumns, true)) {
+                    $attachmentUpdate['file_mime'] = $attachment['mime'];
+                }
+                if (in_array('file_size', $inquiryColumns, true)) {
+                    $attachmentUpdate['file_size'] = $attachment['size'];
+                }
+                if (in_array('file_path', $inquiryColumns, true)) {
+                    $attachmentUpdate['file_path'] = $attachment['safe_name'];
+                }
+                if (in_array('attachment', $inquiryColumns, true)) {
+                    $attachmentUpdate['attachment'] = json_encode($attachmentPayload);
+                }
+                if (in_array('attachments', $inquiryColumns, true)) {
+                    $attachmentUpdate['attachments'] = json_encode([$attachmentPayload]);
+                }
+
+                if (!empty($attachmentUpdate)) {
+                    andison_sb_update('inquiries', $attachmentUpdate, 'id=eq.' . $savedInquiry['id']);
+                } else {
+                    // Fallback: always keep a DB trace of the uploaded attachment URL.
+                    $messageWithAttachment = $message;
+                    $attachmentLine = 'Attachment: ' . $attachment['public_url'];
+                    if ($messageWithAttachment === '') {
+                        $messageWithAttachment = $attachmentLine;
+                    } elseif (strpos($messageWithAttachment, $attachmentLine) === false) {
+                        $messageWithAttachment .= "\n\n" . $attachmentLine;
+                    }
+                    andison_sb_update('inquiries', ['message' => $messageWithAttachment], 'id=eq.' . $savedInquiry['id']);
+                }
+            } else {
+                $attachment_note = ' Attachment was received but could not be saved to storage.';
+            }
+        } elseif ($inquiry_saved && $attachment['is_present'] && !$attachment['is_valid']) {
+            $attachment_note = ' Attachment was skipped: ' . $attachment['error'];
         }
 
-        if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
-            $allowed_mime = ['image/jpeg', 'image/png', 'application/pdf'];
-            $max_size     = 10 * 1024 * 1024; // 10 MB
-            $fi   = finfo_open(FILEINFO_MIME_TYPE);
-            $mime = (string)finfo_file($fi, $_FILES['file']['tmp_name']);
-            finfo_close($fi);
-            if (in_array($mime, $allowed_mime, true) && $_FILES['file']['size'] <= $max_size) {
-                $safe_name = time() . '_' . preg_replace('~[^a-zA-Z0-9._-]+~', '_', basename($_FILES['file']['name']));
-                andison_sb_storage_upload_tmp($_FILES['file'], 'inquiry-uploads', $safe_name);
+        if ($inquiry_saved) {
+            $mailAttachments = [];
+            if ($attachment['is_valid'] && is_file($attachment['tmp_path'])) {
+                $mailAttachments[] = [
+                    'path' => $attachment['tmp_path'],
+                    'name' => $attachment['original_name'],
+                    'mime' => $attachment['mime'],
+                ];
             }
+
+            $mailData = [
+                'fullname'        => $fullname,
+                'company'         => $company,
+                'email'           => $email,
+                'phone'           => $phone,
+                'address'         => $address,
+                'contact_method'  => $contact_method,
+                'message'         => $message,
+                'transaction_no'  => $transaction_no,
+                'attachment_name' => $attachment['original_name'],
+                'attachment_url'  => $attachment['public_url'],
+                'attachment_mime' => $attachment['mime'],
+            ];
+
+            // Send email notification to company (best-effort)
+            andison_send_inquiry_notification($mailData, $cleanItems, $mailAttachments);
+            // Send receipt confirmation to the customer
+            andison_send_inquiry_receipt($mailData, $cleanItems, $mailAttachments);
         }
 
         $success_message = $inquiry_saved
-            ? "Inquiry submitted successfully! Transaction No: {$transaction_no}. We'll contact you soon."
+            ? "Inquiry submitted successfully! Transaction No: {$transaction_no}. We'll contact you soon." . $attachment_note
             : "Error saving inquiry. Please try again.";
         // Store popup data — rendered into the page below, shown via JS after DOM loads
         $popup_inquiry_saved = $inquiry_saved;
@@ -530,7 +663,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             padding: 8px 14px;
             cursor: pointer;
             font-size: 15px;
-            line: height 6px;;
+            line-height: 1.6;
         }
 
         .nav-list {
@@ -1825,7 +1958,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .scroll-animate { opacity: 0; transform: translateY(40px); transition: opacity 0s ease, transform 0s ease; }
-        .scroll-animate.visible { }
+        
 
         /* Match brands.php staggered reveal timings (faster) */
         .product-card { opacity: 1; transform: translateY(0); will-change: transform,opacity; }
@@ -3309,6 +3442,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if(window.innerWidth > 768) return;
                 document.querySelectorAll('.contact-dropdown').forEach(function(d){ d.classList.remove('open'); });
             });
+        })();
         })();
     </script>
     <script>

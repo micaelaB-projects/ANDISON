@@ -25,52 +25,103 @@ function andison_normalize_product_row(array $row): array
     } elseif (!isset($row['images'])) {
         $row['images'] = $row['image'] ? [$row['image']] : [];
     }
+
+    $row['category_id'] = trim((string)($row['category_id'] ?? ''));
+    $row['subcategory_id'] = trim((string)($row['subcategory_id'] ?? ''));
+    $row['sub_subcategory_id'] = trim((string)($row['sub_subcategory_id'] ?? ''));
+
     return $row;
 }
 
 function andison_get_products_for_subcategory(string $categoryId, string $subcategoryId): array
 {
-    // Include products assigned directly to this subcategory AND its child sub-subcategories.
-    // This lets parent subcategory pages show nested products while sub-subcategory pages
-    // still show only their exact assignments.
-    $targetIds = [$subcategoryId];
-    $children = andison_sb_select(
-        'sub_subcategories',
-        'select=id&subcategory_id=eq.' . rawurlencode($subcategoryId) . '&limit=500'
+    $rows = andison_sb_select(
+        'products',
+        'category_id=eq.' . rawurlencode($categoryId) . '&limit=10000'
     );
-    foreach ($children as $child) {
-        $childId = trim((string)($child['id'] ?? ''));
-        if ($childId !== '') {
-            $targetIds[] = $childId;
+
+    if (empty($rows)) {
+        return [];
+    }
+
+    $subRows = andison_sb_select(
+        'subcategories',
+        'select=id&category_id=eq.' . rawurlencode($categoryId) . '&limit=1000'
+    );
+    $allowedParentSubIds = [];
+    foreach ($subRows as $subRow) {
+        $subRowId = trim((string)($subRow['id'] ?? ''));
+        if ($subRowId !== '') {
+            $allowedParentSubIds[$subRowId] = true;
         }
     }
-    $targetIds = array_values(array_unique(array_filter($targetIds)));
 
-    $rows = [];
-    foreach ($targetIds as $targetSubId) {
-        $filter = 'category_id=eq.' . rawurlencode($categoryId)
-                . '&subcategory_id=eq.' . rawurlencode($targetSubId)
-                . '&limit=1000';
-        $rows = array_merge($rows, andison_sb_select('products', $filter));
+    $subSubRows = andison_sb_select(
+        'sub_subcategories',
+        'select=id,subcategory_id&limit=5000'
+    );
+
+    $subSubParentMap = [];
+    $childrenByParent = [];
+    foreach ($subSubRows as $subSub) {
+        $subSubId = trim((string)($subSub['id'] ?? ''));
+        $parentSubId = trim((string)($subSub['subcategory_id'] ?? ''));
+        if ($subSubId === '' || $parentSubId === '') {
+            continue;
+        }
+        if (!empty($allowedParentSubIds) && !isset($allowedParentSubIds[$parentSubId])) {
+            continue;
+        }
+        $subSubParentMap[$subSubId] = $parentSubId;
+        $childrenByParent[$parentSubId][] = $subSubId;
     }
 
-    // Deduplicate merged rows.
-    $deduped = [];
+    $isSpecificSubSub = isset($subSubParentMap[$subcategoryId]);
+    $targetChildIds = $childrenByParent[$subcategoryId] ?? [];
+
+    $filtered = [];
     foreach ($rows as $row) {
+        $storedSubId = trim((string)($row['subcategory_id'] ?? ''));
+        $storedSubSubId = trim((string)($row['sub_subcategory_id'] ?? ''));
+
+        // Backward compatibility: legacy rows may have saved sub-subcategory in subcategory_id.
+        if ($storedSubSubId === '' && $storedSubId !== '' && isset($subSubParentMap[$storedSubId])) {
+            $storedSubSubId = $storedSubId;
+            $storedSubId = $subSubParentMap[$storedSubId];
+        }
+
+        $include = false;
+        if ($isSpecificSubSub) {
+            // Sub-subcategory page: include exact normalized match and legacy direct assignment.
+            $include = ($storedSubSubId === $subcategoryId)
+                || (trim((string)($row['subcategory_id'] ?? '')) === $subcategoryId);
+        } else {
+            // Parent subcategory page: include direct assignments and nested sub-subcategory assignments.
+            $include = ($storedSubId === $subcategoryId)
+                || in_array($storedSubSubId, $targetChildIds, true)
+                || in_array(trim((string)($row['subcategory_id'] ?? '')), $targetChildIds, true);
+        }
+
+        if (!$include) {
+            continue;
+        }
+
+        $row['subcategory_id'] = $storedSubId;
+        if ($storedSubSubId !== '') {
+            $row['sub_subcategory_id'] = $storedSubSubId;
+        }
+        $filtered[] = $row;
+    }
+
+    $deduped = [];
+    foreach ($filtered as $row) {
         $key = isset($row['id'])
             ? 'id:' . (string)$row['id']
-            : 'mk:' . strtolower(trim((string)($row['model'] ?? ''))) . '::' . strtolower(trim((string)($row['subcategory_id'] ?? '')));
+            : 'mk:' . strtolower(trim((string)($row['model'] ?? ''))) . '::' . strtolower(trim((string)($row['subcategory_id'] ?? ''))) . '::' . strtolower(trim((string)($row['sub_subcategory_id'] ?? '')));
         $deduped[$key] = $row;
     }
-    $rows = array_values($deduped);
 
-    if (!empty($rows)) {
-        // Normalize Supabase column names to match local JSON schema.
-        return array_map('andison_normalize_product_row', $rows);
-    }
-
-    // No products found in Supabase
-    return [];
+    return array_map('andison_normalize_product_row', array_values($deduped));
 }
 
 function andison_get_products_for_category(string $categoryId): array

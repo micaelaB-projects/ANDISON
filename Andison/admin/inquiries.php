@@ -117,6 +117,53 @@ andison_admin_header('Inquiries', 'inquiries');
     $address   = htmlspecialchars($inq['address'] ?? '');
     $contact_m = htmlspecialchars($inq['contact_method'] ?? 'email');
     $msg       = htmlspecialchars($inq['message'] ?? '');
+    $attachmentUrl  = trim((string)($inq['attachment_url'] ?? $inq['file_url'] ?? ''));
+    $attachmentName = trim((string)($inq['attachment_name'] ?? $inq['attachment_filename'] ?? $inq['file_name'] ?? ''));
+    $attachmentMime = trim((string)($inq['attachment_mime'] ?? $inq['file_mime'] ?? ''));
+
+    if ($attachmentUrl === '' || $attachmentName === '') {
+        $singleAttachment = $inq['attachment'] ?? null;
+        if (is_string($singleAttachment)) {
+            $decodedAttachment = json_decode($singleAttachment, true);
+            if (is_array($decodedAttachment)) {
+                if ($attachmentUrl === '') {
+                    $attachmentUrl = trim((string)($decodedAttachment['url'] ?? ''));
+                }
+                if ($attachmentName === '') {
+                    $attachmentName = trim((string)($decodedAttachment['name'] ?? $decodedAttachment['storage_name'] ?? ''));
+                }
+                if ($attachmentMime === '') {
+                    $attachmentMime = trim((string)($decodedAttachment['mime'] ?? ''));
+                }
+            }
+        }
+    }
+
+    if ($attachmentUrl === '' || $attachmentName === '') {
+        $manyAttachments = $inq['attachments'] ?? null;
+        if (is_string($manyAttachments)) {
+            $decodedAttachments = json_decode($manyAttachments, true);
+            if (is_array($decodedAttachments) && !empty($decodedAttachments[0]) && is_array($decodedAttachments[0])) {
+                if ($attachmentUrl === '') {
+                    $attachmentUrl = trim((string)($decodedAttachments[0]['url'] ?? ''));
+                }
+                if ($attachmentName === '') {
+                    $attachmentName = trim((string)($decodedAttachments[0]['name'] ?? $decodedAttachments[0]['storage_name'] ?? ''));
+                }
+                if ($attachmentMime === '') {
+                    $attachmentMime = trim((string)($decodedAttachments[0]['mime'] ?? ''));
+                }
+            }
+        }
+    }
+
+    if ($attachmentName === '' && $attachmentUrl !== '') {
+        $pathPart = parse_url($attachmentUrl, PHP_URL_PATH);
+        $attachmentName = is_string($pathPart) ? basename($pathPart) : 'Attachment';
+    }
+
+    $attachmentUrlEsc  = htmlspecialchars($attachmentUrl);
+    $attachmentNameEsc = htmlspecialchars($attachmentName);
     $created   = $inq['created_at'] ?? $inq['submitted_at'] ?? null;
     if ($created) {
         $dt = new DateTime($created, new DateTimeZone('UTC'));
@@ -179,6 +226,18 @@ andison_admin_header('Inquiries', 'inquiries');
 
     <?php if ($msg): ?>
     <div class="inq-message"><strong>Message:</strong> <?php echo nl2br($msg); ?></div>
+    <?php endif; ?>
+
+    <?php if ($attachmentUrl !== ''): ?>
+    <div class="inq-message" style="background:#eff6ff;border:1px solid #dbeafe;">
+        <strong>Attachment:</strong>
+        <a href="<?php echo $attachmentUrlEsc; ?>" target="_blank" rel="noopener" style="color:#1d4ed8;font-weight:700;text-decoration:none;">
+            <?php echo $attachmentNameEsc ?: 'Download attachment'; ?>
+        </a>
+        <?php if ($attachmentMime !== ''): ?>
+            <span style="color:#64748b;font-size:12px;">(<?php echo htmlspecialchars($attachmentMime); ?>)</span>
+        <?php endif; ?>
+    </div>
     <?php endif; ?>
 
     <div class="inq-actions">

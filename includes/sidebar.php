@@ -12,8 +12,21 @@
  *        Place after <body> and after your <header>.
  */
 
-// Define the site base path for all sidebar links
-$_sidebar_base = '/ANDISON/';
+// Define the site base path for all sidebar links.
+if (!isset($_sidebar_base)) {
+    $project_root = realpath(__DIR__ . '/..');
+    $document_root = isset($_SERVER['DOCUMENT_ROOT']) ? realpath($_SERVER['DOCUMENT_ROOT']) : false;
+    $_sidebar_base = '/';
+
+    if ($project_root !== false && $document_root !== false) {
+        $project_norm = str_replace('\\', '/', $project_root);
+        $doc_norm = rtrim(str_replace('\\', '/', $document_root), '/');
+        if ($doc_norm !== '' && stripos($project_norm, $doc_norm) === 0) {
+            $relative = trim(substr($project_norm, strlen($doc_norm)), '/');
+            $_sidebar_base = '/' . ($relative !== '' ? $relative . '/' : '');
+        }
+    }
+}
 
 // ================================================================
 // ACTIVE CATEGORY DETECTION
@@ -31,17 +44,38 @@ $current_category = '';
 $current_subcategory = '';
 $current_nested_subcategory = '';
 
-// Find ANDISON index and extract category/subcategory/nested
-if (($andison_idx = array_search('ANDISON', $path_parts)) !== false && isset($path_parts[$andison_idx + 1])) {
-    $current_category = $path_parts[$andison_idx + 1];
-    
+// Find category segment and extract category/subcategory/nested.
+$category_roots = [
+    'arc-welding-machine',
+    'arc-welding-robots',
+    'batteries',
+    'drilling-and-lifting',
+    'gas-detectors',
+    'portable-ventilators',
+    'power-tools',
+    'protection',
+    'welding-accessories',
+    'welding-consumables',
+];
+
+$category_idx = null;
+foreach ($path_parts as $idx => $part) {
+    if (in_array($part, $category_roots, true)) {
+        $category_idx = $idx;
+        break;
+    }
+}
+
+if ($category_idx !== null) {
+    $current_category = $path_parts[$category_idx];
+
     // Handle deep nesting (e.g., drilling-and-lifting/magnetic-drill/b-line-series.php)
-    if (isset($path_parts[$andison_idx + 2]) && $path_parts[$andison_idx + 2] !== $current_page) {
-        $current_subcategory = $path_parts[$andison_idx + 2];
-        
+    if (isset($path_parts[$category_idx + 1]) && $path_parts[$category_idx + 1] !== $current_page) {
+        $current_subcategory = $path_parts[$category_idx + 1];
+
         // Check for 4th level (nested subcategory)
-        if (isset($path_parts[$andison_idx + 3]) && $path_parts[$andison_idx + 3] !== $current_page) {
-            $current_nested_subcategory = $path_parts[$andison_idx + 3];
+        if (isset($path_parts[$category_idx + 2]) && $path_parts[$category_idx + 2] !== $current_page) {
+            $current_nested_subcategory = $path_parts[$category_idx + 2];
         } else {
             // The page file is at the 3rd level
             $current_nested_subcategory = $current_page;
@@ -1058,8 +1092,8 @@ if (($andison_idx = array_search('ANDISON', $path_parts)) !== false && isset($pa
             <a href="<?php echo $_sidebar_base; ?>arc-welding-robots/arc-welding-robot.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-robot"></i></span><span class="sidebar-label">Arc Welding Robots</span></a>
             <button class="sub-toggle" aria-controls="sub-arc-robots" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
             <ul id="sub-arc-robots" class="sidebar-sublist collapsed">
-                <li><a href="<?php echo $_sidebar_base; ?>arc-welding-robots/g3-controller-series.php"><i class="bi bi-cpu"></i>G3 Controller Series</a></li>
-                <li><a href="<?php echo $_sidebar_base; ?>arc-welding-robots/g4-controller-series.php"><i class="bi bi-cpu-fill"></i>G4 Controller Series</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>arc-welding-robots/G3-Controller-Series.php"><i class="bi bi-cpu"></i>G3 Controller Series</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>arc-welding-robots/G4-Controller-Series.php"><i class="bi bi-cpu-fill"></i>G4 Controller Series</a></li>
                 <li><a href="<?php echo $_sidebar_base; ?>arc-welding-robots/featured-products-and-solution.php"><i class="bi bi-stars"></i>Featured Products and Solutions</a></li>
                 <li><a href="<?php echo $_sidebar_base; ?>arc-welding-robots/robot-system-peripherals.php"><i class="bi bi-puzzle"></i>Robot System Peripherals</a></li>
             </ul>
@@ -1082,11 +1116,11 @@ if (($andison_idx = array_search('ANDISON', $path_parts)) !== false && isset($pa
                     <a href="<?php echo $_sidebar_base; ?>drilling-and-lifting/magnetic-drill.php"<?php echo ($current_category === 'drilling-and-lifting' && ($current_page === 'magnetic-drill.php' || $current_subcategory === 'magnetic-drill')) ? ' class="active-subcategory"' : ''; ?>><i class="bi bi-tools"></i>Magnetic Drill</a>
                     <button class="nested-toggle" aria-controls="nested-magnetic-drill" aria-expanded="<?php echo ($current_category === 'drilling-and-lifting' && ($current_page === 'b-line-series.php' || $current_page === 'rl-e-line-series.php' || $current_page === 'rbx-line-series.php' || $current_page === 'sp-line-series.php' || $current_page === 'v-line-series.php')) ? 'true' : 'false'; ?>"><i class="bi bi-chevron-right"></i></button>
                     <ul id="nested-magnetic-drill" class="sidebar-nested-sublist<?php echo ($current_category === 'drilling-and-lifting' && ($current_page === 'b-line-series.php' || $current_page === 'rl-e-line-series.php' || $current_page === 'rbx-line-series.php' || $current_page === 'sp-line-series.php' || $current_page === 'v-line-series.php')) ? '' : ' collapsed'; ?>">
-                        <li><a href="<?php echo $_sidebar_base; ?>drilling-and-lifting/magnetic-drill/b-line-series.php"<?php echo ($current_category === 'drilling-and-lifting' && $current_page === 'b-line-series.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-dash-lg"></i>B-Line Series</a></li>
-                        <li><a href="<?php echo $_sidebar_base; ?>drilling-and-lifting/magnetic-drill/rl-e-line-series.php"<?php echo ($current_category === 'drilling-and-lifting' && $current_page === 'rl-e-line-series.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-dash-lg"></i>RL-E Line Series</a></li>
-                        <li><a href="<?php echo $_sidebar_base; ?>drilling-and-lifting/magnetic-drill/rbx-line-series.php"<?php echo ($current_category === 'drilling-and-lifting' && $current_page === 'rbx-line-series.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-dash-lg"></i>RBX-Line Series</a></li>
-                        <li><a href="<?php echo $_sidebar_base; ?>drilling-and-lifting/magnetic-drill/sp-line-series.php"<?php echo ($current_category === 'drilling-and-lifting' && $current_page === 'sp-line-series.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-dash-lg"></i>SP-Line Series</a></li>
-                        <li><a href="<?php echo $_sidebar_base; ?>drilling-and-lifting/magnetic-drill/v-line-series.php"<?php echo ($current_category === 'drilling-and-lifting' && $current_page === 'v-line-series.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-dash-lg"></i>V-Line Series</a></li>
+                        <li><a href="<?php echo $_sidebar_base; ?>drilling-and-lifting/b-line-series.php"<?php echo ($current_category === 'drilling-and-lifting' && $current_page === 'b-line-series.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-dash-lg"></i>B-Line Series</a></li>
+                        <li><a href="<?php echo $_sidebar_base; ?>drilling-and-lifting/rl-e-line-series.php"<?php echo ($current_category === 'drilling-and-lifting' && $current_page === 'rl-e-line-series.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-dash-lg"></i>RL-E Line Series</a></li>
+                        <li><a href="<?php echo $_sidebar_base; ?>drilling-and-lifting/rbx-line-series.php"<?php echo ($current_category === 'drilling-and-lifting' && $current_page === 'rbx-line-series.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-dash-lg"></i>RBX-Line Series</a></li>
+                        <li><a href="<?php echo $_sidebar_base; ?>drilling-and-lifting/sp-line-series.php"<?php echo ($current_category === 'drilling-and-lifting' && $current_page === 'sp-line-series.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-dash-lg"></i>SP-Line Series</a></li>
+                        <li><a href="<?php echo $_sidebar_base; ?>drilling-and-lifting/v-line-series.php"<?php echo ($current_category === 'drilling-and-lifting' && $current_page === 'v-line-series.php') ? ' class="active-nested"' : ''; ?>><i class="bi bi-dash-lg"></i>V-Line Series</a></li>
                     </ul>
                 </li>
                 <li><a href="<?php echo $_sidebar_base; ?>drilling-and-lifting/cutters.php"><i class="bi bi-scissors"></i>Cutters</a></li>
@@ -1103,8 +1137,14 @@ if (($andison_idx = array_search('ANDISON', $path_parts)) !== false && isset($pa
                 <li><a href="<?php echo $_sidebar_base; ?>gas-detectors/calibration-gas-regulators.php"><i class="bi bi-sliders"></i>Calibration Gas and Regulators</a></li>
             </ul>
         </li>
-        <li class="">
+        <li class="has-sub">
             <a href="<?php echo $_sidebar_base; ?>portable-ventilators/portable-ventilators.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-fan"></i></span><span class="sidebar-label">Portable Ventilators</span></a>
+            <button class="sub-toggle" aria-controls="sub-portable-ventilators" aria-expanded="false"><i class="bi bi-chevron-down"></i></button>
+            <ul id="sub-portable-ventilators" class="sidebar-sublist collapsed">
+                <li><a href="<?php echo $_sidebar_base; ?>portable-ventilators/electric-driven.php"><i class="bi bi-lightning-charge"></i>Electric Driven</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>portable-ventilators/pneumatic-driven.php"><i class="bi bi-wind"></i>Pneumatic Driven</a></li>
+                <li><a href="<?php echo $_sidebar_base; ?>portable-ventilators/portable-ventilator-accessories.php"><i class="bi bi-gear"></i>Portable Ventilator Accessories</a></li>
+            </ul>
         </li>
         <li class="has-sub">
             <a href="<?php echo $_sidebar_base; ?>power-tools/power-tools.php"><span class="sidebar-icon" aria-hidden="true"><i class="bi bi-tools"></i></span><span class="sidebar-label">Power Tools</span></a>
@@ -1581,8 +1621,8 @@ if (($andison_idx = array_search('ANDISON', $path_parts)) !== false && isset($pa
             var base = '<?php echo rtrim($_sidebar_base,"/"); ?>';
             var maps = {
                 'arc-welding-robots': [
-                    { label:'G3 Controller Series',              href: base+'/arc-welding-robots/g3-controller-series.php' },
-                    { label:'G4 Controller Series',              href: base+'/arc-welding-robots/g4-controller-series.php' },
+                    { label:'G3 Controller Series',              href: base+'/arc-welding-robots/G3-Controller-Series.php' },
+                    { label:'G4 Controller Series',              href: base+'/arc-welding-robots/G4-Controller-Series.php' },
                     { label:'Featured Products and Solutions',   href: base+'/arc-welding-robots/featured-products-and-solution.php' },
                     { label:'Robot System Peripherals',          href: base+'/arc-welding-robots/robot-system-peripherals.php' }
                 ],
@@ -1623,7 +1663,8 @@ if (($andison_idx = array_search('ANDISON', $path_parts)) !== false && isset($pa
                 ],
                 'portable-ventilators': [
                     { label:'Electric Driven',  href: base+'/portable-ventilators/electric-driven.php' },
-                    { label:'Pneumatic Driven', href: base+'/portable-ventilators/pneumatic-driven.php' }
+                    { label:'Pneumatic Driven', href: base+'/portable-ventilators/pneumatic-driven.php' },
+                    { label:'Portable Ventilator Accessories', href: base+'/portable-ventilators/portable-ventilator-accessories.php' }
                 ],
                 'power-tools': [
                     { label:'Grinder',                          href: base+'/power-tools/grinder.php' },

@@ -16,12 +16,89 @@ if ($selectedBrand === '' || !isset($brands[$selectedBrand])) {
     $selectedBrand = $brandNames[0] ?? '';
 }
 
+$allCategories = andison_get_categories();
+
 function andison_safe_filename(string $name): string
 {
     $name = strtolower($name);
     $name = preg_replace('~[^a-z0-9._-]+~', '_', $name) ?? $name;
     $name = trim($name, '._-');
     return $name !== '' ? $name : 'file';
+}
+
+function andison_normalize_category_assignment(array $allCategories, string $categoryId, string $subcategoryId, string $subSubcategoryId): array
+{
+    $categoryId = trim($categoryId);
+    $subcategoryId = trim($subcategoryId);
+    $subSubcategoryId = trim($subSubcategoryId);
+
+    if ($categoryId === '') {
+        return [
+            'category_id' => '',
+            'subcategory_id' => '',
+            'sub_subcategory_id' => '',
+        ];
+    }
+
+    $category = null;
+    foreach ($allCategories as $cat) {
+        if ((string)($cat['id'] ?? '') === $categoryId) {
+            $category = $cat;
+            break;
+        }
+    }
+
+    if (!is_array($category)) {
+        return [
+            'category_id' => $categoryId,
+            'subcategory_id' => $subcategoryId,
+            'sub_subcategory_id' => $subSubcategoryId,
+        ];
+    }
+
+    $subcategoryIds = [];
+    $subSubParent = [];
+    foreach (($category['subcategories'] ?? []) as $sub) {
+        $subId = (string)($sub['id'] ?? '');
+        if ($subId === '') {
+            continue;
+        }
+        $subcategoryIds[$subId] = true;
+
+        foreach (($sub['subcategories'] ?? []) as $subSub) {
+            $subSubId = (string)($subSub['id'] ?? '');
+            if ($subSubId === '') {
+                continue;
+            }
+            $subSubParent[$subSubId] = $subId;
+        }
+    }
+
+    if ($subSubcategoryId !== '' && isset($subSubParent[$subSubcategoryId])) {
+        $subcategoryId = $subSubParent[$subSubcategoryId];
+    } elseif ($subSubcategoryId !== '') {
+        $subSubcategoryId = '';
+    }
+
+    if ($subcategoryId !== '' && !isset($subcategoryIds[$subcategoryId])) {
+        // Backward compatibility: legacy rows may have saved sub-subcategory id into subcategory_id.
+        if ($subSubcategoryId === '' && isset($subSubParent[$subcategoryId])) {
+            $subSubcategoryId = $subcategoryId;
+            $subcategoryId = $subSubParent[$subcategoryId];
+        } else {
+            $subcategoryId = '';
+        }
+    }
+
+    if ($subcategoryId === '' && $subSubcategoryId !== '' && isset($subSubParent[$subSubcategoryId])) {
+        $subcategoryId = $subSubParent[$subSubcategoryId];
+    }
+
+    return [
+        'category_id' => $categoryId,
+        'subcategory_id' => $subcategoryId,
+        'sub_subcategory_id' => $subSubcategoryId,
+    ];
 }
 
 /**
@@ -97,7 +174,7 @@ function andison_handle_datasheet_upload(): string
 // ── CSV Template download (GET) ──────────────────────────────────────────────
 if (isset($_GET['action']) && $_GET['action'] === 'download_csv_template') {
     andison_require_admin();
-    $headers = ['product_name','model','type','price','badge','description','specifications','category_id','subcategory_id','image_url','datasheet_url'];
+    $headers = ['product_name','model','type','price','badge','description','specifications','category_id','subcategory_id','sub_subcategory_id','image_url','datasheet_url'];
     $example = [
         'Welding Machine XYZ',
         'WM-1000',
@@ -108,6 +185,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_csv_template') {
         "Input Voltage: 220V\nOutput Current: 50-200A\nDuty Cycle: 60%",
         'arc-welding-machine',
         'mig-welding-machine',
+        '',
         'https://example.com/image.jpg',
         '',
     ];
@@ -152,9 +230,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
 
-            $expectedHeaders = ['product_name','model','type','price','badge','description','specifications','category_id','subcategory_id','image_url','datasheet_url'];
+            $expectedHeadersV1 = ['product_name','model','type','price','badge','description','specifications','category_id','subcategory_id','image_url','datasheet_url'];
+            $expectedHeadersV2 = ['product_name','model','type','price','badge','description','specifications','category_id','subcategory_id','sub_subcategory_id','image_url','datasheet_url'];
             $headerRow = fgetcsv($handle);
-            if ($headerRow === false || array_map('strtolower', array_map('trim', $headerRow)) !== $expectedHeaders) {
+            $normalizedHeaders = $headerRow === false ? [] : array_map('strtolower', array_map('trim', $headerRow));
+            $isV1 = $normalizedHeaders === $expectedHeadersV1;
+            $isV2 = $normalizedHeaders === $expectedHeadersV2;
+            if (!$isV1 && !$isV2) {
                 fclose($handle);
                 andison_set_flash('error', 'CSV headers do not match the template. Please download and use the official template.');
                 header('Location: products.php?brand=' . urlencode($brand));
@@ -170,7 +252,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $rowNum++;
                 if (count($row) < 9) { $errors[] = "Row {$rowNum}: too few columns, skipped."; continue; }
 
-                $row = array_pad($row, 11, '');
+                $row = array_pad($row, $isV2 ? 12 : 11, '');
                 $model = trim($row[1]);
                 $type  = trim($row[2]);
                 if ($model === '' || $type === '') {
@@ -178,8 +260,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     continue;
                 }
 
-                $imageUrl = filter_var(trim($row[9]), FILTER_VALIDATE_URL) ? trim($row[9]) : '';
-                $datasheetUrl = filter_var(trim($row[10]), FILTER_VALIDATE_URL) ? trim($row[10]) : '';
+                $rawCategoryId = trim((string)$row[7]);
+                $rawSubcategoryId = trim((string)$row[8]);
+                $rawSubSubcategoryId = $isV2 ? trim((string)$row[9]) : '';
+                $normalizedAssignment = andison_normalize_category_assignment(
+                    $allCategories,
+                    $rawCategoryId,
+                    $rawSubcategoryId,
+                    $rawSubSubcategoryId
+                );
+
+                $imageIndex = $isV2 ? 10 : 9;
+                $datasheetIndex = $isV2 ? 11 : 10;
+                $imageUrl = filter_var(trim((string)$row[$imageIndex]), FILTER_VALIDATE_URL) ? trim((string)$row[$imageIndex]) : '';
+                $datasheetUrl = filter_var(trim((string)$row[$datasheetIndex]), FILTER_VALIDATE_URL) ? trim((string)$row[$datasheetIndex]) : '';
                 $images = $imageUrl !== '' ? [$imageUrl] : [];
 
                 $brands[$brand]['products'][] = [
@@ -190,8 +284,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'badge'          => trim($row[4]),
                     'description'    => trim($row[5]),
                     'specifications' => trim($row[6]),
-                    'category_id'    => trim($row[7]),
-                    'subcategory_id' => trim($row[8]),
+                    'category_id'    => $normalizedAssignment['category_id'],
+                    'subcategory_id' => $normalizedAssignment['subcategory_id'],
+                    'sub_subcategory_id' => $normalizedAssignment['sub_subcategory_id'],
                     'image'          => $imageUrl,
                     'images'         => $images,
                     'datasheet'      => $datasheetUrl,
@@ -239,6 +334,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $specs = isset($_POST['specifications']) ? trim((string)$_POST['specifications']) : '';
             $catId  = isset($_POST['category_id'])    ? trim((string)$_POST['category_id'])    : '';
             $subId  = isset($_POST['subcategory_id']) ? trim((string)$_POST['subcategory_id']) : '';
+            $subSubId = isset($_POST['sub_subcategory_id']) ? trim((string)$_POST['sub_subcategory_id']) : '';
+            $normalizedAssignment = andison_normalize_category_assignment($allCategories, $catId, $subId, $subSubId);
+            $catId = $normalizedAssignment['category_id'];
+            $subId = $normalizedAssignment['subcategory_id'];
+            $subSubId = $normalizedAssignment['sub_subcategory_id'];
             $images    = andison_handle_multi_image_upload();
             $image     = $images[0] ?? '';
             $datasheet = andison_handle_datasheet_upload();
@@ -266,6 +366,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'datasheet'      => $datasheet,
                 'category_id'    => $catId,
                 'subcategory_id' => $subId,
+                'sub_subcategory_id' => $subSubId,
             ];
 
             if (andison_save_single_brand($brand, $brands[$brand])) {
@@ -295,6 +396,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $specs = isset($_POST['specifications']) ? trim((string)$_POST['specifications']) : '';
             $catId  = isset($_POST['category_id'])    ? trim((string)$_POST['category_id'])    : '';
             $subId  = isset($_POST['subcategory_id']) ? trim((string)$_POST['subcategory_id']) : '';
+            $subSubId = isset($_POST['sub_subcategory_id']) ? trim((string)$_POST['sub_subcategory_id']) : '';
+            $normalizedAssignment = andison_normalize_category_assignment($allCategories, $catId, $subId, $subSubId);
+            $catId = $normalizedAssignment['category_id'];
+            $subId = $normalizedAssignment['subcategory_id'];
+            $subSubId = $normalizedAssignment['sub_subcategory_id'];
             $images = andison_handle_multi_image_upload();
             // If no images submitted at all, fall back to existing product images
             if (empty($images)) {
@@ -330,6 +436,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'datasheet'      => $datasheet,
                 'category_id'    => $catId,
                 'subcategory_id' => $subId,
+                'sub_subcategory_id' => $subSubId,
             ];
 
             if (andison_save_single_brand($brand, $brands[$brand])) {
@@ -368,19 +475,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $editIndex = isset($_GET['edit']) ? (int)$_GET['edit'] : -1;
 $brandInfo = $selectedBrand !== '' ? ($brands[$selectedBrand] ?? []) : [];
 $products = isset($brandInfo['products']) && is_array($brandInfo['products']) ? $brandInfo['products'] : [];
-$allCategories = andison_get_categories(); // for category/subcategory dropdowns
 
 // Keep presets intentionally minimal: Optional only.
 $_typeOptions = ['optional' => 'Optional'];
 
 // Build flat ID→name lookup for display in the product table
 $_catNameMap = [];
+$_subParentMap = [];
 foreach ($allCategories as $_cat) {
     $_catNameMap[(string)$_cat['id']] = (string)$_cat['name'];
     foreach ($_cat['subcategories'] ?? [] as $_sub) {
         $_catNameMap[(string)$_sub['id']] = (string)$_sub['name'];
         foreach ($_sub['subcategories'] ?? [] as $_ss) {
             $_catNameMap[(string)$_ss['id']] = (string)$_ss['name'];
+            $_subParentMap[(string)$_ss['id']] = (string)$_sub['id'];
         }
     }
 }
@@ -541,10 +649,21 @@ andison_admin_header('Products', 'products');
                                             <div style="margin-top:3px;"><span style="font-size:10px;font-weight:700;background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:4px;padding:1px 6px;"><i class="bi bi-exclamation-triangle-fill"></i> No Category — won't show on browse pages</span></div>
                                         <?php else: ?>
                                             <?php
-                                                $dispCat = $_catNameMap[(string)$prod['category_id']] ?? (string)$prod['category_id'];
-                                                $dispSub = !empty($prod['subcategory_id']) ? ($_catNameMap[(string)$prod['subcategory_id']] ?? (string)$prod['subcategory_id']) : '';
+                                                $storedCatId = trim((string)($prod['category_id'] ?? ''));
+                                                $storedSubId = trim((string)($prod['subcategory_id'] ?? ''));
+                                                $storedSubSubId = trim((string)($prod['sub_subcategory_id'] ?? ''));
+
+                                                // Backward compatibility: legacy rows may have saved sub-subcategory into subcategory_id.
+                                                if ($storedSubSubId === '' && $storedSubId !== '' && isset($_subParentMap[$storedSubId])) {
+                                                    $storedSubSubId = $storedSubId;
+                                                    $storedSubId = $_subParentMap[$storedSubId];
+                                                }
+
+                                                $dispCat = $_catNameMap[$storedCatId] ?? $storedCatId;
+                                                $dispSub = $storedSubId !== '' ? ($_catNameMap[$storedSubId] ?? $storedSubId) : '';
+                                                $dispSubSub = $storedSubSubId !== '' ? ($_catNameMap[$storedSubSubId] ?? $storedSubSubId) : '';
                                             ?>
-                                            <div style="margin-top:3px;"><span style="font-size:10px;color:#6b7280;"><i class="bi bi-folder-check"></i> <?php echo htmlspecialchars($dispCat); ?><?php if ($dispSub !== ''): ?> › <?php echo htmlspecialchars($dispSub); ?><?php endif; ?></span></div>
+                                            <div style="margin-top:3px;"><span style="font-size:10px;color:#6b7280;"><i class="bi bi-folder-check"></i> <?php echo htmlspecialchars($dispCat); ?><?php if ($dispSub !== ''): ?> › <?php echo htmlspecialchars($dispSub); ?><?php endif; ?><?php if ($dispSubSub !== ''): ?> › <?php echo htmlspecialchars($dispSubSub); ?><?php endif; ?></span></div>
                                         <?php endif; ?>
                                     </td>
                                     <td style="color:#6b7280;font-size:12px;"><?php echo htmlspecialchars((string)($prod['type'] ?? '')); ?></td>
@@ -600,6 +719,7 @@ andison_admin_header('Products', 'products');
                                                     ?>"
                                                     data-category="<?php echo htmlspecialchars((string)($prod['category_id'] ?? ''), ENT_QUOTES); ?>"
                                                     data-subcategory="<?php echo htmlspecialchars((string)($prod['subcategory_id'] ?? ''), ENT_QUOTES); ?>"
+                                                    data-subsubcategory="<?php echo htmlspecialchars((string)($prod['sub_subcategory_id'] ?? ''), ENT_QUOTES); ?>"
                                                     data-datasheet="<?php echo htmlspecialchars((string)($prod['datasheet'] ?? ''), ENT_QUOTES); ?>"
                                                     style="padding:5px 10px;font-size:11px;">
                                                 <i class="bi bi-pencil"></i> Edit
@@ -641,6 +761,7 @@ andison_admin_header('Products', 'products');
                 <div style="margin-bottom:24px;background:linear-gradient(135deg,#eef0ff,#f5f3ff);border:1.5px solid rgba(43,17,219,0.18);border-radius:10px;padding:16px;">                    <h3 style="font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;border-bottom:2px solid rgba(43,17,219,0.12);padding-bottom:10px;"><i class="bi bi-diagram-3"></i> Category Assignment <span style="font-size:10px;font-weight:600;background:#2b11db;color:#fff;border-radius:999px;padding:2px 8px;margin-left:6px;">REQUIRED to show on site</span></h3>
                     <input type="hidden" id="finalCategoryId" name="category_id">
                     <input type="hidden" id="finalSubcategoryId" name="subcategory_id">
+                        <input type="hidden" id="finalSubSubcategoryId" name="sub_subcategory_id">
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:8px;">
                         <div class="field" style="margin:0;">
                             <label for="editCategory"><i class="bi bi-folder"></i> Category</label>
@@ -735,7 +856,18 @@ andison_admin_header('Products', 'products');
 
                     <div class="field" style="margin:0;margin-bottom:12px;">
                         <label><i class="bi bi-table"></i> Specifications Table (Optional)</label>
-                        <div style="overflow:auto;border:1px solid #e5e7eb;border-radius:10px;background:#fff;">
+                        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+                            <label for="specTableMode" style="margin:0;font-size:11px;font-weight:700;color:#374151;">Table Style</label>
+                            <select id="specTableMode" onchange="setSpecTableMode(this.value, true)" style="min-width:220px;padding:6px 9px;border:1.5px solid #dbe1ea;border-radius:8px;font-size:11px;font-weight:600;background:#fff;">
+                                <option value="standard">Spreadsheet Dark Grid (Excel-like)</option>
+                                <option value="grouped-pairs">Grouped Header (like image)</option>
+                            </select>
+                            <button type="button" onclick="applyAirflowSpecTemplate()" style="display:inline-flex;align-items:center;gap:6px;background:#fefce8;border:1px solid #fde68a;color:#854d0e;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
+                                <i class="bi bi-grid-3x3-gap"></i> Use Airflow Template
+                            </button>
+                        </div>
+                        <div id="specGroupHeaderWrap" style="display:none;margin-bottom:8px;padding:8px;border:1px solid #dbeafe;border-radius:8px;background:#eff6ff;"></div>
+                        <div id="specTableBuilderWrap" style="overflow:auto;border:1px solid #e5e7eb;border-radius:10px;background:#fff;">
                             <table id="specTableBuilder" style="width:100%;border-collapse:separate;border-spacing:0;min-width:420px;">
                                 <thead id="specTableHead"></thead>
                                 <tbody id="specTableBody"></tbody>
@@ -745,11 +877,14 @@ andison_admin_header('Products', 'products');
                             <button type="button" onclick="addSpecTableDataRow()" style="display:inline-flex;align-items:center;gap:6px;background:#eef2ff;border:1px solid #c7d2fe;color:#2b11db;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
                                 <i class="bi bi-plus-lg"></i> Add Row
                             </button>
-                            <button type="button" onclick="addSpecTableColumn()" style="display:inline-flex;align-items:center;gap:6px;background:#ecfdf5;border:1px solid #a7f3d0;color:#047857;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
+                            <button type="button" id="specAddColumnBtn" onclick="addSpecTableColumn()" style="display:inline-flex;align-items:center;gap:6px;background:#ecfdf5;border:1px solid #a7f3d0;color:#047857;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
                                 <i class="bi bi-layout-three-columns"></i> Add Column
                             </button>
+                            <button type="button" onclick="pasteExcelIntoSpecTable()" style="display:inline-flex;align-items:center;gap:6px;background:#fff7ed;border:1px solid #fdba74;color:#9a3412;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
+                                <i class="bi bi-clipboard"></i> Paste Excel
+                            </button>
                         </div>
-                        <div style="font-size:11px;color:#9ca3af;margin-top:6px;"><i class="bi bi-info-circle"></i> Use Add Row and Add Column to build a full specification table.</div>
+                        <div id="specTableHelpText" style="font-size:11px;color:#9ca3af;margin-top:6px;"><i class="bi bi-info-circle"></i> Excel-like mode: use Tab/Enter/Arrow Up/Arrow Down and paste multi-cell data from Excel.</div>
                     </div>
 
                     <div class="field" style="margin:0;">
@@ -804,6 +939,7 @@ andison_admin_header('Products', 'products');
                 <button class="btn btn-primary" type="submit"><i class="bi bi-check-circle"></i> Save Changes</button>
             </div>
         </form>
+        <div class="edit-modal-resize-handle" title="Drag to resize" aria-hidden="true"></div>
     </div>
 </div>
 
@@ -820,6 +956,8 @@ body.modal-open {
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 14px;
+    box-sizing: border-box;
     animation: fadeIn 0.2s ease;
 }
 
@@ -841,14 +979,38 @@ body.modal-open {
     background: white;
     border-radius: 16px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    max-width: 600px;
-    width: 90%;
-    max-height: 95vh;
-    height: auto;
+    width: min(92vw, 980px);
+    max-width: min(96vw, 1100px);
+    height: min(88vh, 860px);
+    max-height: 94vh;
+    min-width: min(520px, 96vw);
+    min-height: 520px;
     display: flex;
     flex-direction: column;
     animation: modalSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     overflow: hidden;
+}
+
+.edit-modal-resize-handle {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 1px solid rgba(99, 102, 241, 0.45);
+    cursor: nwse-resize;
+    z-index: 6;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
+    background-color: rgba(255, 255, 255, 0.95);
+    background:
+        linear-gradient(135deg, transparent 0%, transparent 38%, rgba(99,102,241,0.55) 38%, rgba(99,102,241,0.55) 45%, transparent 45%, transparent 58%, rgba(99,102,241,0.55) 58%, rgba(99,102,241,0.55) 65%, transparent 65%, transparent 100%);
+    opacity: 1;
+}
+
+.edit-modal-content.is-resizing,
+.edit-modal-content.is-resizing * {
+    cursor: nwse-resize !important;
 }
 
 @keyframes modalSlideIn {
@@ -903,16 +1065,50 @@ body.modal-open {
     transform: scale(1.1);
 }
 
+.edit-product-form {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
 .edit-modal-body {
     padding: 24px;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 0;
+    max-height: none;
     overflow-y: auto;
     overflow-x: hidden;
-    flex: 1;
-    min-height: 150px;
-    max-height: calc(95vh - 200px);
     scroll-behavior: smooth;
     scroll-padding: 16px;
     background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 2%, rgba(255,255,255,1) 98%, rgba(0,0,0,0.02) 100%);
+}
+
+@media (max-width: 900px) {
+    .edit-modal {
+        padding: 10px;
+    }
+
+    .edit-modal-content {
+        width: 96vw;
+        max-width: 96vw;
+        height: 92vh;
+        min-width: 0;
+        min-height: 0;
+    }
+
+    .edit-modal-body {
+        padding: 18px;
+    }
+}
+
+@media (pointer: coarse) {
+    .edit-modal-resize-handle {
+        display: none;
+    }
 }
 
 /* Custom scrollbar styling */
@@ -1126,16 +1322,37 @@ function isSubSubcategoryDisabledForSubcategory(subId) {
     return _subSubcategoryDisabledParents.indexOf(String(subId || '')) !== -1;
 }
 
-// Resolve category path when stored value is either a subcategory ID or sub-subcategory ID.
-function resolveCategoryPath(catId, subId) {
+// Resolve category path from normalized or legacy record values.
+function resolveCategoryPath(catId, subId, subSubId) {
     var path = { subId: '', subSubId: '' };
-    if (!catId || !subId) return path;
+    if (!catId) return path;
 
     var cat = _andisonCategories.find(function(c){ return c.id === catId; });
     if (!cat) {
         path.subId = subId;
+        path.subSubId = subSubId;
         return path;
     }
+
+    if (subSubId) {
+        path.subSubId = subSubId;
+
+        if (subId) {
+            path.subId = subId;
+        } else {
+            for (var p = 0; p < (cat.subcategories || []).length; p++) {
+                var parent = cat.subcategories[p];
+                var deepBySubSub = (parent.subcategories || []).find(function(ss){ return ss.id === subSubId; });
+                if (deepBySubSub) {
+                    path.subId = parent.id;
+                    break;
+                }
+            }
+        }
+        return path;
+    }
+
+    if (!subId) return path;
 
     var direct = (cat.subcategories || []).find(function(s){ return s.id === subId; });
     if (direct) {
@@ -1243,11 +1460,17 @@ function updateFinalSubcategory() {
     var subId = document.getElementById('editSubcategory').value;
     var subSubSel = document.getElementById('editSubSubcategory');
     var subSubId = subSubSel ? subSubSel.value : '';
-    var finalSubId = subSubId || subId;
-    if (!catId) finalSubId = '';
+    if (!catId) {
+        subId = '';
+        subSubId = '';
+    }
 
     document.getElementById('finalCategoryId').value    = catId;
-    document.getElementById('finalSubcategoryId').value = finalSubId;
+    document.getElementById('finalSubcategoryId').value = subId;
+    var subSubHidden = document.getElementById('finalSubSubcategoryId');
+    if (subSubHidden) {
+        subSubHidden.value = subSubId;
+    }
     refreshCategoryPreview();
 }
 
@@ -1256,6 +1479,11 @@ function refreshCategoryPreview() {
     if (!preview) return;
     var cat = document.getElementById('finalCategoryId').value;
     var sub = document.getElementById('finalSubcategoryId').value;
+    var subSub = '';
+    var subSubInput = document.getElementById('finalSubSubcategoryId');
+    if (subSubInput) {
+        subSub = subSubInput.value;
+    }
     if (!cat) {
         preview.innerHTML = '<span style="color:#b45309;"><i class="bi bi-exclamation-triangle" style="font-size:10px;"></i> No category assigned — product won\'t appear in browse pages.</span>';
         return;
@@ -1267,25 +1495,40 @@ function refreshCategoryPreview() {
     var catData = _andisonCategories.find(function(c){ return c.id === cat; });
     if (catData) {
         catName = catData.name || cat;
+
         if (sub) {
             var subData = (catData.subcategories || []).find(function(s){ return s.id === sub; });
             if (subData) {
                 subName = subData.name || sub;
-            } else {
-                for (var i = 0; i < (catData.subcategories || []).length; i++) {
-                    var parentSub = catData.subcategories[i];
-                    var deep = (parentSub.subcategories || []).find(function(ss){ return ss.id === sub; });
-                    if (deep) {
-                        subName = parentSub.name || parentSub.id;
-                        subSubName = deep.name || deep.id;
-                        break;
+                if (subSub) {
+                    var explicitDeep = (subData.subcategories || []).find(function(ss){ return ss.id === subSub; });
+                    if (explicitDeep) {
+                        subSubName = explicitDeep.name || subSub;
                     }
-                }
-                if (!subName && !subSubName) {
-                    subName = sub;
                 }
             }
         }
+
+        if (subSub && !subSubName) {
+            for (var i = 0; i < (catData.subcategories || []).length; i++) {
+                var parentSub = catData.subcategories[i];
+                var deep = (parentSub.subcategories || []).find(function(ss){ return ss.id === subSub; });
+                if (deep) {
+                    if (!subName) {
+                        subName = parentSub.name || parentSub.id;
+                    }
+                    subSubName = deep.name || deep.id;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (!subName && sub) {
+        subName = sub;
+    }
+    if (!subSubName && subSub) {
+        subSubName = subSub;
     }
 
     var path = catName;
@@ -1352,6 +1595,15 @@ function normalizeSpecTableRows(rows) {
     });
 }
 
+function normalizeSpecMatrixRows(rows, columnCount) {
+    if (!Array.isArray(rows)) return [];
+    return rows.map(function(row) {
+        var out = Array.isArray(row) ? row.slice(0, columnCount) : [];
+        while (out.length < columnCount) out.push('');
+        return out.map(function(cell) { return String(cell || ''); });
+    });
+}
+
 function isDefaultSpecHeaderLabel(header, idx) {
     var h = String(header || '').trim().toLowerCase();
     if (h === '') return true;
@@ -1366,6 +1618,7 @@ function parseSpecificationsForEditor(rawSpecifications) {
     var result = {
         text: '',
         table: [],
+        matrix: null,
     };
 
     if (!source) return result;
@@ -1373,6 +1626,63 @@ function parseSpecificationsForEditor(rawSpecifications) {
     try {
         var parsed = JSON.parse(source);
         if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+            var hasMatrix = parsed.tableMatrix && typeof parsed.tableMatrix === 'object';
+            var looksLikeV2 = parsed.format === 'andison_specs_v2' || hasMatrix;
+
+            if (looksLikeV2) {
+                result.text = String(parsed.text || '').trim();
+
+                var matrixRaw = parsed.tableMatrix || {};
+                var mode = matrixRaw.mode === 'grouped-pairs' ? 'grouped-pairs' : 'standard';
+                var headers = Array.isArray(matrixRaw.headers)
+                    ? matrixRaw.headers.map(function(h) { return String(h || '').trim(); }).filter(function(h) { return h !== ''; })
+                    : [];
+
+                if (mode === 'grouped-pairs') {
+                    if (headers.length === 0) {
+                        headers = getDefaultGroupedHeaders();
+                    }
+
+                    var groups = normalizeGroupedGroups(matrixRaw.groups || [], Math.max(1, headers.length - 1));
+                    var targetCols = 1 + getGroupedDataColumnCount(groups);
+                    headers = headers.slice(0, targetCols);
+                    while (headers.length < targetCols) {
+                        headers.push(getDefaultGroupedSubHeader(headers.length));
+                    }
+
+                    headers[0] = String(headers[0] || 'Model').trim() || 'Model';
+                    for (var hc = 1; hc < headers.length; hc++) {
+                        if (String(headers[hc] || '').trim() === '') {
+                            headers[hc] = getDefaultGroupedSubHeader(hc);
+                        }
+                    }
+
+                    var groupedRows = normalizeSpecMatrixRows(matrixRaw.rows || [], headers.length);
+                    if (groupedRows.length === 0) groupedRows = [new Array(headers.length).fill('')];
+
+                    result.matrix = {
+                        mode: mode,
+                        headers: headers,
+                        rows: groupedRows,
+                        groups: groups,
+                    };
+                    return result;
+                }
+
+                if (headers.length > 0) {
+                    var rows = normalizeSpecMatrixRows(matrixRaw.rows || [], headers.length);
+                    if (rows.length === 0) rows = [new Array(headers.length).fill('')];
+
+                    result.matrix = {
+                        mode: 'standard',
+                        headers: headers,
+                        rows: rows,
+                        groups: [],
+                    };
+                    return result;
+                }
+            }
+
             var hasTable = Array.isArray(parsed.table);
             if (parsed.format === 'andison_specs_v1' || hasTable) {
                 result.text = String(parsed.text || '').trim();
@@ -1485,14 +1795,150 @@ function matrixToSpecTableRows(headers, rows) {
     return hasMeaningfulData ? tableRows : [];
 }
 
+var _specTableMode = 'standard';
 var _specTableHeaders = ['Parameter', 'Value'];
 var _specTableRows = [['', '']];
+var _specTableGroups = [];
+
+function getDefaultGroupedHeaders() {
+    return ['Model', 'cfm', 'm3/hr'];
+}
+
+function getDefaultGroupedGroups() {
+    return [{ title: 'Free Air', span: 2 }];
+}
+
+function getDefaultGroupedSubHeader(colIdx) {
+    return (colIdx % 2 === 1) ? 'cfm' : 'm3/hr';
+}
+
+function normalizeGroupedGroups(groups, dataColumnCount) {
+    var cols = parseInt(dataColumnCount, 10);
+    if (!isFinite(cols) || cols < 1) cols = 1;
+
+    var raw = Array.isArray(groups) ? groups : [];
+    var normalized = raw.map(function(g) {
+        if (g && typeof g === 'object' && !Array.isArray(g)) {
+            var spanObj = parseInt(g.span, 10);
+            return {
+                title: String(g.title || g.label || g.name || '').trim(),
+                span: (isFinite(spanObj) && spanObj > 0) ? spanObj : 1,
+            };
+        }
+        return {
+            title: String(g || '').trim(),
+            span: 2,
+        };
+    });
+
+    if (normalized.length === 0) {
+        normalized = [{ title: 'Free Air', span: cols }];
+    }
+
+    var remaining = cols;
+    for (var i = 0; i < normalized.length; i++) {
+        var groupsLeft = normalized.length - i - 1;
+        if (i === normalized.length - 1) {
+            normalized[i].span = Math.max(1, remaining);
+            remaining = 0;
+            break;
+        }
+
+        var maxSpan = Math.max(1, remaining - groupsLeft);
+        var nextSpan = normalized[i].span;
+        if (!isFinite(nextSpan) || nextSpan < 1) nextSpan = 1;
+        if (nextSpan > maxSpan) nextSpan = maxSpan;
+
+        normalized[i].span = nextSpan;
+        remaining -= nextSpan;
+    }
+
+    if (remaining > 0 && normalized.length > 0) {
+        normalized[normalized.length - 1].span += remaining;
+    }
+
+    return normalized.map(function(g, idx) {
+        var title = String(g.title || '').trim();
+        if (title === '') {
+            title = idx === 0 ? 'Free Air' : ('Group ' + (idx + 1));
+        }
+        return { title: title, span: g.span };
+    });
+}
+
+function getGroupedDataColumnCount(groups) {
+    if (!Array.isArray(groups)) return 0;
+    return groups.reduce(function(sum, g) {
+        var span = parseInt(g && g.span, 10);
+        if (!isFinite(span) || span < 1) span = 1;
+        return sum + span;
+    }, 0);
+}
+
+function getGroupedStartColumn(groupIdx, groups) {
+    var gs = Array.isArray(groups) ? groups : _specTableGroups;
+    var col = 1;
+    for (var i = 0; i < groupIdx; i++) {
+        var span = parseInt(gs[i] && gs[i].span, 10);
+        if (!isFinite(span) || span < 1) span = 1;
+        col += span;
+    }
+    return col;
+}
+
+function findGroupedIndexByColumn(colIdx) {
+    var cursor = 1;
+    for (var i = 0; i < _specTableGroups.length; i++) {
+        var span = parseInt(_specTableGroups[i] && _specTableGroups[i].span, 10);
+        if (!isFinite(span) || span < 1) span = 1;
+        var end = cursor + span - 1;
+        if (colIdx >= cursor && colIdx <= end) return i;
+        cursor = end + 1;
+    }
+    return _specTableGroups.length - 1;
+}
+
+function isDefaultGroupedHeader(header, colIdx) {
+    var h = String(header || '').trim().toLowerCase();
+    if (colIdx === 0) return h === 'model' || h === '';
+    var pos = (colIdx - 1) % 2;
+    return pos === 0 ? (h === 'cfm' || h === '') : (h === 'm3/hr' || h === 'm3hr' || h === '');
+}
 
 function normalizeSpecTableState() {
-    if (!Array.isArray(_specTableHeaders)) _specTableHeaders = [];
-    if (_specTableHeaders.length === 0) _specTableHeaders = ['Parameter', 'Value'];
+    if (_specTableMode !== 'grouped-pairs') _specTableMode = 'standard';
 
+    if (!Array.isArray(_specTableHeaders)) _specTableHeaders = [];
     if (!Array.isArray(_specTableRows)) _specTableRows = [];
+
+    if (_specTableMode === 'grouped-pairs') {
+        if (_specTableHeaders.length === 0) {
+            _specTableHeaders = getDefaultGroupedHeaders();
+        }
+
+        _specTableHeaders[0] = String(_specTableHeaders[0] || 'Model').trim() || 'Model';
+
+        var dataCols = Math.max(1, _specTableHeaders.length - 1);
+        _specTableGroups = normalizeGroupedGroups(_specTableGroups, dataCols);
+
+        var normalizedDataCols = getGroupedDataColumnCount(_specTableGroups);
+        var targetHeaders = 1 + normalizedDataCols;
+        _specTableHeaders = _specTableHeaders.slice(0, targetHeaders);
+        while (_specTableHeaders.length < targetHeaders) {
+            _specTableHeaders.push(getDefaultGroupedSubHeader(_specTableHeaders.length));
+        }
+
+        for (var hc = 1; hc < _specTableHeaders.length; hc++) {
+            var val = String(_specTableHeaders[hc] || '').trim();
+            if (val === '') {
+                _specTableHeaders[hc] = getDefaultGroupedSubHeader(hc);
+            }
+        }
+    } else {
+        if (_specTableHeaders.length === 0) _specTableHeaders = ['Parameter', 'Value'];
+        _specTableGroups = [];
+    }
+
     if (_specTableRows.length === 0) {
         _specTableRows = [new Array(_specTableHeaders.length).fill('')];
     }
@@ -1504,8 +1950,299 @@ function normalizeSpecTableState() {
     });
 }
 
+function getSpecColumnLabel(colIdx) {
+    var n = parseInt(colIdx, 10);
+    if (!isFinite(n) || n < 0) return '';
+
+    var label = '';
+    n += 1;
+    while (n > 0) {
+        var rem = (n - 1) % 26;
+        label = String.fromCharCode(65 + rem) + label;
+        n = Math.floor((n - 1) / 26);
+    }
+
+    return label;
+}
+
+function getSpecCellPositionFromElement(el) {
+    if (!el || !el.getAttribute) return { row: 0, col: 0 };
+
+    var row = parseInt(el.getAttribute('data-row'), 10);
+    var col = parseInt(el.getAttribute('data-col'), 10);
+
+    if (!isFinite(row) || row < 0) row = 0;
+    if (!isFinite(col) || col < 0) col = 0;
+
+    return { row: row, col: col };
+}
+
+function focusSpecTableCell(rowIdx, colIdx) {
+    var selector = '.spec-table-input[data-row="' + rowIdx + '"][data-col="' + colIdx + '"]';
+    var input = document.querySelector(selector);
+    if (!input) return false;
+
+    input.focus();
+    input.select();
+    return true;
+}
+
+function ensureSpecTableGridSize(minRows, minCols) {
+    normalizeSpecTableState();
+
+    var targetRows = parseInt(minRows, 10);
+    var targetCols = parseInt(minCols, 10);
+    if (!isFinite(targetRows) || targetRows < 1) targetRows = 1;
+    if (!isFinite(targetCols) || targetCols < 1) targetCols = 1;
+
+    while (_specTableHeaders.length < targetCols) {
+        _specTableHeaders.push('Column ' + (_specTableHeaders.length + 1));
+    }
+
+    _specTableRows = _specTableRows.map(function(row) {
+        var next = Array.isArray(row) ? row.slice(0) : [];
+        while (next.length < _specTableHeaders.length) next.push('');
+        return next;
+    });
+
+    while (_specTableRows.length < targetRows) {
+        _specTableRows.push(new Array(_specTableHeaders.length).fill(''));
+    }
+}
+
+function applyPastedSpecText(rawText, startRow, startCol) {
+    if (_specTableMode !== 'standard') return false;
+
+    var normalized = String(rawText || '').replace(/\r\n?/g, '\n');
+    if (normalized.trim() === '') return false;
+
+    var looksTabular = normalized.indexOf('\t') !== -1 || normalized.indexOf('\n') !== -1;
+    if (!looksTabular) return false;
+
+    var lines = normalized.split('\n');
+    while (lines.length > 0 && lines[lines.length - 1] === '') lines.pop();
+    if (lines.length === 0) return false;
+
+    var matrix = lines.map(function(line) {
+        return line.split('\t');
+    });
+
+    var maxCols = matrix.reduce(function(max, row) {
+        return Math.max(max, row.length);
+    }, 0);
+    if (maxCols < 1) return false;
+
+    var rowOffset = Math.max(0, parseInt(startRow, 10) || 0);
+    var colOffset = Math.max(0, parseInt(startCol, 10) || 0);
+
+    ensureSpecTableGridSize(rowOffset + matrix.length, colOffset + maxCols);
+
+    for (var r = 0; r < matrix.length; r++) {
+        for (var c = 0; c < maxCols; c++) {
+            _specTableRows[rowOffset + r][colOffset + c] = String((matrix[r] && matrix[r][c]) || '');
+        }
+    }
+
+    renderSpecTableBuilder();
+    syncSpecificationsHiddenField();
+    window.requestAnimationFrame(function() {
+        focusSpecTableCell(rowOffset, colOffset);
+    });
+
+    return true;
+}
+
+function handleSpecCellPaste(event, rowIdx, colIdx) {
+    if (_specTableMode !== 'standard') return;
+    var clipboard = event.clipboardData || window.clipboardData;
+    if (!clipboard) return;
+
+    var text = clipboard.getData('text');
+    if (applyPastedSpecText(text, rowIdx, colIdx)) {
+        event.preventDefault();
+    }
+}
+
+function handleSpecCellKeyDown(event, rowIdx, colIdx) {
+    if (_specTableMode !== 'standard') return;
+
+    var nextRow = rowIdx;
+    var nextCol = colIdx;
+    var handled = false;
+
+    if (event.key === 'Enter') {
+        handled = true;
+        nextRow = event.shiftKey ? rowIdx - 1 : rowIdx + 1;
+    } else if (event.key === 'ArrowDown') {
+        handled = true;
+        nextRow = rowIdx + 1;
+    } else if (event.key === 'ArrowUp') {
+        handled = true;
+        nextRow = rowIdx - 1;
+    } else if (event.key === 'Tab') {
+        handled = true;
+        if (event.shiftKey) {
+            if (colIdx > 0) {
+                nextCol = colIdx - 1;
+            } else {
+                nextRow = Math.max(0, rowIdx - 1);
+                nextCol = Math.max(0, _specTableHeaders.length - 1);
+            }
+        } else {
+            if (colIdx < _specTableHeaders.length - 1) {
+                nextCol = colIdx + 1;
+            } else {
+                nextRow = rowIdx + 1;
+                nextCol = 0;
+            }
+        }
+    }
+
+    if (!handled) return;
+
+    event.preventDefault();
+    if (nextRow < 0) nextRow = 0;
+    if (nextCol < 0) nextCol = 0;
+
+    ensureSpecTableGridSize(nextRow + 1, nextCol + 1);
+    renderSpecTableBuilder();
+    syncSpecificationsHiddenField();
+
+    window.requestAnimationFrame(function() {
+        focusSpecTableCell(nextRow, nextCol);
+    });
+}
+
+function pasteExcelIntoSpecTable() {
+    if (_specTableMode !== 'standard') {
+        customAlert('Paste from Excel is available in Spreadsheet mode.');
+        return;
+    }
+
+    var pos = getSpecCellPositionFromElement(document.activeElement);
+
+    if (!navigator.clipboard || !navigator.clipboard.readText) {
+        customAlert('Clipboard API is not available. Click a cell then use Ctrl+V to paste from Excel.');
+        return;
+    }
+
+    navigator.clipboard.readText().then(function(text) {
+        if (!applyPastedSpecText(text, pos.row, pos.col)) {
+            customAlert('No Excel-style table data found in clipboard.');
+        }
+    }).catch(function() {
+        customAlert('Clipboard permission denied. Click a cell then use Ctrl+V to paste from Excel.');
+    });
+}
+
+function updateSpecTableModeUi() {
+    var modeSel = document.getElementById('specTableMode');
+    if (modeSel) modeSel.value = _specTableMode;
+
+    var tableWrap = document.getElementById('specTableBuilderWrap');
+    if (tableWrap) {
+        if (_specTableMode === 'grouped-pairs') {
+            tableWrap.style.border = '1px solid #e5e7eb';
+            tableWrap.style.background = '#fff';
+            tableWrap.style.boxShadow = 'none';
+        } else {
+            tableWrap.style.border = '1px solid #4b5563';
+            tableWrap.style.background = 'linear-gradient(180deg,#101217 0%,#171b24 100%)';
+            tableWrap.style.boxShadow = 'inset 0 0 0 1px rgba(255,255,255,0.03)';
+        }
+    }
+
+    var addColBtn = document.getElementById('specAddColumnBtn');
+    if (addColBtn) {
+        if (_specTableMode === 'grouped-pairs') {
+            addColBtn.innerHTML = '<i class="bi bi-layout-three-columns"></i> Add Group';
+        } else {
+            addColBtn.innerHTML = '<i class="bi bi-layout-three-columns"></i> Add Column';
+        }
+    }
+
+    var help = document.getElementById('specTableHelpText');
+    if (help) {
+        if (_specTableMode === 'grouped-pairs') {
+            help.innerHTML = '<i class="bi bi-info-circle"></i> Grouped mode supports merged headers: set each group title and span (number of merged columns).';
+        } else {
+            help.innerHTML = '<i class="bi bi-info-circle"></i> Spreadsheet mode: use Tab/Enter/Arrow Up/Arrow Down and paste multi-cell data directly from Excel.';
+        }
+    }
+}
+
+function renderGroupedHeaderControls() {
+    var wrap = document.getElementById('specGroupHeaderWrap');
+    if (!wrap) return;
+
+    if (_specTableMode !== 'grouped-pairs') {
+        wrap.style.display = 'none';
+        wrap.innerHTML = '';
+        return;
+    }
+
+    wrap.style.display = 'block';
+    wrap.innerHTML = '';
+
+    var title = document.createElement('div');
+    title.style.cssText = 'font-size:11px;font-weight:700;color:#1e3a8a;margin-bottom:6px;';
+    title.textContent = 'Group Headers';
+    wrap.appendChild(title);
+
+    for (var i = 0; i < _specTableGroups.length; i++) {
+        (function(groupIdx) {
+            var row = document.createElement('div');
+            row.style.cssText = 'display:grid;grid-template-columns:72px 1fr 84px auto;gap:8px;align-items:center;margin-bottom:6px;';
+
+            var label = document.createElement('div');
+            label.style.cssText = 'font-size:10px;font-weight:700;color:#1e40af;';
+            label.textContent = 'Group ' + (groupIdx + 1);
+
+            var input = document.createElement('input');
+            input.type = 'text';
+            input.value = String((_specTableGroups[groupIdx] && _specTableGroups[groupIdx].title) || '');
+            input.placeholder = 'Group title';
+            input.style.cssText = 'padding:6px 8px;border:1.5px solid #bfdbfe;border-radius:7px;font-size:11px;';
+            input.addEventListener('input', function() {
+                if (!_specTableGroups[groupIdx]) return;
+                _specTableGroups[groupIdx].title = this.value;
+                renderSpecTableBuilder();
+                syncSpecificationsHiddenField();
+            });
+
+            var spanInput = document.createElement('input');
+            spanInput.type = 'number';
+            spanInput.min = '1';
+            spanInput.max = '12';
+            spanInput.value = String((_specTableGroups[groupIdx] && _specTableGroups[groupIdx].span) || 1);
+            spanInput.title = 'Merged columns in this group';
+            spanInput.style.cssText = 'padding:6px 8px;border:1.5px solid #bfdbfe;border-radius:7px;font-size:11px;text-align:center;';
+            spanInput.addEventListener('change', function() {
+                setSpecTableGroupSpan(groupIdx, this.value);
+            });
+
+            var removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.innerHTML = '&times;';
+            removeBtn.title = 'Remove group';
+            removeBtn.style.cssText = 'width:24px;height:24px;border-radius:6px;border:1px solid #fecaca;background:#fef2f2;color:#dc2626;font-size:16px;line-height:1;cursor:pointer;';
+            removeBtn.addEventListener('click', function() {
+                removeSpecTableGroup(groupIdx);
+            });
+
+            row.appendChild(label);
+            row.appendChild(input);
+            row.appendChild(spanInput);
+            row.appendChild(removeBtn);
+            wrap.appendChild(row);
+        })(i);
+    }
+}
+
 function renderSpecTableBuilder() {
     normalizeSpecTableState();
+    updateSpecTableModeUi();
+    renderGroupedHeaderControls();
 
     var head = document.getElementById('specTableHead');
     var body = document.getElementById('specTableBody');
@@ -1514,63 +2251,165 @@ function renderSpecTableBuilder() {
     head.innerHTML = '';
     body.innerHTML = '';
 
-    var headRow = document.createElement('tr');
-    _specTableHeaders.forEach(function(header, colIdx) {
-        var th = document.createElement('th');
-        th.style.cssText = 'padding:8px;border-bottom:1px solid #e5e7eb;background:#f8fafc;vertical-align:middle;';
+    var isStandardDark = _specTableMode === 'standard';
 
-        var wrap = document.createElement('div');
-        wrap.style.cssText = 'display:flex;align-items:center;gap:6px;';
+    if (_specTableMode === 'grouped-pairs') {
+        var groupRow = document.createElement('tr');
 
-        var input = document.createElement('input');
-        input.type = 'text';
-        input.value = header;
-        input.placeholder = 'Column ' + (colIdx + 1);
-        input.style.cssText = 'width:100%;padding:7px 9px;border:1.5px solid #dbe1ea;border-radius:7px;font-size:11px;font-weight:700;color:#1f2937;background:#fff;';
-        input.addEventListener('input', function() {
-            _specTableHeaders[colIdx] = this.value;
+        var firstTop = document.createElement('th');
+        firstTop.rowSpan = 2;
+        firstTop.style.cssText = 'padding:8px;border-bottom:1px solid #cbd5e1;background:#111827;color:#fff;vertical-align:middle;';
+        var firstTopInput = document.createElement('input');
+        firstTopInput.type = 'text';
+        firstTopInput.value = _specTableHeaders[0] || 'Model';
+        firstTopInput.style.cssText = 'width:100%;padding:7px 9px;border:1px solid #4b5563;border-radius:7px;font-size:11px;font-weight:700;background:#1f2937;color:#fff;';
+        firstTopInput.addEventListener('input', function() {
+            _specTableHeaders[0] = this.value;
             syncSpecificationsHiddenField();
         });
-        wrap.appendChild(input);
+        firstTop.appendChild(firstTopInput);
+        groupRow.appendChild(firstTop);
 
-        if (_specTableHeaders.length > 1) {
-            var removeColBtn = document.createElement('button');
-            removeColBtn.type = 'button';
-            removeColBtn.innerHTML = '&times;';
-            removeColBtn.title = 'Remove column';
-            removeColBtn.style.cssText = 'width:24px;height:24px;border-radius:6px;border:1px solid #fecaca;background:#fef2f2;color:#dc2626;font-size:16px;line-height:1;cursor:pointer;flex-shrink:0;';
-            removeColBtn.addEventListener('click', function() {
-                removeSpecTableColumn(colIdx);
-            });
-            wrap.appendChild(removeColBtn);
+        for (var g = 0; g < _specTableGroups.length; g++) {
+            var gTh = document.createElement('th');
+            var gInfo = _specTableGroups[g] || { title: '', span: 1 };
+            var gSpan = parseInt(gInfo.span, 10);
+            if (!isFinite(gSpan) || gSpan < 1) gSpan = 1;
+
+            gTh.colSpan = gSpan;
+            gTh.style.cssText = 'padding:9px 8px;border-bottom:1px solid #374151;background:#111827;color:#fff;font-size:11px;font-weight:800;text-align:center;';
+            gTh.textContent = String(gInfo.title || ('Group ' + (g + 1)));
+            groupRow.appendChild(gTh);
         }
 
-        th.appendChild(wrap);
-        headRow.appendChild(th);
-    });
+        var actionHeadTop = document.createElement('th');
+        actionHeadTop.rowSpan = 2;
+        actionHeadTop.style.cssText = 'width:42px;padding:8px;border-bottom:1px solid #cbd5e1;background:#111827;';
+        groupRow.appendChild(actionHeadTop);
+        head.appendChild(groupRow);
 
-    var actionHead = document.createElement('th');
-    actionHead.style.cssText = 'width:42px;padding:8px;border-bottom:1px solid #e5e7eb;background:#f8fafc;';
-    headRow.appendChild(actionHead);
-    head.appendChild(headRow);
+        var subHeaderRow = document.createElement('tr');
+        for (var sc = 1; sc < _specTableHeaders.length; sc++) {
+            (function(colIdx) {
+                var th = document.createElement('th');
+                th.style.cssText = 'padding:8px;border-bottom:1px solid #e5e7eb;background:#f8fafc;vertical-align:middle;';
+                var input = document.createElement('input');
+                input.type = 'text';
+                input.value = _specTableHeaders[colIdx] || '';
+                input.placeholder = (colIdx % 2 === 1) ? 'cfm' : 'm3/hr';
+                input.style.cssText = 'width:100%;padding:7px 9px;border:1.5px solid #dbe1ea;border-radius:7px;font-size:11px;font-weight:700;color:#1f2937;background:#fff;';
+                input.addEventListener('input', function() {
+                    _specTableHeaders[colIdx] = this.value;
+                    syncSpecificationsHiddenField();
+                });
+                th.appendChild(input);
+                subHeaderRow.appendChild(th);
+            })(sc);
+        }
+        head.appendChild(subHeaderRow);
+    } else {
+        var headRow = document.createElement('tr');
+
+        var indexHead = document.createElement('th');
+        indexHead.style.cssText = isStandardDark
+            ? 'width:42px;padding:8px;border-bottom:1px solid #6b7280;border-right:1px solid #6b7280;background:#0f131a;color:#cbd5e1;text-align:center;font-size:10px;font-weight:800;'
+            : 'width:42px;padding:8px;border-bottom:1px solid #e5e7eb;background:#f8fafc;color:#6b7280;text-align:center;font-size:10px;font-weight:800;';
+        indexHead.textContent = '#';
+        headRow.appendChild(indexHead);
+
+        _specTableHeaders.forEach(function(header, colIdx) {
+            var th = document.createElement('th');
+            th.style.cssText = isStandardDark
+                ? 'padding:8px;border-bottom:1px solid #6b7280;border-right:1px solid #6b7280;background:#11151d;vertical-align:middle;'
+                : 'padding:8px;border-bottom:1px solid #e5e7eb;background:#f8fafc;vertical-align:middle;';
+
+            var wrap = document.createElement('div');
+            wrap.style.cssText = 'display:grid;grid-template-columns:auto 1fr auto;gap:6px;align-items:center;';
+
+            var colLabel = document.createElement('span');
+            colLabel.textContent = getSpecColumnLabel(colIdx);
+            colLabel.style.cssText = isStandardDark
+                ? 'display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border:1px solid #4b5563;border-radius:5px;background:#1f2530;color:#e5e7eb;font-size:10px;font-weight:800;'
+                : 'display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border:1px solid #d1d5db;border-radius:5px;background:#fff;color:#4b5563;font-size:10px;font-weight:800;';
+            wrap.appendChild(colLabel);
+
+            var input = document.createElement('input');
+            input.type = 'text';
+            input.value = header;
+            input.placeholder = 'Column ' + (colIdx + 1);
+            input.style.cssText = isStandardDark
+                ? 'width:100%;min-width:110px;padding:7px 9px;border:1px solid #6b7280;border-radius:7px;font-size:11px;font-weight:700;color:#f3f4f6;background:#1f2530;'
+                : 'width:100%;min-width:110px;padding:7px 9px;border:1.5px solid #dbe1ea;border-radius:7px;font-size:11px;font-weight:700;color:#1f2937;background:#fff;';
+            input.addEventListener('input', function() {
+                _specTableHeaders[colIdx] = this.value;
+                syncSpecificationsHiddenField();
+            });
+            wrap.appendChild(input);
+
+            if (_specTableHeaders.length > 1) {
+                var removeColBtn = document.createElement('button');
+                removeColBtn.type = 'button';
+                removeColBtn.innerHTML = '&times;';
+                removeColBtn.title = 'Remove column';
+                removeColBtn.style.cssText = isStandardDark
+                    ? 'width:24px;height:24px;border-radius:6px;border:1px solid #7f1d1d;background:#2a1014;color:#fca5a5;font-size:16px;line-height:1;cursor:pointer;flex-shrink:0;'
+                    : 'width:24px;height:24px;border-radius:6px;border:1px solid #fecaca;background:#fef2f2;color:#dc2626;font-size:16px;line-height:1;cursor:pointer;flex-shrink:0;';
+                removeColBtn.addEventListener('click', function() {
+                    removeSpecTableColumn(colIdx);
+                });
+                wrap.appendChild(removeColBtn);
+            }
+
+            th.appendChild(wrap);
+            headRow.appendChild(th);
+        });
+
+        var actionHead = document.createElement('th');
+        actionHead.style.cssText = isStandardDark
+            ? 'width:42px;padding:8px;border-bottom:1px solid #6b7280;background:#11151d;'
+            : 'width:42px;padding:8px;border-bottom:1px solid #e5e7eb;background:#f8fafc;';
+        headRow.appendChild(actionHead);
+        head.appendChild(headRow);
+    }
 
     _specTableRows.forEach(function(row, rowIdx) {
         var tr = document.createElement('tr');
-        if (rowIdx % 2 === 1) tr.style.backgroundColor = '#fcfdff';
+        if (rowIdx % 2 === 1) tr.style.backgroundColor = isStandardDark ? 'rgba(255,255,255,0.02)' : '#fcfdff';
+
+        if (_specTableMode === 'standard') {
+            var idxTd = document.createElement('td');
+            idxTd.style.cssText = isStandardDark
+                ? 'padding:6px 8px;border-bottom:1px solid #6b7280;border-right:1px solid #6b7280;background:#0f131a;color:#cbd5e1;text-align:center;font-size:11px;font-weight:700;'
+                : 'padding:6px 8px;border-bottom:1px solid #eef2f6;background:#f8fafc;color:#6b7280;text-align:center;font-size:11px;font-weight:700;';
+            idxTd.textContent = String(rowIdx + 1);
+            tr.appendChild(idxTd);
+        }
 
         for (var colIdx = 0; colIdx < _specTableHeaders.length; colIdx++) {
             var td = document.createElement('td');
-            td.style.cssText = 'padding:6px 8px;border-bottom:1px solid #eef2f6;';
+            td.style.cssText = isStandardDark
+                ? 'padding:6px 8px;border-bottom:1px solid #6b7280;border-right:1px solid #6b7280;background:transparent;'
+                : 'padding:6px 8px;border-bottom:1px solid #eef2f6;';
 
             var cellInput = document.createElement('input');
             cellInput.type = 'text';
             cellInput.value = row[colIdx] || '';
             cellInput.className = 'spec-table-input';
-            cellInput.style.cssText = 'width:100%;padding:7px 9px;border:1.5px solid #e5e7eb;border-radius:7px;font-size:12px;';
+            cellInput.setAttribute('data-row', String(rowIdx));
+            cellInput.setAttribute('data-col', String(colIdx));
+            cellInput.style.cssText = isStandardDark
+                ? 'width:100%;padding:7px 9px;border:1px solid #6b7280;border-radius:7px;font-size:12px;color:#f3f4f6;background:#1f2530;'
+                : 'width:100%;padding:7px 9px;border:1.5px solid #e5e7eb;border-radius:7px;font-size:12px;';
             (function(r, c, inputEl) {
                 inputEl.addEventListener('input', function() {
                     _specTableRows[r][c] = this.value;
                     syncSpecificationsHiddenField();
+                });
+                inputEl.addEventListener('keydown', function(evt) {
+                    handleSpecCellKeyDown(evt, r, c);
+                });
+                inputEl.addEventListener('paste', function(evt) {
+                    handleSpecCellPaste(evt, r, c);
                 });
             })(rowIdx, colIdx, cellInput);
 
@@ -1579,12 +2418,16 @@ function renderSpecTableBuilder() {
         }
 
         var actionTd = document.createElement('td');
-        actionTd.style.cssText = 'padding:6px 8px;border-bottom:1px solid #eef2f6;text-align:center;';
+        actionTd.style.cssText = isStandardDark
+            ? 'padding:6px 8px;border-bottom:1px solid #6b7280;text-align:center;background:transparent;'
+            : 'padding:6px 8px;border-bottom:1px solid #eef2f6;text-align:center;';
         var removeRowBtn = document.createElement('button');
         removeRowBtn.type = 'button';
         removeRowBtn.innerHTML = '<i class="bi bi-trash"></i>';
         removeRowBtn.title = 'Remove row';
-        removeRowBtn.style.cssText = 'width:28px;height:28px;border-radius:7px;border:1px solid #fecaca;background:#fef2f2;color:#dc2626;cursor:pointer;';
+        removeRowBtn.style.cssText = isStandardDark
+            ? 'width:28px;height:28px;border-radius:7px;border:1px solid #7f1d1d;background:#2a1014;color:#fca5a5;cursor:pointer;'
+            : 'width:28px;height:28px;border-radius:7px;border:1px solid #fecaca;background:#fef2f2;color:#dc2626;cursor:pointer;';
         (function(r) {
             removeRowBtn.addEventListener('click', function() {
                 removeSpecTableDataRow(r);
@@ -1599,6 +2442,10 @@ function renderSpecTableBuilder() {
 
 function addSpecTableColumn(label) {
     normalizeSpecTableState();
+    if (_specTableMode === 'grouped-pairs') {
+        addSpecTableGroup(label);
+        return;
+    }
     _specTableHeaders.push(String(label || ('Column ' + (_specTableHeaders.length + 1))));
     _specTableRows = _specTableRows.map(function(row) {
         row.push('');
@@ -1610,6 +2457,11 @@ function addSpecTableColumn(label) {
 
 function removeSpecTableColumn(colIdx) {
     normalizeSpecTableState();
+    if (_specTableMode === 'grouped-pairs') {
+        if (colIdx <= 0) return;
+        removeSpecTableGroup(findGroupedIndexByColumn(colIdx));
+        return;
+    }
     if (_specTableHeaders.length <= 1) return;
     _specTableHeaders.splice(colIdx, 1);
     _specTableRows = _specTableRows.map(function(row) {
@@ -1644,12 +2496,206 @@ function removeSpecTableDataRow(rowIdx) {
     syncSpecificationsHiddenField();
 }
 
+function addSpecTableGroup(groupLabel) {
+    normalizeSpecTableState();
+    var parsedSpan = parseInt(arguments[1], 10);
+    if (!isFinite(parsedSpan) || parsedSpan < 1) parsedSpan = 2;
+
+    var nextTitle = String(groupLabel || ('Group ' + (_specTableGroups.length + 1))).trim();
+    if (nextTitle === '') nextTitle = 'Group ' + (_specTableGroups.length + 1);
+    _specTableGroups.push({ title: nextTitle, span: parsedSpan });
+
+    for (var i = 0; i < parsedSpan; i++) {
+        _specTableHeaders.push(getDefaultGroupedSubHeader(_specTableHeaders.length));
+    }
+
+    _specTableRows = _specTableRows.map(function(row) {
+        for (var i = 0; i < parsedSpan; i++) row.push('');
+        return row;
+    });
+    renderSpecTableBuilder();
+    syncSpecificationsHiddenField();
+}
+
+function setSpecTableGroupSpan(groupIdx, spanValue) {
+    normalizeSpecTableState();
+    if (!_specTableGroups[groupIdx]) return;
+
+    var nextSpan = parseInt(spanValue, 10);
+    if (!isFinite(nextSpan) || nextSpan < 1) nextSpan = 1;
+
+    var oldSpan = parseInt(_specTableGroups[groupIdx].span, 10);
+    if (!isFinite(oldSpan) || oldSpan < 1) oldSpan = 1;
+    if (nextSpan === oldSpan) return;
+
+    var startCol = getGroupedStartColumn(groupIdx, _specTableGroups);
+
+    if (nextSpan > oldSpan) {
+        var addCount = nextSpan - oldSpan;
+        for (var a = 0; a < addCount; a++) {
+            var insertCol = startCol + oldSpan + a;
+            _specTableHeaders.splice(insertCol, 0, getDefaultGroupedSubHeader(insertCol));
+            _specTableRows = _specTableRows.map(function(row) {
+                row.splice(insertCol, 0, '');
+                return row;
+            });
+        }
+    } else {
+        var removeCount = oldSpan - nextSpan;
+        var removeStart = startCol + nextSpan;
+        _specTableHeaders.splice(removeStart, removeCount);
+        _specTableRows = _specTableRows.map(function(row) {
+            row.splice(removeStart, removeCount);
+            return row;
+        });
+    }
+
+    _specTableGroups[groupIdx].span = nextSpan;
+
+    renderSpecTableBuilder();
+    syncSpecificationsHiddenField();
+}
+
+function removeSpecTableGroup(groupIdx) {
+    normalizeSpecTableState();
+    if (_specTableGroups.length <= 1) {
+        _specTableGroups = getDefaultGroupedGroups();
+        var minHeaders = 1 + getGroupedDataColumnCount(_specTableGroups);
+        var firstHeader = String(_specTableHeaders[0] || 'Model').trim() || 'Model';
+        _specTableHeaders = [firstHeader];
+        while (_specTableHeaders.length < minHeaders) {
+            _specTableHeaders.push(getDefaultGroupedSubHeader(_specTableHeaders.length));
+        }
+
+        if (_specTableRows.length === 0) {
+            _specTableRows = [new Array(_specTableHeaders.length).fill('')];
+        }
+        for (var r = 0; r < _specTableRows.length; r++) {
+            _specTableRows[r] = _specTableRows[r].slice(0, _specTableHeaders.length);
+            while (_specTableRows[r].length < _specTableHeaders.length) _specTableRows[r].push('');
+            for (var c = 1; c < _specTableRows[r].length; c++) {
+                _specTableRows[r][c] = '';
+            }
+        }
+        renderSpecTableBuilder();
+        syncSpecificationsHiddenField();
+        return;
+    }
+
+    if (groupIdx < 0 || groupIdx >= _specTableGroups.length) return;
+
+    var startCol = getGroupedStartColumn(groupIdx, _specTableGroups);
+    var span = parseInt(_specTableGroups[groupIdx].span, 10);
+    if (!isFinite(span) || span < 1) span = 1;
+
+    _specTableGroups.splice(groupIdx, 1);
+    _specTableHeaders.splice(startCol, span);
+    _specTableRows = _specTableRows.map(function(row) {
+        row.splice(startCol, span);
+        return row;
+    });
+
+    renderSpecTableBuilder();
+    syncSpecificationsHiddenField();
+}
+
+function setSpecTableMode(mode, keepData) {
+    var nextMode = mode === 'grouped-pairs' ? 'grouped-pairs' : 'standard';
+    var prevMode = _specTableMode;
+
+    _specTableMode = nextMode;
+
+    if (prevMode !== nextMode && keepData) {
+        if (nextMode === 'grouped-pairs') {
+            if (_specTableHeaders.length === 0) {
+                _specTableHeaders = getDefaultGroupedHeaders();
+            }
+
+            while (_specTableHeaders.length < targetCols) {
+                _specTableHeaders.push(getDefaultGroupedSubHeader(_specTableHeaders.length));
+            }
+        } else {
+            _specTableGroups = [];
+        }
+    }
+
+    normalizeSpecTableState();
+    renderSpecTableBuilder();
+    syncSpecificationsHiddenField();
+}
+
+function applyAirflowSpecTemplate() {
+    _specTableMode = 'grouped-pairs';
+    _specTableHeaders = ['Model', 'cfm', 'm3/hr', 'cfm', 'm3/hr', 'cfm', 'm3/hr', 'cfm', 'm3/hr'];
+    _specTableGroups = [
+        { title: 'Free Air', span: 2 },
+        { title: '10 ft. 3.05 M', span: 2 },
+        { title: '20 ft. 6.10 M', span: 2 },
+        { title: '30 ft. 9.15 M', span: 2 },
+    ];
+    _specTableRows = [[
+        'Air Max', '2200', '3740', '2120', '3602', '2025', '3440', '1890', '3211'
+    ]];
+
+    normalizeSpecTableState();
+    renderSpecTableBuilder();
+    syncSpecificationsHiddenField();
+}
+
+function hasGroupedTableContent() {
+    var hasCellData = _specTableRows.some(function(row) {
+        return row.some(function(cell) { return String(cell || '').trim() !== ''; });
+    });
+
+    var hasCustomHeader = _specTableHeaders.some(function(h, idx) {
+        return !isDefaultGroupedHeader(h, idx);
+    });
+
+    var hasCustomGroup = _specTableGroups.some(function(g, idx) {
+        var title = String((g && g.title) || '').trim().toLowerCase();
+        var span = parseInt(g && g.span, 10);
+        if (!isFinite(span) || span < 1) span = 1;
+
+        var defaultTitle = (idx === 0) ? 'free air' : ('group ' + (idx + 1));
+        return (title !== '' && title !== defaultTitle) || span !== 2;
+    });
+
+    return hasCellData || hasCustomHeader || hasCustomGroup;
+}
+
 function syncSpecificationsHiddenField() {
     var hiddenInput = document.getElementById('editSpecifications');
     var textArea = document.getElementById('editSpecificationsText');
     if (!hiddenInput || !textArea) return;
 
     var textValue = String(textArea.value || '').trim();
+
+    if (_specTableMode === 'grouped-pairs') {
+        if (!hasGroupedTableContent()) {
+            hiddenInput.value = textValue;
+            return;
+        }
+
+        hiddenInput.value = JSON.stringify({
+            format: 'andison_specs_v2',
+            text: textValue,
+            tableMatrix: {
+                mode: 'grouped-pairs',
+                headers: _specTableHeaders.map(function(h){ return String(h || '').trim(); }),
+                groups: _specTableGroups.map(function(g){
+                    return {
+                        title: String((g && g.title) || '').trim(),
+                        span: Math.max(1, parseInt(g && g.span, 10) || 1),
+                    };
+                }),
+                rows: _specTableRows.map(function(row) {
+                    return row.map(function(cell) { return String(cell || '').trim(); });
+                }),
+            },
+        });
+        return;
+    }
+
     var tableRows = matrixToSpecTableRows(_specTableHeaders, _specTableRows);
 
     if (tableRows.length === 0) {
@@ -1671,9 +2717,23 @@ function setSpecificationsEditor(rawSpecifications) {
 
     textArea.value = parsed.text;
 
-    var matrix = specTableRowsToMatrix(parsed.table);
-    _specTableHeaders = matrix.headers;
-    _specTableRows = matrix.rows;
+    if (parsed.matrix) {
+        _specTableMode = parsed.matrix.mode === 'grouped-pairs' ? 'grouped-pairs' : 'standard';
+        _specTableHeaders = parsed.matrix.headers;
+        _specTableRows = parsed.matrix.rows;
+        if (_specTableMode === 'grouped-pairs') {
+            _specTableGroups = normalizeGroupedGroups(parsed.matrix.groups || [], Math.max(1, _specTableHeaders.length - 1));
+        } else {
+            _specTableGroups = [];
+        }
+    } else {
+        _specTableMode = 'standard';
+        _specTableGroups = [];
+
+        var matrix = specTableRowsToMatrix(parsed.table);
+        _specTableHeaders = matrix.headers;
+        _specTableRows = matrix.rows;
+    }
 
     renderSpecTableBuilder();
     syncSpecificationsHiddenField();
@@ -1841,7 +2901,7 @@ function handleBulkImageSelect(input) {
 }
 // ─────────────────────────────────────────────────────────────────────────────
 
-function openEditModal(index, name, model, type, price, badge, description, specifications, image, catId, subId, imagesJson, datasheet) {
+function openEditModal(index, name, model, type, price, badge, description, specifications, image, catId, subId, subSubId, imagesJson, datasheet) {
     var modal = document.getElementById('editProductModal');
     document.getElementById('editIndex').value = index;
     document.getElementById('editProductName').value = name;
@@ -1874,13 +2934,17 @@ function openEditModal(index, name, model, type, price, badge, description, spec
     renderImageSlots();
 
     // Resolve existing category path (supports records saved at sub-subcategory level).
-    var resolvedPath = resolveCategoryPath(catId || '', subId || '');
+    var resolvedPath = resolveCategoryPath(catId || '', subId || '', subSubId || '');
     var resolvedSubId = resolvedPath.subId || '';
     var resolvedSubSubId = resolvedPath.subSubId || '';
 
     // Preserve/initialize hidden values.
     document.getElementById('finalCategoryId').value    = catId || '';
-    document.getElementById('finalSubcategoryId').value = subId || '';
+    document.getElementById('finalSubcategoryId').value = resolvedSubId || subId || '';
+    var finalSubSubInput = document.getElementById('finalSubSubcategoryId');
+    if (finalSubSubInput) {
+        finalSubSubInput.value = resolvedSubSubId || subSubId || '';
+    }
 
     // Populate category/subcategory/sub-subcategory dropdowns.
     var catSel = document.getElementById('editCategory');
@@ -1892,7 +2956,10 @@ function openEditModal(index, name, model, type, price, badge, description, spec
         document.getElementById('finalCategoryId').value = catId;
     }
     if (!document.getElementById('finalSubcategoryId').value && (subId || resolvedSubSubId || resolvedSubId)) {
-        document.getElementById('finalSubcategoryId').value = subId || resolvedSubSubId || resolvedSubId;
+        document.getElementById('finalSubcategoryId').value = resolvedSubId || subId || '';
+    }
+    if (finalSubSubInput && !finalSubSubInput.value && (subSubId || resolvedSubSubId)) {
+        finalSubSubInput.value = resolvedSubSubId || subSubId || '';
     }
     refreshCategoryPreview();
 
@@ -1929,8 +2996,9 @@ document.querySelectorAll('.edit-product-btn').forEach(function(btn){
         var images = this.getAttribute('data-images') || '[]';
         var catId     = this.getAttribute('data-category');
         var subId     = this.getAttribute('data-subcategory');
+        var subSubId  = this.getAttribute('data-subsubcategory');
         var datasheet = this.getAttribute('data-datasheet') || '';
-        openEditModal(index, name, model, type, price, badge, description, specifications, image, catId, subId, images, datasheet);
+        openEditModal(index, name, model, type, price, badge, description, specifications, image, catId, subId, subSubId, images, datasheet);
     });
 });
 
@@ -2017,6 +3085,8 @@ function openAddProductModal() {
     document.getElementById('editCategory').value = '';
     document.getElementById('finalCategoryId').value    = '';
     document.getElementById('finalSubcategoryId').value = '';
+    var finalSubSubInput = document.getElementById('finalSubSubcategoryId');
+    if (finalSubSubInput) finalSubSubInput.value = '';
     populateCategorySubcategories('', '');
     
     // Change submit button text
@@ -2120,6 +3190,72 @@ document.querySelectorAll('.delete-form').forEach(function(form){
 function customAlert(message) {
     alert(message);
 }
+
+// Modal resize handle (more reliable than CSS native resize on some browsers)
+var _editModalResizeState = null;
+
+function initEditModalResizer() {
+    var modal = document.getElementById('editProductModal');
+    if (!modal) return;
+
+    var content = modal.querySelector('.edit-modal-content');
+    var handle = modal.querySelector('.edit-modal-resize-handle');
+    if (!content || !handle || content.getAttribute('data-resizer-init') === '1') return;
+
+    content.setAttribute('data-resizer-init', '1');
+
+    function stopResize() {
+        if (!_editModalResizeState) return;
+        _editModalResizeState = null;
+        content.classList.remove('is-resizing');
+        document.body.style.userSelect = '';
+        document.removeEventListener('mousemove', onResizeMove);
+        document.removeEventListener('mouseup', stopResize);
+    }
+
+    function onResizeMove(e) {
+        if (!_editModalResizeState) return;
+
+        var dx = e.clientX - _editModalResizeState.startX;
+        var dy = e.clientY - _editModalResizeState.startY;
+
+        var viewportMaxW = Math.max(420, window.innerWidth - 24);
+        var viewportMaxH = Math.max(420, window.innerHeight - 24);
+        var minW = Math.min(520, viewportMaxW);
+        var minH = Math.min(520, viewportMaxH);
+
+        var nextW = _editModalResizeState.startW + dx;
+        var nextH = _editModalResizeState.startH + dy;
+
+        nextW = Math.max(minW, Math.min(viewportMaxW, nextW));
+        nextH = Math.max(minH, Math.min(viewportMaxH, nextH));
+
+        content.style.width = nextW + 'px';
+        content.style.height = nextH + 'px';
+    }
+
+    handle.addEventListener('mousedown', function(e) {
+        if (window.matchMedia('(pointer: coarse)').matches) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        var rect = content.getBoundingClientRect();
+        _editModalResizeState = {
+            startX: e.clientX,
+            startY: e.clientY,
+            startW: rect.width,
+            startH: rect.height,
+        };
+
+        content.classList.add('is-resizing');
+        document.body.style.userSelect = 'none';
+        document.addEventListener('mousemove', onResizeMove);
+        document.addEventListener('mouseup', stopResize);
+    });
+}
+
+initEditModalResizer();
 </script>
 
 <script>

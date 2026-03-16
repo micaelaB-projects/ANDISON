@@ -397,7 +397,7 @@ $email = "info@andison-industrial.com";
             padding: 8px 14px;
             cursor: pointer;
             font-size: 15px;
-            line: height 6px;;
+            line-height: 1.6;
         }
 
         .nav-list {
@@ -1359,7 +1359,6 @@ $email = "info@andison-industrial.com";
 
         .category-description {
             display: none;
-        }
             margin: 0 0 60px 0;
             line-height: 1.7;
             max-width: 650px;
@@ -1938,7 +1937,7 @@ $email = "info@andison-industrial.com";
         }
 
         .scroll-animate { opacity: 0; transform: translateY(40px); transition: opacity 0s ease, transform 0s ease; }
-        .scroll-animate.visible { }
+        
 
         /* Match brands.php staggered reveal timings (faster) */
         .product-card { opacity: 1; transform: translateY(0); will-change: transform,opacity; }

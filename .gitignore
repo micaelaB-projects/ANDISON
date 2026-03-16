@@ -1,4 +1,7 @@
 # ── Credentials & secrets ─────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
 Andison/admin/config.php
 Andison/includes/supabase.php
 Andison/includes/mailer_config.php

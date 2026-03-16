@@ -163,6 +163,7 @@ if (!function_exists('andison_save_single_brand')) {
                     'images'         => json_encode($images),
                     'category_id'    => trim((string)($product['category_id'] ?? '')),
                     'subcategory_id' => trim((string)($product['subcategory_id'] ?? '')),
+                    'sub_subcategory_id' => trim((string)($product['sub_subcategory_id'] ?? '')),
                 ];
             }
             return $rows;
@@ -181,14 +182,36 @@ if (!function_exists('andison_save_single_brand')) {
             $ok = andison_sb_insert('products', $noImgRows);
             if ($ok) return true;
 
+            $noSubSubRows = array_map(static function (array $r): array {
+                unset($r['sub_subcategory_id']);
+                return $r;
+            }, $rows);
+            $ok = andison_sb_insert('products', $noSubSubRows);
+            if ($ok) return true;
+
+            $noImgNoSubSubRows = array_map(static function (array $r): array {
+                unset($r['images'], $r['sub_subcategory_id']);
+                return $r;
+            }, $rows);
+            $ok = andison_sb_insert('products', $noImgNoSubSubRows);
+            if ($ok) return true;
+
             $strippedRows = array_map(static function (array $r): array {
                 return array_intersect_key($r, array_flip([
                     'brand', 'product_name', 'model', 'type', 'badge',
                     'description', 'specifications', 'price', 'image', 'datasheet',
-                    'category_id', 'subcategory_id',
+                    'category_id', 'subcategory_id', 'sub_subcategory_id',
                 ]));
             }, $rows);
-            return andison_sb_insert('products', $strippedRows);
+            $ok = andison_sb_insert('products', $strippedRows);
+            if ($ok) return true;
+
+            $legacyStrippedRows = array_map(static function (array $r): array {
+                unset($r['sub_subcategory_id']);
+                return $r;
+            }, $strippedRows);
+
+            return andison_sb_insert('products', $legacyStrippedRows);
         };
 
         try {

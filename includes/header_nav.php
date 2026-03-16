@@ -659,7 +659,7 @@ if (!isset($base_path)) {
         </div>
 
         <div class="search-bar">
-            <form class="search-field" action="search.php" method="get">
+            <form class="search-field" action="<?php echo $base_path; ?>search.php" method="get">
                 <input type="text" name="q" placeholder="Search for products" value="<?php echo htmlspecialchars(isset($_GET['q']) ? $_GET['q'] : '', ENT_QUOTES); ?>" onkeydown="if(event.key==='Enter') this.form.submit();">
             </form>
         </div>

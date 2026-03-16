@@ -5,10 +5,11 @@ require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../Andison/includes/categories_info.php';
 require_once __DIR__ . '/../Andison/includes/products_management.php';
 
-// Update page name and subcategory
-$page_title = "Robot System Peripherals";
-$category_id = "arc-welding-robots";
-$subcategory_id = "robot-system-peripherals";
+// Set category and subcategory for Portable Ventilator Accessories
+$page_title = "Portable Ventilator Accessories";
+$category_id = "portable-ventilators";
+$subcategory_id = "portable-ventilator-accessories";
+
 $phone = "+1(234) 567 8900";
 $phone2 = "+1(234) 567 8900";
 $phone3 = "+1(639) 977 803 7398";
@@ -16,35 +17,59 @@ $email = "info@andison-industrial.com";
 
 $categories = andison_get_categories();
 $current_category = null;
+$current_subcategory_info = null;
 
 foreach ($categories as $cat) {
     if ($cat['id'] === $category_id) {
         $current_category = $cat;
+        
+        // Find the subcategory within this category
+        if (isset($cat['subcategories'])) {
+            foreach ($cat['subcategories'] as $subcat) {
+                if ($subcat['id'] === $subcategory_id) {
+                    $current_subcategory_info = $subcat;
+                    break;
+                }
+            }
+        }
         break;
     }
 }
 
+// Fallback if category not found
 if (!$current_category) {
-    // Fallback: create a default category object
     $current_category = array(
         'id' => $category_id,
-        'name' => 'Robot System Peripherals',
-        'description' => 'Discover our comprehensive range of robot system peripherals for arc welding robots and industrial applications.',
+        'name' => 'Portable Ventilators',
+        'description' => 'Discover our comprehensive range of portable ventilation equipment for industrial safety and air quality control.',
         'subcategories' => array(
-            array('id' => 'robot-system-peripherals', 'name' => 'Robot System Peripherals')
+            array('id' => 'electric-driven', 'name' => 'Electric Driven'),
+            array('id' => 'pneumatic-driven', 'name' => 'Pneumatic Driven'),
+            array('id' => 'portable-ventilator-accessories', 'name' => 'Portable Ventilator Accessories')
         )
     );
 }
+
+// Fallback if subcategory not found
+if (!$current_subcategory_info) {
+    $current_subcategory_info = array(
+        'id' => $subcategory_id,
+        'name' => 'Portable Ventilator Accessories'
+    );
+}
+
+// Get products for this category/subcategory
+$products = andison_get_products_for_subcategory($category_id, $subcategory_id);
+
+// Set page title and description
+$category_name = $current_subcategory_info['name'];
+$category_description = $current_category['description'] ?? 'Discover our comprehensive range of industrial products.';
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <?php 
-    $category_name = 'Robot System Peripherals';
-    $category_description = 'Discover our comprehensive range of robot system peripherals for arc welding robots and industrial applications.';
-    ?>
     <title><?php echo htmlspecialchars($category_name); ?> - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
@@ -1896,7 +1921,6 @@ if (!$current_category) {
         }
 
         .scroll-animate { opacity: 0; transform: translateY(40px); transition: opacity 0s ease, transform 0s ease; }
-        
 
         /* Match brands.php staggered reveal timings (faster) */
         .product-card { opacity: 1; transform: translateY(0); will-change: transform,opacity; }
@@ -3090,7 +3114,7 @@ if (!$current_category) {
     <?php require_once __DIR__ . '/../includes/sidebar.php'; ?>
         <?php
         // Set page title
-        $page_title = "Brands";
+        $page_title = "Portable Ventilator Accessories";
         $company_name = "ANDISON INDUSTRIAL";
         
         // Contact information
@@ -3238,7 +3262,7 @@ if (!$current_category) {
     </header>
 
         <div class="category-content">
-            <h2>Robot System Peripherals</h2>
+            <h2><?php echo htmlspecialchars($category_name); ?></h2>
             
             <!-- Left Filters Panel -->
             <div class="product-filters">
@@ -3329,8 +3353,8 @@ if (!$current_category) {
                 <!-- Product Grid -->
                 <div class="product-grid grid-view">
                 <?php 
-                // Fetch robot system peripherals products
-                $all_products = andison_get_products_for_subcategory($category_id, $subcategory_id);
+                // Use pre-loaded products from top of page
+                $all_products = $products;
                 
                 // Display products
                 if (!empty($all_products)) {
@@ -4233,47 +4257,7 @@ if (!$current_category) {
         });
     </script>
 
-    <!-- Product Modal -->
-    <div id="productModal" class="modal-overlay">
-        <div class="modal-container">
-            <button class="modal-close" id="modalClose">&times;</button>
-            
-            <div class="modal-media">
-                <div class="media-slider" id="mediaSlider">
-                    <!-- Media items will be inserted here -->
-                </div>
-                <div class="media-controls">
-                    <div class="media-dots" id="mediaDots"></div>
-                </div>
-            </div>
-
-            <div class="modal-content">
-                <h2 id="modalProductName"></h2>
-                <p class="model-type" id="modalProductType"></p>
-
-                <div class="modal-description" id="modalDescription">
-                    Professional arc welding equipment for industrial applications.
-                </div>
-
-                <div class="modal-specs">
-                    <h3>Product Specifications</h3>
-                    <ul class="specs-list" id="modalSpecs">
-                        <li><strong>Category:</strong> Arc Welding Equipment</li>
-                        <li><strong>Type:</strong> Professional Grade</li>
-                        <li><strong>Support:</strong> 24/7 Technical Support</li>
-                        <li><strong>Warranty:</strong> 2 Years Full Coverage</li>
-                    </ul>
-                </div>
-
-                <div class="modal-actions">
-                    <button class="modal-inquiry-btn" id="modalInquiryBtn"><i class="bi bi-plus-circle"></i> ADD TO INQUIRY LIST</button>
-                    <button class="modal-close-btn" id="modalCloseBtn">CLOSE</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-<script>var CATEGORY_NAME = '<?php echo htmlspecialchars($category_name ?? 'Robot System Peripherals', ENT_QUOTES); ?>';</script>
+<script>var CATEGORY_NAME = '<?php echo htmlspecialchars($category_name ?? 'Category', ENT_QUOTES); ?>';</script>
 <?php require_once __DIR__ . '/../includes/product_modal.php'; ?>
 
 <script>

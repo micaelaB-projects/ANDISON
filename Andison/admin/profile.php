@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Load existing values
     $username = (string)($cfg['username'] ?? 'andisonindustrial');
-    $password = (string)($cfg['password'] ?? '');
+    $passwordHash = (string)($cfg['password_hash'] ?? '');
 
     if (isset($_POST['action']) && $_POST['action'] === 'update_profile') {
         $first = isset($_POST['first_name']) ? trim((string)$_POST['first_name']) : '';
@@ -19,12 +19,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Persist into config.php — merge with existing to preserve timestamps/image
         $newCfg = array_merge($cfg, [
             'username' => $newUser,
-            'password' => $password,
+            'password_hash' => $passwordHash,
             'first_name' => $first,
             'last_name' => $last,
             'email' => $email,
             'last_updated' => time(),
         ]);
+        unset($newCfg['password']);
 
         $out = "<?php\n\nreturn ".var_export($newCfg, true).";\n";
         $written = @file_put_contents(__DIR__ . '/config.php', $out, LOCK_EX);
@@ -57,9 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        $currentOk = str_starts_with($password, '$2y$')
-            ? password_verify($current, $password)
-            : hash_equals($password, $current);
+        $currentOk = andison_admin_verify_password($cfg, $current);
         if (!$currentOk) {
             andison_set_flash('error', 'Current password is incorrect.');
             header('Location: profile.php');
@@ -73,7 +72,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Update password in config (store as bcrypt hash)
-        $cfg['password'] = password_hash($new, PASSWORD_BCRYPT);
+        $cfg['password_hash'] = password_hash($new, PASSWORD_BCRYPT);
+        unset($cfg['password']);
         $out = "<?php\n\nreturn ".var_export($cfg, true).";\n";
         $written = @file_put_contents(__DIR__ . '/config.php', $out, LOCK_EX);
         if ($written === false) {
@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Sync bcrypt hash to Supabase
             require_once __DIR__ . '/../includes/supabase.php';
             andison_sb_update('admin_users', [
-                'password_hash' => $cfg['password'],
+                'password_hash' => $cfg['password_hash'],
             ], 'username=eq.' . rawurlencode($username));
             andison_set_flash('success', 'Password updated successfully.');
         }
