@@ -18,6 +18,29 @@ if ($selectedBrand === '' || !isset($brands[$selectedBrand])) {
 
 $allCategories = andison_get_categories();
 
+function andison_env_flag(string $key, bool $default = false): bool
+{
+    $raw = function_exists('andison_admin_env') ? andison_admin_env($key) : null;
+    if ($raw === null) {
+        $value = getenv($key);
+        if ($value === false && isset($_ENV[$key])) {
+            $value = $_ENV[$key];
+        }
+        if ($value === false && isset($_SERVER[$key])) {
+            $value = $_SERVER[$key];
+        }
+        $raw = $value === false ? null : trim((string)$value);
+    }
+
+    if ($raw === null || $raw === '') {
+        return $default;
+    }
+
+    return in_array(strtolower($raw), ['1', 'true', 'yes', 'on'], true);
+}
+
+$allowProductDelete = andison_env_flag('ANDISON_ALLOW_PRODUCT_DELETE', false);
+
 function andison_safe_filename(string $name): string
 {
     $name = strtolower($name);
@@ -450,6 +473,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($action === 'delete_product') {
+            if (!$allowProductDelete) {
+                andison_set_flash('error', 'Product deletion is disabled in safe mode. Set ANDISON_ALLOW_PRODUCT_DELETE=1 to enable delete actions.');
+                header('Location: products.php?brand=' . urlencode($brand));
+                exit;
+            }
+
             $idx = isset($_POST['index']) ? (int)$_POST['index'] : -1;
             if ($idx >= 0 && isset($brands[$brand]['products'][$idx])) {
                 array_splice($brands[$brand]['products'], $idx, 1);
@@ -588,6 +617,9 @@ andison_admin_header('Products', 'products');
                 <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                     <button class="btn btn-primary" type="button" onclick="openAddProductModal();" style="font-size:12px;padding:8px 16px;"><i class="bi bi-plus-lg"></i> Add Product</button>
                     <button class="btn btn-secondary" type="button" onclick="openImportCsvModal();" style="font-size:12px;padding:8px 16px;background:#6b7280;border-color:#6b7280;color:white;border-radius:8px;"><i class="bi bi-upload"></i> Import CSV</button>
+                    <?php if (!$allowProductDelete): ?>
+                        <span style="font-size:10px;font-weight:700;background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:999px;padding:4px 10px;"><i class="bi bi-shield-lock"></i> Delete Disabled</span>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -724,12 +756,16 @@ andison_admin_header('Products', 'products');
                                                     style="padding:5px 10px;font-size:11px;">
                                                 <i class="bi bi-pencil"></i> Edit
                                             </button>
-                                            <form method="post" action="products.php?brand=<?php echo urlencode($selectedBrand); ?>" class="delete-form" style="display:inline;">
-                                                <input type="hidden" name="action" value="delete_product">
-                                                <input type="hidden" name="brand" value="<?php echo htmlspecialchars($selectedBrand); ?>">
-                                                <input type="hidden" name="index" value="<?php echo (int)$i; ?>">
-                                                <button class="btn btn-danger" type="submit" style="padding:5px 10px;font-size:11px;"><i class="bi bi-trash"></i></button>
-                                            </form>
+                                            <?php if ($allowProductDelete): ?>
+                                                <form method="post" action="products.php?brand=<?php echo urlencode($selectedBrand); ?>" class="delete-form" style="display:inline;">
+                                                    <input type="hidden" name="action" value="delete_product">
+                                                    <input type="hidden" name="brand" value="<?php echo htmlspecialchars($selectedBrand); ?>">
+                                                    <input type="hidden" name="index" value="<?php echo (int)$i; ?>">
+                                                    <button class="btn btn-danger" type="submit" style="padding:5px 10px;font-size:11px;"><i class="bi bi-trash"></i></button>
+                                                </form>
+                                            <?php else: ?>
+                                                <button class="btn btn-danger" type="button" disabled title="Deletion disabled in safe mode" style="padding:5px 10px;font-size:11px;opacity:0.55;cursor:not-allowed;"><i class="bi bi-trash"></i></button>
+                                            <?php endif; ?>
                                         </div>
                                     </td>
                                 </tr>

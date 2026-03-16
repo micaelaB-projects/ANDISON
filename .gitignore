@@ -8,6 +8,7 @@ Andison/includes/mailer_config.php
 
 # ── Runtime cache (auto-generated, not source) ────────────────────────────────
 Andison/data/_cache/*.cache
+Andison/data/_cache/locks/*.lock
 
 # ── User-uploaded files (binary, large, not source) ──────────────────────────
 uploads/
