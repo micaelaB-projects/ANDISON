@@ -278,10 +278,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'attachment_mime' => $attachment['mime'],
             ];
 
+            $mailerConfigured = function_exists('andison_mailer_is_configured') ? andison_mailer_is_configured() : false;
+            $adminMailSent = false;
+            $customerMailSent = false;
+
             // Send email notification to company (best-effort)
-            andison_send_inquiry_notification($mailData, $cleanItems, $mailAttachments);
+            $adminMailSent = andison_send_inquiry_notification($mailData, $cleanItems, $mailAttachments);
             // Send receipt confirmation to the customer
-            andison_send_inquiry_receipt($mailData, $cleanItems, $mailAttachments);
+            $customerMailSent = andison_send_inquiry_receipt($mailData, $cleanItems, $mailAttachments);
+
+            if (!$mailerConfigured) {
+                $attachment_note .= ' Email sending is currently disabled (missing SMTP configuration).';
+            } else {
+                if (!$adminMailSent && !$customerMailSent) {
+                    $attachment_note .= ' Email delivery failed for both admin and customer receipt.';
+                } elseif (!$adminMailSent) {
+                    $attachment_note .= ' Admin notification email was not sent.';
+                } elseif (!$customerMailSent) {
+                    $attachment_note .= ' Customer receipt email was not sent.';
+                }
+            }
         }
 
         $success_message = $inquiry_saved

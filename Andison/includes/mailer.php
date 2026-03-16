@@ -75,7 +75,7 @@ function andison_send_mail(string $to, string $subject, string $htmlBody, string
 /**
  * Build and send inquiry notification email to the company.
  */
-function andison_send_inquiry_notification(array $data, array $items, array $attachments = []): void
+function andison_send_inquiry_notification(array $data, array $items, array $attachments = []): bool
 {
     $fullname      = htmlspecialchars($data['fullname'] ?? '');
     $company       = htmlspecialchars($data['company'] ?? '');
@@ -163,7 +163,7 @@ function andison_send_inquiry_notification(array $data, array $items, array $att
 </div>
 </body></html>';
 
-    andison_send_mail(
+    return andison_send_mail(
         MAIL_NOTIFY_TO,
         ($txn_no ? '[' . $txn_no . '] ' : '') . 'New Inquiry from ' . ($data['fullname'] ?? 'a customer') . ' — ANDISON INDUSTRIAL',
         $body,
@@ -175,10 +175,10 @@ function andison_send_inquiry_notification(array $data, array $items, array $att
 /**
  * Send a receipt/confirmation email to the customer after their inquiry is submitted.
  */
-function andison_send_inquiry_receipt(array $data, array $items, array $attachments = []): void
+function andison_send_inquiry_receipt(array $data, array $items, array $attachments = []): bool
 {
     $customer_email = trim($data['email'] ?? '');
-    if ($customer_email === '') return;
+    if ($customer_email === '') return false;
 
     $fullname  = htmlspecialchars($data['fullname'] ?? '');
     $company   = htmlspecialchars($data['company'] ?? '');
@@ -272,7 +272,7 @@ function andison_send_inquiry_receipt(array $data, array $items, array $attachme
 </div>
 </body></html>';
 
-    andison_send_mail(
+    return andison_send_mail(
         $customer_email,
         ($txn_no ? '[' . $txn_no . '] ' : '') . 'Your Inquiry has been received — ANDISON INDUSTRIAL',
         $body,
