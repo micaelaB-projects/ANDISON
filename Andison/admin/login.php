@@ -254,6 +254,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_locked) {
         // Auto-focus username on load
         document.getElementById('username').focus();
     </script>
+        <script src="../../assets/js/scroll-fade.js"></script>
 </body>
 </html>
 

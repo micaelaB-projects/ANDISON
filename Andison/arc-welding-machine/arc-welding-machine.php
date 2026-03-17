@@ -1383,6 +1383,7 @@ if (!$current_category) {
             });
         })();
     </script>
+    <script src="../../assets/js/scroll-fade.js"></script>
 </body>
 </html>
 

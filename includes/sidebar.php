@@ -2039,3 +2039,5 @@ if ($category_idx !== null) {
         }
     })();
 </script>
+
+<script src="<?php echo $_sidebar_base; ?>assets/js/scroll-fade.js"></script>

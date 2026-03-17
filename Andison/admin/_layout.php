@@ -369,6 +369,8 @@ function andison_admin_footer(): void
 })();
 </script>
 
+<script src="../../assets/js/scroll-fade.js"></script>
+
 </body>
 </html>
 <?php

@@ -25,6 +25,7 @@ $page_title = "STUD Welding Machine";
       <div class="prod">No products yet — add product blocks or include a catalog.</div>
     </div>
   </div>
+  <script src="../../assets/js/scroll-fade.js"></script>
 </body>
 </html>
 

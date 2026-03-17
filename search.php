@@ -314,6 +314,8 @@ $matches = array_slice($matches, 0, 80);
     })();
 </script>
 
+<script src="assets/js/scroll-fade.js"></script>
+
 </body>
 </html>
 
