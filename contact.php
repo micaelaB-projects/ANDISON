@@ -1536,6 +1536,10 @@ $ytLinks = andison_get_youtube_links();
 
         
         /* ============ CONTACT PAGE STYLES ============ */
+        #contact-us .container {
+            max-width: 1320px;
+        }
+
         .contact-page-title {
             text-align: center;
             font-size: 42px;
@@ -1545,12 +1549,141 @@ $ytLinks = andison_get_youtube_links();
             letter-spacing: -0.5px;
         }
 
+        .contact-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(280px, 360px);
+            gap: 28px;
+            align-items: start;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
         .contact-locations-grid {
             display: flex;
             flex-direction: column;
             gap: 28px;
-            max-width: 900px;
-            margin: 0 auto;
+            max-width: none;
+            margin: 0;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .contact-quick-panel {
+            position: sticky;
+            top: 102px;
+            background: #fff;
+            border: 1px solid #dfe5ff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(26, 39, 94, 0.08);
+            padding: 20px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .contact-quick-title {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 800;
+            color: #2B11DB;
+            letter-spacing: -0.2px;
+        }
+
+        .contact-quick-subtitle {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.55;
+            color: #5b6489;
+        }
+
+        .contact-quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .contact-quick-action {
+            display: grid;
+            grid-template-columns: 18px 1fr;
+            align-items: start;
+            gap: 10px;
+            text-decoration: none;
+            background: #f6f8ff;
+            border: 1px solid #dfe5ff;
+            border-radius: 10px;
+            color: #20274a;
+            padding: 10px 11px;
+            font-size: 13px;
+            line-height: 1.4;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .contact-quick-action:hover {
+            border-color: #b9c6ff;
+            box-shadow: 0 6px 16px rgba(43, 17, 219, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .contact-quick-action i {
+            color: #00D7B3;
+            margin-top: 1px;
+        }
+
+        .contact-quick-action strong {
+            display: block;
+            color: #2B11DB;
+            font-size: 12px;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .contact-quick-action small {
+            color: #6a7192;
+            font-size: 12px;
+        }
+
+        .contact-quick-email {
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            font-family: inherit;
+        }
+
+        .contact-quick-meta {
+            border-top: 1px solid #e8ecff;
+            padding-top: 12px;
+            display: grid;
+            gap: 9px;
+        }
+
+        .contact-quick-meta-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            font-size: 12px;
+            color: #5f6789;
+            line-height: 1.45;
+        }
+
+        .contact-quick-meta-item strong {
+            color: #2B11DB;
+            font-size: 11px;
+            letter-spacing: 0.45px;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .contact-quick-note {
+            margin: 2px 0 0;
+            padding: 10px 11px;
+            background: #f0fffa;
+            border: 1px solid rgba(0, 215, 179, 0.35);
+            border-radius: 9px;
+            color: #1f6d5f;
+            font-size: 12px;
+            line-height: 1.5;
         }
 
         .contact-location-card {
@@ -1663,6 +1796,16 @@ $ytLinks = andison_get_youtube_links();
         .contact-cta-note a:hover { text-decoration: underline; }
 
         @media (max-width: 768px) {
+            .contact-layout {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+
+            .contact-quick-panel {
+                position: static;
+                top: auto;
+            }
+
             .contact-location-card {
                 grid-template-columns: 1fr;
             }
@@ -1822,6 +1965,7 @@ $ytLinks = andison_get_youtube_links();
         <div class="container">
             <h2 class="contact-page-title">Contact Us</h2>
 
+            <div class="contact-layout">
             <div class="contact-locations-grid">
 
                 <!-- Manila -->
@@ -1916,6 +2060,64 @@ $ytLinks = andison_get_youtube_links();
                         </div>
                     </div>
                 </div>
+
+            </div>
+
+            <aside class="contact-quick-panel" aria-label="Quick contact panel">
+                <h3 class="contact-quick-title">Quick Contact</h3>
+                <p class="contact-quick-subtitle">Need urgent assistance? Reach our team directly for fast support and quotations.</p>
+
+                <div class="contact-quick-actions">
+                    <a class="contact-quick-action" href="tel:+63283944953">
+                        <i class="bi bi-telephone-fill"></i>
+                        <span>
+                            <strong>Call Manila</strong>
+                            (+632) 8394-4953<br>
+                            <small>Local line</small>
+                        </span>
+                    </a>
+
+                    <a class="contact-quick-action" href="tel:+63434254128">
+                        <i class="bi bi-telephone-fill"></i>
+                        <span>
+                            <strong>Call Calabarzon</strong>
+                            (+6343) 425 4128<br>
+                            <small>Batangas branch</small>
+                        </span>
+                    </a>
+
+                    <a class="contact-quick-action" href="mailto:info@andison-industrial.com">
+                        <i class="bi bi-envelope-fill"></i>
+                        <span>
+                            <strong>Email Sales</strong>
+                            info@andison-industrial.com<br>
+                            <small>Quotation and support</small>
+                        </span>
+                    </a>
+
+                    <button type="button" class="contact-quick-action contact-quick-email email-admin-btn" data-subject="Contact Page Inquiry" data-message="">
+                        <i class="bi bi-pencil-square"></i>
+                        <span>
+                            <strong>Compose Message</strong>
+                            Open the quick email composer<br>
+                            <small>Send directly from website</small>
+                        </span>
+                    </button>
+                </div>
+
+                <div class="contact-quick-meta">
+                    <div class="contact-quick-meta-item">
+                        <strong>Business Hours</strong>
+                        <span>Mon - Sat, 8:00 AM - 5:00 PM</span>
+                    </div>
+                    <div class="contact-quick-meta-item">
+                        <strong>Response Time</strong>
+                        <span>Usually within working hours</span>
+                    </div>
+                </div>
+
+                <p class="contact-quick-note">For faster processing, include your company name, item model, and quantity in your message.</p>
+            </aside>
 
             </div>
         </div>
