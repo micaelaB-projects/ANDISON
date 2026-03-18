@@ -115,6 +115,15 @@
 
         var overlay = document.getElementById('emailComposeOverlay');
         if (overlay) {
+            var existingNameLabel = overlay.querySelector('label[for="emailComposeName"]');
+            if (existingNameLabel) {
+                existingNameLabel.textContent = 'Company Name/Your Name';
+            }
+            var existingNameInput = document.getElementById('emailComposeName');
+            if (existingNameInput) {
+                existingNameInput.setAttribute('placeholder', 'Company name/your name');
+            }
+
             return {
                 overlay: overlay,
                 form: document.getElementById('emailComposeForm'),
@@ -149,8 +158,8 @@
                         '<input id="emailComposeSubject" class="email-compose-input" type="text" maxlength="180" required>' +
                     '</div>' +
                     '<div class="email-compose-row">' +
-                        '<label class="email-compose-label" for="emailComposeName">Name</label>' +
-                        '<input id="emailComposeName" class="email-compose-input" type="text" maxlength="120" placeholder="Your name (optional)">' +
+                        '<label class="email-compose-label" for="emailComposeName">Company Name/Your Name</label>' +
+                        '<input id="emailComposeName" class="email-compose-input" type="text" maxlength="120" placeholder="Company name/your name">' +
                     '</div>' +
                     '<div class="email-compose-row">' +
                         '<label class="email-compose-label" for="emailComposeEmail">From</label>' +
