@@ -6,10 +6,78 @@ require_once __DIR__ . '/_auth.php';
 require_once __DIR__ . '/_layout.php';
 require_once __DIR__ . '/../includes/supabase.php';
 
+function andison_normalize_date(?string $raw): ?string
+{
+    $value = trim((string)$raw);
+    if ($value === '') {
+        return null;
+    }
+
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+        return null;
+    }
+
+    $tz = new DateTimeZone('Asia/Manila');
+    $dt = DateTimeImmutable::createFromFormat('Y-m-d', $value, $tz);
+    if (!$dt || $dt->format('Y-m-d') !== $value) {
+        return null;
+    }
+
+    return $value;
+}
+
+function andison_inquiry_datetime_manila(array $inq): ?DateTimeImmutable
+{
+    $created = $inq['created_at'] ?? $inq['submitted_at'] ?? null;
+    if (!is_string($created) || trim($created) === '') {
+        return null;
+    }
+
+    $value = trim($created);
+    try {
+        $dt = new DateTimeImmutable($value, new DateTimeZone('UTC'));
+        return $dt->setTimezone(new DateTimeZone('Asia/Manila'));
+    } catch (Exception $e) {
+        try {
+            return new DateTimeImmutable($value, new DateTimeZone('Asia/Manila'));
+        } catch (Exception $e2) {
+            return null;
+        }
+    }
+}
+
+function andison_inquiries_url(string $filter, ?string $dateFrom, ?string $dateTo): string
+{
+    $params = [];
+    if ($filter !== 'all') {
+        $params['filter'] = $filter;
+    }
+    if ($dateFrom !== null) {
+        $params['date_from'] = $dateFrom;
+    }
+    if ($dateTo !== null) {
+        $params['date_to'] = $dateTo;
+    }
+
+    return 'inquiries.php' . (!empty($params) ? '?' . http_build_query($params) : '');
+}
+
 // Handle status update via POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $action = $_POST['action'];
     $id     = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+
+    $returnFilter = isset($_POST['filter']) ? trim((string)$_POST['filter']) : 'all';
+    if (!in_array($returnFilter, ['all', 'new', 'read', 'responded'], true)) {
+        $returnFilter = 'all';
+    }
+    $returnDateFrom = andison_normalize_date($_POST['date_from'] ?? null);
+    $returnDateTo   = andison_normalize_date($_POST['date_to'] ?? null);
+    if ($returnDateFrom !== null && $returnDateTo !== null && $returnDateFrom > $returnDateTo) {
+        $tmp = $returnDateFrom;
+        $returnDateFrom = $returnDateTo;
+        $returnDateTo = $tmp;
+    }
 
     if ($action === 'mark_read' && $id > 0) {
         andison_sb_update('inquiries', ['status' => 'read'], 'id=eq.' . $id);
@@ -21,18 +89,71 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         andison_sb_delete('inquiries', 'id=eq.' . $id);
         andison_set_flash('success', 'Inquiry deleted.');
     }
-    header('Location: inquiries.php');
+
+    header('Location: ' . andison_inquiries_url($returnFilter, $returnDateFrom, $returnDateTo));
     exit;
 }
 
 // Fetch all inquiries, newest first
-$filter = isset($_GET['filter']) ? trim($_GET['filter']) : 'all';
+$filter = isset($_GET['filter']) ? trim((string)$_GET['filter']) : 'all';
+if (!in_array($filter, ['all', 'new', 'read', 'responded'], true)) {
+    $filter = 'all';
+}
+
+$dateFrom = andison_normalize_date($_GET['date_from'] ?? null);
+$dateTo   = andison_normalize_date($_GET['date_to'] ?? null);
+if ($dateFrom !== null && $dateTo !== null && $dateFrom > $dateTo) {
+    $tmp = $dateFrom;
+    $dateFrom = $dateTo;
+    $dateTo = $tmp;
+}
+
+$manilaTz = new DateTimeZone('Asia/Manila');
+$todayDate = (new DateTimeImmutable('now', $manilaTz))->format('Y-m-d');
+$presetTodayFrom = $todayDate;
+$presetTodayTo = $todayDate;
+$presetLast7From = (new DateTimeImmutable($todayDate . ' 00:00:00', $manilaTz))->modify('-6 days')->format('Y-m-d');
+$presetLast7To = $todayDate;
+$presetMonthFrom = (new DateTimeImmutable($todayDate . ' 00:00:00', $manilaTz))->modify('first day of this month')->format('Y-m-d');
+$presetMonthTo = $todayDate;
+
+$isPresetToday = ($dateFrom === $presetTodayFrom && $dateTo === $presetTodayTo);
+$isPresetLast7 = ($dateFrom === $presetLast7From && $dateTo === $presetLast7To);
+$isPresetMonth = ($dateFrom === $presetMonthFrom && $dateTo === $presetMonthTo);
+
 $query  = 'order=id.desc';
 if ($filter === 'new')       $query .= '&status=eq.new';
 elseif ($filter === 'read')  $query .= '&status=eq.read';
 elseif ($filter === 'responded') $query .= '&status=eq.responded';
 
 $inquiries = andison_sb_select('inquiries', $query);
+
+$fromBoundary = $dateFrom !== null ? new DateTimeImmutable($dateFrom . ' 00:00:00', new DateTimeZone('Asia/Manila')) : null;
+$toBoundary   = $dateTo !== null ? new DateTimeImmutable($dateTo . ' 23:59:59', new DateTimeZone('Asia/Manila')) : null;
+
+if ($fromBoundary !== null || $toBoundary !== null) {
+    $filteredInquiries = [];
+    foreach ($inquiries as $inqRow) {
+        if (!is_array($inqRow)) {
+            continue;
+        }
+
+        $inqDt = andison_inquiry_datetime_manila($inqRow);
+        if (!$inqDt) {
+            continue;
+        }
+
+        if ($fromBoundary !== null && $inqDt < $fromBoundary) {
+            continue;
+        }
+        if ($toBoundary !== null && $inqDt > $toBoundary) {
+            continue;
+        }
+
+        $filteredInquiries[] = $inqRow;
+    }
+    $inquiries = $filteredInquiries;
+}
 
 // Count per status
 $allCount       = count(andison_sb_select('inquiries', 'select=id'));
@@ -43,12 +164,29 @@ $respondedCount = count(andison_sb_select('inquiries', 'status=eq.responded&sele
 andison_admin_header('Inquiries', 'inquiries');
 ?>
 <style>
-    .filter-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+    .filter-toolbar{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+    .filter-tabs{display:flex;gap:8px;flex-wrap:wrap}
     .filter-tab{padding:8px 18px;border-radius:10px;font-size:13px;font-weight:700;text-decoration:none;border:2px solid var(--border);color:var(--muted);transition:all 0.2s ease;background:#fff}
     .filter-tab:hover{border-color:var(--accent);color:var(--accent)}
     .filter-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
     .filter-tab .cnt{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:999px;font-size:11px;font-weight:900;background:rgba(255,255,255,0.25);margin-left:6px}
     .filter-tab:not(.active) .cnt{background:rgba(43,17,219,0.10);color:var(--accent)}
+    .date-filter-form{display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;background:#fff;border:1px solid var(--border);border-radius:12px;padding:8px 10px}
+    .date-filter-field{display:flex;flex-direction:column;gap:4px}
+    .date-filter-field label{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:0.5px;text-transform:uppercase}
+    .date-filter-field input[type=date]{border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:12px;color:var(--text);background:#fff;min-width:140px}
+    .date-filter-field input[type=date]:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(43,17,219,0.12)}
+    .date-filter-btn{padding:7px 12px;font-size:12px;border-radius:8px;font-weight:700;text-decoration:none}
+    .date-filter-presets{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-left:4px}
+    .date-preset-chip{display:inline-flex;align-items:center;justify-content:center;padding:6px 10px;border-radius:999px;border:1px solid var(--border);text-decoration:none;font-size:11px;font-weight:800;color:var(--muted);background:#fff;transition:all 0.2s ease}
+    .date-preset-chip:hover{border-color:var(--accent);color:var(--accent);background:rgba(43,17,219,0.06)}
+    .date-preset-chip.active{border-color:var(--accent);background:var(--accent);color:#fff}
+    @media (max-width: 740px){
+        .filter-toolbar{align-items:stretch}
+        .date-filter-form{width:100%}
+        .date-filter-field{flex:1 1 140px}
+        .date-filter-presets{width:100%;margin-left:0;padding-top:2px}
+    }
     .inq-card{background:#fff;border:1px solid rgba(43,17,219,0.08);border-radius:16px;padding:20px 22px;margin-bottom:14px;transition:all 0.2s ease}
     .inq-card:hover{box-shadow:0 8px 28px rgba(43,17,219,0.09);transform:translateY(-1px)}
     .inq-card.status-new{border-left:4px solid #ef4444}
@@ -84,27 +222,56 @@ andison_admin_header('Inquiries', 'inquiries');
     .empty-state p{font-size:15px}
 </style>
 
-<div class="filter-tabs">
-    <a href="inquiries.php?filter=all" class="filter-tab <?php echo $filter === 'all' ? 'active' : ''; ?>">
-        All <span class="cnt"><?php echo $allCount; ?></span>
-    </a>
-    <a href="inquiries.php?filter=new" class="filter-tab <?php echo $filter === 'new' ? 'active' : ''; ?>">
-        New <span class="cnt"><?php echo $newCount; ?></span>
-    </a>
-    <a href="inquiries.php?filter=read" class="filter-tab <?php echo $filter === 'read' ? 'active' : ''; ?>">
-        Read <span class="cnt"><?php echo $readCount; ?></span>
-    </a>
-    <a href="inquiries.php?filter=responded" class="filter-tab <?php echo $filter === 'responded' ? 'active' : ''; ?>">
-        Responded <span class="cnt"><?php echo $respondedCount; ?></span>
-    </a>
+<div class="filter-toolbar">
+    <div class="filter-tabs">
+        <a href="<?php echo htmlspecialchars(andison_inquiries_url('all', $dateFrom, $dateTo)); ?>" class="filter-tab <?php echo $filter === 'all' ? 'active' : ''; ?>">
+            All <span class="cnt"><?php echo $allCount; ?></span>
+        </a>
+        <a href="<?php echo htmlspecialchars(andison_inquiries_url('new', $dateFrom, $dateTo)); ?>" class="filter-tab <?php echo $filter === 'new' ? 'active' : ''; ?>">
+            New <span class="cnt"><?php echo $newCount; ?></span>
+        </a>
+        <a href="<?php echo htmlspecialchars(andison_inquiries_url('read', $dateFrom, $dateTo)); ?>" class="filter-tab <?php echo $filter === 'read' ? 'active' : ''; ?>">
+            Read <span class="cnt"><?php echo $readCount; ?></span>
+        </a>
+        <a href="<?php echo htmlspecialchars(andison_inquiries_url('responded', $dateFrom, $dateTo)); ?>" class="filter-tab <?php echo $filter === 'responded' ? 'active' : ''; ?>">
+            Responded <span class="cnt"><?php echo $respondedCount; ?></span>
+        </a>
+    </div>
+
+    <form method="get" class="date-filter-form">
+        <input type="hidden" name="filter" value="<?php echo htmlspecialchars($filter); ?>">
+        <div class="date-filter-field">
+            <label for="inqDateFrom">From</label>
+            <input id="inqDateFrom" type="date" name="date_from" value="<?php echo htmlspecialchars((string)($dateFrom ?? '')); ?>">
+        </div>
+        <div class="date-filter-field">
+            <label for="inqDateTo">To</label>
+            <input id="inqDateTo" type="date" name="date_to" value="<?php echo htmlspecialchars((string)($dateTo ?? '')); ?>">
+        </div>
+        <button type="submit" class="btn btn-outline date-filter-btn"><i class="bi bi-funnel"></i> Apply</button>
+        <?php if ($dateFrom !== null || $dateTo !== null): ?>
+            <a href="<?php echo htmlspecialchars(andison_inquiries_url($filter, null, null)); ?>" class="btn btn-danger date-filter-btn"><i class="bi bi-x-circle"></i> Clear</a>
+        <?php endif; ?>
+        <div class="date-filter-presets">
+            <a href="<?php echo htmlspecialchars(andison_inquiries_url($filter, $presetTodayFrom, $presetTodayTo)); ?>" class="date-preset-chip <?php echo $isPresetToday ? 'active' : ''; ?>">Today</a>
+            <a href="<?php echo htmlspecialchars(andison_inquiries_url($filter, $presetLast7From, $presetLast7To)); ?>" class="date-preset-chip <?php echo $isPresetLast7 ? 'active' : ''; ?>">Last 7 Days</a>
+            <a href="<?php echo htmlspecialchars(andison_inquiries_url($filter, $presetMonthFrom, $presetMonthTo)); ?>" class="date-preset-chip <?php echo $isPresetMonth ? 'active' : ''; ?>">This Month</a>
+        </div>
+    </form>
 </div>
 
 <?php if (empty($inquiries)): ?>
 <div class="empty-state">
     <i class="bi bi-inbox"></i>
-    <p>No inquiries found<?php echo $filter !== 'all' ? ' for this filter' : ''; ?>.</p>
+    <p>No inquiries found<?php echo $filter !== 'all' ? ' for this filter' : ''; ?><?php echo ($dateFrom !== null || $dateTo !== null) ? ' in this date range' : ''; ?>.</p>
 </div>
 <?php else: ?>
+
+<?php
+    $filterHiddenValue = htmlspecialchars($filter);
+    $dateFromHiddenValue = htmlspecialchars((string)($dateFrom ?? ''));
+    $dateToHiddenValue = htmlspecialchars((string)($dateTo ?? ''));
+?>
 
 <?php foreach ($inquiries as $inq):
     $inqId     = (int)($inq['id'] ?? 0);
@@ -164,11 +331,9 @@ andison_admin_header('Inquiries', 'inquiries');
 
     $attachmentUrlEsc  = htmlspecialchars($attachmentUrl);
     $attachmentNameEsc = htmlspecialchars($attachmentName);
-    $created   = $inq['created_at'] ?? $inq['submitted_at'] ?? null;
-    if ($created) {
-        $dt = new DateTime($created, new DateTimeZone('UTC'));
-        $dt->setTimezone(new DateTimeZone('Asia/Manila'));
-        $dateStr = $dt->format('M j, Y · g:i A');
+    $inqDateTime = andison_inquiry_datetime_manila(is_array($inq) ? $inq : []);
+    if ($inqDateTime) {
+        $dateStr = $inqDateTime->format('M j, Y · g:i A');
     } else {
         $dateStr = 'Inquiry #' . $inqId;
     }
@@ -245,6 +410,9 @@ andison_admin_header('Inquiries', 'inquiries');
         <form method="post">
             <input type="hidden" name="id" value="<?php echo $inqId; ?>">
             <input type="hidden" name="action" value="mark_read">
+            <input type="hidden" name="filter" value="<?php echo $filterHiddenValue; ?>">
+            <input type="hidden" name="date_from" value="<?php echo $dateFromHiddenValue; ?>">
+            <input type="hidden" name="date_to" value="<?php echo $dateToHiddenValue; ?>">
             <button type="submit" class="btn btn-outline btn-sm"><i class="bi bi-eye"></i> Mark as Read</button>
         </form>
         <?php endif; ?>
@@ -253,6 +421,9 @@ andison_admin_header('Inquiries', 'inquiries');
         <form method="post">
             <input type="hidden" name="id" value="<?php echo $inqId; ?>">
             <input type="hidden" name="action" value="mark_responded">
+            <input type="hidden" name="filter" value="<?php echo $filterHiddenValue; ?>">
+            <input type="hidden" name="date_from" value="<?php echo $dateFromHiddenValue; ?>">
+            <input type="hidden" name="date_to" value="<?php echo $dateToHiddenValue; ?>">
             <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-check2-circle"></i> Mark Responded</button>
         </form>
         <?php endif; ?>
@@ -266,6 +437,9 @@ andison_admin_header('Inquiries', 'inquiries');
         <form method="post" style="margin-left:auto">
             <input type="hidden" name="id" value="<?php echo $inqId; ?>">
             <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="filter" value="<?php echo $filterHiddenValue; ?>">
+            <input type="hidden" name="date_from" value="<?php echo $dateFromHiddenValue; ?>">
+            <input type="hidden" name="date_to" value="<?php echo $dateToHiddenValue; ?>">
             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this inquiry?')"><i class="bi bi-trash3"></i> Delete</button>
         </form>
     </div>
