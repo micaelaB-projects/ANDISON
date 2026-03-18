@@ -830,13 +830,13 @@ andison_admin_header('Products', 'products');
                     <h3 style="font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;"><i class="bi bi-info-circle"></i> Product Information</h3>
                     
                     <div class="field" style="margin:0;margin-bottom:12px;">
-                        <label for="editProductName"><i class="bi bi-tag"></i> Product Name</label>
+                        <label for="editProductName"><i class="bi bi-tag"></i> Product Description</label>
                         <input id="editProductName" name="product_name" type="text" placeholder="e.g., Panasonic TIG Welding Machine" title="Enter product name">
                     </div>
                     
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
                         <div class="field" style="margin:0;">
-                            <label for="editModel"><i class="bi bi-tag"></i> Model *</label>
+                            <label for="editModel"><i class="bi bi-tag"></i> Product Name *</label>
                             <input id="editModel" name="model" type="text" required placeholder="e.g., YD-350KR2" title="Enter product model number or code">
                         </div>
                         
@@ -3078,7 +3078,7 @@ document.querySelector('.edit-product-form').addEventListener('submit', function
             updateFinalSubcategory();
             syncSpecificationsHiddenField();
             f.submit();
-        } else {
+        } else if (action !== 'add_product') {
             // Reset modal state after cancel
             var modal = document.getElementById('editProductModal');
             var modalHeader = modal.querySelector('.edit-modal-header h2');

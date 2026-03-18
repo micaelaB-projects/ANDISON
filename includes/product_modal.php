@@ -829,8 +829,8 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
             firstTop.textContent = headers[0] || 'Model';
             firstTop.style.padding = '12px 10px';
             firstTop.style.textAlign = 'center';
-            firstTop.style.borderBottom = '1px solid #4b5563';
-            firstTop.style.background = 'linear-gradient(180deg,#2f3238 0%,#1f2126 100%)';
+            firstTop.style.borderBottom = '1px solid rgba(162, 191, 235, 0.45)';
+            firstTop.style.background = 'linear-gradient(180deg,#2a5b9c 0%,#173865 100%)';
             firstTop.style.color = '#fff';
             firstTop.style.fontSize = '11px';
             firstTop.style.fontWeight = '900';
@@ -844,8 +844,8 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 gTh.textContent = groups[g].title || (g === 0 ? 'Free Air' : ('Group ' + (g + 1)));
                 gTh.style.padding = '10px 8px';
                 gTh.style.textAlign = 'center';
-                gTh.style.borderBottom = '1px solid #4b5563';
-                gTh.style.background = 'linear-gradient(180deg,#2f3238 0%,#1f2126 100%)';
+                gTh.style.borderBottom = '1px solid rgba(162, 191, 235, 0.45)';
+                gTh.style.background = 'linear-gradient(180deg,#2a5b9c 0%,#173865 100%)';
                 gTh.style.color = '#fff';
                 gTh.style.fontSize = '11px';
                 gTh.style.fontWeight = '900';
@@ -860,8 +860,8 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 subTh.textContent = headers[c] || ('Column ' + c);
                 subTh.style.padding = '8px 8px';
                 subTh.style.textAlign = 'center';
-                subTh.style.borderBottom = '1px solid #4b5563';
-                subTh.style.background = 'linear-gradient(180deg,#26292f 0%,#1a1c21 100%)';
+                subTh.style.borderBottom = '1px solid rgba(162, 191, 235, 0.45)';
+                subTh.style.background = 'linear-gradient(180deg,#234f8b 0%,#163154 100%)';
                 subTh.style.color = '#f3f4f6';
                 subTh.style.fontSize = '10px';
                 subTh.style.fontWeight = '800';
@@ -2213,6 +2213,142 @@ header .contact-popover {
     display: none !important;
 }
 
+/* Category listing cards: use the centered, full-card style from the reference design */
+.category-content .product-grid.grid-view {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+    gap: 20px !important;
+}
+
+.category-content .product-grid.grid-view .product-card {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    gap: 0 !important;
+    padding: 0 0 16px !important;
+    border-radius: 12px !important;
+    border: 1px solid #d1d5db !important;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08) !important;
+}
+
+.category-content .product-grid.grid-view .product-image {
+    width: 100% !important;
+    height: 220px !important;
+    border-bottom: none !important;
+    border-radius: 12px 12px 0 0 !important;
+    background: #fff !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    padding: 12px 12px 6px !important;
+}
+
+.category-content .product-grid.grid-view .product-image > img,
+.category-content .product-grid.grid-view .product-image > .card-img-slider {
+    width: 100% !important;
+    max-width: 96% !important;
+    height: 168px !important;
+    flex: 0 0 168px;
+}
+
+.category-content .product-grid.grid-view .product-image > img {
+    object-fit: contain !important;
+    padding: 0 !important;
+}
+
+.category-content .product-grid.grid-view .product-image .card-img-slider {
+    position: relative;
+    overflow: hidden;
+}
+
+.category-content .product-grid.grid-view .product-image .card-img-slider img {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
+    padding: 0 !important;
+}
+
+.category-content .product-grid.grid-view .product-badge {
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    background: #2b11db !important;
+    color: #fff !important;
+    padding: 3px 10px !important;
+    border-radius: 6px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+    box-shadow: none !important;
+}
+
+.category-content .product-grid.grid-view .product-info,
+.category-content .product-grid.grid-view .product-card > div:last-child {
+    width: 100%;
+    padding: 8px 14px 0 !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 5px;
+}
+
+.category-content .product-grid.grid-view .product-model {
+    padding: 0 !important;
+    margin: 0 !important;
+    color: #2b11db !important;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.category-content .product-grid.grid-view .product-card h4 {
+    padding: 0 !important;
+    margin: 0 !important;
+    color: #2b11db !important;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+/* When model exists above the title, make the second line supportive (not another highlight) */
+.category-content .product-grid.grid-view .product-model + h4 {
+    color: #888 !important;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.category-content .product-grid.grid-view .product-card .product-description {
+    display: none !important;
+}
+
+.category-content .product-grid.grid-view .add-to-inquiry {
+    width: 100% !important;
+    margin-top: 4px;
+    border-radius: 6px !important;
+    padding: 9px 12px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.3px;
+}
+
+@media (max-width: 768px) {
+    .category-content .product-grid.grid-view {
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)) !important;
+    }
+
+    .category-content .product-grid.grid-view .product-image {
+        height: 198px !important;
+    }
+}
+
 /* Card-level image slider */
 .card-img-slider { position:relative; width:100%; height:100%; }
 .card-img-slider img {
@@ -2268,7 +2404,7 @@ header .contact-popover {
                 var img = document.createElement('img');
                 img.src = src;
                 img.alt = card.getAttribute('data-model') || '';
-                img.style.padding = '8px';
+                img.style.padding = '0';
                 if (i === 0) img.className = 'active';
                 sliderDiv.appendChild(img);
             });

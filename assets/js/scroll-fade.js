@@ -8,7 +8,6 @@
     var TARGET_CLASS = 'andison-scroll-fade-target';
     var VISIBLE_CLASS = 'andison-scroll-fade-visible';
     var READY_ATTR = 'data-andison-fade-ready';
-    var SETTLED_ATTR = 'data-andison-fade-settled';
 
     var EXCLUDE_SELECTOR = [
         'header',
@@ -142,17 +141,6 @@
         nextDelayIndex += 1;
     }
 
-    function settleTarget(el) {
-        if (el.getAttribute(SETTLED_ATTR) === '1') {
-            return;
-        }
-
-        el.setAttribute(SETTLED_ATTR, '1');
-        window.setTimeout(function () {
-            el.style.willChange = 'auto';
-        }, 900);
-    }
-
     function queueReveal(el) {
         revealQueue.push(el);
         if (revealRaf !== 0) {
@@ -170,10 +158,7 @@
                 }
                 seen.add(target);
                 target.classList.add(VISIBLE_CLASS);
-                settleTarget(target);
-                if (observer) {
-                    observer.unobserve(target);
-                }
+                target.style.willChange = 'opacity, transform';
             }
 
             revealQueue = [];
@@ -215,10 +200,12 @@
             var target = targets[i];
             markTarget(target);
 
+            if (observer) {
+                observer.observe(target);
+            }
+
             if (isNearViewport(target)) {
                 queueReveal(target);
-            } else if (observer) {
-                observer.observe(target);
             }
         }
     }
@@ -303,6 +290,9 @@
                 var entry = entries[i];
                 if (entry.isIntersecting || entry.intersectionRatio > 0) {
                     queueReveal(entry.target);
+                } else if (entry.target instanceof HTMLElement) {
+                    entry.target.classList.remove(VISIBLE_CLASS);
+                    entry.target.style.willChange = 'opacity, transform';
                 }
             }
         }, {

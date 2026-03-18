@@ -83,14 +83,15 @@
         style.textContent = '' +
             '#emailComposeOverlay{position:fixed;inset:0;background:rgba(15,18,35,.48);backdrop-filter:blur(3px);z-index:10050;display:none;align-items:center;justify-content:center;padding:16px;}' +
             '#emailComposeOverlay.open{display:flex;}' +
-            '#emailComposeDialog{width:min(680px,96vw);background:#fff;border-radius:16px;box-shadow:0 24px 56px rgba(19,23,66,.35);overflow:hidden;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;}' +
+            '#emailComposeDialog{width:min(680px,96vw);background:#fff;border-radius:16px;box-shadow:0 24px 56px rgba(19,23,66,.35);overflow:hidden;font-family:"Google Sans",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}' +
             '#emailComposeHeader{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:#f5f7ff;border-bottom:1px solid #e5e9ff;}' +
-            '#emailComposeTitle{margin:0;font-size:16px;font-weight:800;color:#1b1f47;letter-spacing:.2px;}' +
+            '#emailComposeTitle{margin:0;font-size:18px;font-weight:700;color:#1b1f47;letter-spacing:.1px;font-family:"Google Sans",Roboto,"Helvetica Neue",Arial,sans-serif;}' +
             '#emailComposeClose{border:none;background:#eceffd;color:#3a4385;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:20px;line-height:1;display:inline-flex;align-items:center;justify-content:center;}' +
             '#emailComposeForm{padding:16px 18px 18px;display:grid;gap:12px;}' +
             '.email-compose-row{display:grid;grid-template-columns:78px 1fr;align-items:center;gap:10px;}' +
-            '.email-compose-label{font-size:12px;font-weight:700;color:#424b80;text-transform:uppercase;letter-spacing:.8px;}' +
-            '.email-compose-input,.email-compose-textarea{width:100%;border:1px solid #d6dcff;border-radius:10px;padding:11px 12px;font-size:14px;color:#1d2245;background:#fff;}' +
+            '.email-compose-label{font-size:12px;font-weight:600;color:#424b80;text-transform:uppercase;letter-spacing:.6px;font-family:"Google Sans",Roboto,"Helvetica Neue",Arial,sans-serif;}' +
+            '.email-compose-input,.email-compose-textarea{width:100%;border:1px solid #d6dcff;border-radius:10px;padding:11px 12px;font-size:14px;color:#1d2245;background:#fff;font-family:Roboto,"Helvetica Neue",Arial,sans-serif;letter-spacing:.1px;}' +
+            '.email-compose-input::placeholder,.email-compose-textarea::placeholder{color:#6f769a;font-family:Roboto,"Helvetica Neue",Arial,sans-serif;}' +
             '.email-compose-input:focus,.email-compose-textarea:focus{outline:none;border-color:#2B11DB;box-shadow:0 0 0 3px rgba(43,17,219,.12);}' +
             '.email-compose-input[readonly]{background:#f6f7fb;color:#5a628f;}' +
             '.email-compose-textarea{min-height:190px;resize:vertical;line-height:1.55;}' +
@@ -100,7 +101,7 @@
             '#emailComposeStatus.error{color:#c62828;}' +
             '#emailComposeStatus.info{color:#3146a0;}' +
             '#emailComposeFooter{display:flex;justify-content:flex-end;gap:10px;padding:0 18px 18px;flex-wrap:wrap;}' +
-            '.email-compose-btn{border:none;border-radius:10px;padding:11px 16px;font-size:14px;font-weight:700;cursor:pointer;}' +
+            '.email-compose-btn{border:none;border-radius:10px;padding:11px 16px;font-size:14px;font-weight:600;cursor:pointer;font-family:"Google Sans",Roboto,"Helvetica Neue",Arial,sans-serif;letter-spacing:.1px;}' +
             '.email-compose-btn.cancel{background:#eef1fb;color:#39427e;}' +
             '.email-compose-btn.send{background:linear-gradient(135deg,#14b86f 0%,#0f9468 100%);color:#fff;}' +
             '.email-compose-btn.send[disabled]{opacity:.68;cursor:not-allowed;}' +

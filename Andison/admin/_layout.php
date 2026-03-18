@@ -140,7 +140,7 @@ function andison_admin_header(string $title, string $active = 'dashboard'): void
         }
 
         /* Confirmation Modal */
-        .confirm-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:99999;align-items:center;justify-content:center}
+        .confirm-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:130000;align-items:center;justify-content:center}
         .confirm-modal.show{display:flex}
         .confirm-box{background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.3);max-width:480px;width:90%;padding:28px}
         .confirm-icon{font-size:48px;text-align:center;margin-bottom:16px;color:var(--accent)}
