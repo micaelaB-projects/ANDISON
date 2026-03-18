@@ -8,7 +8,7 @@ require_once __DIR__ . '/_layout.php';
 require_once __DIR__ . '/../includes/analytics.php';
  
 $analytics   = andison_get_analytics();
-$chartData   = andison_get_daily_chart(30);
+$chartData   = andison_get_daily_chart(30, $analytics);
 
 $brandViews  = $analytics['brands'] ?? [];
 arsort($brandViews);
@@ -184,7 +184,7 @@ andison_admin_header('Analytics', 'analytics');
 
 <script>
 (function(){
-    var POLL = 5000;
+    var POLL = 10000;
 
     function fmt(n){ return Number(n).toLocaleString(); }
 

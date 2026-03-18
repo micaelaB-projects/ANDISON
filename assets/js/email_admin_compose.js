@@ -264,9 +264,6 @@
         var modal = ensureModal();
         var subject = (triggerBtn && triggerBtn.getAttribute('data-subject')) || 'Client Inquiry';
         var message = (triggerBtn && triggerBtn.getAttribute('data-message')) || '';
-        if (!message) {
-            message = 'Hello Admin,\n\nI would like to inquire about your products and services.\n\nPage: ' + window.location.href + '\n';
-        }
 
         modal.to.value = ADMIN_EMAIL;
         modal.subject.value = subject;

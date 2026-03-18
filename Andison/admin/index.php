@@ -7,54 +7,81 @@ andison_require_admin();
 require_once __DIR__ . '/_layout.php';
 
 // Load all data for metrics
-require_once __DIR__ . '/../../includes/brands_info.php';
+require_once __DIR__ . '/../includes/supabase.php';
 require_once __DIR__ . '/../includes/categories_info.php';
-require_once __DIR__ . '/../includes/products_management.php';
 require_once __DIR__ . '/../includes/home_slider.php';
 require_once __DIR__ . '/../includes/home_featured.php';
 require_once __DIR__ . '/../includes/youtube_links.php';
 require_once __DIR__ . '/../includes/analytics.php';
 
-$brands = andison_get_brands_info();
 $categories = andison_get_categories();
 $sliders = andison_get_home_slider();
 $featured = andison_get_home_featured();
 $youtube = andison_get_youtube_links();
 $analytics = andison_get_analytics();
-$chartData = andison_get_daily_chart(7);
+$chartData = andison_get_daily_chart(7, $analytics);
 $analyticsBrands = $analytics['brands'] ?? [];
 arsort($analyticsBrands);
 $analyticsCategories = $analytics['categories'] ?? [];
 arsort($analyticsCategories);
 
-// Calculate metrics
-$totalBrands = count($brands);
-$totalProducts = 0;
-foreach ($brands as $brand) {
-    if (isset($brand['products']) && is_array($brand['products'])) {
-        $totalProducts += count($brand['products']);
-    }
-}
+// Lightweight aggregate metrics to keep dashboard responsive on large datasets.
+$totalBrands = andison_sb_count('brands');
+$totalProducts = andison_sb_count('products');
 
-$brandsWithProducts = 0;
-foreach ($brands as $brand) {
-    if (isset($brand['products']) && is_array($brand['products']) && count($brand['products']) > 0) {
-        $brandsWithProducts++;
-    }
-}
-
-// Calculate category metrics
+// Calculate category metrics from a single products query.
 $totalCategories = count($categories);
-$totalSubcategories = 0;
-$totalCategoryProducts = 0;
+$knownSubcategoryIds = [];
+$subSubcategoryParentById = [];
 foreach ($categories as $category) {
-    $subcount = count($category['subcategories'] ?? []);
-    $totalSubcategories += $subcount;
     foreach ($category['subcategories'] ?? [] as $sub) {
-        $subProducts = andison_get_products_for_subcategory($category['id'], $sub['id']);
-        $totalCategoryProducts += count($subProducts);
+        $subId = trim((string)($sub['id'] ?? ''));
+        if ($subId === '') {
+            continue;
+        }
+        $knownSubcategoryIds[$subId] = true;
+
+        foreach ($sub['subcategories'] ?? [] as $subSub) {
+            $subSubId = trim((string)($subSub['id'] ?? ''));
+            if ($subSubId !== '') {
+                $subSubcategoryParentById[$subSubId] = $subId;
+            }
+        }
     }
 }
+
+$productRowsForMetrics = andison_sb_select(
+    'products',
+    'select=brand,subcategory_id,sub_subcategory_id&limit=10000'
+);
+
+$brandsWithProductsMap = [];
+$subcategoryProductCounts = [];
+$totalCategoryProducts = 0;
+
+foreach ($productRowsForMetrics as $row) {
+    $brandName = trim((string)($row['brand'] ?? ''));
+    if ($brandName !== '') {
+        $brandsWithProductsMap[strtolower($brandName)] = true;
+    }
+
+    $storedSubId = trim((string)($row['subcategory_id'] ?? ''));
+    $storedSubSubId = trim((string)($row['sub_subcategory_id'] ?? ''));
+
+    // Legacy compatibility: older rows may store sub-subcategory in subcategory_id.
+    if ($storedSubSubId !== '' && isset($subSubcategoryParentById[$storedSubSubId])) {
+        $storedSubId = $subSubcategoryParentById[$storedSubSubId];
+    } elseif ($storedSubId !== '' && isset($subSubcategoryParentById[$storedSubId])) {
+        $storedSubId = $subSubcategoryParentById[$storedSubId];
+    }
+
+    if ($storedSubId !== '' && isset($knownSubcategoryIds[$storedSubId])) {
+        $subcategoryProductCounts[$storedSubId] = ($subcategoryProductCounts[$storedSubId] ?? 0) + 1;
+        $totalCategoryProducts++;
+    }
+}
+
+$brandsWithProducts = count($brandsWithProductsMap);
 
 $sliderCount = 0;
 foreach ($sliders as $slide) {
@@ -67,9 +94,37 @@ foreach ($youtube['home_highlights'] ?? [] as $yt) {
 }
 
 $featuredConfigured = !empty($featured['title']);
+$showDashboardLoaderOnce = !empty($_SESSION['andison_dashboard_loader_once']);
+if ($showDashboardLoaderOnce) {
+    unset($_SESSION['andison_dashboard_loader_once']);
+}
 
 andison_admin_header('Dashboard', 'dashboard');
 ?>
+
+<?php if ($showDashboardLoaderOnce): ?>
+<style>
+    .dashboard-loader-overlay{position:fixed;inset:0;background:linear-gradient(135deg,rgba(12,20,68,0.86) 0%,rgba(30,48,140,0.84) 100%);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:99998;opacity:1;visibility:visible;transition:opacity .35s ease,visibility .35s ease}
+    .dashboard-loader-overlay.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
+    .dashboard-loader-box{width:min(320px,88vw);padding:24px 24px 22px;border-radius:18px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.24);box-shadow:0 20px 48px rgba(0,0,0,0.28);display:flex;flex-direction:column;align-items:center;gap:14px}
+    .dashboard-loader-logo{width:112px;height:112px;object-fit:contain;filter:drop-shadow(0 4px 14px rgba(0,0,0,0.35));animation:dashboardLoaderPulse 1.5s ease-in-out infinite}
+    .dashboard-loader-ring{width:46px;height:46px;border-radius:50%;border:3px solid rgba(255,255,255,0.28);border-top-color:#ffffff;animation:spin .8s linear infinite}
+    .dashboard-loader-text{margin:0;color:#ffffff;font-size:13px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;text-align:center}
+    @keyframes dashboardLoaderPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+    @media(max-width:768px){
+        .dashboard-loader-box{padding:20px 18px}
+        .dashboard-loader-logo{width:96px;height:96px}
+    }
+</style>
+
+<div id="dashboardLoader" class="dashboard-loader-overlay" aria-hidden="false">
+    <div class="dashboard-loader-box" role="status" aria-live="polite" aria-label="Loading admin dashboard">
+        <img class="dashboard-loader-logo" src="../../assets/HOME/image-removebg-preview.png" alt="ANDISON Logo">
+        <div class="dashboard-loader-ring" aria-hidden="true"></div>
+        <p class="dashboard-loader-text">Loading Dashboard...</p>
+    </div>
+</div>
+<?php endif; ?>
 
 <div class="grid">
     <!-- ── ANALYTICS (Visitor Stats) ─────────────────────────── -->
@@ -211,7 +266,26 @@ andison_admin_header('Dashboard', 'dashboard');
 
     <script>
     (function(){
-        var POLL_MS = 2000; // refresh every 2 seconds
+        var POLL_MS = 8000; // reduce API load while keeping near-live updates
+        var dashboardLoader = document.getElementById('dashboardLoader');
+        var dashboardLoaderHidden = false;
+
+        function hideDashboardLoader(){
+            if (!dashboardLoader || dashboardLoaderHidden) return;
+            dashboardLoaderHidden = true;
+            dashboardLoader.classList.add('is-hidden');
+            dashboardLoader.setAttribute('aria-hidden', 'true');
+            setTimeout(function(){
+                if (dashboardLoader && dashboardLoader.parentNode) {
+                    dashboardLoader.parentNode.removeChild(dashboardLoader);
+                }
+            }, 420);
+        }
+
+        window.addEventListener('load', function(){
+            setTimeout(hideDashboardLoader, 140);
+        });
+        setTimeout(hideDashboardLoader, 4500);
 
         function fmt(n){ return Number(n).toLocaleString(); }
 
@@ -310,8 +384,12 @@ andison_admin_header('Dashboard', 'dashboard');
                     rebuildRankList('an-brands-list',     d.brands,     'var(--accent)');
                     rebuildRankList('an-categories-list', d.categories, '#10b981');
                     updateTimestamp();
+                    hideDashboardLoader();
                 })
-                .catch(function(){/* silently ignore network errors */});
+                .catch(function(){
+                    hideDashboardLoader();
+                    /* silently ignore network errors */
+                });
         }
 
         function highlightCard(id) {
@@ -382,8 +460,7 @@ andison_admin_header('Dashboard', 'dashboard');
                     <div style="padding:8px;flex:1;overflow-y:auto;">
                         <?php foreach ($cat['subcategories'] ?? [] as $sub): ?>
                             <?php
-                                $subProducts = andison_get_products_for_subcategory($cat['id'], $sub['id']);
-                                $prodCount = count($subProducts);
+                                $prodCount = $subcategoryProductCounts[$sub['id']] ?? 0;
                             ?>
                             <div class="cat-sub-row">
                                 <div style="display:flex;align-items:center;gap:7px;min-width:0;">

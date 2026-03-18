@@ -80,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_locked) {
                 session_start();
                 $_SESSION['andison_admin'] = true;
                 $_SESSION['andison_admin_user'] = $username;
+                $_SESSION['andison_dashboard_loader_once'] = true;
                 session_regenerate_id(false);
                 // Build absolute redirect URL
                 $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
@@ -247,7 +248,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_locked) {
 
         document.getElementById('password').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                form.submit();
+                e.preventDefault();
+                if (typeof form.requestSubmit === 'function') {
+                    form.requestSubmit(submitBtn);
+                } else {
+                    submitBtn.click();
+                }
             }
         });
 

@@ -183,16 +183,30 @@ function andison_admin_header(string $title, string $active = 'dashboard'): void
             <a href="inquiries.php" class="<?php echo $active === 'inquiries' ? 'active' : ''; ?>" id="nav-inquiries"><i class="bi bi-envelope-paper"></i> Inquiries<?php
                 // Show unread badge
                 require_once __DIR__ . '/../includes/supabase.php';
-                $unread = andison_sb_select('inquiries', 'status=eq.new&select=id');
-                $unreadCount = count($unread);
-                if ($unreadCount > 0): ?> <span style="background:rgba(239,68,68,0.85);color:#fff;font-size:11px;font-weight:900;padding:2px 7px;border-radius:999px;margin-left:auto;"><?php echo $unreadCount; ?></span><?php endif; ?></a>
+                $unreadCount = 0;
+                $unreadCacheFile = dirname(__DIR__) . '/data/_cache/admin_unread_inquiries.count';
+                $cacheTtlSeconds = 15;
+                if (is_file($unreadCacheFile) && (time() - filemtime($unreadCacheFile)) < $cacheTtlSeconds) {
+                    $cachedUnread = trim((string)@file_get_contents($unreadCacheFile));
+                    if (is_numeric($cachedUnread)) {
+                        $unreadCount = max(0, (int)$cachedUnread);
+                    }
+                } else {
+                    $unreadCount = andison_sb_count('inquiries', 'status=eq.new');
+                    @mkdir(dirname($unreadCacheFile), 0755, true);
+                    @file_put_contents($unreadCacheFile, (string)$unreadCount, LOCK_EX);
+                }
+
+                if ($unreadCount > 0):
+                    $unreadBadge = $unreadCount > 99 ? '99+' : (string)$unreadCount;
+                    ?> <span style="background:rgba(239,68,68,0.85);color:#fff;font-size:11px;font-weight:900;padding:2px 7px;border-radius:999px;margin-left:auto;"><?php echo $unreadBadge; ?></span><?php endif; ?></a>
         </nav>
 
         <div class="bottom">
             <div class="options-bottom" style="width:100%;">
                 <div class="options-header">Options</div>
                 <a class="nav option <?php echo $active === 'profile' ? 'active' : ''; ?>" href="profile.php"><i class="bi bi-person"></i><span>Account</span></a>
-                <a class="nav option" href="logout.php" onclick="return confirm('Are you sure you want to log out?')" style="color:rgba(255,100,100,0.90);"><i class="bi bi-box-arrow-right"></i><span>Logout</span></a>
+                <a class="nav option" href="logout.php" id="logoutLink" style="color:rgba(255,100,100,0.90);"><i class="bi bi-box-arrow-right"></i><span>Logout</span></a>
             </div>
         </div>
     </aside>
@@ -365,7 +379,18 @@ function andison_admin_footer(): void
         });
     }
 
-    // Logout button removed from sidebar; no handler required.
+    // Use the custom modal for logout confirmation instead of browser-native confirm.
+    var logoutLink = document.getElementById('logoutLink');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', function(e){
+            e.preventDefault();
+            window.customConfirm('Are you sure you want to log out?').then(function(confirmed){
+                if (confirmed) {
+                    window.location.href = logoutLink.getAttribute('href') || 'logout.php';
+                }
+            });
+        });
+    }
 })();
 </script>
 

@@ -11,8 +11,8 @@ header('Content-Type: application/json');
 header('Cache-Control: no-store, no-cache, must-revalidate');
 
 $analytics = andison_get_analytics();
-$chartData   = andison_get_daily_chart(7);
-$chartData30 = andison_get_daily_chart(30);
+$chartData   = andison_get_daily_chart(7, $analytics);
+$chartData30 = andison_get_daily_chart(30, $analytics);
 
 // Brands sorted descending
 $brands = $analytics['brands'] ?? [];

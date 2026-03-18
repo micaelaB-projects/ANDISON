@@ -988,7 +988,7 @@ body.modal-open {
 .edit-modal {
     position: fixed;
     inset: 0;
-    z-index: 9999;
+    z-index: 120000;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2937,8 +2937,21 @@ function handleBulkImageSelect(input) {
 }
 // ─────────────────────────────────────────────────────────────────────────────
 
-function openEditModal(index, name, model, type, price, badge, description, specifications, image, catId, subId, subSubId, imagesJson, datasheet) {
+function ensureGlobalProductModal() {
     var modal = document.getElementById('editProductModal');
+    if (!modal) return null;
+
+    // Keep modal outside the dashboard content container so it behaves as a true global popup.
+    if (modal.parentElement !== document.body) {
+        document.body.appendChild(modal);
+    }
+
+    return modal;
+}
+
+function openEditModal(index, name, model, type, price, badge, description, specifications, image, catId, subId, subSubId, imagesJson, datasheet) {
+    var modal = ensureGlobalProductModal();
+    if (!modal) return;
     document.getElementById('editIndex').value = index;
     document.getElementById('editProductName').value = name;
     document.getElementById('editModel').value = model;
@@ -3090,7 +3103,8 @@ document.querySelectorAll('.brand-desc-form').forEach(function(form){
 // Add button to open modal for new product removed - using top button instead
 
 function openAddProductModal() {
-    var modal = document.getElementById('editProductModal');
+    var modal = ensureGlobalProductModal();
+    if (!modal) return;
     var modalHeader = modal.querySelector('.edit-modal-header h2');
     var form = modal.querySelector('.edit-product-form');
     

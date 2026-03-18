@@ -4,6 +4,40 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/supabase.php';
 
+if (!function_exists('andison_analytics_cache_file')) {
+    function andison_analytics_cache_file(): string
+    {
+        return dirname(__DIR__) . '/data/_cache/analytics.summary.cache';
+    }
+}
+
+if (!function_exists('andison_read_analytics_cache')) {
+    function andison_read_analytics_cache(): ?array
+    {
+        $cacheFile = andison_analytics_cache_file();
+        if (!is_file($cacheFile)) {
+            return null;
+        }
+
+        $raw = @file_get_contents($cacheFile);
+        if (!is_string($raw) || $raw === '') {
+            return null;
+        }
+
+        $decoded = json_decode($raw, true);
+        return is_array($decoded) ? $decoded : null;
+    }
+}
+
+if (!function_exists('andison_write_analytics_cache')) {
+    function andison_write_analytics_cache(array $analytics): void
+    {
+        $cacheFile = andison_analytics_cache_file();
+        @mkdir(dirname($cacheFile), 0755, true);
+        @file_put_contents($cacheFile, json_encode($analytics), LOCK_EX);
+    }
+}
+
 /**
  * Record a page visit. Call once per page load on public-facing pages.
  *
@@ -59,8 +93,16 @@ function andison_track_visit(string $page = 'unknown'): void
 /**
  * Return the current analytics data array.
  */
-function andison_get_analytics(): array
+function andison_get_analytics(bool $forceFresh = false): array
 {
+    static $requestCache = null;
+    static $requestCacheAt = 0;
+
+    $cacheTtlSeconds = 10;
+    if (!$forceFresh && is_array($requestCache) && (time() - $requestCacheAt) < $cacheTtlSeconds) {
+        return $requestCache;
+    }
+
     $today     = date('Y-m-d');
     $weekStart = date('Y-m-d', strtotime('monday this week'));
     $month     = date('Y-m');
@@ -80,6 +122,18 @@ function andison_get_analytics(): array
         'daily'            => [],
         'pages'            => [],
     ];
+
+    if (!$forceFresh) {
+        $cacheFile = andison_analytics_cache_file();
+        if (is_file($cacheFile) && (time() - filemtime($cacheFile)) < $cacheTtlSeconds) {
+            $cached = andison_read_analytics_cache();
+            if (is_array($cached) && !empty($cached)) {
+                $requestCache = $cached;
+                $requestCacheAt = time();
+                return $cached;
+            }
+        }
+    }
 
     // Aggregate all data directly from Supabase.
     $rows = andison_sb_select('analytics', 'limit=10000&order=visited_at.asc');
@@ -111,7 +165,7 @@ function andison_get_analytics(): array
         foreach ($daily as $dk => $v) { if ($dk >= $weekStart) $weekPv += $v; }
         $monthPv = 0;
         foreach ($daily as $dk => $v) { if (str_starts_with($dk, $month)) $monthPv += $v; }
-        return [
+        $result = [
             'total_pageviews'  => array_sum($daily),
             'unique_sessions'  => count($allSk),
             'today_pageviews'  => $daily[$today] ?? 0,
@@ -128,7 +182,17 @@ function andison_get_analytics(): array
             'brands'           => $brands,
             'categories'       => $categories,
         ];
+
+        $requestCache = $result;
+        $requestCacheAt = time();
+        andison_write_analytics_cache($result);
+
+        return $result;
     }
+
+    $requestCache = $defaults;
+    $requestCacheAt = time();
+    andison_write_analytics_cache($defaults);
 
     return $defaults;
 }
@@ -136,9 +200,9 @@ function andison_get_analytics(): array
 /**
  * Return last N days of daily page-view data as [['date'=>..., 'views'=>...], ...]
  */
-function andison_get_daily_chart(int $days = 7): array
+function andison_get_daily_chart(int $days = 7, ?array $analytics = null): array
 {
-    $analytics = andison_get_analytics();
+    $analytics = $analytics ?? andison_get_analytics();
     $result    = [];
     for ($i = $days - 1; $i >= 0; $i--) {
         $d          = date('Y-m-d', strtotime("-{$i} days"));

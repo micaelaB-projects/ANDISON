@@ -2052,13 +2052,11 @@ if ($category_idx !== null) {
                 if (!inquiryBtn) return;
 
                 var subject = 'Client Inquiry';
-                var body = 'Hello Admin,\n\nI would like to inquire about your products and services.\n\nPage: ' + window.location.href + '\n';
 
                 var emailBtn = document.createElement('a');
                 emailBtn.className = 'inquiry-btn email-admin-btn';
                 emailBtn.href = '#';
                 emailBtn.setAttribute('data-subject', subject);
-                emailBtn.setAttribute('data-message', body);
                 emailBtn.setAttribute('aria-label', 'Email Admin');
                 emailBtn.setAttribute('title', 'Email Admin');
                 emailBtn.innerHTML = '<i class="bi bi-envelope btn-icon" aria-hidden="true"></i>';
