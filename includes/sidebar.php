@@ -94,6 +94,12 @@ if ($category_idx !== null) {
      SIDEBAR CSS
      ============================================================ -->
 <style>
+    :root {
+        --sidebar-ease: cubic-bezier(0.22, 1, 0.36, 1);
+        --sidebar-speed: 420ms;
+        --sidebar-speed-fast: 240ms;
+    }
+
     /* Overlay Backdrop */
     .overlay-backdrop {
         position: fixed;
@@ -101,7 +107,7 @@ if ($category_idx !== null) {
         background: rgba(0,0,0,0.3);
         opacity: 0;
         visibility: hidden;
-        transition: opacity 0.3s ease, visibility 0.3s;
+        transition: opacity var(--sidebar-speed-fast) ease, visibility var(--sidebar-speed-fast);
         z-index: 60;
     }
     .overlay-backdrop.active {
@@ -119,14 +125,17 @@ if ($category_idx !== null) {
         max-width: 80%;
         background: #fff;
         box-shadow: 4px 0 24px rgba(0,0,0,0.15);
-        transform: translateX(-100%);
-        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        transform: translate3d(-100%, 0, 0);
+        opacity: 0;
+        will-change: transform, opacity;
+        transition: transform var(--sidebar-speed) var(--sidebar-ease), opacity var(--sidebar-speed-fast) ease;
         z-index: 70;
         padding: 20px 12px;
         overflow-y: auto;
     }
     .sidebar-overlay.active {
-        transform: translateX(0);
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
     }
     .sidebar-overlay h3 {
         font-size: 18px;
@@ -428,7 +437,12 @@ if ($category_idx !== null) {
         padding: 24px 12px;
         overflow-y: auto;
         overflow-x: hidden;
-        transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: width var(--sidebar-speed) var(--sidebar-ease),
+                padding var(--sidebar-speed) var(--sidebar-ease),
+                background-color var(--sidebar-speed-fast) ease,
+                box-shadow var(--sidebar-speed-fast) ease;
+        will-change: width, padding;
+        transform: translateZ(0);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -480,25 +494,31 @@ if ($category_idx !== null) {
         position: relative;
         border-radius: 8px;
         margin-bottom: 16px;
-        transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-                    justify-content 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-                    padding 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-                    background 0.3s ease,
-                    transform 0.2s ease;
+        transition: width var(--sidebar-speed) var(--sidebar-ease),
+                justify-content var(--sidebar-speed) var(--sidebar-ease),
+                padding var(--sidebar-speed) var(--sidebar-ease),
+                background var(--sidebar-speed-fast) ease,
+                transform var(--sidebar-speed-fast) ease,
+                border-color var(--sidebar-speed-fast) ease;
         gap: 12px;
         padding: 0;
         flex-shrink: 0;
         min-width: 56px;
     }
     .mini-sidebar-icon .label {
-        display: none;
+        display: block;
         font-size: 11px;
         font-weight: 500;
         white-space: nowrap;
         flex: 1;
         text-align: left;
+        max-width: 0;
+        overflow: hidden;
         opacity: 0;
-        transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
+        transform: translateX(-8px);
+        transition: max-width var(--sidebar-speed) var(--sidebar-ease),
+                    opacity var(--sidebar-speed-fast) ease,
+                    transform var(--sidebar-speed) var(--sidebar-ease);
     }
     .mini-sidebar.expanded .mini-sidebar-icon {
         width: 100%;
@@ -516,8 +536,9 @@ if ($category_idx !== null) {
         transform: translateX(4px);
     }
     .mini-sidebar.expanded .mini-sidebar-icon .label {
-        display: block;
+        max-width: 180px;
         opacity: 1;
+        transform: translateX(0);
         color: #ffffff;
         font-weight: 500;
         font-size: 14px;
@@ -641,11 +662,11 @@ if ($category_idx !== null) {
         border-radius: 8px;
         font-size: 20px;
         margin-top: auto;
-        transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-                    padding 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-                    background 0.3s ease,
-                    transform 0.2s ease,
-                    border-color 0.3s ease;
+        transition: width var(--sidebar-speed) var(--sidebar-ease),
+                    padding var(--sidebar-speed) var(--sidebar-ease),
+                    background var(--sidebar-speed-fast) ease,
+                    transform var(--sidebar-speed-fast) ease,
+                    border-color var(--sidebar-speed-fast) ease;
         flex-shrink: 0;
         z-index: 100;
     }
@@ -669,10 +690,41 @@ if ($category_idx !== null) {
         border: 1px solid rgba(0, 215, 179, 0.3);
     }
 
+    .browse-label {
+        display: inline-block !important;
+        max-width: 0;
+        opacity: 0;
+        overflow: hidden;
+        transform: translateX(-6px);
+        transition: max-width var(--sidebar-speed) var(--sidebar-ease),
+                    opacity var(--sidebar-speed-fast) ease,
+                    transform var(--sidebar-speed) var(--sidebar-ease);
+    }
+    .mini-sidebar.expanded .browse-label {
+        max-width: 220px;
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .overlay-backdrop,
+        .sidebar-overlay,
+        .mini-sidebar,
+        .mini-sidebar-icon,
+        .mini-sidebar-icon .label,
+        .mini-sidebar-toggle,
+        .browse-label,
+        body {
+            transition: none !important;
+            animation: none !important;
+        }
+    }
+
     /* ── Main content shifts to avoid being covered by the mini sidebar ── */
     body {
         padding-left: 80px !important;
-        transition: padding-left 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        transition: padding-left var(--sidebar-speed) var(--sidebar-ease) !important;
+        will-change: padding-left;
         padding-bottom: 0 !important;
     }
     body.sidebar-wide {
@@ -1867,9 +1919,7 @@ if ($category_idx !== null) {
                 e.preventDefault(); e.stopPropagation();
                 var isMiniVisible = window.getComputedStyle(miniSidebar).display !== 'none';
                 if(window.innerWidth > 1024 && isMiniVisible){
-                    miniSidebar.classList.toggle('expanded');
-                    browseToggle.classList.toggle('expanded');
-                    updateBodySidebarClass();
+                    toggleMiniSidebarExpanded();
                 } else {
                     if(mainSidebar.classList.contains('active')){
                         mainSidebar.classList.remove('active');
@@ -1889,34 +1939,41 @@ if ($category_idx !== null) {
             document.body.classList.toggle('sidebar-wide', isExpanded);
         }
 
+        function toggleMiniSidebarExpanded(forceState){
+            if(!miniSidebar) return;
+            var nextState = (typeof forceState === 'boolean')
+                ? forceState
+                : !miniSidebar.classList.contains('expanded');
+
+            miniSidebar.classList.toggle('expanded', nextState);
+            if(browseToggle) browseToggle.classList.toggle('expanded', nextState);
+            updateBodySidebarClass();
+        }
+
         // ── Expand / collapse button ──
         if(expandBtn){
             expandBtn.addEventListener('click', function(e){
                 e.preventDefault();
                 e.stopPropagation();
-                if(miniSidebar) miniSidebar.classList.toggle('expanded');
-                if(browseToggle) browseToggle.classList.toggle('expanded');
-                updateBodySidebarClass();
+                toggleMiniSidebarExpanded();
             });
         }
         
         // Fallback: Direct selector if ID method fails
         document.addEventListener('click', function(e){
             if(e.target.closest('.mini-sidebar-toggle')){
+                if(expandBtn) return;
                 e.preventDefault();
                 e.stopPropagation();
-                var sidebar = document.getElementById('miniSidebar');
-                if(sidebar) sidebar.classList.toggle('expanded');
-                var browse = document.getElementById('browseToggle');
-                if(browse) browse.classList.toggle('expanded');
-                updateBodySidebarClass();
+                toggleMiniSidebarExpanded();
             }
         }, true);
 
         // Mobile: collapse by default
         if(window.innerWidth <= 768){
-            miniSidebar.classList.remove('expanded');
-            if(browseToggle) browseToggle.classList.remove('expanded');
+            toggleMiniSidebarExpanded(false);
+        } else {
+            updateBodySidebarClass();
         }
 
         // Menu-bar click handler
@@ -1925,22 +1982,17 @@ if ($category_idx !== null) {
             menuBar.addEventListener('click', function(e){
                 e.preventDefault();
                 e.stopPropagation();
-                if(miniSidebar) miniSidebar.classList.toggle('expanded');
-                if(browseToggle) browseToggle.classList.toggle('expanded');
-                updateBodySidebarClass();
+                toggleMiniSidebarExpanded();
             });
         }
         
         // Fallback: Direct selector for menu bar
         document.addEventListener('click', function(e){
             if(e.target.closest('#miniSidebarMenuBar')){
+                if(menuBar) return;
                 e.preventDefault();
                 e.stopPropagation();
-                var sidebar = document.getElementById('miniSidebar');
-                if(sidebar) sidebar.classList.toggle('expanded');
-                var browse = document.getElementById('browseToggle');
-                if(browse) browse.classList.toggle('expanded');
-                updateBodySidebarClass();
+                toggleMiniSidebarExpanded();
             }
         }, true);
 
@@ -2012,31 +2064,6 @@ if ($category_idx !== null) {
         });
         new MutationObserver(function(){ syncFab(); }).observe(sidebar, { attributes: true, attributeFilter: ['class'] });
         window.addEventListener('resize', syncFab);
-    })();
-
-    // Direct expand button initialization (runs immediately)
-    (function(){
-        document.addEventListener('DOMContentLoaded', initExpandButton);
-        if(document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initExpandButton);
-        } else {
-            initExpandButton();
-        }
-        
-        function initExpandButton(){
-            var expandBtn = document.getElementById('expandSidebar');
-            var miniSidebar = document.getElementById('miniSidebar');
-            if(!expandBtn || !miniSidebar) return;
-            
-            expandBtn.onclick = function(e){
-                e.preventDefault();
-                e.stopPropagation();
-                miniSidebar.classList.toggle('expanded');
-                var browseToggle = document.getElementById('browseToggle');
-                if(browseToggle) browseToggle.classList.toggle('expanded');
-                return false;
-            };
-        }
     })();
 
     // Inject Email Admin button beside Inquiry List on pages that use this shared sidebar include.
