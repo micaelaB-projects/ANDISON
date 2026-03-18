@@ -211,7 +211,7 @@ if (!$current_category) {
             display: flex;
             justify-content: center;
             max-width: 600px;
-            margin: 0 auto;
+            margin: 0 0 0 20px;
         }
 
         .search-bar .search-field {
@@ -273,7 +273,7 @@ if (!$current_category) {
         }
 
         .right-actions {
-            margin-left: auto;
+            margin-left: 12px;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -981,22 +981,8 @@ if (!$current_category) {
 
             <div class="right-actions">
                 <a href="javascript:history.back()" class="inquiry-btn" style="margin-right: 12px;">BACK</a>
+                <a href="#" class="inquiry-btn email-admin-btn" data-subject="Client Inquiry" style="margin-right: 12px;" aria-label="Email Admin" title="Email Admin"><i class="bi bi-envelope" aria-hidden="true"></i></a>
                 <a href="../inquirylist.php" class="inquiry-btn">INQUIRY LIST</a>
-                <div class="header-contact">
-                    <div class="contact-dropdown" tabindex="0" aria-haspopup="true">
-                        <a href="javascript:void(0)" class="contact-link" aria-label="Contact Us">Contact Us ▾</a>
-                        <div class="contact-popover" role="menu" aria-hidden="true">
-                                <button type="button" class="contact-close" aria-label="Close contact popover">&times;</button>
-                                <p style="font-weight:700;font-size:13px;color:#2B11DB;margin-bottom:8px;padding-bottom:8px;border-bottom:2px solid #f0f0f0;">Get in Touch</p>
-                                <ul class="contact-list">
-                                    <li><span class="icon"><i class="bi bi-telephone-fill"></i></span><div><small style="color:#999;font-size:11px;display:block;">Landline</small><a href="tel:+12345678900">+1(234) 567 8900</a></div></li>
-                                    <li><span class="icon"><i class="bi bi-telephone-fill"></i></span><div><small style="color:#999;font-size:11px;display:block;">Mobile</small><a href="tel:+16399778037398">+1(639) 977 803 7398</a></div></li>
-                                    <li><span class="icon"><i class="bi bi-envelope-fill"></i></span><div><small style="color:#999;font-size:11px;display:block;">Email</small><a href="mailto:info@andison-industrial.com">info@andison-industrial.com</a></div></li>
-                                    <li><span class="icon"><i class="bi bi-facebook"></i></span><div><small style="color:#999;font-size:11px;display:block;">Facebook</small><a href="https://facebook.com" target="_blank">Andison Industrial</a></div></li>
-                                </ul>
-                            </div>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -1384,6 +1370,7 @@ if (!$current_category) {
         })();
     </script>
     <script src="../../assets/js/scroll-fade.js"></script>
+    <script src="../../assets/js/email_admin_compose.js"></script>
 </body>
 </html>
 

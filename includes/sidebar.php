@@ -2038,6 +2038,42 @@ if ($category_idx !== null) {
             };
         }
     })();
+
+    // Inject Email Admin button beside Inquiry List on pages that use this shared sidebar include.
+    (function(){
+        function injectEmailAdminButton() {
+            var actionRows = document.querySelectorAll('.right-actions');
+            if (!actionRows.length) return;
+
+            actionRows.forEach(function(row){
+                if (!row || row.querySelector('.email-admin-btn')) return;
+
+                var inquiryBtn = row.querySelector('.inquiry-btn');
+                if (!inquiryBtn) return;
+
+                var subject = 'Client Inquiry';
+                var body = 'Hello Admin,\n\nI would like to inquire about your products and services.\n\nPage: ' + window.location.href + '\n';
+
+                var emailBtn = document.createElement('a');
+                emailBtn.className = 'inquiry-btn email-admin-btn';
+                emailBtn.href = '#';
+                emailBtn.setAttribute('data-subject', subject);
+                emailBtn.setAttribute('data-message', body);
+                emailBtn.setAttribute('aria-label', 'Email Admin');
+                emailBtn.setAttribute('title', 'Email Admin');
+                emailBtn.innerHTML = '<i class="bi bi-envelope btn-icon" aria-hidden="true"></i>';
+
+                row.insertBefore(emailBtn, inquiryBtn);
+            });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', injectEmailAdminButton);
+        } else {
+            injectEmailAdminButton();
+        }
+    })();
 </script>
 
 <script src="<?php echo $_sidebar_base; ?>assets/js/scroll-fade.js"></script>
+<script src="<?php echo $_sidebar_base; ?>assets/js/email_admin_compose.js"></script>

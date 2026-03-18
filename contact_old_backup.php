@@ -224,7 +224,7 @@ $ytLinks = andison_get_youtube_links();
             display: flex;
             justify-content: center;
             max-width: 600px;
-            margin: 0 auto;
+            margin: 0 0 0 20px;
         }
 
         .search-bar .search-field {
@@ -315,7 +315,7 @@ $ytLinks = andison_get_youtube_links();
         }
 
         .right-actions {
-            margin-left: auto;
+            margin-left: 12px;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -333,7 +333,7 @@ $ytLinks = andison_get_youtube_links();
         .nav-inner {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 8px 0 120px; /* space for the left Browse toggle */
+            padding: 0 20px; /* space for the left Browse toggle */
             display: flex;
             flex-wrap: nowrap;
             align-items: center;
@@ -370,6 +370,7 @@ $ytLinks = andison_get_youtube_links();
             margin: 0;
             padding: 0;
             width: 100%;
+        justify-content: center;
         }
 
         .nav-list li { position: relative; }
@@ -3199,21 +3200,8 @@ $ytLinks = andison_get_youtube_links();
             </div>
 
             <div class="right-actions">
+                <a href="#" class="inquiry-btn email-admin-btn" data-subject="Client Inquiry" aria-label="Email Admin" title="Email Admin"><i class="bi bi-envelope btn-icon" aria-hidden="true"></i></a>
                 <a href="inquirylist.php" class="inquiry-btn"><i class="bi bi-card-checklist btn-icon"></i> <span class="btn-text">INQUIRY LIST</span> <span class="cart-badge hidden" id="cartBadge">0</span></a>
-                <div class="header-contact">
-                        <div class="contact-dropdown" tabindex="0" aria-haspopup="true">
-                            <a href="javascript:void(0)" class="contact-link" aria-label="Contact Us">Contact Us Γû╛</a>
-                            <div class="contact-popover" role="menu" aria-hidden="true">
-                                <button type="button" class="contact-close" aria-label="Close contact popover">&times;</button>
-                                <ul class="contact-list" style="display:block!important;visibility:visible!important;list-style:none;margin:0;padding:6px 0;">
-                                    <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone; ?>"><?php echo $phone; ?></a></li>
-                                    <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone2; ?>"><?php echo $phone2; ?></a></li>
-                                    <li><span class="icon"><i class="bi bi-telephone"></i></span><a href="tel:<?php echo $phone3; ?>"><?php echo $phone3; ?></a></li>
-                                    <li><span class="icon"><i class="bi bi-envelope"></i></span><a href="mailto:<?php echo $email; ?>"><?php echo $email; ?></a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
             </div>
         </div>
 
@@ -4687,6 +4675,7 @@ $ytLinks = andison_get_youtube_links();
             window.addEventListener('resize', syncFab);
         })();
     </script>
+    <script src="assets/js/email_admin_compose.js"></script>
 </body>
 </html>
 

@@ -58,14 +58,14 @@ $matches = array_slice($matches, 0, 80);
         .header-top { display:flex; align-items:center; max-width:1200px; margin:0 auto; padding:0 20px; gap:20px; }
         .logo-box img { height:50px; width:auto; display:block; }
 
-        .search-bar { flex: 1 1 auto; display:flex; justify-content:center; max-width: 720px; margin:0 auto; }
+        .search-bar { flex: 1 1 auto; display:flex; justify-content:center; max-width: 720px; margin: 0 0 0 20px; }
         .search-bar .search-field { width:100%; display:flex; align-items:center; gap:8px; position:relative; margin:0; }
         .search-bar input { width:100%; height:46px; padding:10px 16px 10px 40px; border:2px solid rgba(255,255,255,0.3); border-radius:6px; font-size:15px; background: rgba(255,255,255,0.95); color:#333; transition: all 0.3s ease; }
         .search-bar input:focus { outline: none; background: #fff; border-color: rgba(255,255,255,0.8); box-shadow: 0 0 0 3px rgba(43, 17, 219, 0.1); }
         .search-bar input::placeholder { color:#999; }
         .search-bar .search-field i { position:absolute; left:12px; font-size:16px; pointer-events:none; color:#666; }
 
-        .right-actions { margin-left:auto; display:flex; align-items:center; gap:10px; }
+        .right-actions { margin-left: 12px; display:flex; align-items:center; gap:10px; }
         .back-btn { 
             background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); 
             color: #333; 
@@ -239,6 +239,7 @@ $matches = array_slice($matches, 0, 80);
 
         <div class="right-actions">
             <a href="javascript:history.back()" class="back-btn">BACK</a>
+            <a href="#" class="inquiry-btn email-admin-btn" data-subject="Client Inquiry" aria-label="Email Admin" title="Email Admin"><i class="bi bi-envelope" aria-hidden="true"></i></a>
             <a href="inquirylist.php" class="inquiry-btn">INQUIRY LIST <span class="cart-badge hidden" id="cartBadge">0</span></a>
         </div>
     </div>
@@ -315,6 +316,7 @@ $matches = array_slice($matches, 0, 80);
 </script>
 
 <script src="assets/js/scroll-fade.js"></script>
+<script src="assets/js/email_admin_compose.js"></script>
 
 </body>
 </html>

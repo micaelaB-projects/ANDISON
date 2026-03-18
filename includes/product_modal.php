@@ -4,6 +4,15 @@
  * Included by brand.php (and any other page that shows clickable product cards).
  * Requires the calling page to set JS global:  BRAND_NAME  before including this file.
  */
+
+include_once __DIR__ . '/brand_logo_map.php';
+$modal_brand_logo_map_json = '{}';
+if (isset($brand_logo_map) && is_array($brand_logo_map)) {
+    $encoded_brand_logo_map = json_encode($brand_logo_map, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    if ($encoded_brand_logo_map !== false) {
+        $modal_brand_logo_map_json = $encoded_brand_logo_map;
+    }
+}
 ?>
 <!-- ══ PRODUCT DETAIL MODAL ══ -->
 <div id="prodDetailOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:9999;align-items:flex-start;justify-content:center;padding:20px;box-sizing:border-box;overflow-y:auto;animation:fadeIn .2s ease;">
@@ -52,8 +61,8 @@
             <div id="prodDetailPrice" style="display:none;margin-top:10px;font-size:13px;font-weight:800;color:#2B11DB;background:rgba(43,17,219,0.08);padding:6px 14px;border-radius:20px;width:fit-content;letter-spacing:0.5px;"></div>
             <!-- Datasheet button and preview directly below the line -->
             <div id="prodDatasheetWrap" style="display:none;flex-shrink:0;position:relative;z-index:2;flex-direction:column;gap:12px;margin:24px 0 0 0;">
-              <a id="prodDatasheetBtn" href="" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg, #2B11DB 0%, #1f0aa1 100%);color:#fff;padding:13px 20px;border-radius:14px;font-size:11px;font-weight:950;text-decoration:none;box-shadow:0 8px 22px rgba(43,17,219,0.3);transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;margin:0 auto 12px auto;border:1px solid rgba(255,255,255,0.2);letter-spacing:1px;text-transform:uppercase;position:relative;overflow:hidden;" onmouseover="this.style.boxShadow='0 12px 32px rgba(43,17,219,0.45)';this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 8px 22px rgba(43,17,219,0.3)';this.style.transform='translateY(0)';">
-                <i class="bi bi-file-pdf" style="font-size:13px;"></i>
+                            <a id="prodDatasheetBtn" href="" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg, #2B11DB 0%, #1f0aa1 100%);color:#fff;padding:13px 20px;border-radius:14px;font-size:18px;font-weight:950;text-decoration:none;box-shadow:0 8px 22px rgba(43,17,219,0.3);transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;margin:0 auto 12px auto;border:1px solid rgba(255,255,255,0.2);letter-spacing:1px;text-transform:uppercase;position:relative;overflow:hidden;" onmouseover="this.style.boxShadow='0 12px 32px rgba(43,17,219,0.45)';this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 8px 22px rgba(43,17,219,0.3)';this.style.transform='translateY(0)';">
+                                <i class="bi bi-file-pdf" style="font-size:18px;"></i>
                 <span>DATASHEET</span>
               </a>
             </div>
@@ -108,7 +117,7 @@
 
         <!-- PINNED Button footer — always visible -->
         <div style="flex-shrink:0;padding:16px 48px 28px;border-top:1px solid #f0f0fa;background:#fff;">
-          <button id="prodDetailInquiry" style="width:100%;padding:16px 22px;background:linear-gradient(135deg, #2B11DB 0%, #1f0aa1 100%);color:#fff;border:none;border-radius:14px;font-size:12px;font-weight:950;letter-spacing:1.2px;cursor:pointer;transition:all .4s cubic-bezier(0.34,1.56,0.64,1);text-transform:uppercase;box-shadow:0 10px 28px rgba(43,17,219,0.38);position:relative;overflow:hidden;transform:translateY(0);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 14px 36px rgba(43,17,219,0.5)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 28px rgba(43,17,219,0.38)';">ADD TO INQUIRY LIST</button>
+          <button id="prodDetailInquiry" style="width:100%;padding:16px 22px;background:linear-gradient(135deg, #2B11DB 0%, #1f0aa1 100%);color:#fff;border:none;border-radius:14px;font-size:18px;font-weight:950;letter-spacing:1.2px;cursor:pointer;transition:all .4s cubic-bezier(0.34,1.56,0.64,1);text-transform:uppercase;box-shadow:0 10px 28px rgba(43,17,219,0.38);position:relative;overflow:hidden;transform:translateY(0);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 14px 36px rgba(43,17,219,0.5)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 28px rgba(43,17,219,0.38)';">ADD TO INQUIRY LIST</button>
         </div>
       </div>
     </div>
@@ -460,6 +469,27 @@
         }
 
         return (_modalBase !== '' ? _modalBase + '/' : '/') + raw.replace(/^\.\//, '');
+    }
+
+    var modalBrandLogoMap = <?php echo $modal_brand_logo_map_json; ?>;
+
+    function getModalBrandLogo(brandName) {
+        var cleanBrand = String(brandName || '').trim();
+        if (!cleanBrand) return '';
+
+        if (modalBrandLogoMap && Object.prototype.hasOwnProperty.call(modalBrandLogoMap, cleanBrand)) {
+            return resolveModalPath(modalBrandLogoMap[cleanBrand]);
+        }
+
+        var lowerBrand = cleanBrand.toLowerCase();
+        for (var key in modalBrandLogoMap) {
+            if (!Object.prototype.hasOwnProperty.call(modalBrandLogoMap, key)) continue;
+            if (key.toLowerCase() === lowerBrand) {
+                return resolveModalPath(modalBrandLogoMap[key]);
+            }
+        }
+
+        return '';
     }
 
     function escapeHtml(value) {
@@ -1433,9 +1463,56 @@
         var typeEl = document.getElementById('prodDetailType');
 
         if (brandEl) {
-            brandEl.textContent = brand || 'Product';
-            brandEl.style.display = brand ? 'block' : 'none';
-            console.log('Set brand to:', brand);
+            var brandLogoPath = getModalBrandLogo(brand);
+            if (brandLogoPath) {
+                brandEl.innerHTML = '<img src="' + brandLogoPath + '" alt="' + escapeHtml(brand || 'Brand') + '" style="display:block;width:100%;height:100%;object-fit:contain;object-position:left center;filter:drop-shadow(0 3px 8px rgba(20, 24, 68, 0.28));">';
+                brandEl.style.display = 'inline-flex';
+                brandEl.style.alignItems = 'center';
+                brandEl.style.justifyContent = 'flex-start';
+                brandEl.style.width = 'clamp(140px, 22vw, 260px)';
+                brandEl.style.height = '48px';
+                brandEl.style.minHeight = '48px';
+                brandEl.style.padding = '6px 10px';
+                brandEl.style.boxSizing = 'border-box';
+                brandEl.style.background = 'transparent';
+                brandEl.style.borderLeft = 'none';
+                brandEl.style.border = 'none';
+                brandEl.style.borderRadius = '0';
+
+                var logoImg = brandEl.querySelector('img');
+                if (logoImg) {
+                    logoImg.onerror = function() {
+                        brandEl.textContent = brand || 'Product';
+                        brandEl.style.display = brand ? 'block' : 'none';
+                        brandEl.style.alignItems = '';
+                        brandEl.style.justifyContent = '';
+                        brandEl.style.width = 'fit-content';
+                        brandEl.style.height = 'auto';
+                        brandEl.style.minHeight = '';
+                        brandEl.style.padding = '8px 14px';
+                        brandEl.style.boxSizing = '';
+                        brandEl.style.background = 'linear-gradient(135deg, rgba(43,17,219,0.12) 0%, rgba(43,17,219,0.06) 100%)';
+                        brandEl.style.borderLeft = '3px solid #2B11DB';
+                        brandEl.style.border = '';
+                        brandEl.style.borderRadius = '8px';
+                    };
+                }
+            } else {
+                brandEl.textContent = brand || 'Product';
+                brandEl.style.display = brand ? 'block' : 'none';
+                brandEl.style.alignItems = '';
+                brandEl.style.justifyContent = '';
+                brandEl.style.width = 'fit-content';
+                brandEl.style.height = 'auto';
+                brandEl.style.minHeight = '';
+                brandEl.style.padding = '8px 14px';
+                brandEl.style.boxSizing = '';
+                brandEl.style.background = 'linear-gradient(135deg, rgba(43,17,219,0.12) 0%, rgba(43,17,219,0.06) 100%)';
+                brandEl.style.borderLeft = '3px solid #2B11DB';
+                brandEl.style.border = '';
+                brandEl.style.borderRadius = '8px';
+            }
+            console.log('Set brand to:', brand, '| logo:', brandLogoPath ? 'yes' : 'no');
         } else {
             console.error('prodDetailBrand not found!');
         }
@@ -1749,9 +1826,9 @@ footer.footer-modernized::before {
 }
 
 footer.footer-modernized .footer-content {
-    max-width: 1260px;
+    max-width: 1460px;
     margin: 0 auto;
-    padding: 0 26px 20px;
+    padding: 0 18px 20px;
     display: flex;
     flex-direction: column;
     gap: 34px;
@@ -1762,7 +1839,7 @@ footer.footer-modernized .footer-content {
 footer.footer-modernized .footer-main-grid {
     display: grid;
     grid-template-columns: minmax(240px, 1.25fr) minmax(220px, 1fr) minmax(220px, 1fr) minmax(200px, 1fr);
-    gap: 32px;
+    gap: 90px;
     align-items: start;
 }
 

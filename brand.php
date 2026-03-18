@@ -342,7 +342,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             display: flex;
             justify-content: center;
             max-width: 600px;
-            margin: 0 auto;
+            margin: 0 0 0 20px;
         }
 
         .search-bar .search-field {
@@ -432,7 +432,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         }
 
         .right-actions {
-            margin-left: auto;
+            margin-left: 12px;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -450,7 +450,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         .nav-inner {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 8px 0 120px; /* space for the left Browse toggle */
+            padding: 0 20px; /* space for the left Browse toggle */
             display: flex;
             flex-wrap: nowrap;
             align-items: center;
@@ -487,6 +487,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             margin: 0;
             padding: 0;
             width: 100%;
+        justify-content: center;
         }
 
         .nav-list li { position: relative; }
@@ -1356,9 +1357,9 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         }
 
         .footer-content {
-            max-width: 1260px;
+            max-width: 1460px;
             margin: 0 auto;
-            padding: 0 26px 20px;
+            padding: 0 18px 20px;
             position: relative;
             z-index: 1;
             display: flex;
@@ -1369,7 +1370,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         .footer-main-grid {
             display: grid;
             grid-template-columns: minmax(240px, 1.25fr) minmax(220px, 1fr) minmax(220px, 1fr) minmax(200px, 1fr);
-            gap: 32px;
+            gap: 90px;
             align-items: start;
         }
 
@@ -2567,21 +2568,6 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
 
             <div class="right-actions">
                 <a href="inquirylist.php" class="inquiry-btn"><i class="bi bi-card-checklist btn-icon"></i> <span class="btn-text">INQUIRY LIST</span> <span class="cart-badge hidden" id="cartBadge">0</span></a>
-                <div class="header-contact">
-                        <div class="contact-dropdown" tabindex="0" aria-haspopup="true">
-                            <a href="javascript:void(0)" class="contact-link" aria-label="Contact Us">Contact Us ?</a>
-                            <div class="contact-popover" role="menu" aria-hidden="true">
-                                <button type="button" class="contact-close" aria-label="Close contact popover">&times;</button>
-                                <p style="font-weight:700;font-size:13px;color:#2B11DB;margin-bottom:8px;padding-bottom:8px;border-bottom:2px solid #f0f0f0;">Get in Touch</p>
-                                <ul class="contact-list" style="display:block!important;visibility:visible!important;list-style:none;margin:0;padding:6px 0;">
-                                    <li style="display:flex!important;gap:12px;align-items:center;padding:10px 6px;color:#333!important;"><span class="icon" style="font-size:18px;width:28px;text-align:center;color:#2B11DB!important;flex-shrink:0;"><i class="bi bi-telephone-fill"></i></span><div style="color:#333!important;"><small style="color:#999!important;font-size:11px;display:block!important;">Landline</small><a href="tel:+12345678900" style="color:#111!important;text-decoration:none;font-weight:600;">+1(234) 567 8900</a></div></li>
-                                    <li style="display:flex!important;gap:12px;align-items:center;padding:10px 6px;color:#333!important;"><span class="icon" style="font-size:18px;width:28px;text-align:center;color:#2B11DB!important;flex-shrink:0;"><i class="bi bi-telephone-fill"></i></span><div style="color:#333!important;"><small style="color:#999!important;font-size:11px;display:block!important;">Mobile</small><a href="tel:+16399778037398" style="color:#111!important;text-decoration:none;font-weight:600;">+1(639) 977 803 7398</a></div></li>
-                                    <li style="display:flex!important;gap:12px;align-items:center;padding:10px 6px;color:#333!important;"><span class="icon" style="font-size:18px;width:28px;text-align:center;color:#2B11DB!important;flex-shrink:0;"><i class="bi bi-envelope-fill"></i></span><div style="color:#333!important;"><small style="color:#999!important;font-size:11px;display:block!important;">Email</small><a href="mailto:info@andison-industrial.com" style="color:#111!important;text-decoration:none;font-weight:600;">info@andison-industrial.com</a></div></li>
-                                    <li style="display:flex!important;gap:12px;align-items:center;padding:10px 6px;color:#333!important;"><span class="icon" style="font-size:18px;width:28px;text-align:center;color:#2B11DB!important;flex-shrink:0;"><i class="bi bi-facebook"></i></span><div style="color:#333!important;"><small style="color:#999!important;font-size:11px;display:block!important;">Facebook</small><a href="https://www.facebook.com/AndisonIndustrialSalesInc" target="_blank" style="color:#111!important;text-decoration:none;font-weight:600;">Andison Industrial</a></div></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
             </div>
         </div>
 
@@ -2845,7 +2831,6 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                         <div class="brand-pagination" id="brandPagination"></div>
 
 <script>var BRAND_NAME = '<?php echo htmlspecialchars($brand_name, ENT_QUOTES); ?>';</script>
-<?php require_once __DIR__ . '/includes/product_modal.php'; ?>
                     </div>
                 </div>
             </div>
@@ -2853,6 +2838,8 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         </div>
     </section>
     </div><!-- /.page-content -->
+
+<?php require_once __DIR__ . '/includes/product_modal.php'; ?>
 
     <!-- Footer -->
     <footer>

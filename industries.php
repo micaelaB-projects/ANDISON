@@ -210,7 +210,7 @@ $ytLinks = andison_get_youtube_links();
             display: flex;
             justify-content: center;
             max-width: 600px;
-            margin: 0 auto;
+            margin: 0 0 0 20px;
         }
 
         .search-bar .search-field {
@@ -300,7 +300,7 @@ $ytLinks = andison_get_youtube_links();
         }
 
         .right-actions {
-            margin-left: auto;
+            margin-left: 12px;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -318,7 +318,7 @@ $ytLinks = andison_get_youtube_links();
         .nav-inner {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 8px 0 120px; /* space for the left Browse toggle */
+            padding: 0 20px; /* space for the left Browse toggle */
             display: flex;
             flex-wrap: nowrap;
             align-items: center;
@@ -355,6 +355,7 @@ $ytLinks = andison_get_youtube_links();
             margin: 0;
             padding: 0;
             width: 100%;
+        justify-content: center;
         }
 
         .nav-list li { position: relative; }
@@ -2291,21 +2292,6 @@ $ytLinks = andison_get_youtube_links();
 
            <div class="right-actions">
                 <a href="inquirylist.php" class="inquiry-btn"><i class="bi bi-card-checklist btn-icon"></i> <span class="btn-text">INQUIRY LIST</span> <span class="cart-badge hidden" id="cartBadge">0</span></a>
-                <div class="header-contact">
-                        <div class="contact-dropdown" tabindex="0" aria-haspopup="true">
-                            <a href="javascript:void(0)" class="contact-link" aria-label="Contact Us">Contact Us &#9662;</a>
-                            <div class="contact-popover" role="menu" aria-hidden="true">
-                                <button type="button" class="contact-close" aria-label="Close contact popover">&times;</button>
-                                <p style="font-weight:700;font-size:13px;color:#2B11DB;margin-bottom:8px;padding-bottom:8px;border-bottom:2px solid #f0f0f0;">Get in Touch</p>
-                                <ul class="contact-list" style="display:block;list-style:none;margin:0;padding:6px 0;">
-                                    <li style="display:flex;gap:12px;align-items:center;padding:10px 6px;"><span class="icon" style="font-size:18px;width:28px;text-align:center;color:#2B11DB;flex-shrink:0;"><i class="bi bi-telephone-fill"></i></span><div><small style="color:#999;font-size:11px;display:block;">Landline</small><a href="tel:+12345678900" style="color:#111;text-decoration:none;font-weight:600;">+1(234) 567 8900</a></div></li>
-                                    <li style="display:flex;gap:12px;align-items:center;padding:10px 6px;"><span class="icon" style="font-size:18px;width:28px;text-align:center;color:#2B11DB;flex-shrink:0;"><i class="bi bi-telephone-fill"></i></span><div><small style="color:#999;font-size:11px;display:block;">Mobile</small><a href="tel:+16399778037398" style="color:#111;text-decoration:none;font-weight:600;">+1(639) 977 803 7398</a></div></li>
-                                    <li style="display:flex;gap:12px;align-items:center;padding:10px 6px;"><span class="icon" style="font-size:18px;width:28px;text-align:center;color:#2B11DB;flex-shrink:0;"><i class="bi bi-envelope-fill"></i></span><div><small style="color:#999;font-size:11px;display:block;">Email</small><a href="mailto:info@andison-industrial.com" style="color:#111;text-decoration:none;font-weight:600;">info@andison-industrial.com</a></div></li>
-                                    <li style="display:flex;gap:12px;align-items:center;padding:10px 6px;"><span class="icon" style="font-size:18px;width:28px;text-align:center;color:#2B11DB;flex-shrink:0;"><i class="bi bi-facebook"></i></span><div><small style="color:#999;font-size:11px;display:block;">Facebook</small><a href="https://www.facebook.com/AndisonIndustrialSalesInc" target="_blank" style="color:#111;text-decoration:none;font-weight:600;">Andison Industrial</a></div></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
             </div>
         </div>
 
