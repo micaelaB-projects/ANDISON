@@ -124,6 +124,11 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
   </div>
 </div>
 
+<div id="prodImageZoomOverlay" style="display:none;position:fixed;inset:0;background:rgba(8,10,22,0.92);backdrop-filter:blur(3px);z-index:12000;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;">
+    <button id="prodImageZoomClose" type="button" aria-label="Close zoomed image" style="position:absolute;top:20px;right:20px;width:44px;height:44px;border:none;border-radius:999px;background:rgba(255,255,255,0.14);color:#fff;font-size:28px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;">&times;</button>
+    <img id="prodImageZoomImg" src="" alt="" style="max-width:min(96vw,1600px);max-height:92vh;object-fit:contain;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.14);background:rgba(255,255,255,0.02);">
+</div>
+
 <style>
 @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 @keyframes modalIn { from{opacity:0;transform:scale(.92) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
@@ -199,6 +204,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
   animation: modalIn 0.4s ease-out;
   position: relative;
   z-index: 1;
+    cursor: zoom-in;
   filter: drop-shadow(0 8px 20px rgba(0,0,0,0.06));
 }#prodDetailSpecsTable { width:100%; border-collapse:collapse; background: #fff; }
 #prodDetailSpecsTable thead { 
@@ -373,6 +379,11 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
   #relatedProductsGrid { grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
 }
 
+@media(max-width:640px){
+    #prodImageZoomOverlay{padding:16px!important}
+    #prodImageZoomClose{top:12px!important;right:12px!important}
+}
+
 /* Related Products Styling */
 .related-product-item {
   position: relative;
@@ -428,11 +439,15 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 (function(){
     var overlay          = document.getElementById('prodDetailOverlay');
     var closeBtn         = document.getElementById('prodDetailClose');
+    var zoomOverlay      = document.getElementById('prodImageZoomOverlay');
+    var zoomCloseBtn     = document.getElementById('prodImageZoomClose');
+    var zoomImg          = document.getElementById('prodImageZoomImg');
     var detailInquiryBtn = document.getElementById('prodDetailInquiry');
     var currentDetailItem = {};
     var productImages = [];
     var currentImageIndex = 0;
     var modalSliderTimer = null;
+    var resumeSliderAfterZoom = false;
 
     function resolveBasePath() {
         var pathParts = window.location.pathname.split('/').filter(function(part) {
@@ -1071,6 +1086,44 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         if (mainImg) { mainImg.style.transition = ''; mainImg.style.opacity = '1'; }
     }
 
+    function isZoomOpen() {
+        return !!(zoomOverlay && zoomOverlay.style.display === 'flex');
+    }
+
+    function openImageZoom() {
+        var mainImg = document.getElementById('prodMainImg');
+        if (!zoomOverlay || !zoomImg || !mainImg) return;
+
+        var src = String(mainImg.getAttribute('src') || '').trim();
+        if (!src || mainImg.style.display === 'none') return;
+
+        resumeSliderAfterZoom = !!modalSliderTimer && productImages.length > 1;
+        stopModalSlider();
+
+        zoomImg.src = src;
+        zoomImg.alt = mainImg.alt || (document.getElementById('prodDetailName') ? document.getElementById('prodDetailName').textContent : 'Product image');
+        zoomOverlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeImageZoom() {
+        if (!zoomOverlay || !zoomImg || !isZoomOpen()) return;
+
+        zoomOverlay.style.display = 'none';
+        zoomImg.src = '';
+
+        if (overlay && overlay.style.display === 'flex') {
+            document.body.style.overflow = 'hidden';
+            if (resumeSliderAfterZoom && productImages.length > 1) {
+                startModalSlider();
+            }
+        } else {
+            document.body.style.overflow = '';
+        }
+
+        resumeSliderAfterZoom = false;
+    }
+
     var _jsonPath = resolveModalPath((typeof MODAL_JSON_PATH !== 'undefined') ? MODAL_JSON_PATH : 'Andison/data/brands_info_api.php');
 
     /* Load product details from JSON data */
@@ -1162,6 +1215,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         
         if (productImages.length === 0) {
             console.log('loadProductImagesFromCard: no images, showing placeholder');
+            closeImageZoom();
             mainImg.src = '';
             mainImg.style.display = 'none';
             noImg.style.display = 'block';
@@ -1217,6 +1271,9 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         if (idx < 0 || idx >= productImages.length) return;
         currentImageIndex = idx;
         document.getElementById('prodMainImg').src = productImages[idx];
+        if (isZoomOpen() && zoomImg) {
+            zoomImg.src = productImages[idx];
+        }
         
         // Update active thumbnail
         var thumbnails = document.querySelectorAll('#prodThumbnails img');
@@ -1425,6 +1482,8 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
             console.error('prodDetailOverlay not found!');
             return;
         }
+
+        closeImageZoom();
 
         // SHOW MODAL IMMEDIATELY - don't wait for data loading
         overlay.style.display = 'flex';
@@ -1745,6 +1804,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 
     /* ── Close ── */
     window.closeProductModal = function() {
+        closeImageZoom();
         stopModalSlider();
         overlay.style.display    = 'none';
         document.body.style.overflow = '';
@@ -1756,8 +1816,27 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         closeBtn.addEventListener('mouseenter', function(){ this.style.background = 'rgba(0,0,0,0.1)'; });
         closeBtn.addEventListener('mouseleave', function(){ this.style.background = 'rgba(0,0,0,0.05)'; });
     }
+    var mainImage = document.getElementById('prodMainImg');
+    if (mainImage) {
+        mainImage.addEventListener('click', openImageZoom);
+    }
+    if (zoomCloseBtn) {
+        zoomCloseBtn.addEventListener('click', closeImageZoom);
+        zoomCloseBtn.addEventListener('mouseenter', function(){ this.style.background = 'rgba(255,255,255,0.25)'; });
+        zoomCloseBtn.addEventListener('mouseleave', function(){ this.style.background = 'rgba(255,255,255,0.14)'; });
+    }
+    if (zoomOverlay) {
+        zoomOverlay.addEventListener('click', function(e){ if (e.target === zoomOverlay) closeImageZoom(); });
+    }
     overlay.addEventListener('click', function(e){ if (e.target === overlay) closeProductModal(); });
-    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeProductModal(); });
+    document.addEventListener('keydown', function(e){
+        if (e.key !== 'Escape') return;
+        if (isZoomOpen()) {
+            closeImageZoom();
+            return;
+        }
+        closeProductModal();
+    });
 
     detailInquiryBtn.addEventListener('click', function(){
         var list = [];
