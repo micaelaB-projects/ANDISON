@@ -59,13 +59,6 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
             <span id="prodDetailType" style="display:inline-block;background:linear-gradient(135deg, #2B11DB 0%, #1f0aa1 100%);color:#fff;font-size:10px;font-weight:950;padding:10px 20px;border-radius:24px;text-transform:uppercase;letter-spacing:1.2px;box-shadow:0 6px 16px rgba(43,17,219,0.28);"></span>
             <div id="prodDetailSubname" style="display:none;font-size:15px;font-weight:600;color:#555;margin-top:8px;letter-spacing:0.2px;"></div>
             <div id="prodDetailPrice" style="display:none;margin-top:10px;font-size:13px;font-weight:800;color:#2B11DB;background:rgba(43,17,219,0.08);padding:6px 14px;border-radius:20px;width:fit-content;letter-spacing:0.5px;"></div>
-            <!-- Datasheet button and preview directly below the line -->
-            <div id="prodDatasheetWrap" style="display:none;flex-shrink:0;position:relative;z-index:2;flex-direction:column;gap:12px;margin:24px 0 0 0;">
-                            <a id="prodDatasheetBtn" href="" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg, #2B11DB 0%, #1f0aa1 100%);color:#fff;padding:13px 20px;border-radius:14px;font-size:18px;font-weight:950;text-decoration:none;box-shadow:0 8px 22px rgba(43,17,219,0.3);transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;margin:0 auto 12px auto;border:1px solid rgba(255,255,255,0.2);letter-spacing:1px;text-transform:uppercase;position:relative;overflow:hidden;" onmouseover="this.style.boxShadow='0 12px 32px rgba(43,17,219,0.45)';this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 8px 22px rgba(43,17,219,0.3)';this.style.transform='translateY(0)';">
-                                <i class="bi bi-file-pdf" style="font-size:18px;"></i>
-                <span>DATASHEET</span>
-              </a>
-            </div>
           </div>
           
           <!-- Description -->
@@ -117,7 +110,15 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 
         <!-- PINNED Button footer — always visible -->
         <div style="flex-shrink:0;padding:16px 48px 28px;border-top:1px solid #f0f0fa;background:#fff;">
-          <button id="prodDetailInquiry" style="width:100%;padding:16px 22px;background:linear-gradient(135deg, #2B11DB 0%, #1f0aa1 100%);color:#fff;border:none;border-radius:14px;font-size:18px;font-weight:950;letter-spacing:1.2px;cursor:pointer;transition:all .4s cubic-bezier(0.34,1.56,0.64,1);text-transform:uppercase;box-shadow:0 10px 28px rgba(43,17,219,0.38);position:relative;overflow:hidden;transform:translateY(0);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 14px 36px rgba(43,17,219,0.5)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 28px rgba(43,17,219,0.38)';">ADD TO INQUIRY LIST</button>
+                    <div id="prodFooterActions" style="display:flex;align-items:stretch;gap:12px;flex-wrap:wrap;">
+                        <div id="prodDatasheetWrap" style="display:none;flex:1 1 300px;position:relative;z-index:2;align-items:stretch;">
+                            <a id="prodDatasheetBtn" href="" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg, #2B11DB 0%, #1f0aa1 100%);color:#fff;padding:16px 22px;border-radius:14px;font-size:18px;font-weight:950;text-decoration:none;box-shadow:0 8px 22px rgba(43,17,219,0.3);transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);width:100%;border:1px solid rgba(255,255,255,0.2);letter-spacing:1.2px;text-transform:uppercase;position:relative;overflow:hidden;white-space:nowrap;" onmouseover="this.style.boxShadow='0 12px 32px rgba(43,17,219,0.45)';this.style.transform='translateY(-2px)';" onmouseout="this.style.boxShadow='0 8px 22px rgba(43,17,219,0.3)';this.style.transform='translateY(0)';">
+                                <i class="bi bi-file-pdf" style="font-size:18px;"></i>
+                                <span>DATASHEET</span>
+                            </a>
+                        </div>
+                        <button id="prodDetailInquiry" style="flex:1 1 300px;width:auto;padding:16px 22px;background:linear-gradient(135deg, #2B11DB 0%, #1f0aa1 100%);color:#fff;border:none;border-radius:14px;font-size:18px;font-weight:950;letter-spacing:1.2px;cursor:pointer;transition:all .4s cubic-bezier(0.34,1.56,0.64,1);text-transform:uppercase;box-shadow:0 10px 28px rgba(43,17,219,0.38);position:relative;overflow:hidden;transform:translateY(0);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 14px 36px rgba(43,17,219,0.5)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 28px rgba(43,17,219,0.38)';">ADD TO INQUIRY LIST</button>
+                    </div>
         </div>
       </div>
     </div>
@@ -283,6 +284,24 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
   box-shadow:0 6px 16px rgba(43,17,219,0.35)!important;
 }
 
+#prodFooterActions {
+    width: 100%;
+}
+
+#prodFooterActions #prodDatasheetWrap {
+    flex: 1 1 300px;
+}
+
+#prodFooterActions #prodDetailInquiry {
+    flex: 1 1 300px;
+    width: auto;
+}
+
+#prodFooterActions #prodDatasheetBtn {
+    width: 100%;
+    height: 100%;
+}
+
 .prod-detail-label {
   font-size:11px;
   font-weight:800;
@@ -377,6 +396,10 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
   #prodDetailName{font-size:32px!important}
   #prodThumbnails img { width:54px !important; height:54px !important; }
   #relatedProductsGrid { grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
+    #prodFooterActions { flex-direction: column !important; gap: 10px !important; }
+    #prodFooterActions #prodDatasheetWrap,
+    #prodFooterActions #prodDetailInquiry { flex: 1 1 auto !important; width: 100% !important; }
+    #prodFooterActions #prodDatasheetBtn { min-width: 0 !important; width: 100% !important; }
 }
 
 @media(max-width:640px){
@@ -521,6 +544,69 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         return escaped.replace(/  +/g, function(spaces) {
             return ' ' + new Array(spaces.length).join('&nbsp;');
         });
+    }
+
+    function normalizeModalText(value) {
+        return String(value || '').replace(/\s+/g, ' ').trim();
+    }
+
+    function normalizeModalKey(value) {
+        return normalizeModalText(value).toLowerCase().replace(/[^a-z0-9]+/g, '');
+    }
+
+    function firstNonEmptyText(values) {
+        if (!Array.isArray(values)) return '';
+        for (var i = 0; i < values.length; i++) {
+            var candidate = values[i];
+            if (candidate === null || candidate === undefined) continue;
+            var asString = String(candidate);
+            if (normalizeModalText(asString) !== '') {
+                return asString;
+            }
+        }
+        return '';
+    }
+
+    function getProductDescriptionValue(product) {
+        if (!product || typeof product !== 'object') return '';
+        return firstNonEmptyText([
+            product.description,
+            product.product_description,
+            product.overview,
+            product.product_overview
+        ]);
+    }
+
+    function getProductNameValue(product) {
+        if (!product || typeof product !== 'object') return '';
+        return firstNonEmptyText([
+            product.product_name,
+            product.name,
+            product.model
+        ]);
+    }
+
+    function getCardDescriptionValue(card) {
+        if (!card || typeof card.getAttribute !== 'function') return '';
+
+        var fromData = firstNonEmptyText([
+            card.getAttribute('data-description'),
+            card.getAttribute('data-product-description'),
+            card.getAttribute('data-overview')
+        ]);
+        if (normalizeModalText(fromData) !== '') {
+            return fromData;
+        }
+
+        var descNode = card.querySelector('.product-description');
+        if (descNode) {
+            var fromNode = String(descNode.textContent || '');
+            if (normalizeModalText(fromNode) !== '') {
+                return fromNode;
+            }
+        }
+
+        return '';
     }
 
     function formatDescriptionHtml(rawText) {
@@ -1127,19 +1213,94 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
     var _jsonPath = resolveModalPath((typeof MODAL_JSON_PATH !== 'undefined') ? MODAL_JSON_PATH : 'Andison/data/brands_info_api.php');
 
     /* Load product details from JSON data */
-    function loadProductDetails(brand, model, fallbackSpecs, fallbackSpecsText) {
+    function loadProductDetails(brand, model, fallbackName, fallbackSpecs, fallbackSpecsText, fallbackDescription) {
         fetch(_jsonPath)
             .then(function(r) { return r.json(); })
             .then(function(data) {
                 var product = null;
+                var targetModel = normalizeModalText(model).toLowerCase();
+                var targetName = normalizeModalText(fallbackName).toLowerCase();
+                var targetBrand = normalizeModalText(brand).toLowerCase();
+                var targetModelKey = normalizeModalKey(model);
+                var targetNameKey = normalizeModalKey(fallbackName);
+
+                function scoreProductRecord(p) {
+                    if (!p || typeof p !== 'object') return -999;
+
+                    var itemModel = normalizeModalText((p && p.model) || '').toLowerCase();
+                    var itemName = normalizeModalText((p && p.name) || '').toLowerCase();
+                    var itemProductName = normalizeModalText((p && p.product_name) || '').toLowerCase();
+                    var itemBrand = normalizeModalText((p && p.brand) || '').toLowerCase();
+                    var itemModelKey = normalizeModalKey((p && p.model) || '');
+                    var itemNameKey = normalizeModalKey((p && p.name) || '');
+                    var itemProductNameKey = normalizeModalKey((p && p.product_name) || '');
+
+                    var score = 0;
+
+                    if (targetModel !== '' && (itemModel === targetModel || itemName === targetModel || itemProductName === targetModel)) {
+                        score = Math.max(score, 120);
+                    }
+
+                    if (targetName !== '' && (itemModel === targetName || itemName === targetName || itemProductName === targetName)) {
+                        score = Math.max(score, 110);
+                    }
+
+                    if (targetModelKey !== '' && (itemModelKey === targetModelKey || itemNameKey === targetModelKey || itemProductNameKey === targetModelKey)) {
+                        score = Math.max(score, 100);
+                    }
+
+                    if (targetNameKey !== '' && (itemModelKey === targetNameKey || itemNameKey === targetNameKey || itemProductNameKey === targetNameKey)) {
+                        score = Math.max(score, 95);
+                    }
+
+                    if (score <= 0) {
+                        return -999;
+                    }
+
+                    if (targetBrand !== '') {
+                        var targetBrandKey = normalizeModalKey(targetBrand);
+                        var itemBrandKey = normalizeModalKey(itemBrand);
+
+                        if (itemBrand === targetBrand) {
+                            score += 40;
+                        } else if (targetBrandKey !== '' && itemBrandKey !== '' && (itemBrandKey.indexOf(targetBrandKey) !== -1 || targetBrandKey.indexOf(itemBrandKey) !== -1)) {
+                            score += 20;
+                        } else {
+                            score -= 10;
+                        }
+                    }
+
+                    if (normalizeModalText(getProductDescriptionValue(p)) !== '') {
+                        score += 8;
+                    }
+
+                    return score;
+                }
+
+                function findBestProduct(products) {
+                    if (!Array.isArray(products) || products.length === 0) {
+                        return null;
+                    }
+
+                    var best = null;
+                    var bestScore = -999;
+                    for (var i = 0; i < products.length; i++) {
+                        var candidate = products[i];
+                        var candidateScore = scoreProductRecord(candidate);
+                        if (candidateScore > bestScore) {
+                            best = candidate;
+                            bestScore = candidateScore;
+                        }
+                    }
+
+                    return bestScore <= -999 ? null : best;
+                }
+
                 
                 // Check if data is an array (category JSON format) or object (brands_info format)
                 if (Array.isArray(data)) {
                     // Category JSON format: [ { model, brand, specs, images, ... } ]
-                    product = data.find(function(p) { 
-                        return (p.model === model || p.name === model) && 
-                               (!brand || p.brand === brand || p.brand.toLowerCase() === brand.toLowerCase());
-                    });
+                    product = findBestProduct(data);
                     console.log('Searching in category JSON array format, found:', !!product);
                 } else {
                     // brands_info JSON format: { "BRAND": { products: [...] } }
@@ -1156,8 +1317,22 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                     }
                     
                     if (brandData && brandData.products) {
-                        product = brandData.products.find(function(p) { return p.model === model; });
+                        product = findBestProduct(brandData.products);
                         console.log('Searching in brands_info format, found:', !!product);
+                    }
+
+                    // Fallback: if brand is missing/mismatched, scan all brands by model/name.
+                    if (!product) {
+                        var allProducts = [];
+                        for (var bKey in data) {
+                            if (!Object.prototype.hasOwnProperty.call(data, bKey)) continue;
+                            var bData = data[bKey];
+                            if (!bData || !Array.isArray(bData.products)) continue;
+
+                            allProducts = allProducts.concat(bData.products);
+                        }
+                        product = findBestProduct(allProducts);
+                        console.log('Fallback model scan in brands_info format, found:', !!product);
                     }
                 }
                 
@@ -1169,8 +1344,15 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 console.log('Found product - loading specs and images');
                 
                 // Load description
-                if (product.description) {
-                    document.getElementById('prodDetailDesc').innerHTML = formatDescriptionHtml(product.description);
+                var mergedDescription = firstNonEmptyText([
+                    getProductDescriptionValue(product),
+                    fallbackDescription,
+                    fallbackName,
+                    model,
+                    (product && product.type) ? String(product.type) : ''
+                ]);
+                if (normalizeModalText(mergedDescription) !== '') {
+                    document.getElementById('prodDetailDesc').innerHTML = formatDescriptionHtml(mergedDescription);
                     document.getElementById('prodDescSection').style.display = 'block';
                 } else {
                     document.getElementById('prodDescSection').style.display = 'none';
@@ -1443,6 +1625,8 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                                     syntheticCard.setAttribute('data-image', product.image || '');
                                     syntheticCard.setAttribute('data-badge', product.badge || '');
                                     syntheticCard.setAttribute('data-datasheet', product.datasheet || product.datasheet_url || '');
+                                    syntheticCard.setAttribute('data-description', getProductDescriptionValue(product));
+                                    syntheticCard.setAttribute('data-product-name', product.product_name || product.name || '');
                                     syntheticCard.setAttribute('data-images', JSON.stringify(product.images || []));
                                     syntheticCard.setAttribute('data-specs', JSON.stringify(product.specs || []));
                                     openProductModal(syntheticCard);
@@ -1489,10 +1673,28 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         overlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
 
-        var model    = card.getAttribute('data-model')  || '';
-        var type     = card.getAttribute('data-type')   || '';
+        var modelNode = card.querySelector('.brand-product-name, .product-model');
+        var modelText = modelNode ? normalizeModalText(modelNode.textContent || '') : '';
+        var nameNode = card.querySelector('.brand-product-type, h4');
+        var nameText = nameNode ? normalizeModalText(nameNode.textContent || '') : '';
+
+        var model    = firstNonEmptyText([
+            card.getAttribute('data-model'),
+            card.getAttribute('data-product-model'),
+            modelText,
+            nameText
+        ]);
+
+        var type     = firstNonEmptyText([
+            card.getAttribute('data-type'),
+            card.querySelector('.add-to-inquiry') ? card.querySelector('.add-to-inquiry').getAttribute('data-type') : ''
+        ]);
         var imgSrc   = card.getAttribute('data-image')  || '';
-        var brand    = card.getAttribute('data-brand') || (typeof BRAND_NAME !== 'undefined' ? BRAND_NAME : '');
+        var brand    = firstNonEmptyText([
+            card.getAttribute('data-brand'),
+            card.querySelector('.add-to-inquiry') ? card.querySelector('.add-to-inquiry').getAttribute('data-brand') : '',
+            (typeof BRAND_NAME !== 'undefined' ? BRAND_NAME : '')
+        ]);
         var specsRaw = card.getAttribute('data-specs')  || '[]';
         var imagesRaw = card.getAttribute('data-images') || '[]';
         var specs    = [];
@@ -1501,10 +1703,15 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         try { images = JSON.parse(imagesRaw); } catch(e){}
 
         // Extra fields from Supabase products
-        var description    = card.getAttribute('data-description')    || '';
+        var description    = getCardDescriptionValue(card);
         var specsText      = card.getAttribute('data-specifications') || '';
         var price          = card.getAttribute('data-price')          || '';
-        var productName    = card.getAttribute('data-product-name')   || '';
+        var productName    = firstNonEmptyText([
+            card.getAttribute('data-product-name'),
+            card.getAttribute('data-name'),
+            nameText,
+            modelText
+        ]);
 
         // DEBUG: Log the data being received
         console.log('openProductModal called with:', {
@@ -1604,10 +1811,13 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         var descSection = document.getElementById('prodDescSection');
         var descEl      = document.getElementById('prodDetailDesc');
         var noDetailsEl = document.getElementById('prodNoDetails');
-        if (description) {
-            if (descEl)      descEl.innerHTML = formatDescriptionHtml(description);
+        var immediateDescription = firstNonEmptyText([description, productName, type]);
+        if (normalizeModalText(immediateDescription) !== '') {
+            if (descEl)      descEl.innerHTML = formatDescriptionHtml(immediateDescription);
             if (descSection) descSection.style.display = 'block';
             if (noDetailsEl) noDetailsEl.style.display = 'none';
+        } else if (descSection) {
+            descSection.style.display = 'none';
         }
         // Show price badge below type if available
         var priceEl = document.getElementById('prodDetailPrice');
@@ -1627,7 +1837,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         }
 
         // Load additional data from JSON (description, specs) — enriches old hardcoded products
-        loadProductDetails(brand, model, specs, specsText);
+        loadProductDetails(brand, model, productName, specs, specsText, description);
 
         /* Specifications (plain text + optional table) */
         var hasSpecs = renderSpecifications(specs, specsText);
