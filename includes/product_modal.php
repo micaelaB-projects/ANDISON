@@ -784,6 +784,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 
                         var mode = matrixRaw.mode === 'grouped-pairs' ? 'grouped-pairs' : 'standard';
                         var groups = [];
+                        var merges = [];
                         if (mode === 'grouped-pairs') {
                             var dataCols = Math.max(1, headers.length - 1);
                             var rawGroups = Array.isArray(matrixRaw.groups) ? matrixRaw.groups : [];
@@ -826,6 +827,20 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                                 if (title === '') title = idx === 0 ? 'Free Air' : ('Group ' + (idx + 1));
                                 return { title: title, span: g.span };
                             });
+                        } else {
+                            merges = (Array.isArray(matrixRaw.merges) ? matrixRaw.merges : []).map(function(m) {
+                                var row = parseInt(m && m.row, 10);
+                                var col = parseInt(m && m.col, 10);
+                                var span = parseInt(m && m.span, 10);
+                                if (!isFinite(row) || row < 0) return null;
+                                if (!isFinite(col) || col < 1) return null;
+                                if (!isFinite(span) || span < 2) return null;
+                                if (col >= headers.length) return null;
+                                var maxSpan = headers.length - col;
+                                if (maxSpan < 2) return null;
+                                if (span > maxSpan) span = maxSpan;
+                                return { row: row, col: col, span: span };
+                            }).filter(function(m) { return !!m; });
                         }
 
                         payload.matrix = {
@@ -833,6 +848,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                             headers: headers,
                             rows: normalizedRows,
                             groups: groups,
+                            merges: merges,
                         };
                     }
                     return payload;
@@ -876,6 +892,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         if (!matrix || !Array.isArray(matrix.headers) || matrix.headers.length === 0 || !table) return false;
 
         table.innerHTML = '';
+        table.style.border = '1px solid #e8ecf4';
 
         var headers = matrix.headers.map(function(h) { return String(h || '').trim(); });
         var rows = Array.isArray(matrix.rows) ? matrix.rows : [];
@@ -931,6 +948,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
             firstTop.style.padding = '12px 10px';
             firstTop.style.textAlign = 'center';
             firstTop.style.borderBottom = '1px solid rgba(162, 191, 235, 0.45)';
+            firstTop.style.borderRight = '1px solid rgba(162, 191, 235, 0.45)';
             firstTop.style.background = 'linear-gradient(180deg,#2a5b9c 0%,#173865 100%)';
             firstTop.style.color = '#fff';
             firstTop.style.fontSize = '11px';
@@ -946,6 +964,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 gTh.style.padding = '10px 8px';
                 gTh.style.textAlign = 'center';
                 gTh.style.borderBottom = '1px solid rgba(162, 191, 235, 0.45)';
+                gTh.style.borderRight = '1px solid rgba(162, 191, 235, 0.45)';
                 gTh.style.background = 'linear-gradient(180deg,#2a5b9c 0%,#173865 100%)';
                 gTh.style.color = '#fff';
                 gTh.style.fontSize = '11px';
@@ -962,6 +981,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 subTh.style.padding = '8px 8px';
                 subTh.style.textAlign = 'center';
                 subTh.style.borderBottom = '1px solid rgba(162, 191, 235, 0.45)';
+                subTh.style.borderRight = '1px solid rgba(162, 191, 235, 0.45)';
                 subTh.style.background = 'linear-gradient(180deg,#234f8b 0%,#163154 100%)';
                 subTh.style.color = '#f3f4f6';
                 subTh.style.fontSize = '10px';
@@ -980,6 +1000,9 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 th.style.padding = '12px 14px';
                 th.style.textAlign = 'left';
                 th.style.borderBottom = '2px solid #2B11DB';
+                if (h < headers.length - 1) {
+                    th.style.borderRight = '1px solid #dbe2f1';
+                }
                 th.style.color = '#2B11DB';
                 th.style.fontSize = '12px';
                 headerTr.appendChild(th);
@@ -993,24 +1016,75 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
             var safeRow = row.slice(0, headers.length);
             while (safeRow.length < headers.length) safeRow.push('');
 
+            var explicitStarts = {};
+            var explicitCovered = {};
+            if (mode === 'standard' && Array.isArray(matrix.merges)) {
+                matrix.merges.forEach(function(m) {
+                    if (!m || m.row !== r) return;
+                    var start = parseInt(m.col, 10);
+                    var span = parseInt(m.span, 10);
+                    if (!isFinite(start) || !isFinite(span) || span < 2) return;
+                    if (start < 1 || start >= headers.length) return;
+                    var maxSpan = headers.length - start;
+                    if (maxSpan < 2) return;
+                    if (span > maxSpan) span = maxSpan;
+                    explicitStarts[start] = span;
+                    for (var cc = start + 1; cc < start + span; cc++) {
+                        explicitCovered[cc] = true;
+                    }
+                });
+            }
+
             var rowHasAnyData = safeRow.some(function(cell) { return String(cell || '').trim() !== ''; });
             if (!rowHasAnyData) continue;
 
             var tr = document.createElement('tr');
             if (renderedRows % 2 === 0) tr.style.backgroundColor = '#f8fafb';
 
-            for (var col = 0; col < headers.length; col++) {
+            for (var col = 0; col < headers.length; ) {
+                if (mode === 'standard' && explicitCovered[col]) {
+                    col++;
+                    continue;
+                }
+
+                var cellValue = String(safeRow[col] || '');
+                var span = 1;
+                var hasExplicitMerge = mode === 'standard' && !!explicitStarts[col];
+
+                if (hasExplicitMerge) {
+                    span = explicitStarts[col];
+                }
+
+                // In standard matrix mode, treat trailing empty sibling cells as a merged span.
+                // This mirrors Excel merged-cell paste behavior (value in first cell, rest empty).
+                if (!hasExplicitMerge && mode === 'standard' && col > 0 && cellValue.trim() !== '') {
+                    for (var nextCol = col + 1; nextCol < headers.length; nextCol++) {
+                        if (String(safeRow[nextCol] || '').trim() !== '') break;
+                        span++;
+                    }
+                }
+
                 var td = document.createElement('td');
-                td.textContent = safeRow[col] || '';
+                td.textContent = cellValue;
+                if (span > 1) {
+                    td.colSpan = span;
+                    td.style.textAlign = 'center';
+                }
                 td.style.padding = mode === 'grouped-pairs' ? '10px 10px' : '12px 14px';
                 td.style.borderBottom = '1px solid #e8ecf4';
+                var endCol = col + span - 1;
+                if (endCol < headers.length - 1) {
+                    td.style.borderRight = '1px solid #e8ecf4';
+                }
                 td.style.fontSize = '13px';
+                td.style.whiteSpace = 'pre-line';
                 if (col === 0) {
                     td.style.fontWeight = '700';
                     td.style.color = '#2d3748';
                     td.style.backgroundColor = mode === 'grouped-pairs' ? 'rgba(17,24,39,0.04)' : 'rgba(43,17,219,0.04)';
                 }
                 tr.appendChild(td);
+                col += span;
             }
             tbody.appendChild(tr);
             renderedRows++;
@@ -1025,11 +1099,17 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
     function renderSpecsTable(specsArr, table, matrix) {
         if (!table) return false;
 
+        function getDisplayLabel(label) {
+            var text = String(label || '').trim();
+            return /^column\s+\d+$/i.test(text) ? '' : text;
+        }
+
         if (matrix && renderSpecMatrixTable(matrix, table)) {
             return true;
         }
 
         table.innerHTML = '';
+        table.style.border = '1px solid #e8ecf4';
         if (!Array.isArray(specsArr) || specsArr.length === 0) return false;
 
         var thead = document.createElement('thead');
@@ -1050,13 +1130,14 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 
             for (var h = 0; h < specsArr.length; h++) {
                 var hSpec = specsArr[h];
-                if (hSpec.label === '' || !hSpec.value) continue;
+                if (!hSpec.value) continue;
 
                 var th = document.createElement('th');
-                th.textContent = hSpec.label;
+                th.textContent = getDisplayLabel(hSpec.label);
                 th.style.padding = '12px 14px';
                 th.style.textAlign = 'left';
                 th.style.borderBottom = '2px solid #2B11DB';
+                th.style.borderRight = '1px solid #dbe2f1';
                 th.style.color = '#2B11DB';
                 th.style.fontSize = '12px';
                 headerTr.appendChild(th);
@@ -1075,14 +1156,16 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 
                 for (var colIdx = 0; colIdx < specsArr.length; colIdx++) {
                     var colSpec = specsArr[colIdx];
-                    if (colSpec.label === '' || !colSpec.value) continue;
+                    if (!colSpec.value) continue;
 
                     var values = colSpec.value.split('|').map(function(v) { return v.trim(); });
                     var td = document.createElement('td');
                     td.textContent = values[rowIdx] || '';
                     td.style.padding = '12px 14px';
                     td.style.borderBottom = '1px solid #e8ecf4';
+                    td.style.borderRight = '1px solid #e8ecf4';
                     td.style.fontSize = '13px';
+                    td.style.whiteSpace = 'pre-line';
                     tr.appendChild(td);
                 }
                 tbody.appendChild(tr);
@@ -1094,11 +1177,15 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 var tr = document.createElement('tr');
                 var td1 = document.createElement('td');
                 var td2 = document.createElement('td');
-                td1.textContent = s.label;
+                td1.textContent = getDisplayLabel(s.label);
                 td2.textContent = s.value || '';
                 td1.style.fontWeight = '700';
                 td1.style.color = '#2d3748';
                 td1.style.backgroundColor = 'rgba(43,17,219,0.04)';
+                td1.style.borderBottom = '1px solid #e8ecf4';
+                td1.style.borderRight = '1px solid #e8ecf4';
+                td2.style.whiteSpace = 'pre-line';
+                td2.style.borderBottom = '1px solid #e8ecf4';
                 tr.appendChild(td1);
                 tr.appendChild(td2);
                 tbody.appendChild(tr);
@@ -1135,7 +1222,9 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         if (payload.matrix) {
             hasTable = renderSpecsTable([], table, payload.matrix);
         } else {
-            var tableRows = specsArr.length > 0 ? specsArr : payload.table;
+            // Prefer the structured payload from `specifications` (admin save target).
+            // Fall back to legacy `specs` only when payload has no table data.
+            var tableRows = payload.table.length > 0 ? payload.table : specsArr;
             hasTable = renderSpecsTable(tableRows, table, null);
         }
 

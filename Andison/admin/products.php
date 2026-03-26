@@ -573,7 +573,7 @@ andison_admin_header('Products', 'products');
             <form method="get" action="products.php" style="display:flex;gap:8px;align-items:center;">
                 <select name="brand" class="prod-brand-select" onchange="this.form.submit()">
                     <?php foreach ($brandNames as $bn): ?>
-                        <option value="<?php echo htmlspecialchars($bn); ?>" <?php echo $bn === $selectedBrand ? 'selected' : ''; ?>><?php echo htmlspecialchars($bn); ?></option>
+                        <option value="<?php echo htmlspecialchars($bn); ?>" <?php echo $bn === $selectedBrand ? 'selected' : ''; ?>><?php echo htmlspecialchars(strtoupper((string)$bn)); ?></option>
                     <?php endforeach; ?>
                 </select>
             </form>
@@ -898,9 +898,6 @@ andison_admin_header('Products', 'products');
                                 <option value="standard">Spreadsheet Dark Grid (Excel-like)</option>
                                 <option value="grouped-pairs">Grouped Header (like image)</option>
                             </select>
-                            <button type="button" onclick="applyAirflowSpecTemplate()" style="display:inline-flex;align-items:center;gap:6px;background:#fefce8;border:1px solid #fde68a;color:#854d0e;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
-                                <i class="bi bi-grid-3x3-gap"></i> Use Airflow Template
-                            </button>
                         </div>
                         <div id="specGroupHeaderWrap" style="display:none;margin-bottom:8px;padding:8px;border:1px solid #dbeafe;border-radius:8px;background:#eff6ff;"></div>
                         <div id="specTableBuilderWrap" style="overflow:auto;border:1px solid #e5e7eb;border-radius:10px;background:#fff;">
@@ -920,6 +917,25 @@ andison_admin_header('Products', 'products');
                                 <i class="bi bi-clipboard"></i> Paste Excel
                             </button>
                         </div>
+                        <div id="specMergeControls" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;padding:8px;border:1px solid #dbeafe;border-radius:8px;background:#f8fbff;">
+                            <span style="font-size:11px;font-weight:700;color:#1d4ed8;">Merge</span>
+                            <label style="font-size:11px;color:#374151;display:flex;align-items:center;gap:4px;">Row
+                                <input id="specMergeRowInput" type="number" min="1" value="1" style="width:64px;padding:5px 6px;border:1px solid #bfdbfe;border-radius:6px;font-size:11px;">
+                            </label>
+                            <label style="font-size:11px;color:#374151;display:flex;align-items:center;gap:4px;">Start Col
+                                <input id="specMergeColInput" type="number" min="2" value="2" style="width:64px;padding:5px 6px;border:1px solid #bfdbfe;border-radius:6px;font-size:11px;">
+                            </label>
+                            <label style="font-size:11px;color:#374151;display:flex;align-items:center;gap:4px;">Span
+                                <input id="specMergeSpanInput" type="number" min="2" value="2" style="width:64px;padding:5px 6px;border:1px solid #bfdbfe;border-radius:6px;font-size:11px;">
+                            </label>
+                            <button type="button" onclick="applySpecColumnMerge()" style="display:inline-flex;align-items:center;gap:6px;background:#e0f2fe;border:1px solid #7dd3fc;color:#075985;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
+                                <i class="bi bi-layout-text-window-reverse"></i> Merge Cells
+                            </button>
+                            <button type="button" onclick="clearSpecColumnMergeAtRow()" style="display:inline-flex;align-items:center;gap:6px;background:#fff1f2;border:1px solid #fecdd3;color:#be123c;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
+                                <i class="bi bi-eraser"></i> Clear Row Merge
+                            </button>
+                        </div>
+                        <div id="specMergeSummary" style="font-size:10px;color:#6b7280;margin-top:6px;"></div>
                         <div id="specTableHelpText" style="font-size:11px;color:#9ca3af;margin-top:6px;"><i class="bi bi-info-circle"></i> Excel-like mode: use Tab/Enter/Arrow Up/Arrow Down and paste multi-cell data from Excel.</div>
                     </div>
 
@@ -1708,12 +1724,14 @@ function parseSpecificationsForEditor(rawSpecifications) {
                 if (headers.length > 0) {
                     var rows = normalizeSpecMatrixRows(matrixRaw.rows || [], headers.length);
                     if (rows.length === 0) rows = [new Array(headers.length).fill('')];
+                    var merges = normalizeSpecTableMerges(matrixRaw.merges || [], rows.length, headers.length);
 
                     result.matrix = {
                         mode: 'standard',
                         headers: headers,
                         rows: rows,
                         groups: [],
+                        merges: merges,
                     };
                     return result;
                 }
@@ -1762,7 +1780,7 @@ function specTableRowsToMatrix(tableRows) {
 
     rows.forEach(function(item, idx) {
         var label = String(item.label || '').trim();
-        headers.push(label !== '' ? label : ('Column ' + (idx + 1)));
+        headers.push(label);
 
         var colValues = String(item.value || '')
             .split('|')
@@ -1817,7 +1835,8 @@ function matrixToSpecTableRows(headers, rows) {
             continue;
         }
 
-        var finalLabel = header !== '' ? header : ('Column ' + (c + 1));
+        // Preserve intentionally blank headers from the editor.
+        var finalLabel = defaultHeader ? '' : header;
         tableRows.push({
             label: finalLabel,
             value: colValues.join('|'),
@@ -1835,6 +1854,113 @@ var _specTableMode = 'standard';
 var _specTableHeaders = ['Parameter', 'Value'];
 var _specTableRows = [['', '']];
 var _specTableGroups = [];
+var _specTableMerges = [];
+
+function normalizeSpecTableMerges(merges, rowCount, colCount) {
+    var maxRows = Math.max(1, parseInt(rowCount, 10) || 1);
+    var maxCols = Math.max(1, parseInt(colCount, 10) || 1);
+    var src = Array.isArray(merges) ? merges : [];
+
+    var normalized = src.map(function(m) {
+        var row = parseInt(m && m.row, 10);
+        var col = parseInt(m && m.col, 10);
+        var span = parseInt(m && m.span, 10);
+        if (!isFinite(row) || row < 0 || row >= maxRows) return null;
+        if (!isFinite(col) || col < 1 || col >= maxCols) return null;
+        if (!isFinite(span) || span < 2) return null;
+        var maxSpan = maxCols - col;
+        if (maxSpan < 2) return null;
+        if (span > maxSpan) span = maxSpan;
+        return { row: row, col: col, span: span };
+    }).filter(function(m) { return !!m; });
+
+    normalized.sort(function(a, b) {
+        if (a.row !== b.row) return a.row - b.row;
+        return a.col - b.col;
+    });
+
+    var out = [];
+    var rowLastEnd = {};
+    for (var i = 0; i < normalized.length; i++) {
+        var item = normalized[i];
+        var end = item.col + item.span - 1;
+        var lastEnd = rowLastEnd[item.row];
+        if (typeof lastEnd === 'number' && item.col <= lastEnd) continue;
+        out.push(item);
+        rowLastEnd[item.row] = end;
+    }
+
+    return out;
+}
+
+function updateSpecMergeControlsUi() {
+    var wrap = document.getElementById('specMergeControls');
+    var summary = document.getElementById('specMergeSummary');
+    var rowInput = document.getElementById('specMergeRowInput');
+    var colInput = document.getElementById('specMergeColInput');
+    var spanInput = document.getElementById('specMergeSpanInput');
+    if (!wrap || !summary || !rowInput || !colInput || !spanInput) return;
+
+    var isStandard = _specTableMode === 'standard';
+    wrap.style.display = isStandard ? 'flex' : 'none';
+    summary.style.display = isStandard ? 'block' : 'none';
+    if (!isStandard) return;
+
+    var maxRows = Math.max(1, _specTableRows.length);
+    var maxCols = Math.max(2, _specTableHeaders.length);
+    rowInput.max = String(maxRows);
+    colInput.max = String(Math.max(2, maxCols - 1));
+    spanInput.max = String(Math.max(2, maxCols - 1));
+
+    _specTableMerges = normalizeSpecTableMerges(_specTableMerges, maxRows, maxCols);
+    if (_specTableMerges.length === 0) {
+        summary.innerHTML = '<i class="bi bi-info-circle"></i> No manual merges set.';
+    } else {
+        summary.innerHTML = '<i class="bi bi-layout-text-window-reverse"></i> ' + _specTableMerges.map(function(m) {
+            return 'R' + (m.row + 1) + ' C' + (m.col + 1) + ' x' + m.span;
+        }).join(' | ');
+    }
+}
+
+function applySpecColumnMerge() {
+    if (_specTableMode !== 'standard') return;
+
+    var rowInput = document.getElementById('specMergeRowInput');
+    var colInput = document.getElementById('specMergeColInput');
+    var spanInput = document.getElementById('specMergeSpanInput');
+    if (!rowInput || !colInput || !spanInput) return;
+
+    var row = (parseInt(rowInput.value, 10) || 1) - 1;
+    var col = (parseInt(colInput.value, 10) || 2) - 1;
+    var span = parseInt(spanInput.value, 10) || 2;
+
+    _specTableMerges = normalizeSpecTableMerges(_specTableMerges, _specTableRows.length, _specTableHeaders.length);
+
+    var start = col;
+    var end = col + span - 1;
+    _specTableMerges = _specTableMerges.filter(function(m) {
+        if (m.row !== row) return true;
+        var mStart = m.col;
+        var mEnd = m.col + m.span - 1;
+        return mEnd < start || mStart > end;
+    });
+
+    _specTableMerges.push({ row: row, col: col, span: span });
+    _specTableMerges = normalizeSpecTableMerges(_specTableMerges, _specTableRows.length, _specTableHeaders.length);
+
+    renderSpecTableBuilder();
+    syncSpecificationsHiddenField();
+}
+
+function clearSpecColumnMergeAtRow() {
+    if (_specTableMode !== 'standard') return;
+    var rowInput = document.getElementById('specMergeRowInput');
+    if (!rowInput) return;
+    var row = (parseInt(rowInput.value, 10) || 1) - 1;
+    _specTableMerges = _specTableMerges.filter(function(m) { return m.row !== row; });
+    renderSpecTableBuilder();
+    syncSpecificationsHiddenField();
+}
 
 function getDefaultGroupedHeaders() {
     return ['Model', 'cfm', 'm3/hr'];
@@ -1948,6 +2074,7 @@ function normalizeSpecTableState() {
     if (!Array.isArray(_specTableRows)) _specTableRows = [];
 
     if (_specTableMode === 'grouped-pairs') {
+        _specTableMerges = [];
         if (_specTableHeaders.length === 0) {
             _specTableHeaders = getDefaultGroupedHeaders();
         }
@@ -1984,6 +2111,8 @@ function normalizeSpecTableState() {
         while (next.length < _specTableHeaders.length) next.push('');
         return next;
     });
+
+    _specTableMerges = normalizeSpecTableMerges(_specTableMerges, _specTableRows.length, _specTableHeaders.length);
 }
 
 function getSpecColumnLabel(colIdx) {
@@ -2044,6 +2173,8 @@ function ensureSpecTableGridSize(minRows, minCols) {
     while (_specTableRows.length < targetRows) {
         _specTableRows.push(new Array(_specTableHeaders.length).fill(''));
     }
+
+    _specTableMerges = normalizeSpecTableMerges(_specTableMerges, _specTableRows.length, _specTableHeaders.length);
 }
 
 function applyPastedSpecText(rawText, startRow, startCol) {
@@ -2055,13 +2186,59 @@ function applyPastedSpecText(rawText, startRow, startCol) {
     var looksTabular = normalized.indexOf('\t') !== -1 || normalized.indexOf('\n') !== -1;
     if (!looksTabular) return false;
 
-    var lines = normalized.split('\n');
-    while (lines.length > 0 && lines[lines.length - 1] === '') lines.pop();
-    if (lines.length === 0) return false;
+    function parseTabularClipboard(text) {
+        var rows = [];
+        var row = [];
+        var cell = '';
+        var inQuotes = false;
 
-    var matrix = lines.map(function(line) {
-        return line.split('\t');
-    });
+        for (var i = 0; i < text.length; i++) {
+            var ch = text[i];
+
+            if (ch === '"') {
+                if (inQuotes && text[i + 1] === '"') {
+                    cell += '"';
+                    i++;
+                } else {
+                    inQuotes = !inQuotes;
+                }
+                continue;
+            }
+
+            if (!inQuotes && ch === '\t') {
+                row.push(cell);
+                cell = '';
+                continue;
+            }
+
+            if (!inQuotes && ch === '\n') {
+                row.push(cell);
+                rows.push(row);
+                row = [];
+                cell = '';
+                continue;
+            }
+
+            cell += ch;
+        }
+
+        row.push(cell);
+        rows.push(row);
+
+        while (rows.length > 0) {
+            var last = rows[rows.length - 1];
+            var hasContent = Array.isArray(last) && last.some(function(c) {
+                return String(c || '').trim() !== '';
+            });
+            if (hasContent) break;
+            rows.pop();
+        }
+
+        return rows;
+    }
+
+    var matrix = parseTabularClipboard(normalized);
+    if (matrix.length === 0) return false;
 
     var maxCols = matrix.reduce(function(max, row) {
         return Math.max(max, row.length);
@@ -2071,6 +2248,41 @@ function applyPastedSpecText(rawText, startRow, startCol) {
     var rowOffset = Math.max(0, parseInt(startRow, 10) || 0);
     var colOffset = Math.max(0, parseInt(startCol, 10) || 0);
 
+    var canUseFirstRowAsHeaders = rowOffset === 0 && colOffset === 0 && matrix.length > 1;
+
+    if (canUseFirstRowAsHeaders) {
+        var firstRow = matrix[0] || [];
+        var hasHeaderText = firstRow.some(function(c) { return String(c || '').trim() !== ''; });
+        if (hasHeaderText) {
+            _specTableHeaders = [];
+            for (var h = 0; h < maxCols; h++) {
+                _specTableHeaders.push(String((firstRow[h] || '')).trim());
+            }
+
+            var bodyRows = matrix.slice(1);
+            _specTableRows = bodyRows.map(function(srcRow) {
+                var row = [];
+                for (var c = 0; c < maxCols; c++) {
+                    row.push(String((srcRow && srcRow[c]) || ''));
+                }
+                return row;
+            });
+
+            if (_specTableRows.length === 0) {
+                _specTableRows = [new Array(maxCols).fill('')];
+            }
+
+            _specTableMerges = [];
+
+            renderSpecTableBuilder();
+            syncSpecificationsHiddenField();
+            window.requestAnimationFrame(function() {
+                focusSpecTableCell(0, 0);
+            });
+            return true;
+        }
+    }
+
     ensureSpecTableGridSize(rowOffset + matrix.length, colOffset + maxCols);
 
     for (var r = 0; r < matrix.length; r++) {
@@ -2078,6 +2290,8 @@ function applyPastedSpecText(rawText, startRow, startCol) {
             _specTableRows[rowOffset + r][colOffset + c] = String((matrix[r] && matrix[r][c]) || '');
         }
     }
+
+    _specTableMerges = normalizeSpecTableMerges(_specTableMerges, _specTableRows.length, _specTableHeaders.length);
 
     renderSpecTableBuilder();
     syncSpecificationsHiddenField();
@@ -2107,6 +2321,11 @@ function handleSpecCellKeyDown(event, rowIdx, colIdx) {
     var handled = false;
 
     if (event.key === 'Enter') {
+        // In textarea cells, Enter should add a new line inside the same cell.
+        // Use Ctrl+Enter (or Cmd+Enter) to move to the next/previous row.
+        if (!(event.ctrlKey || event.metaKey)) {
+            return;
+        }
         handled = true;
         nextRow = event.shiftKey ? rowIdx - 1 : rowIdx + 1;
     } else if (event.key === 'ArrowDown') {
@@ -2202,9 +2421,11 @@ function updateSpecTableModeUi() {
         if (_specTableMode === 'grouped-pairs') {
             help.innerHTML = '<i class="bi bi-info-circle"></i> Grouped mode supports merged headers: set each group title and span (number of merged columns).';
         } else {
-            help.innerHTML = '<i class="bi bi-info-circle"></i> Spreadsheet mode: use Tab/Enter/Arrow Up/Arrow Down and paste multi-cell data directly from Excel.';
+            help.innerHTML = '<i class="bi bi-info-circle"></i> Spreadsheet mode: Tab and arrows move cells, Enter adds a line inside a cell, Ctrl+Enter moves rows, and you can paste directly from Excel.';
         }
     }
+
+    updateSpecMergeControlsUi();
 }
 
 function renderGroupedHeaderControls() {
@@ -2427,15 +2648,15 @@ function renderSpecTableBuilder() {
                 ? 'padding:6px 8px;border-bottom:1px solid #6b7280;border-right:1px solid #6b7280;background:transparent;'
                 : 'padding:6px 8px;border-bottom:1px solid #eef2f6;';
 
-            var cellInput = document.createElement('input');
-            cellInput.type = 'text';
+            var cellInput = document.createElement('textarea');
+            cellInput.rows = 1;
             cellInput.value = row[colIdx] || '';
             cellInput.className = 'spec-table-input';
             cellInput.setAttribute('data-row', String(rowIdx));
             cellInput.setAttribute('data-col', String(colIdx));
             cellInput.style.cssText = isStandardDark
-                ? 'width:100%;padding:7px 9px;border:1px solid #6b7280;border-radius:7px;font-size:12px;color:#f3f4f6;background:#1f2530;'
-                : 'width:100%;padding:7px 9px;border:1.5px solid #e5e7eb;border-radius:7px;font-size:12px;';
+                ? 'width:100%;min-height:34px;padding:7px 9px;border:1px solid #6b7280;border-radius:7px;font-size:12px;color:#f3f4f6;background:#1f2530;resize:vertical;line-height:1.35;white-space:pre-wrap;'
+                : 'width:100%;min-height:34px;padding:7px 9px;border:1.5px solid #e5e7eb;border-radius:7px;font-size:12px;resize:vertical;line-height:1.35;white-space:pre-wrap;';
             (function(r, c, inputEl) {
                 inputEl.addEventListener('input', function() {
                     _specTableRows[r][c] = this.value;
@@ -2474,6 +2695,8 @@ function renderSpecTableBuilder() {
 
         body.appendChild(tr);
     });
+
+    updateSpecMergeControlsUi();
 }
 
 function addSpecTableColumn(label) {
@@ -2732,6 +2955,25 @@ function syncSpecificationsHiddenField() {
         return;
     }
 
+    _specTableMerges = normalizeSpecTableMerges(_specTableMerges, _specTableRows.length, _specTableHeaders.length);
+    if (_specTableMerges.length > 0) {
+        hiddenInput.value = JSON.stringify({
+            format: 'andison_specs_v2',
+            text: textValue,
+            tableMatrix: {
+                mode: 'standard',
+                headers: _specTableHeaders.map(function(h){ return String(h || '').trim(); }),
+                rows: _specTableRows.map(function(row) {
+                    return row.map(function(cell) { return String(cell || ''); });
+                }),
+                merges: _specTableMerges.map(function(m) {
+                    return { row: m.row, col: m.col, span: m.span };
+                }),
+            },
+        });
+        return;
+    }
+
     var tableRows = matrixToSpecTableRows(_specTableHeaders, _specTableRows);
 
     if (tableRows.length === 0) {
@@ -2759,12 +3001,15 @@ function setSpecificationsEditor(rawSpecifications) {
         _specTableRows = parsed.matrix.rows;
         if (_specTableMode === 'grouped-pairs') {
             _specTableGroups = normalizeGroupedGroups(parsed.matrix.groups || [], Math.max(1, _specTableHeaders.length - 1));
+            _specTableMerges = [];
         } else {
             _specTableGroups = [];
+            _specTableMerges = normalizeSpecTableMerges(parsed.matrix.merges || [], _specTableRows.length, _specTableHeaders.length);
         }
     } else {
         _specTableMode = 'standard';
         _specTableGroups = [];
+        _specTableMerges = [];
 
         var matrix = specTableRowsToMatrix(parsed.table);
         _specTableHeaders = matrix.headers;
@@ -2875,7 +3120,8 @@ function handleBulkImageSelect(input) {
 
     var files = Array.prototype.slice.call(input.files);
     var validFiles = [];
-
+    var actionInput = document.querySelector('.edit-product-form [name="action"]');
+    var isAddMode = !!(actionInput && actionInput.value === 'add_product');
     for (var i = 0; i < files.length; i++) {
         var file = files[i];
         if (!file.type || !file.type.startsWith('image/')) continue;
@@ -2889,21 +3135,42 @@ function handleBulkImageSelect(input) {
         return;
     }
 
-    if (validFiles.length > 5) {
-        customAlert('You can upload up to 5 images only. First 5 files will be used.');
-        validFiles = validFiles.slice(0, 5);
-    }
-
-    var emptySlots = [];
-    for (var s = 0; s < 5; s++) {
-        if (!_previewUrls[s]) emptySlots.push(s);
-    }
-
-    var targetSlots = emptySlots.slice(0, validFiles.length);
-    if (targetSlots.length < validFiles.length) {
-        for (var t = 0; t < 5 && targetSlots.length < validFiles.length; t++) {
-            if (targetSlots.indexOf(t) === -1) targetSlots.push(t);
+    var targetSlots = [];
+    if (isAddMode) {
+        // In Add mode, every bulk selection should define the full slot order from scratch.
+        if (validFiles.length > 5) {
+            customAlert('You can upload up to 5 images only. First 5 files will be used.');
+            validFiles = validFiles.slice(0, 5);
         }
+
+        _existingUrls = ['','','','',''];
+        _previewUrls = [null,null,null,null,null];
+        for (var c = 0; c < 5; c++) {
+            var clearInput = document.getElementById('imageFile_' + c);
+            if (clearInput) clearInput.value = '';
+        }
+
+        for (var a = 0; a < validFiles.length; a++) {
+            targetSlots.push(a);
+        }
+    } else {
+        var emptySlots = [];
+        for (var s = 0; s < 5; s++) {
+            if (!_previewUrls[s]) emptySlots.push(s);
+        }
+
+        if (emptySlots.length === 0) {
+            customAlert('All 5 image slots are already filled. Remove one first to add a new image.');
+            input.value = '';
+            return;
+        }
+
+        if (validFiles.length > emptySlots.length) {
+            customAlert('Only ' + emptySlots.length + ' slot(s) left. Extra selected files will be ignored.');
+            validFiles = validFiles.slice(0, emptySlots.length);
+        }
+
+        targetSlots = emptySlots.slice(0, validFiles.length);
     }
 
     var assignFailed = false;
