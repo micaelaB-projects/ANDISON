@@ -71,30 +71,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
           <div id="prodSpecsSection" style="display:none;margin-bottom:24px;">
             <div style="font-size:9px;font-weight:950;color:#2B11DB;letter-spacing:1.2px;margin-bottom:14px;text-transform:uppercase;display:flex;align-items:center;gap:6px;"><i class="bi bi-speedometer2"></i> SPECIFICATIONS</div>
                         <div id="prodDetailSpecsText" style="display:none;margin:0 0 12px;padding:12px 14px;border-radius:12px;border-left:4px solid #2B11DB;background:linear-gradient(135deg, rgba(43,17,219,0.06) 0%, rgba(43,17,219,0.02) 100%);font-size:13px;color:#3f4459;line-height:1.75;"></div>
-                        <div id="prodSpecsTableWrap" style="display:none;border-radius:14px;box-shadow:0 6px 18px rgba(43,17,219,0.12);overflow:hidden;border:1px solid rgba(43,17,219,0.08);">
-              <table id="prodDetailSpecsTable" style="width:100%;border-collapse:collapse;font-size:12px;">
-                <thead>
-                  <tr>
-                    <th style="padding:13px 12px; text-align:left; border-bottom:1px solid rgba(255,255,255,0.3); color:#fff; font-size:10px; font-weight:950; text-transform:uppercase; letter-spacing:1px; font-weight: bold;">
-                      <span>Parameter</span>
-                    </th>
-                    <th style="padding:13px 12px; text-align:left; border-bottom:1px solid rgba(255,255,255,0.3); color:#fff; font-size:10px; font-weight:950; text-transform:uppercase; letter-spacing:1px; font-weight: bold;">
-                      <span>Value</span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td style="padding:11px 12px; border-bottom:1px solid #f1f3f8; color:#3a4559; font-size:11px; line-height:1.5; font-weight:500;">
-                      <span>Parameter</span>
-                    </td>
-                    <td style="padding:11px 12px; border-bottom:1px solid #f1f3f8; color:#3a4559; font-size:11px; line-height:1.5; font-weight:500;">
-                      <span>Value</span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+                                                <div id="prodSpecsTableWrap" style="display:none;"></div>
           </div>
           
           <!-- Additional Details -->
@@ -207,13 +184,36 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
   z-index: 1;
     cursor: zoom-in;
   filter: drop-shadow(0 8px 20px rgba(0,0,0,0.06));
-}#prodDetailSpecsTable { width:100%; border-collapse:collapse; background: #fff; }
-#prodDetailSpecsTable thead { 
-  background: linear-gradient(90deg, #2B11DB 0%, #1f0aa1 100%);
+}.prod-specs-table-card {
+    border-radius:14px;
+    box-shadow:0 6px 18px rgba(43,17,219,0.12);
+    overflow-x:auto;
+    overflow-y:hidden;
+    border:1px solid rgba(43,17,219,0.08);
+    margin-bottom:12px;
+}
+
+.prod-specs-table-card:last-child {
+    margin-bottom:0;
+}
+
+#prodDetailSpecsTable,
+.prod-detail-specs-table {
+    width:max-content;
+    min-width:unset;
+    max-width:100%;
+    table-layout:auto;
+    border-collapse:collapse;
+    background:#fff;
+}
+#prodDetailSpecsTable thead,
+.prod-detail-specs-table thead { 
+    background: linear-gradient(180deg, #2f5f9d 0%, #1f4a82 55%, #183a67 100%);
   position: relative;
   z-index: 10;
 }
-#prodDetailSpecsTable th { 
+#prodDetailSpecsTable th,
+.prod-detail-specs-table th { 
   padding:13px 12px; 
   text-align:left; 
   border-bottom:1px solid rgba(255,255,255,0.3);
@@ -224,11 +224,16 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
   letter-spacing:1px;
   font-weight: bold;
 }
-#prodDetailSpecsTable tbody tr { border-bottom:1px solid #f1f3f8; transition:all 0.2s ease; }
-#prodDetailSpecsTable tbody tr:hover { background:linear-gradient(90deg, rgba(43,17,219,0.04) 0%, rgba(43,17,219,0.02) 100%); }
-#prodDetailSpecsTable tbody tr:nth-child(odd) { background:#fbfbfd; }
-#prodDetailSpecsTable tbody tr:nth-child(even) { background:#fff; }
-#prodDetailSpecsTable td { 
+#prodDetailSpecsTable tbody tr,
+.prod-detail-specs-table tbody tr { border-bottom:1px solid #f1f3f8; transition:all 0.2s ease; }
+#prodDetailSpecsTable tbody tr:hover,
+.prod-detail-specs-table tbody tr:hover { background:linear-gradient(90deg, rgba(43,17,219,0.04) 0%, rgba(43,17,219,0.02) 100%); }
+#prodDetailSpecsTable tbody tr:nth-child(odd),
+.prod-detail-specs-table tbody tr:nth-child(odd) { background:#fbfbfd; }
+#prodDetailSpecsTable tbody tr:nth-child(even),
+.prod-detail-specs-table tbody tr:nth-child(even) { background:#fff; }
+#prodDetailSpecsTable td,
+.prod-detail-specs-table td { 
   padding:11px 12px;
   border-bottom:1px solid #f1f3f8;
   color:#3a4559;
@@ -236,18 +241,21 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
   line-height:1.5;
   font-weight:500;
 }
-#prodDetailSpecsTable td:first-child{
+#prodDetailSpecsTable td:first-child,
+.prod-detail-specs-table td:first-child{
   font-weight:900;
   color:#2B11DB;
   background:linear-gradient(90deg, rgba(43,17,219,0.06) 0%, rgba(43,17,219,0.03) 100%);
-  width:32%;
+    width:auto;
   font-size:10.5px;
   letter-spacing:0.2px;
 }
-#prodDetailSpecsTable tbody tr:nth-child(odd) td:first-child {
+#prodDetailSpecsTable tbody tr:nth-child(odd) td:first-child,
+.prod-detail-specs-table tbody tr:nth-child(odd) td:first-child {
   background:linear-gradient(90deg, rgba(43,17,219,0.1) 0%, rgba(43,17,219,0.04) 100%);
 }
-#prodDetailSpecsTable tbody tr:last-child td { border-bottom:none; }
+#prodDetailSpecsTable tbody tr:last-child td,
+.prod-detail-specs-table tbody tr:last-child td { border-bottom:none; }
 
 #prodThumbnails img {
   width:68px;
@@ -353,8 +361,53 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 
 #prodDetailSpecsText .prod-specs-paragraph {
     margin: 0;
-    line-height: 1.7;
+    line-height: 1.65;
     word-break: break-word;
+    white-space: pre-line;
+}
+
+#prodDetailSpecsText .prod-specs-rows {
+    display: grid;
+    gap: 6px;
+}
+
+#prodDetailSpecsText .prod-specs-row {
+    display: grid;
+    grid-template-columns: minmax(130px, 220px) 14px minmax(0, 1fr);
+    align-items: start;
+    column-gap: 8px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #3f4459;
+}
+
+#prodDetailSpecsText .prod-specs-row .spec-label {
+    font-weight: 500;
+}
+
+#prodDetailSpecsText .prod-specs-row .spec-sep {
+    text-align: center;
+    opacity: 0.8;
+}
+
+#prodDetailSpecsText .prod-specs-row .spec-value {
+    min-width: 0;
+}
+
+#prodDetailSpecsText .prod-specs-line,
+#prodDetailSpecsText .prod-specs-numline,
+#prodDetailSpecsText .prod-specs-spacer {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #3f4459;
+}
+
+#prodDetailSpecsText .prod-specs-numline {
+    padding-left: 172px;
+}
+
+#prodDetailSpecsText .prod-specs-spacer {
+    height: 6px;
 }
 
 /* Scrollbar Styling for all scrollable areas */
@@ -405,6 +458,17 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 @media(max-width:640px){
     #prodImageZoomOverlay{padding:16px!important}
     #prodImageZoomClose{top:12px!important;right:12px!important}
+}
+
+@media(max-width:768px){
+    #prodDetailSpecsText .prod-specs-row {
+        grid-template-columns: minmax(96px, 150px) 12px minmax(0, 1fr);
+        column-gap: 6px;
+    }
+
+    #prodDetailSpecsText .prod-specs-numline {
+        padding-left: 114px;
+    }
 }
 
 /* Related Products Styling */
@@ -684,46 +748,107 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
             .replace(/\u00A0/g, ' ')
             .replace(/[\u200B-\u200D\uFEFF]/g, '');
 
-        var lines = normalized.split('\n');
-        var items = [];
+        var displayText = normalized.replace(/^\n+|\n+$/g, '');
+        if (displayText === '') return '';
+
+        var lines = displayText.split('\n');
+        var rows = [];
+
+        function esc(v) {
+            return escapeHtml(String(v || ''));
+        }
 
         for (var i = 0; i < lines.length; i++) {
-            var rawLine = lines[i].replace(/\s+$/g, '');
-            var trimmed = rawLine.trim();
-            if (trimmed === '') continue;
+            var raw = lines[i].replace(/\t/g, '    ').replace(/\s+$/g, '');
+            var trimmed = raw.trim();
+
+            if (trimmed === '') {
+                rows.push('<div class="prod-specs-spacer" aria-hidden="true"></div>');
+                continue;
+            }
 
             if (/^specifications?:?$/i.test(trimmed)) {
                 continue;
             }
 
-            var bulletMatch = rawLine.match(/^\s*(?:[-*•●◦▪▫■□·]+|[^\x00-\x7F])\s*(.+)$/);
-            if (bulletMatch && bulletMatch[1]) {
-                items.push(bulletMatch[1].trim());
+            var numMatch = trimmed.match(/^(\d+\.)\s*(.+)$/);
+            if (numMatch) {
+                rows.push(
+                    '<div class="prod-specs-numline"><span class="spec-num">' + esc(numMatch[1]) + '</span> ' +
+                    '<span class="spec-num-value">' + esc(numMatch[2].replace(/\s+/g, ' ').trim()) + '</span></div>'
+                );
                 continue;
             }
 
-            if (items.length > 0) {
-                items[items.length - 1] = (items[items.length - 1] + ' ' + trimmed).trim();
-            } else {
-                items.push(trimmed);
+            var sepIdx = trimmed.indexOf(':');
+            if (sepIdx > 0) {
+                var label = trimmed.slice(0, sepIdx).replace(/\s+/g, ' ').trim();
+                var value = trimmed.slice(sepIdx + 1).replace(/\s+/g, ' ').trim();
+
+                if (label !== '' || value !== '') {
+                    rows.push(
+                        '<div class="prod-specs-row">' +
+                            '<span class="spec-label">' + esc(label) + '</span>' +
+                            '<span class="spec-sep">:</span>' +
+                            '<span class="spec-value">' + esc(value) + '</span>' +
+                        '</div>'
+                    );
+                    continue;
+                }
             }
+
+            rows.push('<div class="prod-specs-line">' + esc(trimmed.replace(/\s+/g, ' ')) + '</div>');
         }
 
-        if (items.length === 0) {
-            var fallback = normalized.trim();
-            if (fallback === '') return '';
-            return '<p class="prod-specs-paragraph">' + preserveInlineSpacing(fallback) + '</p>';
+        if (rows.length === 0) {
+            return '<p class="prod-specs-paragraph">' + preserveInlineSpacing(displayText) + '</p>';
         }
 
-        var html = '<ul class="prod-specs-list">';
-        for (var j = 0; j < items.length; j++) {
-            html += '<li>' + preserveInlineSpacing(items[j]) + '</li>';
-        }
-        html += '</ul>';
-        return html;
+        return '<div class="prod-specs-rows">' + rows.join('') + '</div>';
     }
 
     function normalizeSpecsArray(specsValue) {
+        if (typeof specsValue === 'string') {
+            var source = specsValue.trim();
+            if (source !== '') {
+                try {
+                    var parsed = JSON.parse(source);
+                    if (Array.isArray(parsed)) {
+                        return parsed.map(function(item) {
+                            if (item && typeof item === 'object') {
+                                return {
+                                    label: String(item.label || item.key || '').trim(),
+                                    value: String(item.value || '').trim(),
+                                };
+                            }
+                            return { label: '', value: '' };
+                        }).filter(function(item) {
+                            return item.label !== '' || item.value !== '';
+                        });
+                    }
+
+                    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+                        // Structured matrix payloads are rendered from `specifications` text path.
+                        if (parsed.format === 'andison_specs_v1' || parsed.format === 'andison_specs_v2' || parsed.format === 'andison_specs_v3') {
+                            return [];
+                        }
+
+                        return Object.entries(parsed).map(function(entry) {
+                            return {
+                                label: String(entry[0] || '').trim(),
+                                value: String(entry[1] || '').trim(),
+                            };
+                        }).filter(function(item) {
+                            return item.label !== '' || item.value !== '';
+                        });
+                    }
+                } catch (e) {
+                    // Plain string specs are handled by text rendering path.
+                }
+            }
+            return [];
+        }
+
         if (Array.isArray(specsValue)) {
             return specsValue.map(function(item) {
                 if (item && typeof item === 'object') {
@@ -757,6 +882,8 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
             text: '',
             table: [],
             matrix: null,
+            tables: [],
+            tableHtml: '',
         };
 
         var source = String(rawText || '').trim();
@@ -765,28 +892,56 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         try {
             var parsed = JSON.parse(source);
             if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-                var hasMatrix = parsed.tableMatrix && typeof parsed.tableMatrix === 'object';
-                var looksLikeV2 = parsed.format === 'andison_specs_v2' || hasMatrix;
-
-                if (looksLikeV2) {
+                var hasTables = Array.isArray(parsed.tables);
+                var looksLikeV3 = parsed.format === 'andison_specs_v3' || hasTables;
+                if (looksLikeV3 && hasTables) {
                     payload.text = String(parsed.text || '').trim();
-                    var matrixRaw = parsed.tableMatrix || {};
-                    var headers = Array.isArray(matrixRaw.headers)
-                        ? matrixRaw.headers.map(function(h){ return String(h || '').trim(); }).filter(function(h){ return h !== ''; })
-                        : [];
-                    if (headers.length > 0) {
+
+                    payload.tables = parsed.tables.map(function(entry) {
+                        if (!(entry && typeof entry === 'object' && !Array.isArray(entry))) return null;
+
+                        var entryTableHtml = String(entry.tableHtml || '').trim();
+
+                        var matrixRaw = entry.tableMatrix && typeof entry.tableMatrix === 'object' ? entry.tableMatrix : null;
+                        if (!matrixRaw && entryTableHtml === '') return null;
+                        if (!matrixRaw) {
+                            return {
+                                matrix: null,
+                                table: [],
+                                tableHtml: entryTableHtml,
+                            };
+                        }
+
+                        var headers = Array.isArray(matrixRaw.headers)
+                            ? matrixRaw.headers.map(function(h){ return String(h || '').trim(); })
+                            : [];
+
                         var rows = Array.isArray(matrixRaw.rows) ? matrixRaw.rows : [];
+                        var rowWidth = rows.reduce(function(maxLen, row) {
+                            return Math.max(maxLen, Array.isArray(row) ? row.length : 0);
+                        }, 0);
+                        var colCount = Math.max(headers.length, rowWidth);
+                        if (colCount === 0) return null;
+                        while (headers.length < colCount) headers.push('');
+
                         var normalizedRows = rows.map(function(row) {
-                            var out = Array.isArray(row) ? row.slice(0, headers.length) : [];
-                            while (out.length < headers.length) out.push('');
+                            var out = Array.isArray(row) ? row.slice(0, colCount) : [];
+                            while (out.length < colCount) out.push('');
                             return out.map(function(cell) { return String(cell || '').trim(); });
                         });
 
                         var mode = matrixRaw.mode === 'grouped-pairs' ? 'grouped-pairs' : 'standard';
+                        var leadColumns = parseInt(matrixRaw.leadColumns, 10);
+                        if (!isFinite(leadColumns) || leadColumns < 1) leadColumns = 1;
                         var groups = [];
                         var merges = [];
+                        var rowMerges = [];
+
                         if (mode === 'grouped-pairs') {
-                            var dataCols = Math.max(1, headers.length - 1);
+                            if (leadColumns >= headers.length) {
+                                leadColumns = Math.max(1, headers.length - 1);
+                            }
+                            var dataCols = Math.max(1, headers.length - leadColumns);
                             var rawGroups = Array.isArray(matrixRaw.groups) ? matrixRaw.groups : [];
                             groups = rawGroups.map(function(g) {
                                 if (g && typeof g === 'object' && !Array.isArray(g)) {
@@ -794,9 +949,105 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                                     return {
                                         title: String(g.title || g.label || g.name || '').trim(),
                                         span: (isFinite(spanObj) && spanObj > 0) ? spanObj : 1,
+                                        rowSpan: !!g.rowSpan,
                                     };
                                 }
-                                return { title: String(g || '').trim(), span: 2 };
+                                return { title: String(g || '').trim(), span: 2, rowSpan: false };
+                            });
+
+                            if (groups.length === 0) {
+                                groups = [{ title: 'Free Air', span: dataCols, rowSpan: false }];
+                            }
+                        } else {
+                            merges = (Array.isArray(matrixRaw.merges) ? matrixRaw.merges : []).map(function(m) {
+                                var row = parseInt(m && m.row, 10);
+                                var col = parseInt(m && m.col, 10);
+                                var span = parseInt(m && m.span, 10);
+                                if (!isFinite(row) || row < 0) return null;
+                                if (!isFinite(col) || col < 1) return null;
+                                if (!isFinite(span) || span < 2) return null;
+                                if (col >= headers.length) return null;
+                                var maxSpan = headers.length - col;
+                                if (maxSpan < 2) return null;
+                                if (span > maxSpan) span = maxSpan;
+                                return { row: row, col: col, span: span };
+                            }).filter(function(m) { return !!m; });
+                        }
+
+                        rowMerges = (Array.isArray(matrixRaw.rowMerges) ? matrixRaw.rowMerges : []).map(function(m) {
+                            var row = parseInt(m && m.row, 10);
+                            var col = parseInt(m && m.col, 10);
+                            var rowSpan = parseInt(m && m.rowSpan, 10);
+                            if (!isFinite(row) || row < 0) return null;
+                            if (!isFinite(col) || col < 0 || col >= headers.length) return null;
+                            if (!isFinite(rowSpan) || rowSpan < 2) return null;
+                            return { row: row, col: col, rowSpan: rowSpan };
+                        }).filter(function(m) { return !!m; });
+
+                        return {
+                            matrix: {
+                                mode: mode,
+                                leadColumns: leadColumns,
+                                headers: headers,
+                                rows: normalizedRows,
+                                groups: groups,
+                                merges: merges,
+                                rowMerges: rowMerges,
+                            },
+                            table: [],
+                            tableHtml: entryTableHtml,
+                        };
+                    }).filter(function(item) { return !!item; });
+
+                    return payload;
+                }
+
+                var hasMatrix = parsed.tableMatrix && typeof parsed.tableMatrix === 'object';
+                var looksLikeV2 = parsed.format === 'andison_specs_v2' || hasMatrix;
+
+                if (looksLikeV2) {
+                    payload.text = String(parsed.text || '').trim();
+                    var matrixRaw = parsed.tableMatrix || {};
+                    var headers = Array.isArray(matrixRaw.headers)
+                        ? matrixRaw.headers.map(function(h){ return String(h || '').trim(); })
+                        : [];
+
+                    var rows = Array.isArray(matrixRaw.rows) ? matrixRaw.rows : [];
+                    var rowWidth = rows.reduce(function(maxLen, row) {
+                        return Math.max(maxLen, Array.isArray(row) ? row.length : 0);
+                    }, 0);
+                    var colCount = Math.max(headers.length, rowWidth);
+
+                    if (colCount > 0) {
+                        while (headers.length < colCount) headers.push('');
+                        var normalizedRows = rows.map(function(row) {
+                            var out = Array.isArray(row) ? row.slice(0, colCount) : [];
+                            while (out.length < colCount) out.push('');
+                            return out.map(function(cell) { return String(cell || '').trim(); });
+                        });
+
+                        var mode = matrixRaw.mode === 'grouped-pairs' ? 'grouped-pairs' : 'standard';
+                        var leadColumns = parseInt(matrixRaw.leadColumns, 10);
+                        if (!isFinite(leadColumns) || leadColumns < 1) leadColumns = 1;
+                        var groups = [];
+                        var merges = [];
+                        var rowMerges = [];
+                        if (mode === 'grouped-pairs') {
+                            if (leadColumns >= headers.length) {
+                                leadColumns = Math.max(1, headers.length - 1);
+                            }
+                            var dataCols = Math.max(1, headers.length - leadColumns);
+                            var rawGroups = Array.isArray(matrixRaw.groups) ? matrixRaw.groups : [];
+                            groups = rawGroups.map(function(g) {
+                                if (g && typeof g === 'object' && !Array.isArray(g)) {
+                                    var spanObj = parseInt(g.span, 10);
+                                    return {
+                                        title: String(g.title || g.label || g.name || '').trim(),
+                                        span: (isFinite(spanObj) && spanObj > 0) ? spanObj : 1,
+                                        rowSpan: !!g.rowSpan,
+                                    };
+                                }
+                                return { title: String(g || '').trim(), span: 2, rowSpan: false };
                             });
 
                             if (groups.length === 0) {
@@ -825,7 +1076,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                             groups = groups.map(function(g, idx) {
                                 var title = String(g.title || '').trim();
                                 if (title === '') title = idx === 0 ? 'Free Air' : ('Group ' + (idx + 1));
-                                return { title: title, span: g.span };
+                                return { title: title, span: g.span, rowSpan: g.span === 1 ? !!g.rowSpan : false };
                             });
                         } else {
                             merges = (Array.isArray(matrixRaw.merges) ? matrixRaw.merges : []).map(function(m) {
@@ -843,12 +1094,24 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                             }).filter(function(m) { return !!m; });
                         }
 
+                        rowMerges = (Array.isArray(matrixRaw.rowMerges) ? matrixRaw.rowMerges : []).map(function(m) {
+                            var row = parseInt(m && m.row, 10);
+                            var col = parseInt(m && m.col, 10);
+                            var rowSpan = parseInt(m && m.rowSpan, 10);
+                            if (!isFinite(row) || row < 0) return null;
+                            if (!isFinite(col) || col < 0 || col >= headers.length) return null;
+                            if (!isFinite(rowSpan) || rowSpan < 2) return null;
+                            return { row: row, col: col, rowSpan: rowSpan };
+                        }).filter(function(m) { return !!m; });
+
                         payload.matrix = {
                             mode: mode,
+                            leadColumns: leadColumns,
                             headers: headers,
                             rows: normalizedRows,
                             groups: groups,
                             merges: merges,
+                            rowMerges: rowMerges,
                         };
                     }
                     return payload;
@@ -888,6 +1151,113 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         return payload;
     }
 
+    function applyBodyBasedAutoTableSizing(table) {
+        if (!table) return;
+
+        table.style.width = 'max-content';
+        table.style.minWidth = 'unset';
+        table.style.maxWidth = '100%';
+        table.style.tableLayout = 'fixed';
+
+        // Remove existing colgroup so we can re-calculate widths from current body data.
+        var existingColgroups = table.querySelectorAll('colgroup');
+        existingColgroups.forEach(function(cg) {
+            if (cg && cg.parentNode === table) {
+                table.removeChild(cg);
+            }
+        });
+
+        var bodyRows = Array.prototype.slice.call(table.querySelectorAll('tbody tr'));
+        var headRows = Array.prototype.slice.call(table.querySelectorAll('thead tr'));
+        var sourceRows = bodyRows.length > 0 ? bodyRows : headRows;
+        if (sourceRows.length === 0) return;
+
+        var colCount = 0;
+        sourceRows.forEach(function(tr) {
+            var rowCols = 0;
+            Array.prototype.slice.call(tr.children).forEach(function(cell) {
+                var cs = parseInt(cell.getAttribute('colspan') || '1', 10);
+                if (!isFinite(cs) || cs < 1) cs = 1;
+                rowCols += cs;
+            });
+            if (rowCols > colCount) colCount = rowCols;
+        });
+        if (colCount < 1) return;
+
+        var colChars = new Array(colCount).fill(6);
+
+        // Header has low influence; body content drives actual width.
+        headRows.forEach(function(tr) {
+            var colCursor = 0;
+            Array.prototype.slice.call(tr.children).forEach(function(cell) {
+                var cs = parseInt(cell.getAttribute('colspan') || '1', 10);
+                if (!isFinite(cs) || cs < 1) cs = 1;
+                var textLen = String(cell.textContent || '').trim().length;
+                var normalized = Math.max(1, Math.floor(Math.min(10, textLen) / cs));
+                for (var i = 0; i < cs && (colCursor + i) < colCount; i++) {
+                    colChars[colCursor + i] = Math.max(colChars[colCursor + i], normalized);
+                }
+                colCursor += cs;
+            });
+        });
+
+        bodyRows.forEach(function(tr) {
+            var colCursor = 0;
+            Array.prototype.slice.call(tr.children).forEach(function(cell) {
+                var cs = parseInt(cell.getAttribute('colspan') || '1', 10);
+                if (!isFinite(cs) || cs < 1) cs = 1;
+
+                var rawText = String(cell.textContent || '').trim();
+                var lines = rawText.split(/\n+/);
+                var longest = 0;
+                for (var li = 0; li < lines.length; li++) {
+                    var len = String(lines[li] || '').trim().length;
+                    if (len > longest) longest = len;
+                }
+                var normalized = Math.max(1, Math.floor(longest / cs));
+
+                for (var i = 0; i < cs && (colCursor + i) < colCount; i++) {
+                    colChars[colCursor + i] = Math.max(colChars[colCursor + i], normalized);
+                }
+                colCursor += cs;
+            });
+        });
+
+        var colgroup = document.createElement('colgroup');
+        var plannedWidths = [];
+        var totalPlannedWidth = 0;
+        for (var c = 0; c < colCount; c++) {
+            var basePx = Math.round(14 + (Math.min(colChars[c], 20) * 6.2));
+            var minPx = 64;
+            var maxPx = 210;
+
+            // Typical spec tables are 2 columns (label/value); keep them compact.
+            if (colCount === 2) {
+                minPx = c === 0 ? 170 : 240;
+                maxPx = c === 0 ? 300 : 460;
+            }
+
+            var widthPx = Math.max(minPx, Math.min(maxPx, basePx));
+            plannedWidths.push(widthPx);
+            totalPlannedWidth += widthPx;
+        }
+
+        // Prevent overly narrow rendering on 2-column technical data tables.
+        if (colCount === 2 && totalPlannedWidth < 620) {
+            var deficit = 620 - totalPlannedWidth;
+            plannedWidths[0] += Math.round(deficit * 0.35);
+            plannedWidths[1] += Math.round(deficit * 0.65);
+        }
+
+        for (var w = 0; w < plannedWidths.length; w++) {
+            var col = document.createElement('col');
+            var widthPx = plannedWidths[w];
+            col.style.width = widthPx + 'px';
+            colgroup.appendChild(col);
+        }
+        table.insertBefore(colgroup, table.firstChild);
+    }
+
     function renderSpecMatrixTable(matrix, table) {
         if (!matrix || !Array.isArray(matrix.headers) || matrix.headers.length === 0 || !table) return false;
 
@@ -902,7 +1272,11 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         var tbody = document.createElement('tbody');
 
         if (mode === 'grouped-pairs' && headers.length >= 2) {
-            var dataColCount = Math.max(1, headers.length - 1);
+            var leadColumns = parseInt(matrix.leadColumns, 10);
+            if (!isFinite(leadColumns) || leadColumns < 1) leadColumns = 1;
+            if (leadColumns >= headers.length) leadColumns = Math.max(1, headers.length - 1);
+
+            var dataColCount = Math.max(1, headers.length - leadColumns);
             var rawGroups = Array.isArray(matrix.groups) ? matrix.groups : [];
             var groups = rawGroups.map(function(g) {
                 if (g && typeof g === 'object' && !Array.isArray(g)) {
@@ -910,13 +1284,14 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                     return {
                         title: String(g.title || g.label || g.name || '').trim(),
                         span: (isFinite(spanObj) && spanObj > 0) ? spanObj : 1,
+                        rowSpan: !!g.rowSpan,
                     };
                 }
-                return { title: String(g || '').trim(), span: 2 };
+                return { title: String(g || '').trim(), span: 2, rowSpan: false };
             });
 
             if (groups.length === 0) {
-                groups = [{ title: 'Free Air', span: dataColCount }];
+                groups = [{ title: 'Free Air', span: dataColCount, rowSpan: false }];
             }
 
             var remainingCols = dataColCount;
@@ -940,26 +1315,38 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 groups[groups.length - 1].span += remainingCols;
             }
 
+            groups = groups.map(function(g, idx) {
+                var title = String(g.title || '').trim();
+                if (title === '') title = idx === 0 ? 'Free Air' : ('Group ' + (idx + 1));
+                return { title: title, span: g.span, rowSpan: g.span === 1 ? !!g.rowSpan : false };
+            });
+
             var topTr = document.createElement('tr');
 
-            var firstTop = document.createElement('th');
-            firstTop.rowSpan = 2;
-            firstTop.textContent = headers[0] || 'Model';
-            firstTop.style.padding = '12px 10px';
-            firstTop.style.textAlign = 'center';
-            firstTop.style.borderBottom = '1px solid rgba(162, 191, 235, 0.45)';
-            firstTop.style.borderRight = '1px solid rgba(162, 191, 235, 0.45)';
-            firstTop.style.background = 'linear-gradient(180deg,#2a5b9c 0%,#173865 100%)';
-            firstTop.style.color = '#fff';
-            firstTop.style.fontSize = '11px';
-            firstTop.style.fontWeight = '900';
-            topTr.appendChild(firstTop);
+            for (var lc = 0; lc < leadColumns; lc++) {
+                var leadTh = document.createElement('th');
+                leadTh.rowSpan = 2;
+                leadTh.textContent = headers[lc] || ('Column ' + (lc + 1));
+                leadTh.style.padding = '12px 10px';
+                leadTh.style.textAlign = 'center';
+                leadTh.style.borderBottom = '1px solid rgba(162, 191, 235, 0.45)';
+                leadTh.style.borderRight = '1px solid rgba(162, 191, 235, 0.45)';
+                leadTh.style.background = 'linear-gradient(180deg,#2a5b9c 0%,#173865 100%)';
+                leadTh.style.color = '#fff';
+                leadTh.style.fontSize = '11px';
+                leadTh.style.fontWeight = '900';
+                topTr.appendChild(leadTh);
+            }
 
             for (var g = 0; g < groups.length; g++) {
                 var gTh = document.createElement('th');
                 var span = parseInt(groups[g].span, 10);
                 if (!isFinite(span) || span < 1) span = 1;
-                gTh.colSpan = span;
+                if (span === 1 && groups[g].rowSpan) {
+                    gTh.rowSpan = 2;
+                } else {
+                    gTh.colSpan = span;
+                }
                 gTh.textContent = groups[g].title || (g === 0 ? 'Free Air' : ('Group ' + (g + 1)));
                 gTh.style.padding = '10px 8px';
                 gTh.style.textAlign = 'center';
@@ -975,35 +1362,52 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
             thead.appendChild(topTr);
 
             var subTr = document.createElement('tr');
-            for (var c = 1; c < headers.length; c++) {
-                var subTh = document.createElement('th');
-                subTh.textContent = headers[c] || ('Column ' + c);
-                subTh.style.padding = '8px 8px';
-                subTh.style.textAlign = 'center';
-                subTh.style.borderBottom = '1px solid rgba(162, 191, 235, 0.45)';
-                subTh.style.borderRight = '1px solid rgba(162, 191, 235, 0.45)';
-                subTh.style.background = 'linear-gradient(180deg,#234f8b 0%,#163154 100%)';
-                subTh.style.color = '#f3f4f6';
-                subTh.style.fontSize = '10px';
-                subTh.style.fontWeight = '800';
-                subTr.appendChild(subTh);
+            var subHeaderCount = 0;
+            var c = leadColumns;
+            for (var gi2 = 0; gi2 < groups.length; gi2++) {
+                var g2 = groups[gi2];
+                var g2span = parseInt(g2.span, 10);
+                if (!isFinite(g2span) || g2span < 1) g2span = 1;
+
+                if (g2span === 1 && g2.rowSpan) {
+                    c += 1;
+                    continue;
+                }
+
+                for (var gs = 0; gs < g2span; gs++) {
+                    var subTh = document.createElement('th');
+                    subTh.textContent = headers[c] || ('Column ' + (c + 1));
+                    subTh.style.padding = '8px 8px';
+                    subTh.style.textAlign = 'center';
+                    subTh.style.borderBottom = '1px solid rgba(162, 191, 235, 0.45)';
+                    subTh.style.borderRight = '1px solid rgba(162, 191, 235, 0.45)';
+                    subTh.style.background = 'linear-gradient(180deg,#234f8b 0%,#163154 100%)';
+                    subTh.style.color = '#f3f4f6';
+                    subTh.style.fontSize = '10px';
+                    subTh.style.fontWeight = '800';
+                    subTr.appendChild(subTh);
+                    subHeaderCount += 1;
+                    c += 1;
+                }
             }
-            thead.appendChild(subTr);
+            if (subHeaderCount > 0) {
+                thead.appendChild(subTr);
+            }
         } else {
             var headerTr = document.createElement('tr');
             headerTr.style.fontWeight = '700';
-            headerTr.style.backgroundColor = '#e8eeff';
+            headerTr.style.background = 'linear-gradient(180deg,#2f5f9d 0%,#1f4a82 55%,#183a67 100%)';
 
             for (var h = 0; h < headers.length; h++) {
                 var th = document.createElement('th');
                 th.textContent = headers[h] || ('Column ' + (h + 1));
                 th.style.padding = '12px 14px';
                 th.style.textAlign = 'left';
-                th.style.borderBottom = '2px solid #2B11DB';
+                th.style.borderBottom = '1px solid rgba(203,220,242,0.55)';
                 if (h < headers.length - 1) {
-                    th.style.borderRight = '1px solid #dbe2f1';
+                    th.style.borderRight = '1px solid rgba(203,220,242,0.45)';
                 }
-                th.style.color = '#2B11DB';
+                th.style.color = '#ffffff';
                 th.style.fontSize = '12px';
                 headerTr.appendChild(th);
             }
@@ -1011,6 +1415,27 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         }
 
         var renderedRows = 0;
+        var rowMergeStarts = {};
+        var rowMergeCovered = {};
+        if (Array.isArray(matrix.rowMerges)) {
+            matrix.rowMerges.forEach(function(m) {
+                var row = parseInt(m && m.row, 10);
+                var col = parseInt(m && m.col, 10);
+                var rowSpan = parseInt(m && m.rowSpan, 10);
+                if (!isFinite(row) || !isFinite(col) || !isFinite(rowSpan)) return;
+                if (row < 0 || col < 0 || rowSpan < 2) return;
+                if (col >= headers.length) return;
+                var maxSpan = rows.length - row;
+                if (maxSpan < 2) return;
+                if (rowSpan > maxSpan) rowSpan = maxSpan;
+
+                rowMergeStarts[row + ':' + col] = rowSpan;
+                for (var rr = row + 1; rr < row + rowSpan; rr++) {
+                    rowMergeCovered[rr + ':' + col] = true;
+                }
+            });
+        }
+
         for (var r = 0; r < rows.length; r++) {
             var row = Array.isArray(rows[r]) ? rows[r] : [];
             var safeRow = row.slice(0, headers.length);
@@ -1042,6 +1467,11 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
             if (renderedRows % 2 === 0) tr.style.backgroundColor = '#f8fafb';
 
             for (var col = 0; col < headers.length; ) {
+                if (rowMergeCovered[r + ':' + col]) {
+                    col++;
+                    continue;
+                }
+
                 if (mode === 'standard' && explicitCovered[col]) {
                     col++;
                     continue;
@@ -1065,7 +1495,16 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 }
 
                 var td = document.createElement('td');
+                td.setAttribute('data-col-index', String(col));
                 td.textContent = cellValue;
+
+                var rowSpan = parseInt(rowMergeStarts[r + ':' + col], 10);
+                if (isFinite(rowSpan) && rowSpan > 1) {
+                    td.rowSpan = rowSpan;
+                    td.style.verticalAlign = 'middle';
+                    td.style.textAlign = 'center';
+                }
+
                 if (span > 1) {
                     td.colSpan = span;
                     td.style.textAlign = 'center';
@@ -1078,6 +1517,18 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 }
                 td.style.fontSize = '13px';
                 td.style.whiteSpace = 'pre-line';
+                if (mode === 'grouped-pairs' && !td.style.textAlign) {
+                    td.style.textAlign = 'center';
+                }
+
+                // When col 0 is row-merged, the first visible cell in later rows can be col 1+.
+                // Override generic td:first-child styling so non-col0 cells keep normal body colors.
+                if (mode === 'grouped-pairs' && col !== 0) {
+                    td.style.fontWeight = '500';
+                    td.style.color = '#3a4559';
+                    td.style.backgroundColor = (renderedRows % 2 === 0) ? '#f8fafb' : '#ffffff';
+                }
+
                 if (col === 0) {
                     td.style.fontWeight = '700';
                     td.style.color = '#2d3748';
@@ -1092,6 +1543,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 
         table.appendChild(thead);
         table.appendChild(tbody);
+        applyBodyBasedAutoTableSizing(table);
 
         return headers.length > 0;
     }
@@ -1126,7 +1578,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         if (isMultiColumn) {
             var headerTr = document.createElement('tr');
             headerTr.style.fontWeight = '700';
-            headerTr.style.backgroundColor = '#e8eeff';
+            headerTr.style.background = 'linear-gradient(180deg,#2f5f9d 0%,#1f4a82 55%,#183a67 100%)';
 
             for (var h = 0; h < specsArr.length; h++) {
                 var hSpec = specsArr[h];
@@ -1136,9 +1588,9 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 th.textContent = getDisplayLabel(hSpec.label);
                 th.style.padding = '12px 14px';
                 th.style.textAlign = 'left';
-                th.style.borderBottom = '2px solid #2B11DB';
-                th.style.borderRight = '1px solid #dbe2f1';
-                th.style.color = '#2B11DB';
+                th.style.borderBottom = '1px solid rgba(203,220,242,0.55)';
+                th.style.borderRight = '1px solid rgba(203,220,242,0.45)';
+                th.style.color = '#ffffff';
                 th.style.fontSize = '12px';
                 headerTr.appendChild(th);
             }
@@ -1196,13 +1648,52 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         return true;
     }
 
+    function copyTableToClipboard(table) {
+        if (!table) return;
+
+        // Copy both HTML and plain text so pasting into spreadsheets/docs keeps table format when supported.
+        var htmlContent = '<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;">' + table.innerHTML + '</table>';
+        var plainText = table.innerText || table.textContent || '';
+
+        function fallbackCopyText(text) {
+            var temp = document.createElement('textarea');
+            temp.value = text;
+            temp.setAttribute('readonly', '');
+            temp.style.position = 'absolute';
+            temp.style.left = '-9999px';
+            document.body.appendChild(temp);
+            temp.select();
+            try {
+                document.execCommand('copy');
+                customAlert('Table copied.');
+            } catch (err) {
+                customAlert('Failed to copy table. Please try Ctrl+C.');
+            }
+            document.body.removeChild(temp);
+        }
+
+        if (navigator.clipboard && window.ClipboardItem) {
+            var item = new ClipboardItem({
+                'text/html': new Blob([htmlContent], { type: 'text/html' }),
+                'text/plain': new Blob([plainText], { type: 'text/plain' }),
+            });
+            navigator.clipboard.write([item]).then(function() {
+                customAlert('Table copied with formatting.');
+            }).catch(function() {
+                fallbackCopyText(plainText);
+            });
+            return;
+        }
+
+        fallbackCopyText(plainText);
+    }
+
     function renderSpecifications(specsValue, rawSpecsText) {
         var specsSection = document.getElementById('prodSpecsSection');
         var specsTextEl = document.getElementById('prodDetailSpecsText');
         var tableWrap = document.getElementById('prodSpecsTableWrap');
-        var table = document.getElementById('prodDetailSpecsTable');
 
-        if (!specsSection || !table) return false;
+        if (!specsSection || !tableWrap) return false;
 
         var specsArr = normalizeSpecsArray(specsValue);
         var payload = parseSpecificationPayload(rawSpecsText);
@@ -1218,15 +1709,75 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
             }
         }
 
-        var hasTable = false;
-        if (payload.matrix) {
-            hasTable = renderSpecsTable([], table, payload.matrix);
-        } else {
-            // Prefer the structured payload from `specifications` (admin save target).
-            // Fall back to legacy `specs` only when payload has no table data.
-            var tableRows = payload.table.length > 0 ? payload.table : specsArr;
-            hasTable = renderSpecsTable(tableRows, table, null);
+        tableWrap.innerHTML = '';
+
+        function appendRenderedTable(rows, matrix, tableHtml) {
+            var card = document.createElement('div');
+            card.className = 'prod-specs-table-card';
+            card.style.position = 'relative';
+
+            var table = document.createElement('table');
+            table.className = 'prod-detail-specs-table';
+            table.style.width = 'max-content';
+            table.style.minWidth = 'unset';
+            table.style.maxWidth = '100%';
+            table.style.tableLayout = 'fixed';
+            table.style.borderCollapse = 'collapse';
+            table.style.fontSize = '12px';
+
+            var htmlSource = String(tableHtml || '').trim();
+            if (htmlSource !== '') {
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(htmlSource, 'text/html');
+                var srcTable = doc.querySelector('table');
+                if (srcTable) {
+                    table.innerHTML = srcTable.innerHTML;
+                    applyBodyBasedAutoTableSizing(table);
+                    card.appendChild(table);
+                    tableWrap.appendChild(card);
+                    return true;
+                }
+            }
+
+            if (!renderSpecsTable(rows || [], table, matrix || null)) {
+                return false;
+            }
+
+            applyBodyBasedAutoTableSizing(table);
+            card.appendChild(table);
+            tableWrap.appendChild(card);
+            return true;
         }
+
+        var renderedTables = 0;
+        if (Array.isArray(payload.tables) && payload.tables.length > 0) {
+            payload.tables.forEach(function(entry) {
+                if (!entry) return;
+                var tableRows = Array.isArray(entry.table) ? entry.table : [];
+                var tableMatrix = entry.matrix && typeof entry.matrix === 'object' ? entry.matrix : null;
+                var tableHtml = String(entry.tableHtml || '').trim();
+                if (appendRenderedTable(tableRows, tableMatrix, tableHtml)) {
+                    renderedTables += 1;
+                }
+            });
+        }
+
+        if (renderedTables === 0) {
+            if (payload.matrix) {
+                if (appendRenderedTable([], payload.matrix, payload.tableHtml || '')) {
+                    renderedTables = 1;
+                }
+            } else {
+                // Prefer the structured payload from `specifications` (admin save target).
+                // Fall back to legacy `specs` only when payload has no table data.
+                var tableRows = payload.table.length > 0 ? payload.table : specsArr;
+                if (appendRenderedTable(tableRows, null, payload.tableHtml || '')) {
+                    renderedTables = 1;
+                }
+            }
+        }
+
+        var hasTable = renderedTables > 0;
 
         if (tableWrap) {
             tableWrap.style.display = hasTable ? 'block' : 'none';
@@ -1448,10 +1999,19 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 }
                 
                 // Update specifications (plain text + optional table)
-                var specsToRender = (Array.isArray(product.specs) && product.specs.length > 0)
-                    ? product.specs
+                var specsSource = (product && product.specs !== undefined) ? product.specs : null;
+                var specsToRender = (Array.isArray(specsSource) || (specsSource && typeof specsSource === 'object'))
+                    ? specsSource
                     : (fallbackSpecs || []);
-                var specsTextToRender = product.specifications || fallbackSpecsText || '';
+
+                var specsTextToRender = '';
+                if (product && typeof product.specifications === 'string' && product.specifications.trim() !== '') {
+                    specsTextToRender = product.specifications;
+                } else if (typeof specsSource === 'string' && specsSource.trim() !== '') {
+                    specsTextToRender = specsSource;
+                } else {
+                    specsTextToRender = fallbackSpecsText || '';
+                }
                 renderSpecifications(specsToRender, specsTextToRender);
                 
                 // Only enrich images from JSON if the card provided none (prevents
@@ -1718,6 +2278,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                                     syntheticCard.setAttribute('data-product-name', product.product_name || product.name || '');
                                     syntheticCard.setAttribute('data-images', JSON.stringify(product.images || []));
                                     syntheticCard.setAttribute('data-specs', JSON.stringify(product.specs || []));
+                                    syntheticCard.setAttribute('data-specifications', String(product.specifications || ''));
                                     openProductModal(syntheticCard);
                                 }
                             };
@@ -1794,6 +2355,10 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         // Extra fields from Supabase products
         var description    = getCardDescriptionValue(card);
         var specsText      = card.getAttribute('data-specifications') || '';
+        if ((!specsText || !String(specsText).trim()) && typeof specs === 'string') {
+            specsText = specs;
+            specs = [];
+        }
         var price          = card.getAttribute('data-price')          || '';
         var productName    = firstNonEmptyText([
             card.getAttribute('data-product-name'),

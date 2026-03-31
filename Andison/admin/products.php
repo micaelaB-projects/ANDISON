@@ -17,6 +17,7 @@ if ($selectedBrand === '' || !isset($brands[$selectedBrand])) {
 }
 
 $allCategories = andison_get_categories();
+$maxProductImages = 8;
 
 function andison_env_flag(string $key, bool $default = false): bool
 {
@@ -125,22 +126,23 @@ function andison_normalize_category_assignment(array $allCategories, string $cat
 }
 
 /**
- * Handle up to 5 product images (image_file_0 … image_file_4).
+ * Handle up to N product images (image_file_0 … image_file_(N-1)).
  * existing_images POST param is a JSON array of current URLs to keep per slot.
  * Returns array of image URLs (empty slots are omitted).
  */
 function andison_handle_multi_image_upload(): array
 {
+    global $maxProductImages;
     $existingJson = isset($_POST['existing_images']) ? trim((string)$_POST['existing_images']) : '[]';
     $existing     = json_decode($existingJson, true);
     if (!is_array($existing)) $existing = [];
-    while (count($existing) < 5) $existing[] = '';
+    while (count($existing) < $maxProductImages) $existing[] = '';
 
     $allowed_ext  = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'];
     $allowed_mime = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
     $result  = [];
 
-    for ($i = 0; $i < 5; $i++) {
+    for ($i = 0; $i < $maxProductImages; $i++) {
         $fieldName   = 'image_file_' . $i;
         $existingUrl = trim((string)($existing[$i] ?? ''));
 
@@ -528,6 +530,8 @@ andison_admin_header('Products', 'products');
 <style>
 .prod-page-header { background:linear-gradient(135deg,#2B11DB 0%,#3d22ef 60%,#4f35e8 100%);border-radius:14px;padding:20px 24px;color:white;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap; }
 .prod-brand-select { background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.3);color:white;border-radius:8px;padding:9px 36px 9px 14px;font-size:13px;font-weight:600;appearance:none;-webkit-appearance:none;cursor:pointer;min-width:260px;backdrop-filter:blur(4px);transition:border-color 0.2s; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='white' d='M6 9L1 4h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center; }
+.prod-brand-select,
+.prod-brand-select option { text-transform:uppercase; }
 .prod-brand-select option { color:#111;background:white; }
 .prod-brand-select:focus { outline:none;border-color:rgba(255,255,255,0.8); }
 .prod-load-btn { background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.4);color:white;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap; }
@@ -898,10 +902,16 @@ andison_admin_header('Products', 'products');
                                 <option value="standard">Spreadsheet Dark Grid (Excel-like)</option>
                                 <option value="grouped-pairs">Grouped Header (like image)</option>
                             </select>
+                            <button type="button" onclick="convertSpecificationsTextToTable()" style="display:inline-flex;align-items:center;gap:6px;background:#eff6ff;border:1px solid #93c5fd;color:#1d4ed8;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
+                                <i class="bi bi-arrow-repeat"></i> Convert Text to Table
+                            </button>
+                            <button type="button" onclick="applyAirflowSpecTemplate()" style="display:inline-flex;align-items:center;gap:6px;background:#fefce8;border:1px solid #fde68a;color:#854d0e;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
+                                <i class="bi bi-grid-3x3-gap"></i> Use Airflow Template
+                            </button>
                         </div>
                         <div id="specGroupHeaderWrap" style="display:none;margin-bottom:8px;padding:8px;border:1px solid #dbeafe;border-radius:8px;background:#eff6ff;"></div>
                         <div id="specTableBuilderWrap" style="overflow:auto;border:1px solid #e5e7eb;border-radius:10px;background:#fff;">
-                            <table id="specTableBuilder" style="width:100%;border-collapse:separate;border-spacing:0;min-width:420px;">
+                            <table id="specTableBuilder" style="width:max-content;border-collapse:separate;border-spacing:0;min-width:100%;table-layout:fixed;">
                                 <thead id="specTableHead"></thead>
                                 <tbody id="specTableBody"></tbody>
                             </table>
@@ -917,25 +927,6 @@ andison_admin_header('Products', 'products');
                                 <i class="bi bi-clipboard"></i> Paste Excel
                             </button>
                         </div>
-                        <div id="specMergeControls" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;padding:8px;border:1px solid #dbeafe;border-radius:8px;background:#f8fbff;">
-                            <span style="font-size:11px;font-weight:700;color:#1d4ed8;">Merge</span>
-                            <label style="font-size:11px;color:#374151;display:flex;align-items:center;gap:4px;">Row
-                                <input id="specMergeRowInput" type="number" min="1" value="1" style="width:64px;padding:5px 6px;border:1px solid #bfdbfe;border-radius:6px;font-size:11px;">
-                            </label>
-                            <label style="font-size:11px;color:#374151;display:flex;align-items:center;gap:4px;">Start Col
-                                <input id="specMergeColInput" type="number" min="2" value="2" style="width:64px;padding:5px 6px;border:1px solid #bfdbfe;border-radius:6px;font-size:11px;">
-                            </label>
-                            <label style="font-size:11px;color:#374151;display:flex;align-items:center;gap:4px;">Span
-                                <input id="specMergeSpanInput" type="number" min="2" value="2" style="width:64px;padding:5px 6px;border:1px solid #bfdbfe;border-radius:6px;font-size:11px;">
-                            </label>
-                            <button type="button" onclick="applySpecColumnMerge()" style="display:inline-flex;align-items:center;gap:6px;background:#e0f2fe;border:1px solid #7dd3fc;color:#075985;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
-                                <i class="bi bi-layout-text-window-reverse"></i> Merge Cells
-                            </button>
-                            <button type="button" onclick="clearSpecColumnMergeAtRow()" style="display:inline-flex;align-items:center;gap:6px;background:#fff1f2;border:1px solid #fecdd3;color:#be123c;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
-                                <i class="bi bi-eraser"></i> Clear Row Merge
-                            </button>
-                        </div>
-                        <div id="specMergeSummary" style="font-size:10px;color:#6b7280;margin-top:6px;"></div>
                         <div id="specTableHelpText" style="font-size:11px;color:#9ca3af;margin-top:6px;"><i class="bi bi-info-circle"></i> Excel-like mode: use Tab/Enter/Arrow Up/Arrow Down and paste multi-cell data from Excel.</div>
                     </div>
 
@@ -960,11 +951,11 @@ andison_admin_header('Products', 'products');
 
                 <!-- Image Section -->
                 <div style="margin-bottom:12px;">
-                    <h3 style="font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;"><i class="bi bi-images"></i> Product Images <span style="font-size:10px;font-weight:500;color:#9ca3af;text-transform:none;letter-spacing:0;">Up to 5 — first slot is the main image</span></h3>
+                    <h3 style="font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;"><i class="bi bi-images"></i> Product Images <span style="font-size:10px;font-weight:500;color:#9ca3af;text-transform:none;letter-spacing:0;">Up to <?php echo (int)$maxProductImages; ?> — first slot is the main image</span></h3>
 
-                    <!-- 5-slot image grid -->
+                    <!-- Multi-slot image grid -->
                     <input type="hidden" name="existing_images" id="existingImagesInput" value="[]">
-                    <div id="imageSlotGrid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:6px;"></div>
+                    <div id="imageSlotGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:6px;"></div>
 
                     <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:4px;">
                         <div style="font-size:11px;color:#9ca3af;"><i class="bi bi-info-circle"></i> Click a slot to upload · click × to remove</div>
@@ -972,14 +963,14 @@ andison_admin_header('Products', 'products');
                             <i class="bi bi-images"></i> Select Multiple Images
                         </button>
                     </div>
-                    <div style="font-size:10px;color:#9ca3af;margin-bottom:6px;">Tip: choose multiple files once, and they will auto-fill the 5 slots in order.</div>
+                    <div style="font-size:10px;color:#9ca3af;margin-bottom:6px;">Tip: choose multiple files once, and they will auto-fill the <?php echo (int)$maxProductImages; ?> slots in order.</div>
 
                     <!-- Bulk selector for efficient multi-upload -->
                     <input type="file" id="bulkImageFiles" accept="image/*" multiple style="display:none;" onchange="handleBulkImageSelect(this)">
 
                     <!-- Hidden file inputs, one per slot -->
                     <div style="display:none;">
-                        <?php for ($s = 0; $s < 5; $s++): ?>
+                        <?php for ($s = 0; $s < $maxProductImages; $s++): ?>
                         <input type="file" id="imageFile_<?php echo $s; ?>" name="image_file_<?php echo $s; ?>" accept="image/*" onchange="previewImageSlot(this, <?php echo $s; ?>)">
                         <?php endfor; ?>
                     </div>
@@ -1671,6 +1662,7 @@ function parseSpecificationsForEditor(rawSpecifications) {
         text: '',
         table: [],
         matrix: null,
+        sourceHtml: '',
     };
 
     if (!source) return result;
@@ -1678,6 +1670,43 @@ function parseSpecificationsForEditor(rawSpecifications) {
     try {
         var parsed = JSON.parse(source);
         if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+            var hasTables = Array.isArray(parsed.tables);
+            if (parsed.format === 'andison_specs_v3' && hasTables && parsed.tables.length > 0) {
+                result.text = String(parsed.text || '').trim();
+                var first = parsed.tables[0] || {};
+                result.sourceHtml = String(first.tableHtml || '').trim();
+                var matrixRawV3 = first.tableMatrix && typeof first.tableMatrix === 'object' ? first.tableMatrix : null;
+                if (matrixRawV3) {
+                    var modeV3 = matrixRawV3.mode === 'grouped-pairs' ? 'grouped-pairs' : 'standard';
+                    var headersV3 = Array.isArray(matrixRawV3.headers)
+                        ? matrixRawV3.headers.map(function(h) { return String(h || '').trim(); }).filter(function(h) { return h !== ''; })
+                        : [];
+
+                    if (headersV3.length > 0) {
+                        var leadV3 = Math.max(1, parseInt(matrixRawV3.leadColumns, 10) || 1);
+                        if (leadV3 >= headersV3.length) leadV3 = Math.max(1, headersV3.length - 1);
+                        var rowsV3 = normalizeSpecMatrixRows(matrixRawV3.rows || [], headersV3.length);
+                        if (rowsV3.length === 0) rowsV3 = [new Array(headersV3.length).fill('')];
+                        result.matrix = {
+                            mode: modeV3,
+                            leadColumns: leadV3,
+                            headers: headersV3,
+                            rows: rowsV3,
+                            groups: modeV3 === 'grouped-pairs'
+                                ? normalizeGroupedGroups(matrixRawV3.groups || [], Math.max(1, headersV3.length - leadV3))
+                                : [],
+                            merges: modeV3 === 'standard' && Array.isArray(matrixRawV3.merges)
+                                ? matrixRawV3.merges
+                                : [],
+                            rowMerges: modeV3 === 'grouped-pairs' && Array.isArray(matrixRawV3.rowMerges)
+                                ? matrixRawV3.rowMerges
+                                : [],
+                        };
+                        return result;
+                    }
+                }
+            }
+
             var hasMatrix = parsed.tableMatrix && typeof parsed.tableMatrix === 'object';
             var looksLikeV2 = parsed.format === 'andison_specs_v2' || hasMatrix;
 
@@ -1686,6 +1715,8 @@ function parseSpecificationsForEditor(rawSpecifications) {
 
                 var matrixRaw = parsed.tableMatrix || {};
                 var mode = matrixRaw.mode === 'grouped-pairs' ? 'grouped-pairs' : 'standard';
+                var leadColumns = parseInt(matrixRaw.leadColumns, 10);
+                if (!isFinite(leadColumns) || leadColumns < 1) leadColumns = 1;
                 var headers = Array.isArray(matrixRaw.headers)
                     ? matrixRaw.headers.map(function(h) { return String(h || '').trim(); }).filter(function(h) { return h !== ''; })
                     : [];
@@ -1695,15 +1726,19 @@ function parseSpecificationsForEditor(rawSpecifications) {
                         headers = getDefaultGroupedHeaders();
                     }
 
-                    var groups = normalizeGroupedGroups(matrixRaw.groups || [], Math.max(1, headers.length - 1));
-                    var targetCols = 1 + getGroupedDataColumnCount(groups);
+                    if (leadColumns >= headers.length) {
+                        leadColumns = Math.max(1, headers.length - 1);
+                    }
+
+                    var groups = normalizeGroupedGroups(matrixRaw.groups || [], Math.max(1, headers.length - leadColumns));
+                    var targetCols = leadColumns + getGroupedDataColumnCount(groups);
                     headers = headers.slice(0, targetCols);
                     while (headers.length < targetCols) {
                         headers.push(getDefaultGroupedSubHeader(headers.length));
                     }
 
                     headers[0] = String(headers[0] || 'Model').trim() || 'Model';
-                    for (var hc = 1; hc < headers.length; hc++) {
+                    for (var hc = leadColumns; hc < headers.length; hc++) {
                         if (String(headers[hc] || '').trim() === '') {
                             headers[hc] = getDefaultGroupedSubHeader(hc);
                         }
@@ -1714,9 +1749,11 @@ function parseSpecificationsForEditor(rawSpecifications) {
 
                     result.matrix = {
                         mode: mode,
+                        leadColumns: leadColumns,
                         headers: headers,
                         rows: groupedRows,
                         groups: groups,
+                        rowMerges: Array.isArray(matrixRaw.rowMerges) ? matrixRaw.rowMerges : [],
                     };
                     return result;
                 }
@@ -1724,7 +1761,19 @@ function parseSpecificationsForEditor(rawSpecifications) {
                 if (headers.length > 0) {
                     var rows = normalizeSpecMatrixRows(matrixRaw.rows || [], headers.length);
                     if (rows.length === 0) rows = [new Array(headers.length).fill('')];
-                    var merges = normalizeSpecTableMerges(matrixRaw.merges || [], rows.length, headers.length);
+
+                    var merges = (Array.isArray(matrixRaw.merges) ? matrixRaw.merges : []).map(function(m) {
+                        var row = parseInt(m && m.row, 10);
+                        var col = parseInt(m && m.col, 10);
+                        var span = parseInt(m && m.span, 10);
+                        if (!isFinite(row) || row < 0) return null;
+                        if (!isFinite(col) || col < 1 || col >= headers.length) return null;
+                        if (!isFinite(span) || span < 2) return null;
+                        var maxSpan = headers.length - col;
+                        if (maxSpan < 2) return null;
+                        if (span > maxSpan) span = maxSpan;
+                        return { row: row, col: col, span: span };
+                    }).filter(function(m) { return !!m; });
 
                     result.matrix = {
                         mode: 'standard',
@@ -1780,7 +1829,7 @@ function specTableRowsToMatrix(tableRows) {
 
     rows.forEach(function(item, idx) {
         var label = String(item.label || '').trim();
-        headers.push(label);
+        headers.push(label !== '' ? label : ('Column ' + (idx + 1)));
 
         var colValues = String(item.value || '')
             .split('|')
@@ -1835,8 +1884,7 @@ function matrixToSpecTableRows(headers, rows) {
             continue;
         }
 
-        // Preserve intentionally blank headers from the editor.
-        var finalLabel = defaultHeader ? '' : header;
+        var finalLabel = header !== '' ? header : ('Column ' + (c + 1));
         tableRows.push({
             label: finalLabel,
             value: colValues.join('|'),
@@ -1855,111 +1903,18 @@ var _specTableHeaders = ['Parameter', 'Value'];
 var _specTableRows = [['', '']];
 var _specTableGroups = [];
 var _specTableMerges = [];
+var _specTableSourceHtml = '';
+var _specTableLeadColumns = 1;
+var _specTableRowMerges = [];
+var _specTableHasUserInput = false;  // Track if user has actively used the table builder
 
-function normalizeSpecTableMerges(merges, rowCount, colCount) {
-    var maxRows = Math.max(1, parseInt(rowCount, 10) || 1);
-    var maxCols = Math.max(1, parseInt(colCount, 10) || 1);
-    var src = Array.isArray(merges) ? merges : [];
-
-    var normalized = src.map(function(m) {
-        var row = parseInt(m && m.row, 10);
-        var col = parseInt(m && m.col, 10);
-        var span = parseInt(m && m.span, 10);
-        if (!isFinite(row) || row < 0 || row >= maxRows) return null;
-        if (!isFinite(col) || col < 1 || col >= maxCols) return null;
-        if (!isFinite(span) || span < 2) return null;
-        var maxSpan = maxCols - col;
-        if (maxSpan < 2) return null;
-        if (span > maxSpan) span = maxSpan;
-        return { row: row, col: col, span: span };
-    }).filter(function(m) { return !!m; });
-
-    normalized.sort(function(a, b) {
-        if (a.row !== b.row) return a.row - b.row;
-        return a.col - b.col;
-    });
-
-    var out = [];
-    var rowLastEnd = {};
-    for (var i = 0; i < normalized.length; i++) {
-        var item = normalized[i];
-        var end = item.col + item.span - 1;
-        var lastEnd = rowLastEnd[item.row];
-        if (typeof lastEnd === 'number' && item.col <= lastEnd) continue;
-        out.push(item);
-        rowLastEnd[item.row] = end;
-    }
-
-    return out;
-}
-
-function updateSpecMergeControlsUi() {
-    var wrap = document.getElementById('specMergeControls');
-    var summary = document.getElementById('specMergeSummary');
-    var rowInput = document.getElementById('specMergeRowInput');
-    var colInput = document.getElementById('specMergeColInput');
-    var spanInput = document.getElementById('specMergeSpanInput');
-    if (!wrap || !summary || !rowInput || !colInput || !spanInput) return;
-
-    var isStandard = _specTableMode === 'standard';
-    wrap.style.display = isStandard ? 'flex' : 'none';
-    summary.style.display = isStandard ? 'block' : 'none';
-    if (!isStandard) return;
-
-    var maxRows = Math.max(1, _specTableRows.length);
-    var maxCols = Math.max(2, _specTableHeaders.length);
-    rowInput.max = String(maxRows);
-    colInput.max = String(Math.max(2, maxCols - 1));
-    spanInput.max = String(Math.max(2, maxCols - 1));
-
-    _specTableMerges = normalizeSpecTableMerges(_specTableMerges, maxRows, maxCols);
-    if (_specTableMerges.length === 0) {
-        summary.innerHTML = '<i class="bi bi-info-circle"></i> No manual merges set.';
-    } else {
-        summary.innerHTML = '<i class="bi bi-layout-text-window-reverse"></i> ' + _specTableMerges.map(function(m) {
-            return 'R' + (m.row + 1) + ' C' + (m.col + 1) + ' x' + m.span;
-        }).join(' | ');
-    }
-}
-
-function applySpecColumnMerge() {
-    if (_specTableMode !== 'standard') return;
-
-    var rowInput = document.getElementById('specMergeRowInput');
-    var colInput = document.getElementById('specMergeColInput');
-    var spanInput = document.getElementById('specMergeSpanInput');
-    if (!rowInput || !colInput || !spanInput) return;
-
-    var row = (parseInt(rowInput.value, 10) || 1) - 1;
-    var col = (parseInt(colInput.value, 10) || 2) - 1;
-    var span = parseInt(spanInput.value, 10) || 2;
-
-    _specTableMerges = normalizeSpecTableMerges(_specTableMerges, _specTableRows.length, _specTableHeaders.length);
-
-    var start = col;
-    var end = col + span - 1;
-    _specTableMerges = _specTableMerges.filter(function(m) {
-        if (m.row !== row) return true;
-        var mStart = m.col;
-        var mEnd = m.col + m.span - 1;
-        return mEnd < start || mStart > end;
-    });
-
-    _specTableMerges.push({ row: row, col: col, span: span });
-    _specTableMerges = normalizeSpecTableMerges(_specTableMerges, _specTableRows.length, _specTableHeaders.length);
-
-    renderSpecTableBuilder();
-    syncSpecificationsHiddenField();
-}
-
-function clearSpecColumnMergeAtRow() {
-    if (_specTableMode !== 'standard') return;
-    var rowInput = document.getElementById('specMergeRowInput');
-    if (!rowInput) return;
-    var row = (parseInt(rowInput.value, 10) || 1) - 1;
-    _specTableMerges = _specTableMerges.filter(function(m) { return m.row !== row; });
-    renderSpecTableBuilder();
-    syncSpecificationsHiddenField();
+function escapeSpecHtml(str) {
+    return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
 }
 
 function getDefaultGroupedHeaders() {
@@ -1967,7 +1922,7 @@ function getDefaultGroupedHeaders() {
 }
 
 function getDefaultGroupedGroups() {
-    return [{ title: 'Free Air', span: 2 }];
+    return [{ title: 'Free Air', span: 2, rowSpan: false }];
 }
 
 function getDefaultGroupedSubHeader(colIdx) {
@@ -1985,11 +1940,13 @@ function normalizeGroupedGroups(groups, dataColumnCount) {
             return {
                 title: String(g.title || g.label || g.name || '').trim(),
                 span: (isFinite(spanObj) && spanObj > 0) ? spanObj : 1,
+                rowSpan: !!g.rowSpan,
             };
         }
         return {
             title: String(g || '').trim(),
             span: 2,
+            rowSpan: false,
         };
     });
 
@@ -2024,8 +1981,57 @@ function normalizeGroupedGroups(groups, dataColumnCount) {
         if (title === '') {
             title = idx === 0 ? 'Free Air' : ('Group ' + (idx + 1));
         }
-        return { title: title, span: g.span };
+        return { title: title, span: g.span, rowSpan: g.span === 1 ? !!g.rowSpan : false };
     });
+}
+
+function getGroupedLeadColumnCount() {
+    var lead = parseInt(_specTableLeadColumns, 10);
+    if (!isFinite(lead) || lead < 1) lead = 1;
+    if (Array.isArray(_specTableHeaders) && _specTableHeaders.length > 0 && lead >= _specTableHeaders.length) {
+        lead = Math.max(1, _specTableHeaders.length - 1);
+    }
+    return lead;
+}
+
+function normalizeSpecRowMerges(rowMerges, totalRows, totalCols) {
+    var maxRows = Math.max(0, parseInt(totalRows, 10) || 0);
+    var maxCols = Math.max(0, parseInt(totalCols, 10) || 0);
+
+    var parsed = (Array.isArray(rowMerges) ? rowMerges : []).map(function(m) {
+        var row = parseInt(m && m.row, 10);
+        var col = parseInt(m && m.col, 10);
+        var rowSpan = parseInt(m && m.rowSpan, 10);
+        if (!isFinite(row) || row < 0 || row >= maxRows) return null;
+        if (!isFinite(col) || col < 0 || col >= maxCols) return null;
+        if (!isFinite(rowSpan) || rowSpan < 2) return null;
+        var maxSpan = maxRows - row;
+        if (maxSpan < 2) return null;
+        if (rowSpan > maxSpan) rowSpan = maxSpan;
+        return { row: row, col: col, rowSpan: rowSpan };
+    }).filter(function(m) { return !!m; });
+
+    parsed.sort(function(a, b) {
+        if (a.col !== b.col) return a.col - b.col;
+        return a.row - b.row;
+    });
+
+    var out = [];
+    var lastByCol = {};
+    for (var i = 0; i < parsed.length; i++) {
+        var cur = parsed[i];
+        var prev = lastByCol[cur.col];
+        if (prev) {
+            var prevEnd = prev.row + prev.rowSpan - 1;
+            if (cur.row <= prevEnd) {
+                continue;
+            }
+        }
+        out.push(cur);
+        lastByCol[cur.col] = cur;
+    }
+
+    return out;
 }
 
 function getGroupedDataColumnCount(groups) {
@@ -2039,7 +2045,7 @@ function getGroupedDataColumnCount(groups) {
 
 function getGroupedStartColumn(groupIdx, groups) {
     var gs = Array.isArray(groups) ? groups : _specTableGroups;
-    var col = 1;
+    var col = getGroupedLeadColumnCount();
     for (var i = 0; i < groupIdx; i++) {
         var span = parseInt(gs[i] && gs[i].span, 10);
         if (!isFinite(span) || span < 1) span = 1;
@@ -2049,7 +2055,10 @@ function getGroupedStartColumn(groupIdx, groups) {
 }
 
 function findGroupedIndexByColumn(colIdx) {
-    var cursor = 1;
+    var lead = getGroupedLeadColumnCount();
+    if (colIdx < lead) return -1;
+
+    var cursor = lead;
     for (var i = 0; i < _specTableGroups.length; i++) {
         var span = parseInt(_specTableGroups[i] && _specTableGroups[i].span, 10);
         if (!isFinite(span) || span < 1) span = 1;
@@ -2072,26 +2081,44 @@ function normalizeSpecTableState() {
 
     if (!Array.isArray(_specTableHeaders)) _specTableHeaders = [];
     if (!Array.isArray(_specTableRows)) _specTableRows = [];
+    if (!Array.isArray(_specTableMerges)) _specTableMerges = [];
+    if (!Array.isArray(_specTableRowMerges)) _specTableRowMerges = [];
+    _specTableLeadColumns = parseInt(_specTableLeadColumns, 10);
+    if (!isFinite(_specTableLeadColumns) || _specTableLeadColumns < 1) _specTableLeadColumns = 1;
 
     if (_specTableMode === 'grouped-pairs') {
-        _specTableMerges = [];
         if (_specTableHeaders.length === 0) {
             _specTableHeaders = getDefaultGroupedHeaders();
         }
 
+        if (_specTableLeadColumns >= _specTableHeaders.length) {
+            _specTableLeadColumns = Math.max(1, _specTableHeaders.length - 1);
+        }
+
         _specTableHeaders[0] = String(_specTableHeaders[0] || 'Model').trim() || 'Model';
 
-        var dataCols = Math.max(1, _specTableHeaders.length - 1);
+        var leadCols = getGroupedLeadColumnCount();
+        var dataCols = Math.max(1, _specTableHeaders.length - leadCols);
         _specTableGroups = normalizeGroupedGroups(_specTableGroups, dataCols);
 
         var normalizedDataCols = getGroupedDataColumnCount(_specTableGroups);
-        var targetHeaders = 1 + normalizedDataCols;
+        var targetHeaders = leadCols + normalizedDataCols;
         _specTableHeaders = _specTableHeaders.slice(0, targetHeaders);
         while (_specTableHeaders.length < targetHeaders) {
-            _specTableHeaders.push(getDefaultGroupedSubHeader(_specTableHeaders.length));
+            if (_specTableHeaders.length < leadCols) {
+                _specTableHeaders.push('Column ' + (_specTableHeaders.length + 1));
+            } else {
+                _specTableHeaders.push(getDefaultGroupedSubHeader(_specTableHeaders.length));
+            }
         }
 
-        for (var hc = 1; hc < _specTableHeaders.length; hc++) {
+        for (var lh = 0; lh < leadCols; lh++) {
+            if (String(_specTableHeaders[lh] || '').trim() === '') {
+                _specTableHeaders[lh] = lh === 0 ? 'Model' : ('Column ' + (lh + 1));
+            }
+        }
+
+        for (var hc = leadCols; hc < _specTableHeaders.length; hc++) {
             var val = String(_specTableHeaders[hc] || '').trim();
             if (val === '') {
                 _specTableHeaders[hc] = getDefaultGroupedSubHeader(hc);
@@ -2100,6 +2127,22 @@ function normalizeSpecTableState() {
     } else {
         if (_specTableHeaders.length === 0) _specTableHeaders = ['Parameter', 'Value'];
         _specTableGroups = [];
+        _specTableRowMerges = [];
+
+        var maxMergeRow = Math.max(0, _specTableRows.length - 1);
+        var maxMergeCol = Math.max(0, _specTableHeaders.length - 1);
+        _specTableMerges = _specTableMerges.map(function(m) {
+            var row = parseInt(m && m.row, 10);
+            var col = parseInt(m && m.col, 10);
+            var span = parseInt(m && m.span, 10);
+            if (!isFinite(row) || row < 0 || row > maxMergeRow) return null;
+            if (!isFinite(col) || col < 1 || col > maxMergeCol) return null;
+            if (!isFinite(span) || span < 2) return null;
+            var maxSpan = _specTableHeaders.length - col;
+            if (maxSpan < 2) return null;
+            if (span > maxSpan) span = maxSpan;
+            return { row: row, col: col, span: span };
+        }).filter(function(m) { return !!m; });
     }
 
     if (_specTableRows.length === 0) {
@@ -2112,7 +2155,7 @@ function normalizeSpecTableState() {
         return next;
     });
 
-    _specTableMerges = normalizeSpecTableMerges(_specTableMerges, _specTableRows.length, _specTableHeaders.length);
+    _specTableRowMerges = normalizeSpecRowMerges(_specTableRowMerges, _specTableRows.length, _specTableHeaders.length);
 }
 
 function getSpecColumnLabel(colIdx) {
@@ -2152,6 +2195,13 @@ function focusSpecTableCell(rowIdx, colIdx) {
     return true;
 }
 
+function autoResizeSpecCell(el) {
+    if (!el) return;
+    el.style.height = 'auto';
+    var nextHeight = Math.max(34, el.scrollHeight);
+    el.style.height = nextHeight + 'px';
+}
+
 function ensureSpecTableGridSize(minRows, minCols) {
     normalizeSpecTableState();
 
@@ -2173,8 +2223,357 @@ function ensureSpecTableGridSize(minRows, minCols) {
     while (_specTableRows.length < targetRows) {
         _specTableRows.push(new Array(_specTableHeaders.length).fill(''));
     }
+}
 
-    _specTableMerges = normalizeSpecTableMerges(_specTableMerges, _specTableRows.length, _specTableHeaders.length);
+function getNormalizedCellText(raw) {
+    return String(raw || '')
+        .replace(/\u00a0/g, ' ')
+        .replace(/\r\n?/g, '\n')
+        .replace(/[\u200B-\u200D\uFEFF]/g, '')
+        .split('\n')
+        .map(function(line) { return line.trim(); })
+        .join('\n')
+        .trim();
+}
+
+function parseClipboardHtmlTable(rawHtml) {
+    var html = String(rawHtml || '').trim();
+    if (html === '') return null;
+
+    var parser = new DOMParser();
+    var doc = parser.parseFromString(html, 'text/html');
+    var table = doc.querySelector('table');
+    if (!table) return null;
+
+    var trNodes = Array.prototype.slice.call(table.querySelectorAll('tr'));
+    if (trNodes.length === 0) return null;
+
+    function buildCanonicalTableHtml(sourceGrid, headerRows) {
+        var out = ['<table>'];
+        var totalRows = sourceGrid.length;
+        var headRows = Math.max(0, Math.min(totalRows, parseInt(headerRows, 10) || 0));
+
+        if (headRows > 0) {
+            out.push('<thead>');
+            for (var hr = 0; hr < headRows; hr++) {
+                out.push('<tr>');
+                var hrow = sourceGrid[hr] || [];
+                for (var hc = 0; hc < hrow.length; hc++) {
+                    var hslot = hrow[hc];
+                    if (!hslot || !hslot.origin || !hslot.ref) continue;
+                    var hcspan = Math.max(1, parseInt(hslot.ref.colSpan, 10) || 1);
+                    var hrspan = Math.max(1, parseInt(hslot.ref.rowSpan, 10) || 1);
+                    out.push('<th');
+                    if (hcspan > 1) out.push(' colspan="' + hcspan + '"');
+                    if (hrspan > 1) out.push(' rowspan="' + hrspan + '"');
+                    out.push('>' + escapeSpecHtml(hslot.ref.text) + '</th>');
+                }
+                out.push('</tr>');
+            }
+            out.push('</thead>');
+        }
+
+        out.push('<tbody>');
+        for (var br = headRows; br < totalRows; br++) {
+            out.push('<tr>');
+            var brow = sourceGrid[br] || [];
+            for (var bc = 0; bc < brow.length; bc++) {
+                var bslot = brow[bc];
+                if (!bslot || !bslot.origin || !bslot.ref) continue;
+                var bcspan = Math.max(1, parseInt(bslot.ref.colSpan, 10) || 1);
+                var brspan = Math.max(1, parseInt(bslot.ref.rowSpan, 10) || 1);
+                out.push('<td');
+                if (bcspan > 1) out.push(' colspan="' + bcspan + '"');
+                if (brspan > 1) out.push(' rowspan="' + brspan + '"');
+                out.push('>' + escapeSpecHtml(bslot.ref.text) + '</td>');
+            }
+            out.push('</tr>');
+        }
+        out.push('</tbody></table>');
+        return out.join('');
+    }
+
+    var grid = [];
+    var maxCols = 0;
+
+    for (var r = 0; r < trNodes.length; r++) {
+        if (!grid[r]) grid[r] = [];
+
+        var tr = trNodes[r];
+        var cells = Array.prototype.slice.call(tr.children).filter(function(el) {
+            return el && (el.tagName === 'TH' || el.tagName === 'TD');
+        });
+
+        var colCursor = 0;
+        for (var ci = 0; ci < cells.length; ci++) {
+            while (grid[r][colCursor]) colCursor++;
+
+            var cellEl = cells[ci];
+            var colSpan = parseInt(cellEl.getAttribute('colspan') || '1', 10);
+            var rowSpan = parseInt(cellEl.getAttribute('rowspan') || '1', 10);
+            if (!isFinite(colSpan) || colSpan < 1) colSpan = 1;
+            if (!isFinite(rowSpan) || rowSpan < 1) rowSpan = 1;
+
+            var cellObj = {
+                text: getNormalizedCellText(cellEl.innerText || cellEl.textContent || ''),
+                colSpan: colSpan,
+                rowSpan: rowSpan,
+                isHeader: cellEl.tagName === 'TH',
+            };
+
+            for (var rr = 0; rr < rowSpan; rr++) {
+                if (!grid[r + rr]) grid[r + rr] = [];
+                for (var cc = 0; cc < colSpan; cc++) {
+                    grid[r + rr][colCursor + cc] = {
+                        ref: cellObj,
+                        origin: rr === 0 && cc === 0,
+                    };
+                }
+            }
+
+            colCursor += colSpan;
+        }
+
+        if (grid[r].length > maxCols) maxCols = grid[r].length;
+    }
+
+    if (maxCols < 1) return null;
+
+    for (var gr = 0; gr < grid.length; gr++) {
+        if (!grid[gr]) grid[gr] = [];
+        while (grid[gr].length < maxCols) grid[gr].push(null);
+    }
+
+    var headerRowCount = table.tHead ? table.tHead.rows.length : 0;
+    if (!headerRowCount) {
+        var detected = 0;
+        for (var hr = 0; hr < Math.min(3, trNodes.length); hr++) {
+            var hasTh = Array.prototype.slice.call(trNodes[hr].children).some(function(el) {
+                return el && el.tagName === 'TH';
+            });
+            if (hasTh) {
+                detected = hr + 1;
+            } else {
+                break;
+            }
+        }
+
+        // Some copied tables use <td> for the second header row; keep 2 header rows when top row is merged.
+        if (detected <= 1 && trNodes.length >= 2) {
+            var topHasMerge = Array.prototype.slice.call(trNodes[0].children).some(function(el) {
+                var cs = parseInt((el && el.getAttribute && el.getAttribute('colspan')) || '1', 10);
+                var rs = parseInt((el && el.getAttribute && el.getAttribute('rowspan')) || '1', 10);
+                return (isFinite(cs) && cs > 1) || (isFinite(rs) && rs > 1);
+            });
+            if (topHasMerge) {
+                detected = 2;
+            }
+        }
+
+        headerRowCount = detected || 1;
+    }
+    if (headerRowCount >= grid.length) headerRowCount = Math.max(1, grid.length - 1);
+
+    var canonicalTableHtml = buildCanonicalTableHtml(grid, headerRowCount);
+
+    var topRow = grid[0] || [];
+    var lastHeaderRow = grid[Math.max(0, headerRowCount - 1)] || [];
+    var hasMergedTopHeader = topRow.some(function(slot) {
+        return !!(slot && slot.origin && slot.ref && slot.ref.colSpan > 1);
+    });
+
+    if (headerRowCount >= 2 && hasMergedTopHeader && maxCols >= 2) {
+        var leadColumns = 0;
+        for (var lc = 0; lc < maxCols; lc++) {
+            var leadSlot = topRow[lc];
+            if (!leadSlot || !leadSlot.origin || !leadSlot.ref) break;
+            var leadColSpan = parseInt(leadSlot.ref.colSpan, 10);
+            var leadRowSpan = parseInt(leadSlot.ref.rowSpan, 10);
+            if (!isFinite(leadColSpan) || leadColSpan < 1) leadColSpan = 1;
+            if (!isFinite(leadRowSpan) || leadRowSpan < 1) leadRowSpan = 1;
+            if (leadColSpan === 1 && leadRowSpan > 1) {
+                leadColumns += 1;
+                continue;
+            }
+            break;
+        }
+        if (leadColumns < 1) leadColumns = 1;
+
+        var groups = [];
+
+        for (var tc = leadColumns; tc < maxCols; tc++) {
+            var tSlot = topRow[tc];
+            if (!tSlot || !tSlot.origin || !tSlot.ref) continue;
+
+            var tSpan = parseInt(tSlot.ref.colSpan, 10);
+            if (!isFinite(tSpan) || tSpan < 1) tSpan = 1;
+            tSpan = Math.min(tSpan, maxCols - tc);
+
+            groups.push({
+                title: tSlot.ref.text || ('Group ' + (groups.length + 1)),
+                span: Math.max(1, tSpan),
+            });
+        }
+
+        if (groups.length === 0) {
+            groups = [{ title: 'Group 1', span: Math.max(1, maxCols - leadColumns) }];
+        }
+
+        var headers = [];
+        for (var lh = 0; lh < leadColumns; lh++) {
+            var leadHeaderSlot = topRow[lh];
+            var leadHeader = (leadHeaderSlot && leadHeaderSlot.ref) ? leadHeaderSlot.ref.text : '';
+            headers.push(leadHeader || (lh === 0 ? 'Model' : ('Column ' + (lh + 1))));
+        }
+        for (var hc = leadColumns; hc < maxCols; hc++) {
+            var hSlot = lastHeaderRow[hc];
+            var label = (hSlot && hSlot.ref) ? hSlot.ref.text : '';
+            if (label === '') {
+                var fallbackSlot = topRow[hc];
+                label = (fallbackSlot && fallbackSlot.ref) ? fallbackSlot.ref.text : '';
+            }
+            headers.push(label || ('Column ' + (hc + 1)));
+        }
+
+        var rows = [];
+        var rowMerges = [];
+        for (var dr = headerRowCount; dr < grid.length; dr++) {
+            var outRow = [];
+            for (var dc = 0; dc < maxCols; dc++) {
+                var dSlot = grid[dr][dc];
+                var dValue = '';
+                if (dSlot && dSlot.ref) {
+                    if (dSlot.origin) {
+                        dValue = dSlot.ref.text;
+                    } else if (dSlot.ref.rowSpan > 1 && dSlot.ref.colSpan === 1) {
+                        // Keep vertically merged values readable in the editable grid.
+                        dValue = dSlot.ref.text;
+                    }
+                }
+                outRow.push(dValue);
+
+                if (dSlot && dSlot.origin && dSlot.ref) {
+                    var dRowSpan = parseInt(dSlot.ref.rowSpan, 10);
+                    if (isFinite(dRowSpan) && dRowSpan > 1) {
+                        rowMerges.push({
+                            row: dr - headerRowCount,
+                            col: dc,
+                            rowSpan: Math.min(dRowSpan, Math.max(1, grid.length - dr)),
+                        });
+                    }
+                }
+            }
+            if (outRow.some(function(v) { return String(v || '').trim() !== ''; })) {
+                rows.push(outRow);
+            }
+        }
+
+        if (rows.length === 0) rows = [new Array(maxCols).fill('')];
+
+        return {
+            mode: 'grouped-pairs',
+            leadColumns: leadColumns,
+            headers: headers,
+            groups: groups,
+            rows: rows,
+            merges: [],
+            rowMerges: rowMerges,
+            tableHtml: canonicalTableHtml,
+        };
+    }
+
+    var standardHeaders = [];
+    for (var sc = 0; sc < maxCols; sc++) {
+        var stdHeaderSlot = lastHeaderRow[sc];
+        var stdHeader = (stdHeaderSlot && stdHeaderSlot.ref) ? stdHeaderSlot.ref.text : '';
+        standardHeaders.push(stdHeader || ('Column ' + (sc + 1)));
+    }
+
+    var standardRows = [];
+    var standardMerges = [];
+    var standardRowMerges = [];
+
+    for (var sr = headerRowCount; sr < grid.length; sr++) {
+        var srcRow = grid[sr] || [];
+        var out = [];
+        var outRowIndex = standardRows.length;
+
+        for (var sCol = 0; sCol < maxCols; sCol++) {
+            var sSlot = srcRow[sCol];
+            var isOrigin = !!(sSlot && sSlot.origin && sSlot.ref);
+            var sValue = '';
+            if (sSlot && sSlot.ref) {
+                if (isOrigin) {
+                    sValue = sSlot.ref.text;
+                } else if (sSlot.ref.rowSpan > 1 && sSlot.ref.colSpan === 1) {
+                    sValue = sSlot.ref.text;
+                }
+            }
+            out.push(sValue);
+
+            if (isOrigin && sCol > 0) {
+                var span = parseInt(sSlot.ref.colSpan, 10);
+                if (isFinite(span) && span > 1) {
+                    standardMerges.push({
+                        row: outRowIndex,
+                        col: sCol,
+                        span: Math.min(span, maxCols - sCol),
+                    });
+                }
+            }
+
+            if (isOrigin) {
+                var rowSpan = parseInt(sSlot.ref.rowSpan, 10);
+                if (isFinite(rowSpan) && rowSpan > 1) {
+                    standardRowMerges.push({
+                        row: outRowIndex,
+                        col: sCol,
+                        rowSpan: Math.min(rowSpan, Math.max(1, (grid.length - headerRowCount) - outRowIndex)),
+                    });
+                }
+            }
+        }
+
+        if (out.some(function(v) { return String(v || '').trim() !== ''; })) {
+            standardRows.push(out);
+        }
+    }
+
+    if (standardRows.length === 0) standardRows = [new Array(maxCols).fill('')];
+
+    return {
+        mode: 'standard',
+        headers: standardHeaders,
+        groups: [],
+        rows: standardRows,
+        merges: standardMerges,
+        rowMerges: standardRowMerges,
+        tableHtml: canonicalTableHtml,
+    };
+}
+
+function applyPastedSpecHtml(rawHtml) {
+    var parsed = parseClipboardHtmlTable(rawHtml);
+    if (!parsed || !Array.isArray(parsed.headers) || parsed.headers.length < 1) return false;
+
+    _specTableMode = parsed.mode === 'grouped-pairs' ? 'grouped-pairs' : 'standard';
+    _specTableHeaders = parsed.headers.slice(0);
+    _specTableRows = Array.isArray(parsed.rows) ? parsed.rows.slice(0) : [];
+    _specTableGroups = Array.isArray(parsed.groups) ? parsed.groups.slice(0) : [];
+    _specTableLeadColumns = Math.max(1, parseInt(parsed.leadColumns, 10) || 1);
+    _specTableMerges = Array.isArray(parsed.merges) ? parsed.merges.slice(0) : [];
+    _specTableRowMerges = Array.isArray(parsed.rowMerges) ? parsed.rowMerges.slice(0) : [];
+    _specTableSourceHtml = String(parsed.tableHtml || '').trim();
+
+    normalizeSpecTableState();
+    renderSpecTableBuilder();
+    syncSpecificationsHiddenField();
+
+    window.requestAnimationFrame(function() {
+        focusSpecTableCell(0, 0);
+    });
+
+    return true;
 }
 
 function applyPastedSpecText(rawText, startRow, startCol) {
@@ -2186,59 +2585,13 @@ function applyPastedSpecText(rawText, startRow, startCol) {
     var looksTabular = normalized.indexOf('\t') !== -1 || normalized.indexOf('\n') !== -1;
     if (!looksTabular) return false;
 
-    function parseTabularClipboard(text) {
-        var rows = [];
-        var row = [];
-        var cell = '';
-        var inQuotes = false;
+    var lines = normalized.split('\n');
+    while (lines.length > 0 && lines[lines.length - 1] === '') lines.pop();
+    if (lines.length === 0) return false;
 
-        for (var i = 0; i < text.length; i++) {
-            var ch = text[i];
-
-            if (ch === '"') {
-                if (inQuotes && text[i + 1] === '"') {
-                    cell += '"';
-                    i++;
-                } else {
-                    inQuotes = !inQuotes;
-                }
-                continue;
-            }
-
-            if (!inQuotes && ch === '\t') {
-                row.push(cell);
-                cell = '';
-                continue;
-            }
-
-            if (!inQuotes && ch === '\n') {
-                row.push(cell);
-                rows.push(row);
-                row = [];
-                cell = '';
-                continue;
-            }
-
-            cell += ch;
-        }
-
-        row.push(cell);
-        rows.push(row);
-
-        while (rows.length > 0) {
-            var last = rows[rows.length - 1];
-            var hasContent = Array.isArray(last) && last.some(function(c) {
-                return String(c || '').trim() !== '';
-            });
-            if (hasContent) break;
-            rows.pop();
-        }
-
-        return rows;
-    }
-
-    var matrix = parseTabularClipboard(normalized);
-    if (matrix.length === 0) return false;
+    var matrix = lines.map(function(line) {
+        return line.split('\t');
+    });
 
     var maxCols = matrix.reduce(function(max, row) {
         return Math.max(max, row.length);
@@ -2248,50 +2601,16 @@ function applyPastedSpecText(rawText, startRow, startCol) {
     var rowOffset = Math.max(0, parseInt(startRow, 10) || 0);
     var colOffset = Math.max(0, parseInt(startCol, 10) || 0);
 
-    var canUseFirstRowAsHeaders = rowOffset === 0 && colOffset === 0 && matrix.length > 1;
-
-    if (canUseFirstRowAsHeaders) {
-        var firstRow = matrix[0] || [];
-        var hasHeaderText = firstRow.some(function(c) { return String(c || '').trim() !== ''; });
-        if (hasHeaderText) {
-            _specTableHeaders = [];
-            for (var h = 0; h < maxCols; h++) {
-                _specTableHeaders.push(String((firstRow[h] || '')).trim());
-            }
-
-            var bodyRows = matrix.slice(1);
-            _specTableRows = bodyRows.map(function(srcRow) {
-                var row = [];
-                for (var c = 0; c < maxCols; c++) {
-                    row.push(String((srcRow && srcRow[c]) || ''));
-                }
-                return row;
-            });
-
-            if (_specTableRows.length === 0) {
-                _specTableRows = [new Array(maxCols).fill('')];
-            }
-
-            _specTableMerges = [];
-
-            renderSpecTableBuilder();
-            syncSpecificationsHiddenField();
-            window.requestAnimationFrame(function() {
-                focusSpecTableCell(0, 0);
-            });
-            return true;
-        }
-    }
-
     ensureSpecTableGridSize(rowOffset + matrix.length, colOffset + maxCols);
+    _specTableMerges = [];
+    _specTableRowMerges = [];
+    _specTableSourceHtml = '';
 
     for (var r = 0; r < matrix.length; r++) {
         for (var c = 0; c < maxCols; c++) {
             _specTableRows[rowOffset + r][colOffset + c] = String((matrix[r] && matrix[r][c]) || '');
         }
     }
-
-    _specTableMerges = normalizeSpecTableMerges(_specTableMerges, _specTableRows.length, _specTableHeaders.length);
 
     renderSpecTableBuilder();
     syncSpecificationsHiddenField();
@@ -2307,6 +2626,18 @@ function handleSpecCellPaste(event, rowIdx, colIdx) {
     var clipboard = event.clipboardData || window.clipboardData;
     if (!clipboard) return;
 
+    var html = '';
+    try {
+        html = clipboard.getData('text/html');
+    } catch (e) {
+        html = '';
+    }
+
+    if (html && applyPastedSpecHtml(html)) {
+        event.preventDefault();
+        return;
+    }
+
     var text = clipboard.getData('text');
     if (applyPastedSpecText(text, rowIdx, colIdx)) {
         event.preventDefault();
@@ -2320,18 +2651,15 @@ function handleSpecCellKeyDown(event, rowIdx, colIdx) {
     var nextCol = colIdx;
     var handled = false;
 
-    if (event.key === 'Enter') {
-        // In textarea cells, Enter should add a new line inside the same cell.
-        // Use Ctrl+Enter (or Cmd+Enter) to move to the next/previous row.
-        if (!(event.ctrlKey || event.metaKey)) {
-            return;
-        }
+    // Keep Enter for newline inside multiline cells.
+    // Use Ctrl+Enter (or Cmd+Enter) to move rows.
+    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
         handled = true;
         nextRow = event.shiftKey ? rowIdx - 1 : rowIdx + 1;
-    } else if (event.key === 'ArrowDown') {
+    } else if (event.key === 'ArrowDown' && event.altKey) {
         handled = true;
         nextRow = rowIdx + 1;
-    } else if (event.key === 'ArrowUp') {
+    } else if (event.key === 'ArrowUp' && event.altKey) {
         handled = true;
         nextRow = rowIdx - 1;
     } else if (event.key === 'Tab') {
@@ -2345,7 +2673,6 @@ function handleSpecCellKeyDown(event, rowIdx, colIdx) {
             }
         } else {
             if (colIdx < _specTableHeaders.length - 1) {
-                nextCol = colIdx + 1;
             } else {
                 nextRow = rowIdx + 1;
                 nextCol = 0;
@@ -2369,24 +2696,64 @@ function handleSpecCellKeyDown(event, rowIdx, colIdx) {
 }
 
 function pasteExcelIntoSpecTable() {
-    if (_specTableMode !== 'standard') {
-        customAlert('Paste from Excel is available in Spreadsheet mode.');
-        return;
-    }
-
+    _specTableHasUserInput = true;
     var pos = getSpecCellPositionFromElement(document.activeElement);
 
-    if (!navigator.clipboard || !navigator.clipboard.readText) {
+    if (!navigator.clipboard || (!navigator.clipboard.readText && !navigator.clipboard.read)) {
         customAlert('Clipboard API is not available. Click a cell then use Ctrl+V to paste from Excel.');
         return;
     }
 
-    navigator.clipboard.readText().then(function(text) {
-        if (!applyPastedSpecText(text, pos.row, pos.col)) {
-            customAlert('No Excel-style table data found in clipboard.');
+    function fallbackPasteText() {
+        if (!navigator.clipboard.readText) {
+            customAlert('Clipboard permission denied. Click a cell then use Ctrl+V to paste from Excel.');
+            return;
         }
+        navigator.clipboard.readText().then(function(text) {
+            if (!applyPastedSpecText(text, pos.row, pos.col)) {
+                customAlert('No Excel-style table data found in clipboard.');
+            }
+        }).catch(function() {
+            customAlert('Clipboard permission denied. Click a cell then use Ctrl+V to paste from Excel.');
+        });
+    }
+
+    if (!navigator.clipboard.read) {
+        fallbackPasteText();
+        return;
+    }
+
+    navigator.clipboard.read().then(function(items) {
+        if (!Array.isArray(items) || items.length === 0) {
+            fallbackPasteText();
+            return;
+        }
+
+        var htmlReader = null;
+        for (var i = 0; i < items.length; i++) {
+            var it = items[i];
+            if (it && Array.isArray(it.types) && it.types.indexOf('text/html') !== -1) {
+                htmlReader = it;
+                break;
+            }
+        }
+
+        if (!htmlReader) {
+            fallbackPasteText();
+            return;
+        }
+
+        htmlReader.getType('text/html').then(function(blob) {
+            return blob.text();
+        }).then(function(html) {
+            if (!applyPastedSpecHtml(html)) {
+                fallbackPasteText();
+            }
+        }).catch(function() {
+            fallbackPasteText();
+        });
     }).catch(function() {
-        customAlert('Clipboard permission denied. Click a cell then use Ctrl+V to paste from Excel.');
+        fallbackPasteText();
     });
 }
 
@@ -2421,11 +2788,74 @@ function updateSpecTableModeUi() {
         if (_specTableMode === 'grouped-pairs') {
             help.innerHTML = '<i class="bi bi-info-circle"></i> Grouped mode supports merged headers: set each group title and span (number of merged columns).';
         } else {
-            help.innerHTML = '<i class="bi bi-info-circle"></i> Spreadsheet mode: Tab and arrows move cells, Enter adds a line inside a cell, Ctrl+Enter moves rows, and you can paste directly from Excel.';
+            help.innerHTML = '<i class="bi bi-info-circle"></i> Spreadsheet mode: use Tab/Enter/Arrow Up/Arrow Down and paste multi-cell data directly from Excel.';
+        }
+    }
+}
+
+function applySpecBuilderAutoSizing() {
+    var table = document.getElementById('specTableBuilder');
+    if (!table) return;
+
+    var oldGroups = table.querySelectorAll('colgroup[data-spec-builder-colgroup="1"]');
+    oldGroups.forEach(function(cg) {
+        if (cg && cg.parentNode === table) table.removeChild(cg);
+    });
+
+    var dataColCount = Array.isArray(_specTableHeaders) ? _specTableHeaders.length : 0;
+    if (dataColCount < 1) return;
+
+    var colgroup = document.createElement('colgroup');
+    colgroup.setAttribute('data-spec-builder-colgroup', '1');
+
+    // Standard mode has row-index column at left.
+    if (_specTableMode === 'standard') {
+        var idxCol = document.createElement('col');
+        idxCol.style.width = '46px';
+        colgroup.appendChild(idxCol);
+    }
+
+    var charSizes = new Array(dataColCount).fill(10);
+
+    for (var h = 0; h < dataColCount; h++) {
+        var hText = String(_specTableHeaders[h] || '').trim();
+        var hLen = hText.length;
+        if (hLen > charSizes[h]) charSizes[h] = hLen;
+    }
+
+    for (var r = 0; r < _specTableRows.length; r++) {
+        var row = Array.isArray(_specTableRows[r]) ? _specTableRows[r] : [];
+        for (var c = 0; c < dataColCount; c++) {
+            var cell = String(row[c] || '');
+            var lines = cell.split(/\r?\n/);
+            var longest = 0;
+            for (var li = 0; li < lines.length; li++) {
+                var len = String(lines[li] || '').trim().length;
+                if (len > longest) longest = len;
+            }
+            if (longest > charSizes[c]) charSizes[c] = longest;
         }
     }
 
-    updateSpecMergeControlsUi();
+    for (var i = 0; i < dataColCount; i++) {
+        var col = document.createElement('col');
+        var chars = Math.max(8, Math.min(56, charSizes[i]));
+        var width = Math.round(chars * 8.2 + 48);
+        if (width < 140) width = 140;
+        if (width > 520) width = 520;
+        col.style.width = width + 'px';
+        colgroup.appendChild(col);
+    }
+
+    // Right-side actions column.
+    var actionCol = document.createElement('col');
+    actionCol.style.width = '44px';
+    colgroup.appendChild(actionCol);
+
+    table.insertBefore(colgroup, table.firstChild);
+    table.style.width = 'max-content';
+    table.style.minWidth = '100%';
+    table.style.tableLayout = 'fixed';
 }
 
 function renderGroupedHeaderControls() {
@@ -2446,10 +2876,38 @@ function renderGroupedHeaderControls() {
     title.textContent = 'Group Headers';
     wrap.appendChild(title);
 
+    var leadRow = document.createElement('div');
+    leadRow.style.cssText = 'display:grid;grid-template-columns:140px 100px 1fr;gap:8px;align-items:center;margin-bottom:8px;';
+    var leadLabel = document.createElement('div');
+    leadLabel.style.cssText = 'font-size:10px;font-weight:700;color:#1e40af;';
+    leadLabel.textContent = 'Row-merged columns';
+    var leadInput = document.createElement('input');
+    leadInput.type = 'number';
+    leadInput.min = '1';
+    leadInput.max = '12';
+    leadInput.value = String(getGroupedLeadColumnCount());
+    leadInput.style.cssText = 'padding:6px 8px;border:1.5px solid #bfdbfe;border-radius:7px;font-size:11px;text-align:center;';
+    leadInput.addEventListener('change', function() {
+        _specTableSourceHtml = '';
+        var nextLead = parseInt(this.value, 10);
+        if (!isFinite(nextLead) || nextLead < 1) nextLead = 1;
+        _specTableLeadColumns = nextLead;
+        normalizeSpecTableState();
+        renderSpecTableBuilder();
+        syncSpecificationsHiddenField();
+    });
+    var leadHelp = document.createElement('div');
+    leadHelp.style.cssText = 'font-size:10px;color:#6b7280;';
+    leadHelp.textContent = 'Set how many first columns stay merged vertically across 2 header rows.';
+    leadRow.appendChild(leadLabel);
+    leadRow.appendChild(leadInput);
+    leadRow.appendChild(leadHelp);
+    wrap.appendChild(leadRow);
+
     for (var i = 0; i < _specTableGroups.length; i++) {
         (function(groupIdx) {
             var row = document.createElement('div');
-            row.style.cssText = 'display:grid;grid-template-columns:72px 1fr 84px auto;gap:8px;align-items:center;margin-bottom:6px;';
+            row.style.cssText = 'display:grid;grid-template-columns:72px 1fr 84px 120px auto;gap:8px;align-items:center;margin-bottom:6px;';
 
             var label = document.createElement('div');
             label.style.cssText = 'font-size:10px;font-weight:700;color:#1e40af;';
@@ -2478,6 +2936,22 @@ function renderGroupedHeaderControls() {
                 setSpecTableGroupSpan(groupIdx, this.value);
             });
 
+            var rowSpanWrap = document.createElement('label');
+            rowSpanWrap.style.cssText = 'display:flex;align-items:center;gap:6px;font-size:10px;color:#1f2937;font-weight:700;white-space:nowrap;';
+            var rowSpanCheck = document.createElement('input');
+            rowSpanCheck.type = 'checkbox';
+            rowSpanCheck.checked = !!(_specTableGroups[groupIdx] && _specTableGroups[groupIdx].rowSpan);
+            rowSpanCheck.disabled = (parseInt((_specTableGroups[groupIdx] && _specTableGroups[groupIdx].span) || 1, 10) !== 1);
+            rowSpanCheck.addEventListener('change', function() {
+                if (!_specTableGroups[groupIdx]) return;
+                _specTableSourceHtml = '';
+                _specTableGroups[groupIdx].rowSpan = !!this.checked;
+                renderSpecTableBuilder();
+                syncSpecificationsHiddenField();
+            });
+            rowSpanWrap.appendChild(rowSpanCheck);
+            rowSpanWrap.appendChild(document.createTextNode('Row merge'));
+
             var removeBtn = document.createElement('button');
             removeBtn.type = 'button';
             removeBtn.innerHTML = '&times;';
@@ -2490,10 +2964,120 @@ function renderGroupedHeaderControls() {
             row.appendChild(label);
             row.appendChild(input);
             row.appendChild(spanInput);
+            row.appendChild(rowSpanWrap);
             row.appendChild(removeBtn);
             wrap.appendChild(row);
         })(i);
     }
+
+    var mergeTitle = document.createElement('div');
+    mergeTitle.style.cssText = 'font-size:11px;font-weight:700;color:#1e3a8a;margin:10px 0 6px;';
+    mergeTitle.textContent = 'Body Row Merges';
+    wrap.appendChild(mergeTitle);
+
+    var mergeHelp = document.createElement('div');
+    mergeHelp.style.cssText = 'font-size:10px;color:#6b7280;margin-bottom:6px;';
+    mergeHelp.textContent = 'Use this for values like CGA that should span multiple rows (e.g. span 4 rows).';
+    wrap.appendChild(mergeHelp);
+
+    if (_specTableRowMerges.length === 0) {
+        var noMerge = document.createElement('div');
+        noMerge.style.cssText = 'font-size:10px;color:#9ca3af;margin-bottom:6px;';
+        noMerge.textContent = 'No body row merges yet.';
+        wrap.appendChild(noMerge);
+    }
+
+    _specTableRowMerges.forEach(function(m, idx) {
+        var row = document.createElement('div');
+        row.style.cssText = 'display:grid;grid-template-columns:130px 92px 92px auto;gap:8px;align-items:center;margin-bottom:6px;';
+
+        var colSel = document.createElement('select');
+        colSel.style.cssText = 'padding:6px 8px;border:1.5px solid #bfdbfe;border-radius:7px;font-size:11px;';
+        _specTableHeaders.forEach(function(h, cIdx) {
+            var opt = document.createElement('option');
+            opt.value = String(cIdx);
+            var name = String(h || '').trim() || ('Column ' + (cIdx + 1));
+            opt.textContent = (cIdx + 1) + ' - ' + name;
+            if (cIdx === parseInt(m.col, 10)) opt.selected = true;
+            colSel.appendChild(opt);
+        });
+        colSel.addEventListener('change', function() {
+            _specTableSourceHtml = '';
+            if (!_specTableRowMerges[idx]) return;
+            _specTableRowMerges[idx].col = parseInt(this.value, 10) || 0;
+            normalizeSpecTableState();
+            renderSpecTableBuilder();
+            syncSpecificationsHiddenField();
+        });
+
+        var startInput = document.createElement('input');
+        startInput.type = 'number';
+        startInput.min = '1';
+        startInput.value = String((parseInt(m.row, 10) || 0) + 1);
+        startInput.title = 'Start row';
+        startInput.style.cssText = 'padding:6px 8px;border:1.5px solid #bfdbfe;border-radius:7px;font-size:11px;text-align:center;';
+        startInput.addEventListener('change', function() {
+            _specTableSourceHtml = '';
+            if (!_specTableRowMerges[idx]) return;
+            var v = parseInt(this.value, 10);
+            if (!isFinite(v) || v < 1) v = 1;
+            _specTableRowMerges[idx].row = v - 1;
+            normalizeSpecTableState();
+            renderSpecTableBuilder();
+            syncSpecificationsHiddenField();
+        });
+
+        var spanInput = document.createElement('input');
+        spanInput.type = 'number';
+        spanInput.min = '2';
+        spanInput.value = String(parseInt(m.rowSpan, 10) || 2);
+        spanInput.title = 'Row span';
+        spanInput.style.cssText = 'padding:6px 8px;border:1.5px solid #bfdbfe;border-radius:7px;font-size:11px;text-align:center;';
+        spanInput.addEventListener('change', function() {
+            _specTableSourceHtml = '';
+            if (!_specTableRowMerges[idx]) return;
+            var v = parseInt(this.value, 10);
+            if (!isFinite(v) || v < 2) v = 2;
+            _specTableRowMerges[idx].rowSpan = v;
+            normalizeSpecTableState();
+            renderSpecTableBuilder();
+            syncSpecificationsHiddenField();
+        });
+
+        var removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.innerHTML = '&times;';
+        removeBtn.title = 'Remove row merge';
+        removeBtn.style.cssText = 'width:24px;height:24px;border-radius:6px;border:1px solid #fecaca;background:#fef2f2;color:#dc2626;font-size:16px;line-height:1;cursor:pointer;';
+        removeBtn.addEventListener('click', function() {
+            _specTableSourceHtml = '';
+            _specTableRowMerges.splice(idx, 1);
+            normalizeSpecTableState();
+            renderSpecTableBuilder();
+            syncSpecificationsHiddenField();
+        });
+
+        row.appendChild(colSel);
+        row.appendChild(startInput);
+        row.appendChild(spanInput);
+        row.appendChild(removeBtn);
+        wrap.appendChild(row);
+    });
+
+    var addMergeBtn = document.createElement('button');
+    addMergeBtn.type = 'button';
+    addMergeBtn.style.cssText = 'display:inline-flex;align-items:center;gap:6px;background:#ecfeff;border:1px solid #a5f3fc;color:#155e75;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;';
+    addMergeBtn.innerHTML = '<i class="bi bi-arrows-collapse-vertical"></i> Add Body Merge';
+    addMergeBtn.addEventListener('click', function() {
+        _specTableSourceHtml = '';
+        var lead = getGroupedLeadColumnCount();
+        var defaultCol = lead > 0 ? 0 : 0;
+        _specTableRowMerges.push({ row: 0, col: defaultCol, rowSpan: 2 });
+        normalizeSpecTableState();
+        renderSpecTableBuilder();
+        syncSpecificationsHiddenField();
+    });
+    wrap.appendChild(addMergeBtn);
 }
 
 function renderSpecTableBuilder() {
@@ -2513,19 +3097,26 @@ function renderSpecTableBuilder() {
     if (_specTableMode === 'grouped-pairs') {
         var groupRow = document.createElement('tr');
 
-        var firstTop = document.createElement('th');
-        firstTop.rowSpan = 2;
-        firstTop.style.cssText = 'padding:8px;border-bottom:1px solid #cbd5e1;background:#111827;color:#fff;vertical-align:middle;';
-        var firstTopInput = document.createElement('input');
-        firstTopInput.type = 'text';
-        firstTopInput.value = _specTableHeaders[0] || 'Model';
-        firstTopInput.style.cssText = 'width:100%;padding:7px 9px;border:1px solid #4b5563;border-radius:7px;font-size:11px;font-weight:700;background:#1f2937;color:#fff;';
-        firstTopInput.addEventListener('input', function() {
-            _specTableHeaders[0] = this.value;
-            syncSpecificationsHiddenField();
-        });
-        firstTop.appendChild(firstTopInput);
-        groupRow.appendChild(firstTop);
+        var leadCols = getGroupedLeadColumnCount();
+
+        for (var leadIdx = 0; leadIdx < leadCols; leadIdx++) {
+            (function(colIdx) {
+                var firstTop = document.createElement('th');
+                firstTop.rowSpan = 2;
+                firstTop.style.cssText = 'padding:8px;border-bottom:1px solid #cbd5e1;background:#111827;color:#fff;vertical-align:middle;';
+                var firstTopInput = document.createElement('input');
+                firstTopInput.type = 'text';
+                firstTopInput.value = _specTableHeaders[colIdx] || (colIdx === 0 ? 'Model' : ('Column ' + (colIdx + 1)));
+                firstTopInput.style.cssText = 'width:100%;padding:7px 9px;border:1px solid #4b5563;border-radius:7px;font-size:11px;font-weight:700;background:#1f2937;color:#fff;';
+                firstTopInput.addEventListener('input', function() {
+                    _specTableSourceHtml = '';
+                    _specTableHeaders[colIdx] = this.value;
+                    syncSpecificationsHiddenField();
+                });
+                firstTop.appendChild(firstTopInput);
+                groupRow.appendChild(firstTop);
+            })(leadIdx);
+        }
 
         for (var g = 0; g < _specTableGroups.length; g++) {
             var gTh = document.createElement('th');
@@ -2533,7 +3124,11 @@ function renderSpecTableBuilder() {
             var gSpan = parseInt(gInfo.span, 10);
             if (!isFinite(gSpan) || gSpan < 1) gSpan = 1;
 
-            gTh.colSpan = gSpan;
+            if (gSpan === 1 && gInfo.rowSpan) {
+                gTh.rowSpan = 2;
+            } else {
+                gTh.colSpan = gSpan;
+            }
             gTh.style.cssText = 'padding:9px 8px;border-bottom:1px solid #374151;background:#111827;color:#fff;font-size:11px;font-weight:800;text-align:center;';
             gTh.textContent = String(gInfo.title || ('Group ' + (g + 1)));
             groupRow.appendChild(gTh);
@@ -2546,24 +3141,43 @@ function renderSpecTableBuilder() {
         head.appendChild(groupRow);
 
         var subHeaderRow = document.createElement('tr');
-        for (var sc = 1; sc < _specTableHeaders.length; sc++) {
-            (function(colIdx) {
-                var th = document.createElement('th');
-                th.style.cssText = 'padding:8px;border-bottom:1px solid #e5e7eb;background:#f8fafc;vertical-align:middle;';
-                var input = document.createElement('input');
-                input.type = 'text';
-                input.value = _specTableHeaders[colIdx] || '';
-                input.placeholder = (colIdx % 2 === 1) ? 'cfm' : 'm3/hr';
-                input.style.cssText = 'width:100%;padding:7px 9px;border:1.5px solid #dbe1ea;border-radius:7px;font-size:11px;font-weight:700;color:#1f2937;background:#fff;';
-                input.addEventListener('input', function() {
-                    _specTableHeaders[colIdx] = this.value;
-                    syncSpecificationsHiddenField();
-                });
-                th.appendChild(input);
-                subHeaderRow.appendChild(th);
-            })(sc);
+        var headerCursor = leadCols;
+        var subCellCount = 0;
+        for (var sg = 0; sg < _specTableGroups.length; sg++) {
+            var sgInfo = _specTableGroups[sg] || { span: 1, rowSpan: false };
+            var sgSpan = parseInt(sgInfo.span, 10);
+            if (!isFinite(sgSpan) || sgSpan < 1) sgSpan = 1;
+
+            if (sgSpan === 1 && sgInfo.rowSpan) {
+                headerCursor += 1;
+                continue;
+            }
+
+            for (var si = 0; si < sgSpan; si++) {
+                (function(colIdx) {
+                    var th = document.createElement('th');
+                    th.style.cssText = 'padding:8px;border-bottom:1px solid #e5e7eb;background:#f8fafc;vertical-align:middle;';
+                    var input = document.createElement('input');
+                    input.type = 'text';
+                    input.value = _specTableHeaders[colIdx] || '';
+                    input.placeholder = (colIdx % 2 === 1) ? 'cfm' : 'm3/hr';
+                    input.style.cssText = 'width:100%;padding:7px 9px;border:1.5px solid #dbe1ea;border-radius:7px;font-size:11px;font-weight:700;color:#1f2937;background:#fff;';
+                    input.addEventListener('input', function() {
+                        _specTableSourceHtml = '';
+                        _specTableHeaders[colIdx] = this.value;
+                        syncSpecificationsHiddenField();
+                    });
+                    th.appendChild(input);
+                    subHeaderRow.appendChild(th);
+                    subCellCount += 1;
+                })(headerCursor);
+                headerCursor += 1;
+            }
         }
-        head.appendChild(subHeaderRow);
+
+        if (subCellCount > 0) {
+            head.appendChild(subHeaderRow);
+        }
     } else {
         var headRow = document.createElement('tr');
 
@@ -2598,6 +3212,7 @@ function renderSpecTableBuilder() {
                 ? 'width:100%;min-width:110px;padding:7px 9px;border:1px solid #6b7280;border-radius:7px;font-size:11px;font-weight:700;color:#f3f4f6;background:#1f2530;'
                 : 'width:100%;min-width:110px;padding:7px 9px;border:1.5px solid #dbe1ea;border-radius:7px;font-size:11px;font-weight:700;color:#1f2937;background:#fff;';
             input.addEventListener('input', function() {
+                _specTableSourceHtml = '';
                 _specTableHeaders[colIdx] = this.value;
                 syncSpecificationsHiddenField();
             });
@@ -2629,6 +3244,21 @@ function renderSpecTableBuilder() {
         head.appendChild(headRow);
     }
 
+    var rowMergeStarts = {};
+    var rowMergeCovered = {};
+    _specTableRowMerges.forEach(function(m) {
+        var startRow = parseInt(m && m.row, 10);
+        var col = parseInt(m && m.col, 10);
+        var rowSpan = parseInt(m && m.rowSpan, 10);
+        if (!isFinite(startRow) || !isFinite(col) || !isFinite(rowSpan)) return;
+        if (rowSpan < 2) return;
+        var startKey = startRow + ':' + col;
+        rowMergeStarts[startKey] = rowSpan;
+        for (var rr = startRow + 1; rr < startRow + rowSpan; rr++) {
+            rowMergeCovered[rr + ':' + col] = true;
+        }
+    });
+
     _specTableRows.forEach(function(row, rowIdx) {
         var tr = document.createElement('tr');
         if (rowIdx % 2 === 1) tr.style.backgroundColor = isStandardDark ? 'rgba(255,255,255,0.02)' : '#fcfdff';
@@ -2643,23 +3273,36 @@ function renderSpecTableBuilder() {
         }
 
         for (var colIdx = 0; colIdx < _specTableHeaders.length; colIdx++) {
+            if (rowMergeCovered[rowIdx + ':' + colIdx]) {
+                continue;
+            }
+
             var td = document.createElement('td');
             td.style.cssText = isStandardDark
                 ? 'padding:6px 8px;border-bottom:1px solid #6b7280;border-right:1px solid #6b7280;background:transparent;'
                 : 'padding:6px 8px;border-bottom:1px solid #eef2f6;';
 
+            var rowMergeSpan = parseInt(rowMergeStarts[rowIdx + ':' + colIdx], 10);
+            if (isFinite(rowMergeSpan) && rowMergeSpan > 1) {
+                td.rowSpan = rowMergeSpan;
+                td.style.verticalAlign = 'middle';
+            }
+
             var cellInput = document.createElement('textarea');
-            cellInput.rows = 1;
             cellInput.value = row[colIdx] || '';
             cellInput.className = 'spec-table-input';
             cellInput.setAttribute('data-row', String(rowIdx));
             cellInput.setAttribute('data-col', String(colIdx));
+            cellInput.rows = 1;
             cellInput.style.cssText = isStandardDark
-                ? 'width:100%;min-height:34px;padding:7px 9px;border:1px solid #6b7280;border-radius:7px;font-size:12px;color:#f3f4f6;background:#1f2530;resize:vertical;line-height:1.35;white-space:pre-wrap;'
-                : 'width:100%;min-height:34px;padding:7px 9px;border:1.5px solid #e5e7eb;border-radius:7px;font-size:12px;resize:vertical;line-height:1.35;white-space:pre-wrap;';
+                ? 'width:100%;min-height:34px;padding:7px 9px;border:1px solid #6b7280;border-radius:7px;font-size:12px;line-height:1.45;color:#f3f4f6;background:#1f2530;resize:vertical;overflow:hidden;white-space:pre-wrap;'
+                : 'width:100%;min-height:34px;padding:7px 9px;border:1.5px solid #e5e7eb;border-radius:7px;font-size:12px;line-height:1.45;resize:vertical;overflow:hidden;white-space:pre-wrap;';
             (function(r, c, inputEl) {
                 inputEl.addEventListener('input', function() {
+                    _specTableHasUserInput = true;
+                    _specTableSourceHtml = '';
                     _specTableRows[r][c] = this.value;
+                    autoResizeSpecCell(this);
                     syncSpecificationsHiddenField();
                 });
                 inputEl.addEventListener('keydown', function(evt) {
@@ -2669,6 +3312,8 @@ function renderSpecTableBuilder() {
                     handleSpecCellPaste(evt, r, c);
                 });
             })(rowIdx, colIdx, cellInput);
+
+            autoResizeSpecCell(cellInput);
 
             td.appendChild(cellInput);
             tr.appendChild(td);
@@ -2696,11 +3341,14 @@ function renderSpecTableBuilder() {
         body.appendChild(tr);
     });
 
-    updateSpecMergeControlsUi();
+    applySpecBuilderAutoSizing();
 }
 
 function addSpecTableColumn(label) {
+    _specTableHasUserInput = true;
     normalizeSpecTableState();
+    _specTableSourceHtml = '';
+    _specTableRowMerges = [];
     if (_specTableMode === 'grouped-pairs') {
         addSpecTableGroup(label);
         return;
@@ -2715,9 +3363,12 @@ function addSpecTableColumn(label) {
 }
 
 function removeSpecTableColumn(colIdx) {
+    _specTableHasUserInput = true;
     normalizeSpecTableState();
+    _specTableSourceHtml = '';
+    _specTableRowMerges = [];
     if (_specTableMode === 'grouped-pairs') {
-        if (colIdx <= 0) return;
+        if (colIdx < getGroupedLeadColumnCount()) return;
         removeSpecTableGroup(findGroupedIndexByColumn(colIdx));
         return;
     }
@@ -2732,7 +3383,9 @@ function removeSpecTableColumn(colIdx) {
 }
 
 function addSpecTableDataRow(initialValues) {
+    _specTableHasUserInput = true;
     normalizeSpecTableState();
+    _specTableSourceHtml = '';
     var row = new Array(_specTableHeaders.length).fill('');
     if (Array.isArray(initialValues)) {
         for (var i = 0; i < Math.min(initialValues.length, row.length); i++) {
@@ -2745,18 +3398,45 @@ function addSpecTableDataRow(initialValues) {
 }
 
 function removeSpecTableDataRow(rowIdx) {
+    _specTableHasUserInput = true;
     normalizeSpecTableState();
+    _specTableSourceHtml = '';
     if (_specTableRows.length <= 1) {
         _specTableRows[0] = new Array(_specTableHeaders.length).fill('');
+        _specTableRowMerges = [];
     } else {
         _specTableRows.splice(rowIdx, 1);
+
+        _specTableRowMerges = _specTableRowMerges.map(function(m) {
+            var start = parseInt(m && m.row, 10);
+            var span = parseInt(m && m.rowSpan, 10);
+            var col = parseInt(m && m.col, 10);
+            if (!isFinite(start) || !isFinite(span) || !isFinite(col)) return null;
+            if (span < 2) return null;
+
+            var end = start + span - 1;
+            if (rowIdx < start) {
+                return { row: start - 1, col: col, rowSpan: span };
+            }
+
+            if (rowIdx > end) {
+                return { row: start, col: col, rowSpan: span };
+            }
+
+            var nextSpan = span - 1;
+            if (nextSpan < 2) return null;
+            return { row: start, col: col, rowSpan: nextSpan };
+        }).filter(function(m) { return !!m; });
     }
     renderSpecTableBuilder();
     syncSpecificationsHiddenField();
 }
 
 function addSpecTableGroup(groupLabel) {
+    _specTableHasUserInput = true;
     normalizeSpecTableState();
+    _specTableSourceHtml = '';
+    _specTableRowMerges = [];
     var parsedSpan = parseInt(arguments[1], 10);
     if (!isFinite(parsedSpan) || parsedSpan < 1) parsedSpan = 2;
 
@@ -2777,7 +3457,10 @@ function addSpecTableGroup(groupLabel) {
 }
 
 function setSpecTableGroupSpan(groupIdx, spanValue) {
+    _specTableHasUserInput = true;
     normalizeSpecTableState();
+    _specTableSourceHtml = '';
+    _specTableRowMerges = [];
     if (!_specTableGroups[groupIdx]) return;
 
     var nextSpan = parseInt(spanValue, 10);
@@ -2816,10 +3499,14 @@ function setSpecTableGroupSpan(groupIdx, spanValue) {
 }
 
 function removeSpecTableGroup(groupIdx) {
+    _specTableHasUserInput = true;
     normalizeSpecTableState();
+    _specTableSourceHtml = '';
+    _specTableRowMerges = [];
     if (_specTableGroups.length <= 1) {
         _specTableGroups = getDefaultGroupedGroups();
-        var minHeaders = 1 + getGroupedDataColumnCount(_specTableGroups);
+        _specTableLeadColumns = 1;
+        var minHeaders = _specTableLeadColumns + getGroupedDataColumnCount(_specTableGroups);
         var firstHeader = String(_specTableHeaders[0] || 'Model').trim() || 'Model';
         _specTableHeaders = [firstHeader];
         while (_specTableHeaders.length < minHeaders) {
@@ -2859,16 +3546,22 @@ function removeSpecTableGroup(groupIdx) {
 }
 
 function setSpecTableMode(mode, keepData) {
+    _specTableHasUserInput = true;
     var nextMode = mode === 'grouped-pairs' ? 'grouped-pairs' : 'standard';
     var prevMode = _specTableMode;
 
     _specTableMode = nextMode;
+    _specTableSourceHtml = '';
+    _specTableRowMerges = [];
 
     if (prevMode !== nextMode && keepData) {
         if (nextMode === 'grouped-pairs') {
+            _specTableMerges = [];
             if (_specTableHeaders.length === 0) {
                 _specTableHeaders = getDefaultGroupedHeaders();
             }
+
+            var targetCols = getGroupedLeadColumnCount() + getGroupedDataColumnCount(_specTableGroups.length > 0 ? _specTableGroups : getDefaultGroupedGroups());
 
             while (_specTableHeaders.length < targetCols) {
                 _specTableHeaders.push(getDefaultGroupedSubHeader(_specTableHeaders.length));
@@ -2884,13 +3577,18 @@ function setSpecTableMode(mode, keepData) {
 }
 
 function applyAirflowSpecTemplate() {
+    _specTableHasUserInput = true;
     _specTableMode = 'grouped-pairs';
+    _specTableMerges = [];
+    _specTableRowMerges = [];
+    _specTableSourceHtml = '';
+    _specTableLeadColumns = 1;
     _specTableHeaders = ['Model', 'cfm', 'm3/hr', 'cfm', 'm3/hr', 'cfm', 'm3/hr', 'cfm', 'm3/hr'];
     _specTableGroups = [
-        { title: 'Free Air', span: 2 },
-        { title: '10 ft. 3.05 M', span: 2 },
-        { title: '20 ft. 6.10 M', span: 2 },
-        { title: '30 ft. 9.15 M', span: 2 },
+        { title: 'Free Air', span: 2, rowSpan: false },
+        { title: '10 ft. 3.05 M', span: 2, rowSpan: false },
+        { title: '20 ft. 6.10 M', span: 2, rowSpan: false },
+        { title: '30 ft. 9.15 M', span: 2, rowSpan: false },
     ];
     _specTableRows = [[
         'Air Max', '2200', '3740', '2120', '3602', '2025', '3440', '1890', '3211'
@@ -2901,12 +3599,84 @@ function applyAirflowSpecTemplate() {
     syncSpecificationsHiddenField();
 }
 
+function convertSpecificationsTextToTable() {
+    var textArea = document.getElementById('editSpecificationsText');
+    if (!textArea) return;
+
+    var raw = String(textArea.value || '')
+        .replace(/\r\n?/g, '\n')
+        .replace(/\u00A0/g, ' ')
+        .replace(/[\u200B-\u200D\uFEFF]/g, '');
+
+    var lines = raw.split('\n');
+    var rows = [];
+
+    function appendToLastValue(text) {
+        if (rows.length === 0) {
+            rows.push(['', text]);
+            return;
+        }
+        var prev = String(rows[rows.length - 1][1] || '');
+        rows[rows.length - 1][1] = prev !== '' ? (prev + '\n' + text) : text;
+    }
+
+    for (var i = 0; i < lines.length; i++) {
+        var line = lines[i].replace(/\s+$/g, '');
+        var trimmed = line.trim();
+        if (trimmed === '') continue;
+        if (/^specifications?:?$/i.test(trimmed)) continue;
+
+        var numbered = trimmed.match(/^(\d+\.)\s*(.+)$/);
+        if (numbered) {
+            appendToLastValue(numbered[1] + ' ' + numbered[2]);
+            continue;
+        }
+
+        var sepIdx = trimmed.indexOf(':');
+        if (sepIdx >= 0) {
+            var label = trimmed.slice(0, sepIdx).replace(/\s+/g, ' ').trim();
+            var value = trimmed.slice(sepIdx + 1).replace(/\s+/g, ' ').trim();
+
+            if (label === '' && value !== '') {
+                appendToLastValue(value);
+            } else {
+                rows.push([label, value]);
+            }
+            continue;
+        }
+
+        appendToLastValue(trimmed.replace(/\s+/g, ' '));
+    }
+
+    if (rows.length === 0) {
+        customAlert('No specs text found to convert.');
+        return;
+    }
+
+    _specTableHasUserInput = true;
+    _specTableMode = 'standard';
+    _specTableLeadColumns = 1;
+    _specTableGroups = [];
+    _specTableMerges = [];
+    _specTableRowMerges = [];
+    _specTableSourceHtml = '';
+    _specTableHeaders = ['Parameter', 'Value'];
+    _specTableRows = rows.map(function(pair) {
+        return [String(pair[0] || ''), String(pair[1] || '')];
+    });
+
+    renderSpecTableBuilder();
+    syncSpecificationsHiddenField();
+}
+
 function hasGroupedTableContent() {
+    var leadCols = getGroupedLeadColumnCount();
     var hasCellData = _specTableRows.some(function(row) {
         return row.some(function(cell) { return String(cell || '').trim() !== ''; });
     });
 
     var hasCustomHeader = _specTableHeaders.some(function(h, idx) {
+        if (idx < leadCols && idx > 0) return String(h || '').trim() !== '';
         return !isDefaultGroupedHeader(h, idx);
     });
 
@@ -2916,10 +3686,14 @@ function hasGroupedTableContent() {
         if (!isFinite(span) || span < 1) span = 1;
 
         var defaultTitle = (idx === 0) ? 'free air' : ('group ' + (idx + 1));
-        return (title !== '' && title !== defaultTitle) || span !== 2;
+        return (title !== '' && title !== defaultTitle) || span !== 2 || !!(g && g.rowSpan);
     });
 
-    return hasCellData || hasCustomHeader || hasCustomGroup;
+    var hasCustomLead = leadCols !== 1;
+
+    var hasBodyRowMerge = Array.isArray(_specTableRowMerges) && _specTableRowMerges.length > 0;
+
+    return hasCellData || hasCustomHeader || hasCustomGroup || hasCustomLead || hasBodyRowMerge;
 }
 
 function syncSpecificationsHiddenField() {
@@ -2928,6 +3702,12 @@ function syncSpecificationsHiddenField() {
     if (!hiddenInput || !textArea) return;
 
     var textValue = String(textArea.value || '').trim();
+
+    // If user hasn't actively used the table builder and there's only text, save as plain text
+    if (!_specTableHasUserInput && _specTableRows.length === 1 && _specTableRows[0].every(function(cell) { return String(cell).trim() === ''; })) {
+        hiddenInput.value = textValue;
+        return;
+    }
 
     if (_specTableMode === 'grouped-pairs') {
         if (!hasGroupedTableContent()) {
@@ -2940,23 +3720,60 @@ function syncSpecificationsHiddenField() {
             text: textValue,
             tableMatrix: {
                 mode: 'grouped-pairs',
+                leadColumns: getGroupedLeadColumnCount(),
                 headers: _specTableHeaders.map(function(h){ return String(h || '').trim(); }),
                 groups: _specTableGroups.map(function(g){
                     return {
                         title: String((g && g.title) || '').trim(),
                         span: Math.max(1, parseInt(g && g.span, 10) || 1),
+                        rowSpan: !!(g && g.rowSpan),
                     };
                 }),
                 rows: _specTableRows.map(function(row) {
                     return row.map(function(cell) { return String(cell || '').trim(); });
+                }),
+                rowMerges: _specTableRowMerges.map(function(m) {
+                    return {
+                        row: Math.max(0, parseInt(m && m.row, 10) || 0),
+                        col: Math.max(0, parseInt(m && m.col, 10) || 0),
+                        rowSpan: Math.max(2, parseInt(m && m.rowSpan, 10) || 2),
+                    };
                 }),
             },
         });
         return;
     }
 
-    _specTableMerges = normalizeSpecTableMerges(_specTableMerges, _specTableRows.length, _specTableHeaders.length);
-    if (_specTableMerges.length > 0) {
+    if (_specTableSourceHtml !== '') {
+        hiddenInput.value = JSON.stringify({
+            format: 'andison_specs_v3',
+            text: textValue,
+            tables: [{
+                tableHtml: _specTableSourceHtml,
+                tableMatrix: {
+                    mode: 'standard',
+                    headers: _specTableHeaders.map(function(h){ return String(h || '').trim(); }),
+                    rows: _specTableRows.map(function(row) {
+                        return row.map(function(cell) { return String(cell || '').trim(); });
+                    }),
+                    merges: _specTableMerges.map(function(m) {
+                        return {
+                            row: Math.max(0, parseInt(m && m.row, 10) || 0),
+                            col: Math.max(1, parseInt(m && m.col, 10) || 1),
+                            span: Math.max(2, parseInt(m && m.span, 10) || 2),
+                        };
+                    }),
+                },
+            }],
+        });
+        return;
+    }
+
+    var hasStandardMerge = _specTableMerges.some(function(m) {
+        return m && isFinite(parseInt(m.row, 10)) && isFinite(parseInt(m.col, 10)) && (parseInt(m.span, 10) > 1);
+    });
+
+    if (hasStandardMerge) {
         hiddenInput.value = JSON.stringify({
             format: 'andison_specs_v2',
             text: textValue,
@@ -2964,10 +3781,14 @@ function syncSpecificationsHiddenField() {
                 mode: 'standard',
                 headers: _specTableHeaders.map(function(h){ return String(h || '').trim(); }),
                 rows: _specTableRows.map(function(row) {
-                    return row.map(function(cell) { return String(cell || ''); });
+                    return row.map(function(cell) { return String(cell || '').trim(); });
                 }),
                 merges: _specTableMerges.map(function(m) {
-                    return { row: m.row, col: m.col, span: m.span };
+                    return {
+                        row: Math.max(0, parseInt(m && m.row, 10) || 0),
+                        col: Math.max(1, parseInt(m && m.col, 10) || 1),
+                        span: Math.max(2, parseInt(m && m.span, 10) || 2),
+                    };
                 }),
             },
         });
@@ -2976,7 +3797,8 @@ function syncSpecificationsHiddenField() {
 
     var tableRows = matrixToSpecTableRows(_specTableHeaders, _specTableRows);
 
-    if (tableRows.length === 0) {
+    // Only convert to JSON if user explicitly used table builder or there's actual table data
+    if (!_specTableHasUserInput || tableRows.length === 0) {
         hiddenInput.value = textValue;
         return;
     }
@@ -2995,25 +3817,48 @@ function setSpecificationsEditor(rawSpecifications) {
 
     textArea.value = parsed.text;
 
+    // Track whether the original format had table data
+    _specTableHasUserInput = !!(parsed.matrix || (parsed.table && parsed.table.length > 0));
+
     if (parsed.matrix) {
         _specTableMode = parsed.matrix.mode === 'grouped-pairs' ? 'grouped-pairs' : 'standard';
         _specTableHeaders = parsed.matrix.headers;
         _specTableRows = parsed.matrix.rows;
+        _specTableSourceHtml = String(parsed.sourceHtml || '').trim();
         if (_specTableMode === 'grouped-pairs') {
-            _specTableGroups = normalizeGroupedGroups(parsed.matrix.groups || [], Math.max(1, _specTableHeaders.length - 1));
+            _specTableLeadColumns = parseInt(parsed.matrix.leadColumns, 10);
+            if (!isFinite(_specTableLeadColumns) || _specTableLeadColumns < 1) _specTableLeadColumns = 1;
+            _specTableGroups = normalizeGroupedGroups(parsed.matrix.groups || [], Math.max(1, _specTableHeaders.length - getGroupedLeadColumnCount()));
             _specTableMerges = [];
+            _specTableRowMerges = Array.isArray(parsed.matrix.rowMerges) ? parsed.matrix.rowMerges : [];
         } else {
+            _specTableLeadColumns = 1;
             _specTableGroups = [];
-            _specTableMerges = normalizeSpecTableMerges(parsed.matrix.merges || [], _specTableRows.length, _specTableHeaders.length);
+            _specTableMerges = Array.isArray(parsed.matrix.merges) ? parsed.matrix.merges : [];
+            _specTableRowMerges = [];
         }
-    } else {
+    } else if (parsed.table && parsed.table.length > 0) {
+        // User had table data, so populate table builder
         _specTableMode = 'standard';
+        _specTableLeadColumns = 1;
         _specTableGroups = [];
         _specTableMerges = [];
+        _specTableRowMerges = [];
+        _specTableSourceHtml = '';
 
         var matrix = specTableRowsToMatrix(parsed.table);
         _specTableHeaders = matrix.headers;
         _specTableRows = matrix.rows;
+    } else {
+        // Plain text only - don't populate table builder with defaults
+        _specTableMode = 'standard';
+        _specTableLeadColumns = 1;
+        _specTableGroups = [];
+        _specTableMerges = [];
+        _specTableRowMerges = [];
+        _specTableSourceHtml = '';
+        _specTableHeaders = ['Parameter', 'Value'];
+        _specTableRows = [['', '']];
     }
 
     renderSpecTableBuilder();
@@ -3021,8 +3866,9 @@ function setSpecificationsEditor(rawSpecifications) {
 }
 
 // ── Multi-image slot state ──────────────────────────────────────────────────
-var _existingUrls = ['','','','',''];
-var _previewUrls  = [null,null,null,null,null];
+var MAX_PRODUCT_IMAGES = <?php echo (int)$maxProductImages; ?>;
+var _existingUrls = Array(MAX_PRODUCT_IMAGES).fill('');
+var _previewUrls  = Array(MAX_PRODUCT_IMAGES).fill(null);
 
 function _esc(str) {
     var d = document.createElement('div');
@@ -3034,7 +3880,7 @@ function renderImageSlots() {
     var grid = document.getElementById('imageSlotGrid');
     if (!grid) return;
     grid.innerHTML = '';
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < MAX_PRODUCT_IMAGES; i++) {
         (function(idx) {
             var slot = document.createElement('div');
             var preview = _previewUrls[idx];
@@ -3120,8 +3966,7 @@ function handleBulkImageSelect(input) {
 
     var files = Array.prototype.slice.call(input.files);
     var validFiles = [];
-    var actionInput = document.querySelector('.edit-product-form [name="action"]');
-    var isAddMode = !!(actionInput && actionInput.value === 'add_product');
+
     for (var i = 0; i < files.length; i++) {
         var file = files[i];
         if (!file.type || !file.type.startsWith('image/')) continue;
@@ -3135,42 +3980,21 @@ function handleBulkImageSelect(input) {
         return;
     }
 
-    var targetSlots = [];
-    if (isAddMode) {
-        // In Add mode, every bulk selection should define the full slot order from scratch.
-        if (validFiles.length > 5) {
-            customAlert('You can upload up to 5 images only. First 5 files will be used.');
-            validFiles = validFiles.slice(0, 5);
-        }
+    if (validFiles.length > MAX_PRODUCT_IMAGES) {
+        customAlert('You can upload up to ' + MAX_PRODUCT_IMAGES + ' images only. First ' + MAX_PRODUCT_IMAGES + ' files will be used.');
+        validFiles = validFiles.slice(0, MAX_PRODUCT_IMAGES);
+    }
 
-        _existingUrls = ['','','','',''];
-        _previewUrls = [null,null,null,null,null];
-        for (var c = 0; c < 5; c++) {
-            var clearInput = document.getElementById('imageFile_' + c);
-            if (clearInput) clearInput.value = '';
-        }
+    var emptySlots = [];
+    for (var s = 0; s < MAX_PRODUCT_IMAGES; s++) {
+        if (!_previewUrls[s]) emptySlots.push(s);
+    }
 
-        for (var a = 0; a < validFiles.length; a++) {
-            targetSlots.push(a);
+    var targetSlots = emptySlots.slice(0, validFiles.length);
+    if (targetSlots.length < validFiles.length) {
+        for (var t = 0; t < MAX_PRODUCT_IMAGES && targetSlots.length < validFiles.length; t++) {
+            if (targetSlots.indexOf(t) === -1) targetSlots.push(t);
         }
-    } else {
-        var emptySlots = [];
-        for (var s = 0; s < 5; s++) {
-            if (!_previewUrls[s]) emptySlots.push(s);
-        }
-
-        if (emptySlots.length === 0) {
-            customAlert('All 5 image slots are already filled. Remove one first to add a new image.');
-            input.value = '';
-            return;
-        }
-
-        if (validFiles.length > emptySlots.length) {
-            customAlert('Only ' + emptySlots.length + ' slot(s) left. Extra selected files will be ignored.');
-            validFiles = validFiles.slice(0, emptySlots.length);
-        }
-
-        targetSlots = emptySlots.slice(0, validFiles.length);
     }
 
     var assignFailed = false;
@@ -3233,15 +4057,15 @@ function openEditModal(index, name, model, type, price, badge, description, spec
     setDatasheetPreview(datasheet || '');
 
     // Populate image slots
-    _existingUrls = ['','','','',''];
-    _previewUrls  = [null,null,null,null,null];
+    _existingUrls = Array(MAX_PRODUCT_IMAGES).fill('');
+    _previewUrls  = Array(MAX_PRODUCT_IMAGES).fill(null);
     var imgArr = [];
     try { imgArr = JSON.parse(imagesJson || '[]'); } catch(e) {}
     if (!Array.isArray(imgArr) || imgArr.length === 0) { imgArr = image ? [image] : []; }
-    for (var ii = 0; ii < Math.min(imgArr.length, 5); ii++) {
+    for (var ii = 0; ii < Math.min(imgArr.length, MAX_PRODUCT_IMAGES); ii++) {
         if (imgArr[ii]) { _existingUrls[ii] = imgArr[ii]; _previewUrls[ii] = imgArr[ii]; }
     }
-    for (var jj = 0; jj < 5; jj++) {
+    for (var jj = 0; jj < MAX_PRODUCT_IMAGES; jj++) {
         var fi = document.getElementById('imageFile_' + jj);
         if (fi) fi.value = '';
     }
@@ -3393,9 +4217,9 @@ function openAddProductModal() {
     // Clear datasheet
     setDatasheetPreview('');
     // Clear image slots
-    _existingUrls = ['','','','',''];
-    _previewUrls  = [null,null,null,null,null];
-    for (var _s = 0; _s < 5; _s++) { var _fi = document.getElementById('imageFile_' + _s); if (_fi) _fi.value = ''; }
+    _existingUrls = Array(MAX_PRODUCT_IMAGES).fill('');
+    _previewUrls  = Array(MAX_PRODUCT_IMAGES).fill(null);
+    for (var _s = 0; _s < MAX_PRODUCT_IMAGES; _s++) { var _fi = document.getElementById('imageFile_' + _s); if (_fi) _fi.value = ''; }
     var _bulkInput = document.getElementById('bulkImageFiles');
     if (_bulkInput) _bulkInput.value = '';
     renderImageSlots();
