@@ -20,7 +20,7 @@ foreach ($categories as $cat) {
         $current_category = $cat;
         break;
     }
-}
+}   
 
 if (!$current_category) {
     die("Category not found");

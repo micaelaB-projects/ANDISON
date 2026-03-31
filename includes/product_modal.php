@@ -347,6 +347,15 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
     text-justify: inter-word;
 }
 
+#prodDetailDesc .prod-desc-image {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 10px 0 14px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
 #prodDetailSpecsText .prod-specs-list {
     margin: 0;
     padding-left: 20px;
@@ -614,6 +623,12 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         return String(value || '').replace(/\s+/g, ' ').trim();
     }
 
+    function decodeHtmlEntities(value) {
+        var txt = document.createElement('textarea');
+        txt.innerHTML = String(value || '');
+        return txt.value;
+    }
+
     function normalizeModalKey(value) {
         return normalizeModalText(value).toLowerCase().replace(/[^a-z0-9]+/g, '');
     }
@@ -678,6 +693,98 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
             .replace(/\r\n?/g, '\n')
             .replace(/\u00A0/g, ' ')
             .replace(/[\u200B-\u200D\uFEFF]/g, '');
+
+        var decoded = decodeHtmlEntities(normalized).trim();
+
+        function sanitizeDescriptionHtml(rawHtml) {
+            var parser = new DOMParser();
+            var doc = parser.parseFromString('<div>' + rawHtml + '</div>', 'text/html');
+            var sourceRoot = doc.body.firstElementChild;
+            if (!sourceRoot) return '';
+
+            var outDoc = document.implementation.createHTMLDocument('');
+            var outRoot = outDoc.createElement('div');
+            var allowedTags = {
+                p: true,
+                br: true,
+                ul: true,
+                ol: true,
+                li: true,
+                strong: true,
+                b: true,
+                em: true,
+                i: true,
+                u: true,
+                img: true,
+            };
+
+            function isSafeImageSrc(src) {
+                var value = String(src || '').trim();
+                if (value === '') return false;
+                if (/^https?:\/\//i.test(value)) return true;
+                if (value.indexOf('/') === 0) return true;
+                if (value.indexOf('./') === 0 || value.indexOf('../') === 0) return true;
+                if (value.indexOf('assets/') === 0 || value.indexOf('andison/assets/') === 0) return true;
+                return false;
+            }
+
+            function sanitizeNode(node, parent) {
+                if (!node) return;
+
+                if (node.nodeType === Node.TEXT_NODE) {
+                    parent.appendChild(outDoc.createTextNode(String(node.nodeValue || '')));
+                    return;
+                }
+
+                if (node.nodeType !== Node.ELEMENT_NODE) {
+                    return;
+                }
+
+                var tag = String(node.tagName || '').toLowerCase();
+                if (!allowedTags[tag]) {
+                    var children = Array.prototype.slice.call(node.childNodes || []);
+                    children.forEach(function(child) { sanitizeNode(child, parent); });
+                    return;
+                }
+
+                var normalizedTag = tag;
+                if (tag === 'b') normalizedTag = 'strong';
+                if (tag === 'i') normalizedTag = 'em';
+
+                var safeEl = outDoc.createElement(normalizedTag);
+
+                if (normalizedTag === 'img') {
+                    var src = String(node.getAttribute('src') || '').trim();
+                    if (!isSafeImageSrc(src)) {
+                        return;
+                    }
+                    safeEl.setAttribute('src', src);
+                    safeEl.setAttribute('alt', String(node.getAttribute('alt') || '').trim());
+                    safeEl.setAttribute('loading', 'lazy');
+                    safeEl.setAttribute('decoding', 'async');
+                    safeEl.className = 'prod-desc-image';
+                    parent.appendChild(safeEl);
+                    return;
+                }
+
+                var safeChildren = Array.prototype.slice.call(node.childNodes || []);
+                safeChildren.forEach(function(child) { sanitizeNode(child, safeEl); });
+                parent.appendChild(safeEl);
+            }
+
+            Array.prototype.slice.call(sourceRoot.childNodes || []).forEach(function(node) {
+                sanitizeNode(node, outRoot);
+            });
+
+            return outRoot.innerHTML.trim();
+        }
+
+        if (/<\s*(img|p|ul|ol|li|br|strong|em|b|i|u)\b/i.test(decoded)) {
+            var sanitizedHtml = sanitizeDescriptionHtml(decoded);
+            if (sanitizedHtml !== '') {
+                return sanitizedHtml;
+            }
+        }
 
         var lines = normalized.split('\n');
         var htmlParts = [];

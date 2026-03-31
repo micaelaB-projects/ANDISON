@@ -59,6 +59,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $buttonUrl = (string)($_POST['button_url'] ?? '');
     $imageAlt = (string)($_POST['image_alt'] ?? '');
     $mediaType = (string)($_POST['media_type'] ?? 'picture');
+    $allowedMediaTypes = ['picture', 'youtube', 'video', 'promo'];
+    if (!in_array($mediaType, $allowedMediaTypes, true)) {
+        $mediaType = 'picture';
+    }
     $youtubeUrl = (string)($_POST['youtube_url'] ?? '');
     $eventDate = (string)($_POST['event_date'] ?? '');
     $eventLocation = (string)($_POST['event_location'] ?? '');
@@ -69,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $newVideoPath = $featured['video_file'] ?? '';
     $newYoutubeEmbed = '';
 
-    if ($mediaType === 'picture' && isset($_FILES['image']) && andison_admin_is_upload($_FILES['image'])) {
+    if (in_array($mediaType, ['picture', 'promo'], true) && isset($_FILES['image']) && andison_admin_is_upload($_FILES['image'])) {
         $stored = andison_admin_store_featured_image(
             $_FILES['image'],
             dirname(__DIR__) . '/assets/uploads/home/featured'
@@ -179,10 +183,16 @@ andison_admin_header('Homepage Featured', 'featured');
                         <label for="media_type">Media Type</label>
                         <select id="media_type" name="media_type" class="feat-input" style="cursor:pointer;">
                             <option value="picture" <?php echo ($featured['media_type'] ?? 'picture') === 'picture' ? 'selected' : ''; ?>>Picture</option>
+                            <option value="promo" <?php echo ($featured['media_type'] ?? '') === 'promo' ? 'selected' : ''; ?>>Promotional Ad</option>
                             <option value="youtube" <?php echo ($featured['media_type'] ?? '') === 'youtube' ? 'selected' : ''; ?>>YouTube Video</option>
                             <option value="video" <?php echo ($featured['media_type'] ?? '') === 'video' ? 'selected' : ''; ?>>Video File</option>
                         </select>
                     </div>
+                </div>
+
+                <div id="promo_note" style="display:<?php echo (($featured['media_type'] ?? '') === 'promo') ? 'block' : 'none'; ?>;margin-top:10px;padding:10px 12px;border:1px solid #fde68a;background:#fffbeb;border-radius:8px;color:#92400e;font-size:12px;">
+                    <i class="bi bi-megaphone-fill" style="margin-right:6px;"></i>
+                    Promotional Ad mode uses your sales fields and CTA button to highlight promos on the homepage.
                 </div>
 
                 <div class="field" style="margin:0 0 14px;">
@@ -261,7 +271,7 @@ andison_admin_header('Homepage Featured', 'featured');
                 <div class="feat-preview-box" id="preview_container" title="Click to view full size">
                     <?php
                     $mType = $featured['media_type'] ?? 'picture';
-                        if ($mType === 'picture'):
+                        if ($mType === 'picture' || $mType === 'promo'):
                             $imgPath = (string)($featured['image'] ?? '');
                             $displayImgPath = $imgPath;
                             // Convert andison/assets/... to ../assets/... for admin display
@@ -295,7 +305,7 @@ andison_admin_header('Homepage Featured', 'featured');
                 </div>
 
                 <!-- Upload Fields -->
-                <div id="field_picture" style="display:<?php echo ($mType === 'picture') ? 'block' : 'none'; ?>;">
+                <div id="field_picture" style="display:<?php echo ($mType === 'picture' || $mType === 'promo') ? 'block' : 'none'; ?>;">
                     <div class="feat-upload-zone" onclick="document.getElementById('image').click();">
                         <i class="bi bi-cloud-upload uz-icon"></i>
                         <div class="uz-title">Click to upload picture</div>
@@ -366,6 +376,7 @@ document.getElementById('featuredForm').addEventListener('submit', function(e){
     var fieldPicture = document.getElementById('field_picture');
     var fieldYoutube = document.getElementById('field_youtube');
     var fieldVideo = document.getElementById('field_video');
+    var promoNote = document.getElementById('promo_note');
     var previewContainer = document.getElementById('preview_container');
 
     var imageInput = document.getElementById('image');
@@ -374,9 +385,10 @@ document.getElementById('featuredForm').addEventListener('submit', function(e){
 
     function updateMediaFields() {
         var type = mediaTypeSelect.value;
-        fieldPicture.style.display = type === 'picture' ? 'flex' : 'none';
+        fieldPicture.style.display = (type === 'picture' || type === 'promo') ? 'flex' : 'none';
         fieldYoutube.style.display = type === 'youtube' ? 'flex' : 'none';
         fieldVideo.style.display = type === 'video' ? 'flex' : 'none';
+        promoNote.style.display = type === 'promo' ? 'block' : 'none';
     }
 
     mediaTypeSelect.addEventListener('change', updateMediaFields);

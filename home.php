@@ -1964,7 +1964,7 @@ $ytLinks = andison_get_youtube_links();
                 <div class="featured-image">
                     <?php 
                         $mType = $featured['media_type'] ?? 'picture';
-                        if ($mType === 'picture'):
+                        if ($mType === 'picture' || $mType === 'promo'):
                             $imgPath = (string)($featured['image'] ?? '');
                             if ($imgPath !== ''):
                     ?>
