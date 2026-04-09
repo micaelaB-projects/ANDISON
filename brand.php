@@ -1,4 +1,9 @@
 <?php
+if (!headers_sent()) {
+    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+    header('Pragma: no-cache');
+    header('Expires: 0');
+}
 require_once __DIR__ . '/Andison/includes/analytics.php';
 andison_track_visit('brand');
 $_btrack = isset($_GET['name']) ? trim(strip_tags($_GET['name'])) : '';
@@ -13,6 +18,212 @@ $slides = andison_get_home_slider();
 $ytLinks = andison_get_youtube_links();
 
 $brand_name = isset($_GET['name']) ? htmlspecialchars(trim(strip_tags($_GET['name']))) : 'Brand';
+
+if (!function_exists('andison_brand_lookup_candidates')) {
+    function andison_brand_lookup_candidates(string $brand): array
+    {
+        $brand = trim($brand);
+        if ($brand === '') {
+            return [];
+        }
+
+        $normalized = strtolower($brand);
+        $candidates = [$brand];
+
+        if ($normalized === 'panasonic' || $normalized === 'panasonic connect') {
+            $candidates[] = 'Panasonic Connect';
+            $candidates[] = 'PANASONIC';
+        }
+
+        if ($normalized === 'dryrod. ii' || $normalized === 'dryrod ii' || $normalized === 'phoenix dryrod' || $normalized === 'phoenix dry rod') {
+            $candidates[] = 'DryRod. II';
+            $candidates[] = 'DryRod II';
+            $candidates[] = 'Phoenix Dry Rod';
+            $candidates[] = 'PHOENIX DRY ROD';
+            $candidates[] = 'PHOENIX DRYROD';
+        }
+
+        if ($normalized === 'bw' || $normalized === 'bw technologies') {
+            $candidates[] = 'BW';
+            $candidates[] = 'BW Technologies';
+            $candidates[] = 'BW TECHNOLOGIES';
+        }
+
+        if ($normalized === 'rae' || $normalized === 'rac' || $normalized === 'rae systems') {
+            $candidates[] = 'RAE SYSTEMS';
+            $candidates[] = 'RAC';
+            $candidates[] = 'RAE';
+        }
+
+        if ($normalized === 'weller' || $normalized === 'weiler') {
+            $candidates[] = 'WEILER';
+            $candidates[] = 'Weiler';
+            $candidates[] = 'Weller';
+        }
+
+        if ($normalized === 'robot systems' || $normalized === 'robot systems peripherals' || $normalized === 'robot system peripherals') {
+            $candidates[] = 'Robot Systems';
+            $candidates[] = 'ROBOT SYSTEMS';
+            $candidates[] = 'Robot Systems Peripherals';
+            $candidates[] = 'ROBOT SYSTEMS PERIPHERALS';
+            $candidates[] = 'Robot System Peripherals';
+            $candidates[] = 'ROBOT SYSTEM PERIPHERALS';
+        }
+
+        $seen = [];
+        $unique = [];
+        foreach ($candidates as $candidate) {
+            $key = strtolower(trim((string)$candidate));
+            if ($key === '' || isset($seen[$key])) {
+                continue;
+            }
+            $seen[$key] = true;
+            $unique[] = (string)$candidate;
+        }
+
+        return $unique;
+    }
+}
+
+if (!function_exists('andison_brand_display_label_public')) {
+    function andison_brand_display_label_public(string $brand): string
+    {
+        $normalized = strtolower(trim($brand));
+        if ($normalized === 'dryrod. ii' || $normalized === 'dryrod ii' || $normalized === 'phoenix dryrod' || $normalized === 'phoenix dry rod') {
+            return 'DryRod. II';
+        }
+        if ($normalized === 'bw' || $normalized === 'bw technologies') {
+            return 'BW Technologies';
+        }
+        if ($normalized === 'ansell') {
+            return 'ANSELL';
+        }
+        if ($normalized === 'panasonic' || $normalized === 'panasonic connect') {
+            return 'Panasonic Connect';
+        }
+        if ($normalized === 'rae' || $normalized === 'rac' || $normalized === 'rae systems') {
+            return 'RAE SYSTEMS';
+        }
+        if ($normalized === 'weller' || $normalized === 'weiler') {
+            return 'WEILER';
+        }
+        if ($normalized === 'robot systems peripherals' || $normalized === 'robot systems' || $normalized === 'robot system peripherals') {
+            return 'Robot Systems';
+        }
+        return $brand;
+    }
+}
+
+if (!function_exists('andison_pick_brand_info_bucket')) {
+    function andison_pick_brand_info_bucket(array $allBrands, array $candidates): string
+    {
+        if (empty($allBrands) || empty($candidates)) {
+            return '';
+        }
+
+        // Exact key with products first
+        foreach ($candidates as $candidate) {
+            if (isset($allBrands[$candidate]) && !empty($allBrands[$candidate]['products'])) {
+                return (string)$candidate;
+            }
+        }
+
+        // Case-insensitive key with products
+        foreach ($candidates as $candidate) {
+            $needle = strtolower(trim((string)$candidate));
+            foreach ($allBrands as $key => $info) {
+                if (strtolower((string)$key) === $needle && !empty($info['products'])) {
+                    return (string)$key;
+                }
+            }
+        }
+
+        // Exact key fallback
+        foreach ($candidates as $candidate) {
+            if (isset($allBrands[$candidate])) {
+                return (string)$candidate;
+            }
+        }
+
+        // Case-insensitive fallback
+        foreach ($candidates as $candidate) {
+            $needle = strtolower(trim((string)$candidate));
+            foreach ($allBrands as $key => $_info) {
+                if (strtolower((string)$key) === $needle) {
+                    return (string)$key;
+                }
+            }
+        }
+
+        return '';
+    }
+}
+
+if (!function_exists('andison_normalize_badge_label')) {
+    function andison_normalize_badge_label($rawBadge): string
+    {
+        $badge = trim((string)$rawBadge);
+        if ($badge === '') {
+            return '';
+        }
+
+        $normalized = strtolower(preg_replace('/\s+/', ' ', $badge) ?? $badge);
+        if ($normalized === '-' || $normalized === '-- none --' || $normalized === 'none' || $normalized === 'n/a') {
+            return '';
+        }
+
+        if ($normalized === 'new arrival' || $normalized === 'new') {
+            return 'New';
+        }
+        if ($normalized === 'available' || $normalized === 'in stock' || $normalized === 'instock') {
+            return 'Available';
+        }
+        if ($normalized === 'not available' || $normalized === 'unavailable' || $normalized === 'out of stock') {
+            return 'Not Available';
+        }
+        if ($normalized === 'featured') {
+            return 'Featured';
+        }
+        if ($normalized === 'best seller' || $normalized === 'bestseller') {
+            return 'Best Seller';
+        }
+        if ($normalized === 'limited stock' || $normalized === 'limited') {
+            return 'Limited Stock';
+        }
+
+        return $badge;
+    }
+}
+
+if (!function_exists('andison_render_brand_description')) {
+    function andison_render_brand_description($rawDescription): string
+    {
+        $value = trim((string)$rawDescription);
+        if ($value === '') {
+            return '';
+        }
+
+        $value = preg_replace('~<(script|style|iframe|object|embed|form|input|button|textarea|select)[^>]*>.*?</\\1>~is', '', $value) ?? $value;
+        $value = preg_replace('/\son[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $value) ?? $value;
+        $allowed = '<p><br><strong><b><em><i><u><ul><ol><li><a><span><div><table><thead><tbody><tfoot><tr><th><td><img>';
+        $safeHtml = strip_tags($value, $allowed);
+        $safeHtml = preg_replace_callback('/\s(href|src)\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', static function (array $m): string {
+            $attr = strtolower((string)$m[1]);
+            $uri = trim((string)$m[2], "\"'");
+            $check = strtolower(trim($uri));
+            if (str_starts_with($check, 'javascript:') || str_starts_with($check, 'data:text/html')) {
+                $uri = '#';
+            }
+            return ' ' . $attr . '="' . htmlspecialchars($uri, ENT_QUOTES) . '"';
+        }, $safeHtml) ?? $safeHtml;
+
+        if (strip_tags($value) === $value) {
+            return nl2br(htmlspecialchars($value));
+        }
+
+        return trim($safeHtml);
+    }
+}
 
 // Map brand names to logo filenames
 $logo_map = [
@@ -72,25 +283,50 @@ $logo_file = isset($logo_map[$canonical_brand_name]) ? $logo_map[$canonical_bran
 $png_brands = ['ROBOT SYSTEMS', 'WELDCRAFT', 'REVOLT', 'TECHNOTEX'];
 $logo_ext = in_array($logo_file, $png_brands) ? 'png' : 'jpg';
 
-$brands_info_data = andison_get_brands_info();
-// Case-insensitive lookup: try exact match first with canonical name, then case-insensitive
-if (isset($brands_info_data[$canonical_brand_name])) {
-    $brand_info = $brands_info_data[$canonical_brand_name];
+$brands_info_data = andison_get_brands_info(true);
+$brandDisplayToKey = [];
+foreach (array_keys($brands_info_data) as $brandKey) {
+    $display = andison_brand_display_label_public((string)$brandKey);
+    $displayKey = strtolower(trim($display));
+    if ($displayKey === '') {
+        continue;
+    }
+
+    if (!isset($brandDisplayToKey[$displayKey])) {
+        $brandDisplayToKey[$displayKey] = (string)$brandKey;
+        continue;
+    }
+
+    $currentKey = $brandDisplayToKey[$displayKey];
+    $currentCount = count($brands_info_data[$currentKey]['products'] ?? []);
+    $newCount = count($brands_info_data[$brandKey]['products'] ?? []);
+    if ($newCount > $currentCount) {
+        $brandDisplayToKey[$displayKey] = (string)$brandKey;
+    }
+}
+
+$requestedDisplayKey = strtolower(trim(andison_brand_display_label_public($brand_name)));
+$resolvedBrandKey = '';
+if (isset($brandDisplayToKey[$requestedDisplayKey])) {
+    $resolvedBrandKey = (string)$brandDisplayToKey[$requestedDisplayKey];
+}
+
+$lookupCandidates = andison_brand_lookup_candidates($brand_name);
+if ($canonical_brand_name !== $brand_name) {
+    $lookupCandidates = array_merge($lookupCandidates, andison_brand_lookup_candidates($canonical_brand_name));
+}
+
+if ($resolvedBrandKey === '') {
+    $resolvedBrandKey = andison_pick_brand_info_bucket($brands_info_data, $lookupCandidates);
+}
+
+if ($resolvedBrandKey !== '' && isset($brands_info_data[$resolvedBrandKey])) {
+    $brand_info = $brands_info_data[$resolvedBrandKey];
 } else {
-    $brand_info = null;
-    $canonical_name_lower = strtolower($canonical_brand_name);
-    foreach ($brands_info_data as $key => $val) {
-        if (strtolower($key) === $canonical_name_lower) {
-            $brand_info = $val;
-            break;
-        }
-    }
-    if ($brand_info === null) {
-        $brand_info = [
-            'description' => 'High-quality industrial products and solutions.',
-            'products'    => [],
-        ];
-    }
+    $brand_info = [
+        'description' => 'High-quality industrial products and solutions.',
+        'products'    => [],
+    ];
 }
 $brand_products = $brand_info['products'] ?? [];
 
@@ -2217,6 +2453,22 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             font-size: 14px;
             color: #666;
         }
+        .brand-header-desc table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+        }
+        .brand-header-desc th,
+        .brand-header-desc td {
+            border: 1px solid #d1d5db;
+            padding: 7px 9px;
+            vertical-align: top;
+            text-align: left;
+        }
+        .brand-header-desc img {
+            max-width: 100%;
+            height: auto;
+        }
 
         /* Products Section */
         .brand-products-section {
@@ -2693,7 +2945,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                     <div class="brand-header-tagline"><?php echo htmlspecialchars($brand_info['tagline']); ?></div>
                     <?php endif; ?>
                     <div class="brand-header-name"><?php echo $brand_name; ?></div>
-                    <div class="brand-header-desc"><?php echo htmlspecialchars($brand_info['description']); ?></div>
+                    <div class="brand-header-desc"><?php echo andison_render_brand_description($brand_info['description'] ?? ''); ?></div>
                 </div>
             </div>
 
@@ -2757,7 +3009,8 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                                 if (preg_match('/^andison\/assets\/brands/i', $img) && !preg_match('/^andison\/assets\/uploads/i', $img)) {
                                     $img = preg_replace('/^andison\//i', '', $img);
                                 }
-                                $badge        = is_array($product) ? (string)($product['badge']          ?? '') : '';
+                                $raw_badge    = is_array($product) ? ($product['badge'] ?? ($product['status'] ?? ($product['availability'] ?? ''))) : '';
+                                $badge        = andison_normalize_badge_label($raw_badge);
                                 $product_name = is_array($product) ? (string)($product['product_name']   ?? '') : '';
                                 $description  = is_array($product) ? (string)($product['description']    ?? '') : '';
                                 $card_subtitle = trim($product_name);
@@ -2782,6 +3035,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                             <div class="brand-product-card"
                                  data-model="<?php echo htmlspecialchars($model, ENT_QUOTES); ?>"
                                  data-type="<?php echo htmlspecialchars($type, ENT_QUOTES); ?>"
+                                   data-badge="<?php echo htmlspecialchars($badge, ENT_QUOTES); ?>"
                                  data-brand="<?php echo htmlspecialchars($brand_name, ENT_QUOTES); ?>"
                                  data-image="<?php echo htmlspecialchars($img, ENT_QUOTES); ?>"
                                  data-images="<?php echo $imgs_json; ?>"
@@ -2804,7 +3058,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                                 </div>
                                 <div class="brand-product-info">
                                     <?php if ($badge): ?>
-                                        <span style="font-size:11px;background:#2B11DB;color:#fff;padding:2px 7px;border-radius:3px;margin-bottom:6px;display:inline-block;"><?php echo htmlspecialchars($badge); ?></span>
+                                        <span data-role="product-badge" style="font-size:11px;background:#2B11DB;color:#fff;padding:2px 7px;border-radius:3px;margin-bottom:6px;display:inline-block;"><?php echo htmlspecialchars($badge); ?></span>
                                     <?php endif; ?>
                                     <div class="brand-product-name"><?php echo htmlspecialchars($model); ?></div>
                                     <?php if ($card_subtitle !== ''): ?>
@@ -2979,8 +3233,40 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             // Count
             if (countEl) countEl.textContent = 'Showing ' + visible.length + ' product' + (visible.length !== 1 ? 's' : '');
 
+            // Ensure badges remain visible even if any external script modifies card internals.
+            ensureCardBadges(allCards);
+
             // Build pagination
             buildPagination(totalPages, visible.length);
+        }
+
+        function ensureCardBadges(cards){
+            (cards || []).forEach(function(card){
+                if (!card) return;
+                var badgeVal = (card.getAttribute('data-badge') || '').trim();
+                var info = card.querySelector('.brand-product-info');
+                if (!info) return;
+
+                var existing = info.querySelector('[data-role="product-badge"]');
+                if (badgeVal === '') {
+                    if (existing) existing.remove();
+                    return;
+                }
+
+                if (!existing) {
+                    existing = document.createElement('span');
+                    existing.setAttribute('data-role', 'product-badge');
+                    var nameNode = info.querySelector('.brand-product-name');
+                    if (nameNode) {
+                        info.insertBefore(existing, nameNode);
+                    } else {
+                        info.prepend(existing);
+                    }
+                }
+
+                existing.textContent = badgeVal;
+                existing.style.cssText = 'font-size:11px;background:#2B11DB;color:#fff;padding:2px 7px;border-radius:3px;margin-bottom:6px;display:inline-block;';
+            });
         }
 
         function buildPagination(totalPages, total){
@@ -3075,6 +3361,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
 
         // Initial render
         renderPage();
+        ensureCardBadges(allCards);
     })();
     </script>
 

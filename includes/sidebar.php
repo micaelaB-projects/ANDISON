@@ -2059,7 +2059,21 @@ if ($category_idx !== null) {
         fab.addEventListener('click', function(e){
             e.stopPropagation();
             if(!isMobile()) return;
-            sidebar.classList.toggle('mobile-visible');
+            var isOpen = sidebar.classList.contains('mobile-visible');
+            var isExpanded = sidebar.classList.contains('expanded');
+
+            if(!isOpen){
+                // First tap: open and expand directly for easier mobile access.
+                sidebar.classList.add('mobile-visible');
+                sidebar.classList.add('expanded');
+            } else if(!isExpanded){
+                // If visible but collapsed, expand without closing.
+                sidebar.classList.add('expanded');
+            } else {
+                // If already open and expanded, close cleanly.
+                sidebar.classList.remove('expanded');
+                sidebar.classList.remove('mobile-visible');
+            }
             syncFab();
         });
         new MutationObserver(function(){ syncFab(); }).observe(sidebar, { attributes: true, attributeFilter: ['class'] });

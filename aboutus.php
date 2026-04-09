@@ -29,10 +29,6 @@ $ytLinks = andison_get_youtube_links();
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            padding-top: 142px;
-            min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
@@ -496,9 +492,9 @@ $ytLinks = andison_get_youtube_links();
         }
 
         nav li:nth-child(3) .nav-dropdown {
-            min-width: 650px;
-            max-width: 650px;
-            padding: 24px 28px;
+            min-width: 576px;
+            max-width: 576px;
+            padding: 20px 22px;
         }
 
         .nav-dropdown ul a {
@@ -515,12 +511,12 @@ $ytLinks = andison_get_youtube_links();
         nav li:nth-child(3) .nav-dropdown ul {
             display: grid !important;
             grid-template-columns: repeat(5, 1fr) !important;
-            gap: 12px 20px !important;
-            margin-top: 16px !important;
+            gap: 10px 14px !important;
+            margin-top: 14px !important;
         }
 
         nav li:nth-child(3) .nav-dropdown ul li {
-            min-height: 70px;
+            min-height: 58px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -531,12 +527,12 @@ $ytLinks = andison_get_youtube_links();
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            min-height: 60px !important;
+            min-height: 50px !important;
         }
 
         nav li:nth-child(3) .nav-dropdown ul a img {
-            max-width: 85px;
-            max-height: 45px;
+            max-width: 74px;
+            max-height: 37px;
             object-fit: contain;
             display: block;
             pointer-events: all;
@@ -1372,8 +1368,6 @@ $ytLinks = andison_get_youtube_links();
                 flex-wrap: wrap;
             }
 
-            .nav-inner::-webkit-scrollbar { display: none; }
-
             .nav-list {
                 gap: 0;
                 flex-wrap: wrap;
@@ -1875,10 +1869,6 @@ $ytLinks = andison_get_youtube_links();
             .sidebar {
                 position: static;
             }
-            .nav-inner { padding-left: 50px; padding-right: 6px; min-height: 40px; overflow-x: auto; overflow-y: visible; justify-content: flex-start; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-            .nav-inner::-webkit-scrollbar { display: none; }
-            .nav-list { position: static; transform: none; left: auto; flex-wrap: nowrap; flex-shrink: 0; gap: 0; }
-            .browse-toggle { position: static; transform: none; left: auto; top: auto; padding: 6px 10px; }
         }
 
         /* Global animation utilities (shared) */
@@ -2372,7 +2362,7 @@ $ytLinks = andison_get_youtube_links();
                                 <li><a href="brand.php?name=Alfra"><img src="assets/brands/ALFRA.jpg" alt="Alfra" title="Alfra"></a></li>
                                 <li><a href="brand.php?name=BOSCH"><img src="assets/brands/BOSCH.jpg" alt="Bosch" title="Bosch"></a></li>
                                 <li><a href="brand.php?name=Makita"><img src="assets/brands/MAKITA.jpg" alt="Makita" title="Makita"></a></li>
-                                <li><a href="brand.php?name=Weller"><img src="assets/brands/WEILER.jpg" alt="Weller" title="Weller"></a></li>
+                                <li><a href="brand.php?name=WEILER"><img src="assets/brands/WEILER.jpg" alt="WEILER" title="WEILER"></a></li>
                                 <li><a href="brand.php?name=Garryson"><img src="assets/brands/GARRYSON.jpg" alt="Garryson" title="Garryson"></a></li>
                                 <li><a href="brand.php?name=REVOLT"><img src="assets/brands/REVOLT.png" alt="REVOLT" title="REVOLT"></a></li>
                                 <li><a href="brand.php?name=Technotex"><img src="assets/brands/TECHNOTEX.png" alt="Technotex" title="Technotex"></a></li>
@@ -2436,8 +2426,7 @@ $ytLinks = andison_get_youtube_links();
     <!-- Hero Banner -->
     <div class="about-hero">
         <h1>About Andison Industrial</h1>
-        <p>Leading provider of high-quality industrial solutions and equipment</p>
-        <p class="hero-tagline">serving the Philippines for over two decades</p>
+       
     </div>
 
     <!-- Building Photo -->
@@ -2551,7 +2540,7 @@ $ytLinks = andison_get_youtube_links();
                     <a href="brand.php?name=Alfra" class="brands-carousel-item"><img src="assets/brands/ALFRA.jpg" alt="Alfra"></a>
                     <a href="brand.php?name=BOSCH" class="brands-carousel-item"><img src="assets/brands/BOSCH.jpg" alt="Bosch"></a>
                     <a href="brand.php?name=Makita" class="brands-carousel-item"><img src="assets/brands/MAKITA.jpg" alt="Makita"></a>
-                    <a href="brand.php?name=Weller" class="brands-carousel-item"><img src="assets/brands/WEILER.jpg" alt="Weller"></a>
+                    <a href="brand.php?name=WEILER" class="brands-carousel-item"><img src="assets/brands/WEILER.jpg" alt="WEILER"></a>
                     <a href="brand.php?name=Garryson" class="brands-carousel-item"><img src="assets/brands/GARRYSON.jpg" alt="Garryson"></a>
                     <a href="brand.php?name=REVOLT" class="brands-carousel-item"><img src="assets/brands/REVOLT.png" alt="REVOLT"></a>
                     <a href="brand.php?name=Technotex" class="brands-carousel-item"><img src="assets/brands/TECHNOTEX.png" alt="Technotex"></a>
@@ -3142,40 +3131,6 @@ $ytLinks = andison_get_youtube_links();
         })();
     </script>
 
-
-    <script>
-        // Mobile FAB toggle for mini sidebar
-        (function() {
-            var fab = document.getElementById('mobileSidebarFab');
-            var sidebar = document.getElementById('miniSidebar');
-            var fabIcon = document.getElementById('mobileFabIcon');
-            if (!fab || !sidebar) return;
-
-            function isMobile() { return window.innerWidth <= 768; }
-
-            function syncFab() {
-                if (!isMobile()) { fab.classList.remove('open', 'wide'); return; }
-                var isOpen = sidebar.classList.contains('mobile-visible');
-                var isExpanded = sidebar.classList.contains('expanded');
-                fab.classList.toggle('open', isOpen);
-                fab.classList.toggle('wide', isOpen && isExpanded);
-                fabIcon.className = isOpen ? 'bi bi-chevron-left' : 'bi bi-chevron-right';
-            }
-
-            fab.addEventListener('click', function(e) {
-                e.stopPropagation();
-                if (!isMobile()) return;
-                sidebar.classList.toggle('mobile-visible');
-                syncFab();
-            });
-
-            // Keep FAB in sync when sidebar expand/collapse changes its width
-            var observer = new MutationObserver(function() { syncFab(); });
-            observer.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
-
-            window.addEventListener('resize', syncFab);
-        })();
-    </script>
     <script>
         (function(){
             function updateCartBadge() {

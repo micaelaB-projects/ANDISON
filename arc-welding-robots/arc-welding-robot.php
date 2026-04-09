@@ -2964,6 +2964,14 @@ if (!$current_category) {
 
             <!-- Main Product Area -->
             <div class="main-product-area">
+                <?php
+                // Primary fetch for this page's subcategory; fallback to full category for legacy/imported mappings.
+                $all_products = andison_get_products_for_subcategory($category_id, $subcategory_id);
+                if (empty($all_products)) {
+                    $all_products = andison_get_products_for_category($category_id);
+                }
+                ?>
+
                 <!-- Search, Sort & View Controls -->
                 <div class="product-controls">
                     <div class="search-box">
@@ -2992,9 +3000,6 @@ if (!$current_category) {
                 <!-- Product Grid -->
                 <div class="product-grid grid-view">
                 <?php 
-                // Fetch arc welding robot products
-                $all_products = andison_get_products_for_subcategory($category_id, $subcategory_id);
-                
                 // Display products
                 if (!empty($all_products)) {
                     foreach ($all_products as $product) {
@@ -3524,7 +3529,7 @@ if (!$current_category) {
         // PAGINATION SYSTEM
         // ============================================
         var currentPage = 1;
-        var itemsPerPage = 8; // 2 rows x 4 columns
+        var itemsPerPage = 9; // 3 rows x 3 columns
         var allProductCards = [];
         var filteredCards = [];
 

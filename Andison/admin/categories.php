@@ -303,7 +303,7 @@ andison_admin_header('Categories & Products', 'categories');
             </div>
             <div class="subcategory-tabs">
                 <?php foreach ($currentCat['subcategories'] ?? [] as $sub): ?>
-                    <?php $subCount = count(andison_get_products_for_subcategory($selectedCategory, $sub['id'])); ?>
+                    <?php $subCount = count(andison_get_products_for_subcategory($selectedCategory, $sub['id'], 0)); ?>
                     <button class="subcategory-tab <?php echo $selectedSubcategory === $sub['id'] ? 'active' : ''; ?>" onclick="selectSubcategory('<?php echo htmlspecialchars($selectedCategory); ?>', '<?php echo htmlspecialchars($sub['id']); ?>')">
                         <?php echo htmlspecialchars($sub['name']); ?>
                         <span class="sub-count"><?php echo $subCount; ?></span>
@@ -314,7 +314,7 @@ andison_admin_header('Categories & Products', 'categories');
 
         <?php if ($selectedSubcategory): ?>
             <?php 
-                $products = andison_get_products_for_subcategory($selectedCategory, $selectedSubcategory);
+                $products = andison_get_products_for_subcategory($selectedCategory, $selectedSubcategory, 0);
                 $subName = '';
                 foreach ($currentCat['subcategories'] as $s) {
                     if ($s['id'] === $selectedSubcategory) {
@@ -378,7 +378,7 @@ andison_admin_header('Categories & Products', 'categories');
                                         if ($badge === 'Available') $bClass = 'cat-badge-available';
                                         elseif ($badge === 'Not Available') $bClass = 'cat-badge-unavailable';
                                         elseif ($badge === 'Featured') $bClass = 'cat-badge-featured';
-                                        elseif ($badge === 'New Arrival') $bClass = 'cat-badge-new';
+                                        elseif ($badge === 'New Arrival' || $badge === 'New') $bClass = 'cat-badge-new';
                                         elseif ($badge === 'Best Seller') $bClass = 'cat-badge-bestseller';
                                         elseif ($badge === 'Limited Stock') $bClass = 'cat-badge-limited';
                                     ?>

@@ -29,10 +29,9 @@ $ytLinks = andison_get_youtube_links();
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            padding-top: 142px;
-            min-height: 100vh;
+            .sidebar {
+                position: static;
+            }
             display: flex;
             flex-direction: column;
         }
@@ -375,9 +374,30 @@ $ytLinks = andison_get_youtube_links();
             transition: color 180ms ease, background 180ms ease;
         }
 
+        .nav-list > li > a::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 2px;
+            transform: translateX(-50%) scaleX(0);
+            transform-origin: center;
+            width: 44px;
+            height: 5px;
+            border-radius: 6px;
+            background: linear-gradient(90deg, #00ffd1 0%, #00d4aa 50%, #2B11DB 100%);
+            box-shadow: 0 2px 10px rgba(0,212,170,0.35);
+            pointer-events: none;
+            transition: transform 180ms ease, width 180ms ease;
+        }
+
         .nav-list > li > a:hover {
             background: rgba(0,0,0,0.10);
             border-radius: 6px;
+        }
+
+        .nav-list > li > a:hover::after {
+            transform: translateX(-50%) scaleX(1);
+            width: 44px;
         }
 
         .nav-list > li > a.active {
@@ -386,6 +406,11 @@ $ytLinks = andison_get_youtube_links();
             font-weight: 700;
             border-radius: 6px;
             box-shadow: inset 0 -6px 18px rgba(0,0,0,0.06);
+        }
+
+        .nav-list > li > a.active::after {
+            transform: translateX(-50%) scaleX(1);
+            width: 44px;
         }
 
         .nav-dropdown {
@@ -470,9 +495,9 @@ $ytLinks = andison_get_youtube_links();
         }
 
         nav li:nth-child(3) .nav-dropdown {
-            min-width: 650px;
-            max-width: 650px;
-            padding: 24px 28px;
+            min-width: 576px;
+            max-width: 576px;
+            padding: 20px 22px;
         }
 
         .nav-dropdown ul a {
@@ -489,12 +514,12 @@ $ytLinks = andison_get_youtube_links();
         nav li:nth-child(3) .nav-dropdown ul {
             display: grid !important;
             grid-template-columns: repeat(5, 1fr) !important;
-            gap: 12px 20px !important;
-            margin-top: 16px !important;
+            gap: 10px 14px !important;
+            margin-top: 14px !important;
         }
 
         nav li:nth-child(3) .nav-dropdown ul li {
-            min-height: 70px;
+            min-height: 58px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -505,12 +530,12 @@ $ytLinks = andison_get_youtube_links();
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            min-height: 60px !important;
+            min-height: 50px !important;
         }
 
         nav li:nth-child(3) .nav-dropdown ul a img {
-            max-width: 85px;
-            max-height: 45px;
+            max-width: 74px;
+            max-height: 37px;
             object-fit: contain;
             display: block;
             pointer-events: all;
@@ -1345,8 +1370,6 @@ $ytLinks = andison_get_youtube_links();
                 justify-content: center;
                 flex-wrap: wrap;
             }
-
-            .nav-inner::-webkit-scrollbar { display: none; }
 
             .nav-list {
                 gap: 0;

@@ -3287,6 +3287,31 @@ if (!$current_category) {
 
             <!-- Main Product Area -->
             <div class="main-product-area">
+                <?php
+                // Primary fetch for MIG subcategory.
+                $all_products = andison_get_products_for_subcategory($category_id, $subcategory_id);
+                if (empty($all_products)) {
+                    // Fallback for legacy/imported rows saved under related subcategories or without subcategory.
+                    $categoryProducts = andison_get_products_for_category($category_id);
+                    $migProducts = array_values(array_filter($categoryProducts, static function (array $product): bool {
+                        $subcategory = strtolower(trim((string)($product['subcategory_id'] ?? '')));
+                        $name = strtolower(trim((string)($product['name'] ?? ($product['product_name'] ?? ''))));
+                        $model = strtolower(trim((string)($product['model'] ?? '')));
+                        $type = strtolower(trim((string)($product['type'] ?? '')));
+
+                        if ($subcategory === 'mig-welding-machine' || $subcategory === 'co1-mag-welding-machine') {
+                            return true;
+                        }
+
+                        return str_contains($name, 'mig')
+                            || str_contains($model, 'mig')
+                            || str_contains($type, 'mig');
+                    }));
+
+                    $all_products = !empty($migProducts) ? $migProducts : $categoryProducts;
+                }
+                ?>
+
                 <!-- Search, Sort & View Controls -->
                 <div class="product-controls">
                     <div class="search-box">
@@ -3315,9 +3340,6 @@ if (!$current_category) {
                 <!-- Product Grid -->
                 <div class="product-grid grid-view">
                 <?php 
-                // Fetch MIG welding machine products
-                $all_products = andison_get_products_for_subcategory($category_id, $subcategory_id);
-                
                 // Display products
                 if (!empty($all_products)) {
                     foreach ($all_products as $product) {
@@ -3847,7 +3869,7 @@ if (!$current_category) {
         // PAGINATION SYSTEM
         // ============================================
         var currentPage = 1;
-        var itemsPerPage = 8; // 2 rows x 4 columns
+        var itemsPerPage = 9; // 3 rows x 3 columns
         var allProductCards = [];
         var filteredCards = [];
 

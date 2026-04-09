@@ -11,10 +11,128 @@ require_once __DIR__ . '/../includes/categories_info.php';
 
 $brands = andison_get_brands_info(true);
 $brandNames = array_keys($brands);
-$selectedBrand = isset($_GET['brand']) ? (string)$_GET['brand'] : ($brandNames[0] ?? '');
-if ($selectedBrand === '' || !isset($brands[$selectedBrand])) {
-    $selectedBrand = $brandNames[0] ?? '';
+$selectedBrandDisplay = isset($_GET['brand']) ? (string)$_GET['brand'] : ($brandNames[0] ?? '');
+
+function andison_brand_display_label(string $brand): string
+{
+    $normalized = strtolower(trim($brand));
+    if ($normalized === 'hard worker' || $normalized === 'hard workers' || $normalized === 'hardworker') {
+        return 'HARDWORKER';
+    }
+    if ($normalized === 'dryrod. ii' || $normalized === 'dryrod ii' || $normalized === 'phoenix dryrod' || $normalized === 'phoenix dry rod') {
+        return 'DryRod. II';
+    }
+    if ($normalized === 'ansell') {
+        return 'ANSELL';
+    }
+    if ($normalized === 'panasonic' || $normalized === 'panasonic connect') {
+        return 'Panasonic Connect';
+    }
+    if ($normalized === 'rae' || $normalized === 'rac' || $normalized === 'rae systems') {
+        return 'RAE SYSTEMS';
+    }
+    return $normalized === 'weller' ? 'WEILER' : $brand;
 }
+
+function andison_brand_data_candidates(string $brand): array
+{
+    $normalized = strtolower(trim($brand));
+    if ($normalized === 'hard worker' || $normalized === 'hard workers' || $normalized === 'hardworker') {
+        return ['HARDWORKER', 'Hard Worker', 'Hard Workers', 'HARD WORKER', 'HARD WORKERS'];
+    }
+    if ($normalized === 'dryrod. ii' || $normalized === 'dryrod ii' || $normalized === 'phoenix dryrod' || $normalized === 'phoenix dry rod') {
+        return ['DryRod. II', 'DryRod II', 'Phoenix Dry Rod', 'Phoenix DryRod', 'PHOENIX DRY ROD', 'PHOENIX DRYROD'];
+    }
+    if ($normalized === 'ansell') {
+        return ['ANSELL', 'Ansell'];
+    }
+    if ($normalized === 'panasonic connect' || $normalized === 'panasonic') {
+        return ['Panasonic Connect', 'PANASONIC'];
+    }
+    if ($normalized === 'rae' || $normalized === 'rac' || $normalized === 'rae systems') {
+        return ['RAE SYSTEMS', 'RAC'];
+    }
+    if ($normalized === 'weiler' || $normalized === 'weller') {
+        return ['WEILER', 'Weller'];
+    }
+    return [$brand];
+}
+
+function andison_pick_brand_bucket(array $brands, array $candidates): string
+{
+    foreach ($candidates as $candidate) {
+        if (isset($brands[$candidate]) && !empty($brands[$candidate]['products'])) {
+            return (string)$candidate;
+        }
+    }
+
+    foreach ($candidates as $candidate) {
+        if (isset($brands[$candidate])) {
+            return (string)$candidate;
+        }
+    }
+
+    return (string)($candidates[0] ?? '');
+}
+
+// Deduplicate brand options by display label (case-insensitive).
+$rawBrandNames = array_keys($brands);
+$brandDisplayToKey = [];
+$hiddenBrandDisplayKeys = [
+    'aer service' => true,
+    'wire wizard' => true,
+    'tokin arc' => true,
+    'alphatec' => true,
+    'bw technologies' => true,
+    'hard worker' => true,
+    'phoenix dryrod' => true,
+    'phoenix dry rod' => true,
+    'sk' => true,
+    'gal gage' => true,
+];
+foreach ($rawBrandNames as $brandKey) {
+    $display = andison_brand_display_label((string)$brandKey);
+    $displayKey = strtolower(trim($display));
+    if ($displayKey === '') {
+        continue;
+    }
+
+    if (isset($hiddenBrandDisplayKeys[$displayKey])) {
+        continue;
+    }
+
+    if (!isset($brandDisplayToKey[$displayKey])) {
+        $brandDisplayToKey[$displayKey] = (string)$brandKey;
+        continue;
+    }
+
+    $currentKey = $brandDisplayToKey[$displayKey];
+    $currentCount = count($brands[$currentKey]['products'] ?? []);
+    $newCount = count($brands[$brandKey]['products'] ?? []);
+    if ($newCount > $currentCount) {
+        $brandDisplayToKey[$displayKey] = (string)$brandKey;
+    }
+}
+
+$brandNames = array_values($brandDisplayToKey);
+usort($brandNames, static function (string $a, string $b): int {
+    return strcasecmp(andison_brand_display_label($a), andison_brand_display_label($b));
+});
+
+if ($selectedBrandDisplay === '') {
+    $selectedBrandDisplay = $brandNames[0] ?? '';
+} else {
+    $selectedDisplayKey = strtolower(trim(andison_brand_display_label($selectedBrandDisplay)));
+    if (isset($brandDisplayToKey[$selectedDisplayKey])) {
+        $selectedBrandDisplay = $brandDisplayToKey[$selectedDisplayKey];
+    }
+}
+
+$selectedBrandKey = andison_pick_brand_bucket($brands, andison_brand_data_candidates($selectedBrandDisplay));
+if ($selectedBrandKey === '' || !isset($brands[$selectedBrandKey])) {
+    $selectedBrandKey = $brandNames[0] ?? '';
+}
+$selectedBrand = $selectedBrandDisplay;
 
 $allCategories = andison_get_categories();
 $maxProductImages = 8;
@@ -40,7 +158,7 @@ function andison_env_flag(string $key, bool $default = false): bool
     return in_array(strtolower($raw), ['1', 'true', 'yes', 'on'], true);
 }
 
-$allowProductDelete = andison_env_flag('ANDISON_ALLOW_PRODUCT_DELETE', false);
+$allowProductDelete = andison_env_flag('ANDISON_ALLOW_PRODUCT_DELETE', true);
 
 function andison_safe_filename(string $name): string
 {
@@ -55,6 +173,12 @@ function andison_normalize_category_assignment(array $allCategories, string $cat
     $categoryId = trim($categoryId);
     $subcategoryId = trim($subcategoryId);
     $subSubcategoryId = trim($subSubcategoryId);
+
+    $normalizeKey = static function (string $value): string {
+        $value = strtolower(trim($value));
+        $value = preg_replace('~[^a-z0-9]+~', ' ', $value) ?? $value;
+        return trim(preg_replace('~\s+~', ' ', $value) ?? $value);
+    };
 
     if ($categoryId === '') {
         return [
@@ -72,29 +196,83 @@ function andison_normalize_category_assignment(array $allCategories, string $cat
         }
     }
 
+    // Allow CSV to provide category name instead of category id.
     if (!is_array($category)) {
+        $categoryLookup = $normalizeKey($categoryId);
+        foreach ($allCategories as $cat) {
+            $catName = (string)($cat['name'] ?? '');
+            if ($catName !== '' && $normalizeKey($catName) === $categoryLookup) {
+                $category = $cat;
+                $categoryId = (string)($cat['id'] ?? '');
+                break;
+            }
+        }
+
+        // Fuzzy fallback for CSV values like "Power Tools & Accessories".
+        if (!is_array($category) && $categoryLookup !== '') {
+            foreach ($allCategories as $cat) {
+                $catName = (string)($cat['name'] ?? '');
+                $catNameKey = $normalizeKey($catName);
+                if ($catNameKey === '') {
+                    continue;
+                }
+                if (str_contains($categoryLookup, $catNameKey) || str_contains($catNameKey, $categoryLookup)) {
+                    $category = $cat;
+                    $categoryId = (string)($cat['id'] ?? '');
+                    break;
+                }
+            }
+        }
+    }
+
+    if (!is_array($category)) {
+        // Invalid category should not block inserts; clear hierarchy instead.
         return [
-            'category_id' => $categoryId,
-            'subcategory_id' => $subcategoryId,
-            'sub_subcategory_id' => $subSubcategoryId,
+            'category_id' => '',
+            'subcategory_id' => '',
+            'sub_subcategory_id' => '',
         ];
     }
 
     $subcategoryIds = [];
+    $subcategoryNameToId = [];
     $subSubParent = [];
+    $subSubNameToId = [];
     foreach (($category['subcategories'] ?? []) as $sub) {
         $subId = (string)($sub['id'] ?? '');
+        $subName = (string)($sub['name'] ?? '');
         if ($subId === '') {
             continue;
         }
         $subcategoryIds[$subId] = true;
+        if ($subName !== '') {
+            $subcategoryNameToId[$normalizeKey($subName)] = $subId;
+        }
 
         foreach (($sub['subcategories'] ?? []) as $subSub) {
             $subSubId = (string)($subSub['id'] ?? '');
+            $subSubName = (string)($subSub['name'] ?? '');
             if ($subSubId === '') {
                 continue;
             }
             $subSubParent[$subSubId] = $subId;
+            if ($subSubName !== '') {
+                $subSubNameToId[$normalizeKey($subSubName)] = $subSubId;
+            }
+        }
+    }
+
+    // Allow CSV subcategory/sub-subcategory names.
+    if ($subcategoryId !== '' && !isset($subcategoryIds[$subcategoryId])) {
+        $lookup = $normalizeKey($subcategoryId);
+        if (isset($subcategoryNameToId[$lookup])) {
+            $subcategoryId = $subcategoryNameToId[$lookup];
+        }
+    }
+    if ($subSubcategoryId !== '' && !isset($subSubParent[$subSubcategoryId])) {
+        $lookup = $normalizeKey($subSubcategoryId);
+        if (isset($subSubNameToId[$lookup])) {
+            $subSubcategoryId = $subSubNameToId[$lookup];
         }
     }
 
@@ -196,30 +374,157 @@ function andison_handle_datasheet_upload(): string
     return $existingUrl;
 }
 
+/**
+ * Handle optional specifications-side image upload (field: spec_image_file).
+ * Keeps existing URL from hidden input if no new file uploaded.
+ */
+function andison_handle_spec_side_image_upload(): string
+{
+    $existingUrl = isset($_POST['existing_spec_image']) ? trim((string)$_POST['existing_spec_image']) : '';
+
+    if (!empty($_FILES['spec_image_file']) && $_FILES['spec_image_file']['error'] === UPLOAD_ERR_OK) {
+        $f = $_FILES['spec_image_file'];
+        $ext = strtolower(pathinfo((string)($f['name'] ?? ''), PATHINFO_EXTENSION));
+        $allowedExt = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'];
+        $allowedMime = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
+
+        $fi = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = (string)finfo_file($fi, $f['tmp_name']);
+        finfo_close($fi);
+
+        if (in_array($ext, $allowedExt, true) && in_array($mime, $allowedMime, true)) {
+            $base = andison_safe_filename(pathinfo((string)($f['name'] ?? ''), PATHINFO_FILENAME));
+            $destName = 'spec-side/' . $base . '_' . date('Ymd_His') . '.'.$ext;
+            // Reuse the known-working product-images bucket to avoid missing-bucket upload failures.
+            $url = andison_sb_storage_upload_tmp($f, 'product-images', $destName);
+            if ($url !== null) {
+                return $url;
+            }
+        }
+    }
+
+    return $existingUrl;
+}
+
+/**
+ * Persist spec-side image URL inside specifications JSON payload.
+ * Uses existing structured payload when possible; wraps plain text when image is present.
+ */
+function andison_apply_spec_side_image_to_specifications(string $rawSpecs, string $specImageUrl): string
+{
+    $source = trim($rawSpecs);
+    $image = trim($specImageUrl);
+
+    if ($source !== '') {
+        $parsed = json_decode($source, true);
+        if (is_array($parsed) && isset($parsed['format']) && is_string($parsed['format'])) {
+            if ($image !== '') {
+                $parsed['specImage'] = $image;
+            } else {
+                unset($parsed['specImage'], $parsed['spec_image']);
+            }
+
+            $encoded = json_encode($parsed, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            if (is_string($encoded) && $encoded !== '') {
+                return $encoded;
+            }
+        }
+    }
+
+    if ($image === '') {
+        return $rawSpecs;
+    }
+
+    $payload = [
+        'format' => 'andison_specs_v3',
+        'text' => $source,
+        'tables' => [],
+        'specImage' => $image,
+    ];
+
+    $encoded = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    return is_string($encoded) && $encoded !== '' ? $encoded : $rawSpecs;
+}
+
+/**
+ * Sanitize rich HTML used for brand descriptions.
+ * Allows table/image formatting while stripping dangerous markup.
+ */
+function andison_sanitize_brand_description_html(string $html): string
+{
+    $value = trim($html);
+    if ($value === '') {
+        return '';
+    }
+
+    $value = preg_replace('~<(script|style|iframe|object|embed|form|input|button|textarea|select)[^>]*>.*?</\\1>~is', '', $value) ?? $value;
+    $value = preg_replace('/\son[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $value) ?? $value;
+
+    $allowedTags = '<p><br><strong><b><em><i><u><ul><ol><li><a><span><div><table><thead><tbody><tfoot><tr><th><td><img>';
+    $value = strip_tags($value, $allowedTags);
+
+    // Block javascript: and data:text/html URI payloads in links/images.
+    $value = preg_replace_callback('/\s(href|src)\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', static function (array $m): string {
+        $attr = strtolower((string)$m[1]);
+        $raw = (string)$m[2];
+        $quote = '';
+        if ($raw !== '' && ($raw[0] === '"' || $raw[0] === '\'')) {
+            $quote = $raw[0];
+            $raw = trim($raw, "\"'");
+        }
+        $check = strtolower(trim($raw));
+        if (str_starts_with($check, 'javascript:') || str_starts_with($check, 'data:text/html')) {
+            $raw = '#';
+        }
+        $escaped = htmlspecialchars($raw, ENT_QUOTES);
+        if ($quote === '"' || $quote === '\'') {
+            return ' ' . $attr . '=' . $quote . $escaped . $quote;
+        }
+        return ' ' . $attr . '="' . $escaped . '"';
+    }, $value) ?? $value;
+
+    return trim($value);
+}
+
+function andison_handle_brand_description_image_upload(): string
+{
+    if (empty($_FILES['description_image_file']) || $_FILES['description_image_file']['error'] !== UPLOAD_ERR_OK) {
+        throw new RuntimeException('No image uploaded.');
+    }
+
+    $f = $_FILES['description_image_file'];
+    $allowedExt = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'];
+    $allowedMime = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
+    $ext = strtolower(pathinfo((string)($f['name'] ?? ''), PATHINFO_EXTENSION));
+    $mime = mime_content_type($f['tmp_name']);
+
+    if (!in_array($ext, $allowedExt, true) || !in_array($mime, $allowedMime, true)) {
+        throw new RuntimeException('Invalid image type. Use JPG, PNG, WEBP, GIF, or AVIF.');
+    }
+
+    if (($f['size'] ?? 0) > 8 * 1024 * 1024) {
+        throw new RuntimeException('Image too large (max 8 MB).');
+    }
+
+    $base = andison_safe_filename(pathinfo((string)($f['name'] ?? 'description-image'), PATHINFO_FILENAME));
+    $destName = 'brand-desc_' . date('Ymd_His') . '_' . bin2hex(random_bytes(4)) . '_' . $base . '.' . $ext;
+    $url = andison_sb_storage_upload_tmp($f, 'product-images', $destName);
+    if ($url === '') {
+        throw new RuntimeException('Image upload failed.');
+    }
+
+    return $url;
+}
+
 // ── CSV Template download (GET) ──────────────────────────────────────────────
 if (isset($_GET['action']) && $_GET['action'] === 'download_csv_template') {
     andison_require_admin();
-    $headers = ['product_name','model','type','price','badge','description','specifications','category_id','subcategory_id','sub_subcategory_id','image_url','datasheet_url'];
-    $example = [
-        'Welding Machine XYZ',
-        'WM-1000',
-        'MIG Welding Machine',
-        '',
-        'New',
-        'High-performance MIG welder suitable for industrial use.',
-        "Input Voltage: 220V\nOutput Current: 50-200A\nDuty Cycle: 60%",
-        'arc-welding-machine',
-        'mig-welding-machine',
-        '',
-        'https://example.com/image.jpg',
-        '',
-    ];
+    $headers = ['brand','product_name','model','type','price','badge','description','specifications','category_id','subcategory_id','sub_subcategory_id','image_url','datasheet_url'];
     header('Content-Type: text/csv; charset=UTF-8');
     header('Content-Disposition: attachment; filename="products_import_template.csv"');
     header('Cache-Control: no-cache, no-store, must-revalidate');
     $out = fopen('php://output', 'w');
     fputcsv($out, $headers);
-    fputcsv($out, $example);
     fclose($out);
     exit;
 }
@@ -228,7 +533,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = isset($_POST['action']) ? (string)$_POST['action'] : '';
     $brand = isset($_POST['brand']) ? (string)$_POST['brand'] : '';
 
+    $brand = andison_pick_brand_bucket($brands, andison_brand_data_candidates($brand));
+
     if ($brand !== '' && isset($brands[$brand])) {
+        if ($action === 'upload_brand_description_image') {
+            header('Content-Type: application/json; charset=UTF-8');
+            try {
+                $url = andison_handle_brand_description_image_upload();
+                echo json_encode(['location' => $url], JSON_UNESCAPED_SLASHES);
+            } catch (Throwable $e) {
+                http_response_code(400);
+                echo json_encode(['error' => $e->getMessage()], JSON_UNESCAPED_SLASHES);
+            }
+            exit;
+        }
+
         if ($action === 'import_csv') {
             $errors = [];
             $imported = 0;
@@ -257,37 +576,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $expectedHeadersV1 = ['product_name','model','type','price','badge','description','specifications','category_id','subcategory_id','image_url','datasheet_url'];
             $expectedHeadersV2 = ['product_name','model','type','price','badge','description','specifications','category_id','subcategory_id','sub_subcategory_id','image_url','datasheet_url'];
+            $expectedHeadersV3 = ['brand','product_name','model','type','price','badge','description','specifications','category_id','subcategory_id','sub_subcategory_id','image_url','datasheet_url'];
             $headerRow = fgetcsv($handle);
+            if (is_array($headerRow) && isset($headerRow[0])) {
+                $headerRow[0] = preg_replace('/^\xEF\xBB\xBF/', '', (string)$headerRow[0]) ?? (string)$headerRow[0];
+            }
             $normalizedHeaders = $headerRow === false ? [] : array_map('strtolower', array_map('trim', $headerRow));
             $isV1 = $normalizedHeaders === $expectedHeadersV1;
             $isV2 = $normalizedHeaders === $expectedHeadersV2;
-            if (!$isV1 && !$isV2) {
+            $isV3 = $normalizedHeaders === $expectedHeadersV3;
+            if (!$isV1 && !$isV2 && !$isV3) {
                 fclose($handle);
                 andison_set_flash('error', 'CSV headers do not match the template. Please download and use the official template.');
                 header('Location: products.php?brand=' . urlencode($brand));
                 exit;
             }
 
-            if (empty($brands[$brand]['products']) || !is_array($brands[$brand]['products'])) {
-                $brands[$brand]['products'] = [];
-            }
-
+            $affectedBrands = [];
             $rowNum = 1;
             while (($row = fgetcsv($handle)) !== false) {
                 $rowNum++;
                 if (count($row) < 9) { $errors[] = "Row {$rowNum}: too few columns, skipped."; continue; }
 
-                $row = array_pad($row, $isV2 ? 12 : 11, '');
-                $model = trim($row[1]);
-                $type  = trim($row[2]);
+                $row = array_pad($row, $isV3 ? 13 : ($isV2 ? 12 : 11), '');
+                $rowBrand = $isV3 ? trim((string)$row[0]) : '';
+                $targetBrand = $brand;
+                if ($rowBrand !== '') {
+                    $targetBrand = andison_pick_brand_bucket($brands, andison_brand_data_candidates($rowBrand));
+                    if ($targetBrand === '' || !isset($brands[$targetBrand])) {
+                        $targetBrand = $rowBrand;
+                        if (!isset($brands[$targetBrand])) {
+                            $brands[$targetBrand] = ['description' => '', 'products' => []];
+                        }
+                    }
+                }
+
+                if (empty($brands[$targetBrand]['products']) || !is_array($brands[$targetBrand]['products'])) {
+                    $brands[$targetBrand]['products'] = [];
+                }
+
+                $model = trim($isV3 ? $row[2] : $row[1]);
+                $type  = trim($isV3 ? $row[3] : $row[2]);
                 if ($model === '' || $type === '') {
                     $errors[] = "Row {$rowNum}: model and type are required, skipped.";
                     continue;
                 }
 
-                $rawCategoryId = trim((string)$row[7]);
-                $rawSubcategoryId = trim((string)$row[8]);
-                $rawSubSubcategoryId = $isV2 ? trim((string)$row[9]) : '';
+                $rawCategoryId = trim((string)($isV3 ? $row[8] : $row[7]));
+                $rawSubcategoryId = trim((string)($isV3 ? $row[9] : $row[8]));
+                $rawSubSubcategoryId = $isV2 || $isV3 ? trim((string)($isV3 ? $row[10] : $row[9])) : '';
                 $normalizedAssignment = andison_normalize_category_assignment(
                     $allCategories,
                     $rawCategoryId,
@@ -295,20 +632,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $rawSubSubcategoryId
                 );
 
-                $imageIndex = $isV2 ? 10 : 9;
-                $datasheetIndex = $isV2 ? 11 : 10;
+                $imageIndex = $isV3 ? 11 : ($isV2 ? 10 : 9);
+                $datasheetIndex = $isV3 ? 12 : ($isV2 ? 11 : 10);
                 $imageUrl = filter_var(trim((string)$row[$imageIndex]), FILTER_VALIDATE_URL) ? trim((string)$row[$imageIndex]) : '';
                 $datasheetUrl = filter_var(trim((string)$row[$datasheetIndex]), FILTER_VALIDATE_URL) ? trim((string)$row[$datasheetIndex]) : '';
                 $images = $imageUrl !== '' ? [$imageUrl] : [];
 
-                $brands[$brand]['products'][] = [
-                    'product_name'   => trim($row[0]),
+                $brands[$targetBrand]['products'][] = [
+                    'brand'          => $targetBrand,
+                    'product_name'   => trim($isV3 ? $row[1] : $row[0]),
                     'model'          => $model,
                     'type'           => $type,
-                    'price'          => trim($row[3]),
-                    'badge'          => trim($row[4]),
-                    'description'    => trim($row[5]),
-                    'specifications' => trim($row[6]),
+                    'price'          => trim($isV3 ? $row[4] : $row[3]),
+                    'badge'          => trim($isV3 ? $row[5] : $row[4]),
+                    'description'    => trim($isV3 ? $row[6] : $row[5]),
+                    'specifications' => trim($isV3 ? $row[7] : $row[6]),
                     'category_id'    => $normalizedAssignment['category_id'],
                     'subcategory_id' => $normalizedAssignment['subcategory_id'],
                     'sub_subcategory_id' => $normalizedAssignment['sub_subcategory_id'],
@@ -317,28 +655,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'datasheet'      => $datasheetUrl,
                 ];
                 $imported++;
+                $affectedBrands[$targetBrand] = true;
             }
             fclose($handle);
 
+            error_log("CSV Import: Total imported: {$imported}, Total errors: " . count($errors));
+            error_log("CSV Import: Affected brands: " . implode(", ", array_keys($affectedBrands)));
+            foreach (array_keys($affectedBrands) as $affBrand) {
+                $prodCnt = count($brands[$affBrand]['products'] ?? []);
+                error_log("CSV Import: Brand '{$affBrand}' has {$prodCnt} products ready to save");
+                if ($prodCnt > 0) {
+                    // Log first product as sample
+                    $first = $brands[$affBrand]['products'][0];
+                    error_log("CSV Import: Sample product - model: '" . ($first['model'] ?? 'N/A') . "', type: '" . ($first['type'] ?? 'N/A') . "'");
+                }
+            }
+
             $saveOk = true;
+            $redirectBrand = $brand;
             if ($imported > 0) {
-                $saveOk = andison_save_single_brand($brand, $brands[$brand]);
+                error_log("CSV Import: Processing " . count($affectedBrands) . " affected brand(s)");
+                foreach (array_keys($affectedBrands) as $affectedBrand) {
+                    error_log("CSV Import: Saving " . count($brands[$affectedBrand]['products']) . " products for brand: {$affectedBrand}");
+                    $result = andison_save_single_brand($affectedBrand, $brands[$affectedBrand], [
+                        'allowProductCountDecrease' => true,
+                        'allowEmptyProducts' => true,
+                    ]);
+                    if (!$result) {
+                        error_log("CSV Import: Save failed for brand {$affectedBrand}");
+                    } else {
+                        error_log("CSV Import: Save succeeded for brand {$affectedBrand}");
+                    }
+                    $saveOk = $result && $saveOk;
+                }
                 @unlink(__DIR__ . '/../data/_cache/brands_full.cache');
+                // Redirect to the first affected brand so user sees imported products immediately
+                $redirectBrand = array_key_first($affectedBrands) ?: $brand;
             }
 
             $msg = "Imported {$imported} product(s).";
             if (!empty($errors)) $msg .= ' Skipped rows: ' . implode(' | ', $errors);
-            if ($imported > 0 && !$saveOk) {
-                andison_set_flash('error', 'Import blocked to protect existing products. Please refresh the page and try again.');
+            if ($imported > 0 && $saveOk) {
+                andison_set_flash('success', $msg);
+            } elseif ($imported > 0) {
+                andison_set_flash('error', $msg . ' Save failed for one or more brands due to invalid category mapping. Please fix category/subcategory values in CSV and try again.');
             } else {
-                andison_set_flash($imported > 0 ? 'success' : 'error', $msg);
+                andison_set_flash('error', $msg);
             }
-            header('Location: products.php?brand=' . urlencode($brand));
+            header('Location: products.php?brand=' . urlencode($redirectBrand));
             exit;
         }
 
         if ($action === 'update_brand') {
-            $desc = isset($_POST['description']) ? trim((string)$_POST['description']) : '';
+            $desc = isset($_POST['description']) ? andison_sanitize_brand_description_html((string)$_POST['description']) : '';
             $brands[$brand]['description'] = $desc;
             if (andison_save_single_brand($brand, $brands[$brand])) {
                 andison_set_flash('success', 'Brand description updated.');
@@ -355,7 +724,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $type = isset($_POST['type']) ? trim((string)$_POST['type']) : '';
             $price = isset($_POST['price']) ? trim((string)$_POST['price']) : '';
             $badge = isset($_POST['badge']) ? trim((string)$_POST['badge']) : '';
-            $desc = isset($_POST['product_description']) ? trim((string)$_POST['product_description']) : '';
+            $descRaw = isset($_POST['product_description']) ? (string)$_POST['product_description'] : '';
+            $descMode = isset($_POST['product_description_mode']) ? strtolower(trim((string)$_POST['product_description_mode'])) : 'plain';
+            $desc = $descMode === 'table'
+                ? andison_sanitize_brand_description_html($descRaw)
+                : trim($descRaw);
             $specs = isset($_POST['specifications']) ? trim((string)$_POST['specifications']) : '';
             $catId  = isset($_POST['category_id'])    ? trim((string)$_POST['category_id'])    : '';
             $subId  = isset($_POST['subcategory_id']) ? trim((string)$_POST['subcategory_id']) : '';
@@ -367,6 +740,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $images    = andison_handle_multi_image_upload();
             $image     = $images[0] ?? '';
             $datasheet = andison_handle_datasheet_upload();
+            $specSideImage = andison_handle_spec_side_image_upload();
+            $specs = andison_apply_spec_side_image_to_specifications($specs, $specSideImage);
 
             if ($model === '' || $type === '') {
                 andison_set_flash('error', 'Model and Type are required.');
@@ -379,6 +754,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             $brands[$brand]['products'][] = [
+                'brand'          => $brand,
                 'product_name'   => $name,
                 'model'          => $model,
                 'type'           => $type,
@@ -417,7 +793,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $type = isset($_POST['type']) ? trim((string)$_POST['type']) : '';
             $price = isset($_POST['price']) ? trim((string)$_POST['price']) : '';
             $badge = isset($_POST['badge']) ? trim((string)$_POST['badge']) : '';
-            $desc = isset($_POST['product_description']) ? trim((string)$_POST['product_description']) : '';
+            $descRaw = isset($_POST['product_description']) ? (string)$_POST['product_description'] : '';
+            $descMode = isset($_POST['product_description_mode']) ? strtolower(trim((string)$_POST['product_description_mode'])) : 'plain';
+            $desc = $descMode === 'table'
+                ? andison_sanitize_brand_description_html($descRaw)
+                : trim($descRaw);
             $specs = isset($_POST['specifications']) ? trim((string)$_POST['specifications']) : '';
             $catId  = isset($_POST['category_id'])    ? trim((string)$_POST['category_id'])    : '';
             $subId  = isset($_POST['subcategory_id']) ? trim((string)$_POST['subcategory_id']) : '';
@@ -437,6 +817,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             $image     = $images[0] ?? '';
             $datasheet = andison_handle_datasheet_upload();
+            $specSideImage = andison_handle_spec_side_image_upload();
+            $specs = andison_apply_spec_side_image_to_specifications($specs, $specSideImage);
             // Keep existing datasheet if none uploaded and no new URL provided
             if ($datasheet === '') {
                 $datasheet = (string)($brands[$brand]['products'][$idx]['datasheet'] ?? '');
@@ -449,6 +831,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             $brands[$brand]['products'][$idx] = [
+                'brand'          => $brand,
                 'product_name'   => $name,
                 'model'          => $model,
                 'type'           => $type,
@@ -481,6 +864,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
 
+            $productToken = isset($_POST['product_id']) ? trim((string)$_POST['product_id']) : '';
+            if (preg_match('/^id:(\d+)$/', $productToken, $m) === 1) {
+                $productId = (int)$m[1];
+                if ($productId > 0) {
+                    $deleted = andison_sb_delete('products', 'id=eq.' . $productId);
+                    if ($deleted) {
+                        @unlink(__DIR__ . '/../data/_cache/brands_full.cache');
+                        andison_set_flash('success', 'Product deleted.');
+                    } else {
+                        andison_set_flash('error', 'Delete failed for this product ID. Please refresh and try again.');
+                    }
+                    header('Location: products.php?brand=' . urlencode($brand));
+                    exit;
+                }
+            }
+
             $idx = isset($_POST['index']) ? (int)$_POST['index'] : -1;
             if ($idx >= 0 && isset($brands[$brand]['products'][$idx])) {
                 array_splice($brands[$brand]['products'], $idx, 1);
@@ -496,6 +895,79 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: products.php?brand=' . urlencode($brand));
             exit;
         }
+
+        if ($action === 'bulk_delete_products') {
+            if (!$allowProductDelete) {
+                andison_set_flash('error', 'Product deletion is disabled.');
+                header('Location: products.php?brand=' . urlencode($brand));
+                exit;
+            }
+
+            $selectedValues = isset($_POST['selected_products']) ? (array)$_POST['selected_products'] : [];
+
+            $selectedIds = [];
+            $selectedIndices = [];
+            foreach ($selectedValues as $value) {
+                $token = trim((string)$value);
+                if (preg_match('/^id:(\d+)$/', $token, $m) === 1) {
+                    $id = (int)$m[1];
+                    if ($id > 0) {
+                        $selectedIds[] = $id;
+                    }
+                    continue;
+                }
+                if (preg_match('/^idx:(\d+)$/', $token, $m) === 1) {
+                    $selectedIndices[] = (int)$m[1];
+                    continue;
+                }
+                if (is_numeric($token)) {
+                    $selectedIndices[] = (int)$token;
+                }
+            }
+
+            $selectedIds = array_values(array_unique($selectedIds));
+            sort($selectedIds, SORT_NUMERIC);
+
+            $selectedIndices = array_values(array_unique($selectedIndices));
+            sort($selectedIndices, SORT_NUMERIC);
+
+            $deletedCount = 0;
+
+            if (!empty($selectedIds)) {
+                foreach ($selectedIds as $id) {
+                    if (andison_sb_delete('products', 'id=eq.' . $id)) {
+                        $deletedCount++;
+                    }
+                }
+                @unlink(__DIR__ . '/../data/_cache/brands_full.cache');
+            }
+
+            if (!empty($selectedIndices)) {
+                foreach (array_reverse($selectedIndices) as $idx) {
+                    if ($idx >= 0 && isset($brands[$brand]['products'][$idx])) {
+                        array_splice($brands[$brand]['products'], $idx, 1);
+                        $deletedCount++;
+                    }
+                }
+
+                if (!andison_save_single_brand($brand, $brands[$brand], [
+                    'allowEmptyProducts' => true,
+                    'allowProductCountDecrease' => true,
+                ])) {
+                    andison_set_flash('error', 'Failed to save after bulk delete.');
+                    header('Location: products.php?brand=' . urlencode($brand));
+                    exit;
+                }
+            }
+
+            if ($deletedCount > 0) {
+                andison_set_flash('success', "Deleted {$deletedCount} product(s).");
+            } else {
+                andison_set_flash('warning', 'No products selected for deletion.');
+            }
+            header('Location: products.php?brand=' . urlencode($brand));
+            exit;
+        }
     }
 
     andison_set_flash('error', 'Invalid request.');
@@ -504,7 +976,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $editIndex = isset($_GET['edit']) ? (int)$_GET['edit'] : -1;
-$brandInfo = $selectedBrand !== '' ? ($brands[$selectedBrand] ?? []) : [];
+$brandInfo = $selectedBrandKey !== '' ? ($brands[$selectedBrandKey] ?? ($brands[$selectedBrand] ?? [])) : [];
 $products = isset($brandInfo['products']) && is_array($brandInfo['products']) ? $brandInfo['products'] : [];
 
 // Keep presets intentionally minimal: Optional only.
@@ -567,7 +1039,7 @@ andison_admin_header('Products', 'products');
         <div style="display:flex;flex-direction:column;gap:6px;">
             <div style="font-size:11px;font-weight:600;opacity:0.7;letter-spacing:0.5px;text-transform:uppercase;">Product Management</div>
             <div style="font-size:20px;font-weight:800;letter-spacing:-0.2px;"><i class="bi bi-building"></i>
-                <?php echo $selectedBrand !== '' ? htmlspecialchars($selectedBrand) : 'Select a Brand'; ?>
+                <?php echo $selectedBrand !== '' ? htmlspecialchars(andison_brand_display_label($selectedBrand)) : 'Select a Brand'; ?>
             </div>
         </div>
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
@@ -577,33 +1049,12 @@ andison_admin_header('Products', 'products');
             <form method="get" action="products.php" style="display:flex;gap:8px;align-items:center;">
                 <select name="brand" class="prod-brand-select" onchange="this.form.submit()">
                     <?php foreach ($brandNames as $bn): ?>
-                        <option value="<?php echo htmlspecialchars($bn); ?>" <?php echo $bn === $selectedBrand ? 'selected' : ''; ?>><?php echo htmlspecialchars(strtoupper((string)$bn)); ?></option>
+                        <option value="<?php echo htmlspecialchars($bn); ?>" <?php echo ($bn === $selectedBrand || andison_brand_display_label((string)$bn) === $selectedBrand) ? 'selected' : ''; ?>><?php echo htmlspecialchars(andison_brand_display_label((string)$bn)); ?></option>
                     <?php endforeach; ?>
                 </select>
             </form>
         </div>
     </section>
-
-    <!-- Brand Description Section -->
-    <?php if ($selectedBrand !== ''): ?>
-        <section class="card" style="grid-column:span 12;padding:16px 20px;">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-                <div style="width:28px;height:28px;border-radius:7px;background:rgba(245,158,11,0.12);display:flex;align-items:center;justify-content:center;">
-                    <i class="bi bi-file-text" style="color:#f59e0b;font-size:13px;"></i>
-                </div>
-                <span style="font-size:13px;font-weight:700;color:#374151;">Brand Description</span>
-                <span style="font-size:11px;color:#9ca3af;margin-left:4px;">Shown on the brand page</span>
-            </div>
-            <form method="post" action="products.php?brand=<?php echo urlencode($selectedBrand); ?>" class="brand-desc-form">
-                <input type="hidden" name="action" value="update_brand">
-                <input type="hidden" name="brand" value="<?php echo htmlspecialchars($selectedBrand); ?>">
-                <div style="display:flex;gap:10px;align-items:flex-end;">
-                    <textarea id="description" name="description" class="prod-desc-textarea" style="flex:1;"><?php echo htmlspecialchars((string)($brandInfo['description'] ?? '')); ?></textarea>
-                    <button class="btn btn-primary" type="submit" style="white-space:nowrap;height:fit-content;font-size:12px;padding:9px 16px;"><i class="bi bi-save"></i> Save</button>
-                </div>
-            </form>
-        </section>
-    <?php endif; ?>
 
     <!-- Products Section -->
     <?php if ($selectedBrand !== ''): ?>
@@ -615,7 +1066,7 @@ andison_admin_header('Products', 'products');
                     </div>
                     <div>
                         <div style="font-size:15px;font-weight:700;color:#111827;">Product List</div>
-                        <div style="font-size:11px;color:#9ca3af;margin-top:1px;"><?php echo count($products); ?> product<?php echo count($products) !== 1 ? 's' : ''; ?> &middot; <?php echo htmlspecialchars($selectedBrand); ?></div>
+                        <div style="font-size:11px;color:#9ca3af;margin-top:1px;"><?php echo count($products); ?> product<?php echo count($products) !== 1 ? 's' : ''; ?> &middot; <?php echo htmlspecialchars(andison_brand_display_label($selectedBrand)); ?></div>
                     </div>
                 </div>
                 <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
@@ -628,10 +1079,19 @@ andison_admin_header('Products', 'products');
             </div>
 
             <!-- Search Bar -->
-            <div style="margin-bottom:14px;">
-                <div class="prod-search-wrap">
+            <div style="margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+                <div class="prod-search-wrap" style="flex:1;min-width:250px;">
                     <i class="bi bi-search search-icon"></i>
                     <input id="productSearch" type="text" placeholder="Search by model, name, type, or badge...">
+                </div>
+                <div id="bulkActionsBar" style="display:none;gap:8px;align-items:center;">
+                    <span id="selectedCountText" style="font-size:12px;color:#6b7280;font-weight:500;"></span>
+                    <form method="POST" style="display:inline;" onsubmit="return confirm('Delete selected products? This cannot be undone.');">
+                        <input type="hidden" name="action" value="bulk_delete_products">
+                        <input type="hidden" name="brand" value="<?php echo htmlspecialchars($selectedBrandKey); ?>">
+                        <div id="selectedProductsContainer"></div>
+                        <button type="submit" class="btn" style="background:#dc2626;border-color:#dc2626;color:white;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer;"><i class="bi bi-trash"></i> Delete Selected</button>
+                    </form>
                 </div>
             </div>
 
@@ -640,6 +1100,7 @@ andison_admin_header('Products', 'products');
                 <table class="prod-table" id="productsTable" style="width:100%;border-collapse:collapse;">
                     <thead>
                         <tr>
+                            <th style="width:40px;text-align:center;"><input type="checkbox" id="selectAllCheckbox" style="cursor:pointer;" title="Select all products"></th>
                             <th style="width:50px;">#</th>
                             <th>Product</th>
                             <th style="width:130px;">Type</th>
@@ -651,10 +1112,10 @@ andison_admin_header('Products', 'products');
                     <tbody>
                         <?php if (empty($products)): ?>
                             <tr>
-                                <td colspan="6" style="padding:48px;text-align:center;">
+                                <td colspan="7" style="padding:48px;text-align:center;">
                                     <div style="width:56px;height:56px;border-radius:14px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"><i class="bi bi-inbox" style="font-size:24px;color:#d1d5db;"></i></div>
                                     <div style="font-weight:600;font-size:14px;color:#374151;margin-bottom:4px;">No products yet</div>
-                                    <div style="font-size:12px;color:#9ca3af;margin-bottom:14px;">Add the first product for <?php echo htmlspecialchars($selectedBrand); ?></div>
+                                    <div style="font-size:12px;color:#9ca3af;margin-bottom:14px;">Add the first product for <?php echo htmlspecialchars(andison_brand_display_label($selectedBrand)); ?></div>
                                     <button class="btn btn-primary" type="button" onclick="openAddProductModal();" style="font-size:12px;padding:7px 16px;"><i class="bi bi-plus-lg"></i> Add Product</button>
                                 </td>
                             </tr>
@@ -667,7 +1128,7 @@ andison_admin_header('Products', 'products');
                                     if ($badge === 'Available') $badgeClass = 'prod-badge-available';
                                     elseif ($badge === 'Not Available') $badgeClass = 'prod-badge-unavailable';
                                     elseif ($badge === 'Featured') $badgeClass = 'prod-badge-featured';
-                                    elseif ($badge === 'New Arrival') $badgeClass = 'prod-badge-new';
+                                    elseif ($badge === 'New Arrival' || $badge === 'New') $badgeClass = 'prod-badge-new';
                                     elseif ($badge === 'Best Seller') $badgeClass = 'prod-badge-bestseller';
                                     elseif ($badge === 'Limited Stock') $badgeClass = 'prod-badge-limited';
                                 ?>
@@ -675,6 +1136,8 @@ andison_admin_header('Products', 'products');
                                     data-model="<?php echo htmlspecialchars(strtolower((string)($prod['model'] ?? '')), ENT_QUOTES); ?>" 
                                     data-type="<?php echo htmlspecialchars(strtolower((string)($prod['type'] ?? '')), ENT_QUOTES); ?>" 
                                     data-badge="<?php echo htmlspecialchars(strtolower((string)($prod['badge'] ?? '')), ENT_QUOTES); ?>">
+                                    <?php $productToken = isset($prod['id']) ? ('id:' . (int)$prod['id']) : ('idx:' . (int)$i); ?>
+                                    <td style="text-align:center;"><input type="checkbox" class="product-checkbox" value="<?php echo htmlspecialchars($productToken, ENT_QUOTES); ?>" style="cursor:pointer;"></td>
                                     <td><span class="prod-num"><?php echo (int)$i + 1; ?></span></td>
                                     <td>
                                         <div style="font-weight:600;font-size:13px;color:#111827;"><?php echo htmlspecialchars((string)($prod['model'] ?? '')); ?></div>
@@ -698,8 +1161,12 @@ andison_admin_header('Products', 'products');
                                                 $dispCat = $_catNameMap[$storedCatId] ?? $storedCatId;
                                                 $dispSub = $storedSubId !== '' ? ($_catNameMap[$storedSubId] ?? $storedSubId) : '';
                                                 $dispSubSub = $storedSubSubId !== '' ? ($_catNameMap[$storedSubSubId] ?? $storedSubSubId) : '';
+                                                
+                                                $categoryPath = $dispCat;
+                                                if ($dispSub !== '') $categoryPath .= ' › ' . $dispSub;
+                                                if ($dispSubSub !== '') $categoryPath .= ' › ' . $dispSubSub;
                                             ?>
-                                            <div style="margin-top:3px;"><span style="font-size:10px;color:#6b7280;"><i class="bi bi-folder-check"></i> <?php echo htmlspecialchars($dispCat); ?><?php if ($dispSub !== ''): ?> › <?php echo htmlspecialchars($dispSub); ?><?php endif; ?><?php if ($dispSubSub !== ''): ?> › <?php echo htmlspecialchars($dispSubSub); ?><?php endif; ?></span></div>
+                                            <div style="margin-top:3px;"><span style="font-size:11px;color:#4b5563;font-weight:500;display:flex;align-items:center;gap:6px;"><i class="bi bi-diagram-3" style="color:#2B11DB;"></i> <?php echo htmlspecialchars($categoryPath); ?></span></div>
                                         <?php endif; ?>
                                     </td>
                                     <td style="color:#6b7280;font-size:12px;"><?php echo htmlspecialchars((string)($prod['type'] ?? '')); ?></td>
@@ -747,6 +1214,7 @@ andison_admin_header('Products', 'products');
                                                     data-badge="<?php echo htmlspecialchars((string)($prod['badge'] ?? ''), ENT_QUOTES); ?>" 
                                                     data-description="<?php echo htmlspecialchars((string)($prod['description'] ?? ''), ENT_QUOTES); ?>"
                                                     data-specifications="<?php echo htmlspecialchars((string)($prod['specifications'] ?? ''), ENT_QUOTES); ?>"
+                                                    data-spec-image="<?php echo htmlspecialchars((string)($prod['spec_image'] ?? ''), ENT_QUOTES); ?>"
                                                     data-image="<?php echo htmlspecialchars((string)($prod['image'] ?? ''), ENT_QUOTES); ?>"
                                                     data-images="<?php
                                                         $prodImgs = isset($prod['images']) && is_array($prod['images']) ? $prod['images'] : [];
@@ -761,9 +1229,10 @@ andison_admin_header('Products', 'products');
                                                 <i class="bi bi-pencil"></i> Edit
                                             </button>
                                             <?php if ($allowProductDelete): ?>
-                                                <form method="post" action="products.php?brand=<?php echo urlencode($selectedBrand); ?>" class="delete-form" style="display:inline;">
+                                                <form method="post" action="products.php?brand=<?php echo urlencode($selectedBrandKey); ?>" class="delete-form" style="display:inline;">
                                                     <input type="hidden" name="action" value="delete_product">
-                                                    <input type="hidden" name="brand" value="<?php echo htmlspecialchars($selectedBrand); ?>">
+                                                    <input type="hidden" name="brand" value="<?php echo htmlspecialchars($selectedBrandKey); ?>">
+                                                    <input type="hidden" name="product_id" value="<?php echo htmlspecialchars($productToken, ENT_QUOTES); ?>">
                                                     <input type="hidden" name="index" value="<?php echo (int)$i; ?>">
                                                     <button class="btn btn-danger" type="submit" style="padding:5px 10px;font-size:11px;"><i class="bi bi-trash"></i></button>
                                                 </form>
@@ -791,10 +1260,11 @@ andison_admin_header('Products', 'products');
             <h2><i class="bi bi-pencil"></i> Edit Product</h2>
             <button class="edit-modal-close" onclick="closeEditModal()" type="button">✕</button>
         </div>
-        <form method="post" enctype="multipart/form-data" action="products.php?brand=<?php echo urlencode($selectedBrand); ?>" class="edit-product-form">
-            <input type="hidden" name="brand" value="<?php echo htmlspecialchars($selectedBrand); ?>">
+        <form method="post" enctype="multipart/form-data" action="products.php?brand=<?php echo urlencode($selectedBrandKey); ?>" class="edit-product-form">
+            <input type="hidden" name="brand" value="<?php echo htmlspecialchars($selectedBrandKey); ?>">
             <input type="hidden" name="action" value="update_product">
             <input type="hidden" name="index" id="editIndex">
+            <input type="hidden" name="product_description_mode" id="editDescriptionMode" value="plain">
             
             <div class="edit-modal-body">
                 <!-- Category Assignment Section -->
@@ -833,7 +1303,7 @@ andison_admin_header('Products', 'products');
                 <div style="margin-bottom:24px;">
                     <h3 style="font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;"><i class="bi bi-info-circle"></i> Product Information</h3>
                     
-                    <div class="field" style="margin:0;margin-bottom:12px;">
+                    <div class="field edit-description-field" style="margin:0;margin-bottom:12px;">
                         <label for="editProductName"><i class="bi bi-tag"></i> Product Description</label>
                         <input id="editProductName" name="product_name" type="text" placeholder="e.g., Panasonic TIG Welding Machine" title="Enter product name">
                     </div>
@@ -871,7 +1341,7 @@ andison_admin_header('Products', 'products');
                                 <option value="Available" style="color:#10b981;">✓ Available</option>
                                 <option value="Not Available" style="color:#ef4444;">✗ Not Available</option>
                                 <option value="Featured" style="color:#f59e0b;">★ Featured</option>
-                                <option value="New Arrival" style="color:#8b5cf6;">🆕 New Arrival</option>
+                                <option value="New" style="color:#8b5cf6;">🆕 New</option>
                                 <option value="Best Seller" style="color:#ec4899;">🏆 Best Seller</option>
                                 <option value="Limited Stock" style="color:#f97316;">⚠️ Limited Stock</option>
                             </select>
@@ -883,8 +1353,56 @@ andison_admin_header('Products', 'products');
                 <div style="margin-bottom:24px;">
                     <h3 style="font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;"><i class="bi bi-file-text"></i> Details</h3>
                     <div class="field" style="margin:0;margin-bottom:12px;">
-                        <label for="editDescription">Description</label>
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
+                            <label for="editDescription" style="margin:0;">Description</label>
+                            <div class="desc-mode-toggle" role="group" aria-label="Description input mode">
+                                <button type="button" id="descModePlainBtn" class="desc-mode-btn is-active" onclick="setEditDescriptionMode('plain', true)">Plain Text</button>
+                                <button type="button" id="descModeTableBtn" class="desc-mode-btn" onclick="setEditDescriptionMode('table', true)">Table Type</button>
+                            </div>
+                        </div>
                         <textarea id="editDescription" name="product_description" rows="3" placeholder="Add product benefits and key features..." style="resize:vertical;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;"></textarea>
+                        <div id="editDescriptionTablePanel" style="display:none;margin-top:10px;">
+                            <div class="desc-table-toolbar">
+                                <button type="button" class="desc-action-btn" onclick="descriptionTableInsertStarterTable()"><i class="bi bi-table"></i> Starter Table</button>
+                                <button type="button" class="desc-action-btn" onclick="descriptionTableAddRow()"><i class="bi bi-plus-square"></i> Add Row</button>
+                                <button type="button" class="desc-action-btn" onclick="descriptionTableAddColumn()"><i class="bi bi-plus-square-dotted"></i> Add Column</button>
+                                <button type="button" class="desc-action-btn" onclick="descriptionTableDeleteRow()"><i class="bi bi-dash-square"></i> Delete Row</button>
+                                <button type="button" class="desc-action-btn" onclick="descriptionTableDeleteColumn()"><i class="bi bi-dash-square-dotted"></i> Delete Column</button>
+                                <button type="button" class="desc-action-btn" onclick="descriptionTableDeleteSelectedCells()"><i class="bi bi-x-square"></i> Delete Selected Cells</button>
+                                <button type="button" class="desc-action-btn" onclick="descriptionTableMergeCells()"><i class="bi bi-diagram-3"></i> Merge Selected Cells</button>
+                                <button type="button" class="desc-action-btn" onclick="descriptionTableSplitCell()"><i class="bi bi-distribute-vertical"></i> Split Selected Cell</button>
+                                <button type="button" class="desc-action-btn" onclick="descriptionTableInsertImagePrompt()"><i class="bi bi-image"></i> Insert Image</button>
+                                <input type="file" id="descriptionTableImageInput" accept="image/*" style="display:none;" onchange="descriptionTableHandleImageInput(this)">
+                            </div>
+                            <div id="editDescriptionTableHint" style="font-size:11px;color:#6b7280;margin:8px 0 4px 0;"><i class="bi bi-info-circle"></i> Click, drag, or use the small selector in each cell to pick multiple cells. Then merge, split, or delete the selected cells.</div>
+                            <div id="editDescriptionTableSelectionCount" style="font-size:11px;font-weight:700;color:#334155;margin:0 0 10px 0;">Selected cells: 0</div>
+                            <div class="desc-table-shell">
+                                <table id="editDescriptionTableEditor" class="desc-custom-table"><tbody></tbody></table>
+                            </div>
+                        </div>
+                        <div id="editDescriptionModeHint" style="font-size:11px;color:#6b7280;margin-top:8px;"><i class="bi bi-info-circle"></i> Plain Text mode for normal descriptions. Switch to Table Type for merged cells and images.</div>
+                        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
+                            <button type="button" id="convertTextToTableBtn" class="desc-action-btn" onclick="convertEditDescriptionTextToTableRows()"><i class="bi bi-table"></i> Convert current text to table rows</button>
+                            <span style="font-size:11px;color:#9ca3af;align-self:center;">Best for old descriptions with line breaks or label/value pairs.</span>
+                        </div>
+                    </div>
+
+                    <div class="field" style="margin:0;margin-bottom:12px;">
+                        <label for="specImageFile"><i class="bi bi-image" style="color:#2b11db;"></i> Specifications Side Image (optional)</label>
+                        <input type="hidden" name="existing_spec_image" id="existingSpecImageInput" value="">
+                        <div id="specImagePreview" style="display:none;margin-bottom:8px;padding:10px 12px;background:#eef2ff;border:1.5px solid #c7d2fe;border-radius:8px;align-items:center;gap:10px;">
+                            <img id="specImageThumb" src="" alt="Specs side image" style="width:52px;height:52px;object-fit:cover;border-radius:8px;border:1px solid #c7d2fe;flex-shrink:0;">
+                            <div style="flex:1;min-width:0;">
+                                <div style="font-size:12px;font-weight:600;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="specImageFileName">spec-image.jpg</div>
+                                <a id="specImageLink" href="#" target="_blank" style="font-size:10px;color:#2b11db;">View Image</a>
+                            </div>
+                            <button type="button" onclick="removeSpecImage()" style="background:rgba(79,70,229,0.1);border:1px solid #c7d2fe;color:#3730a3;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;"><i class="bi bi-x-lg"></i> Remove</button>
+                        </div>
+                        <label for="specImageFile" style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:2px dashed #c7d2fe;border-radius:8px;cursor:pointer;font-size:13px;color:#4f46e5;font-weight:600;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='#c7d2fe'">
+                            <i class="bi bi-upload" style="font-size:16px;"></i> Click to upload specs-side image
+                        </label>
+                        <input type="file" id="specImageFile" name="spec_image_file" accept="image/*" style="display:none;" onchange="handleSpecImageSelect(this)">
+                        <div style="font-size:11px;color:#9ca3af;margin-top:4px;"><i class="bi bi-info-circle"></i> Displayed at the left side of Specifications on client view.</div>
                     </div>
                     
                     <div class="field" style="margin:0;margin-bottom:12px;">
@@ -894,19 +1412,19 @@ andison_admin_header('Products', 'products');
                         <div style="font-size:11px;color:#9ca3af;margin-top:4px;"><i class="bi bi-info-circle"></i> This displays as plain text on the client side.</div>
                     </div>
 
-                    <div class="field" style="margin:0;margin-bottom:12px;">
+                    <div class="field spec-editor-field" style="margin:0;margin-bottom:12px;">
                         <label><i class="bi bi-table"></i> Specifications Table (Optional)</label>
-                        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+                        <div class="spec-toolbar" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
                             <label for="specTableMode" style="margin:0;font-size:11px;font-weight:700;color:#374151;">Table Style</label>
                             <select id="specTableMode" onchange="setSpecTableMode(this.value, true)" style="min-width:220px;padding:6px 9px;border:1.5px solid #dbe1ea;border-radius:8px;font-size:11px;font-weight:600;background:#fff;">
                                 <option value="standard">Spreadsheet Dark Grid (Excel-like)</option>
                                 <option value="grouped-pairs">Grouped Header (like image)</option>
                             </select>
+                            <button type="button" id="specToggleGroupHeaderBtn" onclick="toggleSpecGroupHeaderControls()" style="display:none;align-items:center;gap:6px;background:#f8fafc;border:1px solid #cbd5e1;color:#334155;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
+                                <i class="bi bi-sliders"></i> Show Group Settings
+                            </button>
                             <button type="button" onclick="convertSpecificationsTextToTable()" style="display:inline-flex;align-items:center;gap:6px;background:#eff6ff;border:1px solid #93c5fd;color:#1d4ed8;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
                                 <i class="bi bi-arrow-repeat"></i> Convert Text to Table
-                            </button>
-                            <button type="button" onclick="applyAirflowSpecTemplate()" style="display:inline-flex;align-items:center;gap:6px;background:#fefce8;border:1px solid #fde68a;color:#854d0e;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
-                                <i class="bi bi-grid-3x3-gap"></i> Use Airflow Template
                             </button>
                         </div>
                         <div id="specGroupHeaderWrap" style="display:none;margin-bottom:8px;padding:8px;border:1px solid #dbeafe;border-radius:8px;background:#eff6ff;"></div>
@@ -916,18 +1434,66 @@ andison_admin_header('Products', 'products');
                                 <tbody id="specTableBody"></tbody>
                             </table>
                         </div>
-                        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+                        <div class="spec-actions" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
                             <button type="button" onclick="addSpecTableDataRow()" style="display:inline-flex;align-items:center;gap:6px;background:#eef2ff;border:1px solid #c7d2fe;color:#2b11db;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
                                 <i class="bi bi-plus-lg"></i> Add Row
                             </button>
                             <button type="button" id="specAddColumnBtn" onclick="addSpecTableColumn()" style="display:inline-flex;align-items:center;gap:6px;background:#ecfdf5;border:1px solid #a7f3d0;color:#047857;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
                                 <i class="bi bi-layout-three-columns"></i> Add Column
                             </button>
-                            <button type="button" onclick="pasteExcelIntoSpecTable()" style="display:inline-flex;align-items:center;gap:6px;background:#fff7ed;border:1px solid #fdba74;color:#9a3412;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
-                                <i class="bi bi-clipboard"></i> Paste Excel
+                            <button type="button" id="specAddSingleColumnBtn" onclick="addSpecTableSingleColumn()" style="display:inline-flex;align-items:center;gap:6px;background:#ecfeff;border:1px solid #a5f3fc;color:#155e75;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
+                                <i class="bi bi-plus-square"></i> Add 1 Column
+                            </button>
+                            <button type="button" onclick="pasteExcelIntoSpecTable(true)" style="display:inline-flex;align-items:center;gap:6px;background:#fff7ed;border:1px solid #fdba74;color:#9a3412;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
+                                <i class="bi bi-clipboard"></i> PASTE TABLE
+                            </button>
+                            <button type="button" onclick="clearSpecTableValues()" style="display:inline-flex;align-items:center;gap:6px;background:#f8fafc;border:1px solid #cbd5e1;color:#334155;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
+                                <i class="bi bi-eraser"></i> Clear Data
+                            </button>
+                            <button type="button" onclick="resetSpecTableFresh()" style="display:inline-flex;align-items:center;gap:6px;background:#fee2e2;border:1px solid #fecaca;color:#991b1b;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
+                                <i class="bi bi-arrow-counterclockwise"></i> NEW TABLE
                             </button>
                         </div>
-                        <div id="specTableHelpText" style="font-size:11px;color:#9ca3af;margin-top:6px;"><i class="bi bi-info-circle"></i> Excel-like mode: use Tab/Enter/Arrow Up/Arrow Down and paste multi-cell data from Excel.</div>
+                        <div id="specTableHelpText" style="font-size:11px;color:#9ca3af;margin-top:6px;"><i class="bi bi-info-circle"></i> Easiest way: copy from Excel, then click "PASTE TABLE".</div>
+                        <button type="button" id="specAddSecondTableBtn" onclick="showSecondTableEditor()" style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;background:#eef2ff;border:1px solid #c7d2fe;color:#2b11db;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
+                            <i class="bi bi-plus-square"></i> Add 2nd Table
+                        </button>
+                        <div class="spec-second-table-card" id="specSecondTableContainer" style="display:none;margin-top:10px;">
+                            <div class="spec-toolbar" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+                                <label for="specSecondTableMode" style="margin:0;font-size:11px;font-weight:700;color:#374151;">Table Style</label>
+                                <select id="specSecondTableMode" onchange="setSecondSpecTableMode(this.value, true)" style="min-width:220px;padding:6px 9px;border:1.5px solid #dbe1ea;border-radius:8px;font-size:11px;font-weight:600;background:#fff;">
+                                    <option value="standard">Spreadsheet Dark Grid (Excel-like)</option>
+                                </select>
+                                <button type="button" onclick="convertSecondSpecificationsTextToTable()" style="display:inline-flex;align-items:center;gap:6px;background:#eff6ff;border:1px solid #93c5fd;color:#1d4ed8;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
+                                    <i class="bi bi-arrow-repeat"></i> Convert Text to Table
+                                </button>
+                            </div>
+                            <div id="specSecondTableBuilderWrap" style="overflow:auto;border:1px solid #e5e7eb;border-radius:10px;background:#fff;">
+                                <table id="specSecondTableBuilder" style="width:max-content;border-collapse:separate;border-spacing:0;min-width:100%;table-layout:fixed;">
+                                    <thead id="specSecondTableHead"></thead>
+                                    <tbody id="specSecondTableBody"></tbody>
+                                </table>
+                            </div>
+                            <div class="spec-actions" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+                                <button type="button" onclick="addSecondSpecTableDataRow()" style="display:inline-flex;align-items:center;gap:6px;background:#eef2ff;border:1px solid #c7d2fe;color:#2b11db;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
+                                    <i class="bi bi-plus-lg"></i> Add Row
+                                </button>
+                                <button type="button" onclick="addSecondSpecTableColumn()" style="display:inline-flex;align-items:center;gap:6px;background:#ecfdf5;border:1px solid #a7f3d0;color:#047857;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
+                                    <i class="bi bi-layout-three-columns"></i> Add Column
+                                </button>
+                                <button type="button" onclick="pasteExcelIntoSecondSpecTable()" style="display:inline-flex;align-items:center;gap:6px;background:#fff7ed;border:1px solid #fdba74;color:#9a3412;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
+                                    <i class="bi bi-clipboard"></i> PASTE TABLE
+                                </button>
+                                <button type="button" onclick="clearSecondSpecTableValues()" style="display:inline-flex;align-items:center;gap:6px;background:#f8fafc;border:1px solid #cbd5e1;color:#334155;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
+                                    <i class="bi bi-eraser"></i> Clear Data
+                                </button>
+                                <button type="button" onclick="resetSecondSpecTableFresh()" style="display:inline-flex;align-items:center;gap:6px;background:#fee2e2;border:1px solid #fecaca;color:#991b1b;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;">
+                                    <i class="bi bi-arrow-counterclockwise"></i> NEW TABLE
+                                </button>
+                            </div>
+                            <div id="specSecondTableHelpText" style="font-size:11px;color:#9ca3af;margin-top:6px;"><i class="bi bi-info-circle"></i> Easiest way: copy from Excel, then click "PASTE TABLE".</div>
+                            <textarea id="specSecondTableText" rows="4" style="display:none;"></textarea>
+                        </div>
                     </div>
 
                     <div class="field" style="margin:0;">
@@ -1022,12 +1588,12 @@ body.modal-open {
     background: white;
     border-radius: 16px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    width: min(92vw, 980px);
-    max-width: min(96vw, 1100px);
-    height: min(88vh, 860px);
-    max-height: 94vh;
-    min-width: min(520px, 96vw);
-    min-height: 520px;
+    width: min(96vw, 1240px);
+    max-width: min(98vw, 1380px);
+    height: min(94vh, 980px);
+    max-height: 96vh;
+    min-width: min(760px, 98vw);
+    min-height: 620px;
     display: flex;
     flex-direction: column;
     animation: modalSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -1118,7 +1684,7 @@ body.modal-open {
 }
 
 .edit-modal-body {
-    padding: 24px;
+    padding: 28px;
     flex: 1 1 auto;
     min-height: 0;
     height: 0;
@@ -1138,7 +1704,7 @@ body.modal-open {
     .edit-modal-content {
         width: 96vw;
         max-width: 96vw;
-        height: 92vh;
+        height: 94vh;
         min-width: 0;
         min-height: 0;
     }
@@ -1354,11 +1920,361 @@ body.modal-open {
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), transparent);
     pointer-events: none;
 }
+
+/* Specs editor layout polish */
+.spec-editor-field {
+    background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.spec-toolbar {
+    padding: 8px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+#specTableBuilderWrap {
+    min-height: 150px;
+    max-height: 420px;
+}
+
+.spec-actions {
+    padding: 8px;
+    border: 1px dashed #d1d5db;
+    border-radius: 10px;
+    background: #fcfdff;
+}
+
+.spec-actions > button,
+.spec-toolbar > button,
+.spec-second-table-card button {
+    min-height: 32px;
+}
+
+.spec-second-table-card {
+    margin-top: 12px;
+    padding: 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background: #f9fafb;
+}
+
+#specSecondTableText {
+    display: none;
+}
+
+#specSecondTableBuilderWrap {
+    min-height: 150px;
+    max-height: 420px;
+}
+
+#specSecondTableBuilderWrap:focus {
+    outline: none;
+}
+
+#specSecondTableBuilder {
+    outline: none;
+}
+
+#specSecondTableHelpText {
+    font-size: 11px;
+    color: #9ca3af;
+}
+
+.desc-mode-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    border: 1px solid #d6dee8;
+    border-radius: 999px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.95) inset, 0 2px 8px rgba(15, 23, 42, 0.05);
+}
+
+.desc-mode-btn {
+    border: 0;
+    border-right: 1px solid #d8e0e6;
+    background: linear-gradient(180deg, #ffffff 0%, #f2f5f8 100%);
+    color: #334155;
+    padding: 7px 15px;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.08s ease;
+}
+
+.desc-mode-btn:last-child {
+    border-right: 0;
+}
+
+.desc-mode-btn.is-active {
+    background: linear-gradient(180deg, #2f7f42 0%, #256536 100%);
+    color: #fff;
+    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.16), 0 2px 6px rgba(20, 83, 45, 0.16);
+}
+
+.desc-mode-btn:hover {
+    background: linear-gradient(180deg, #ffffff 0%, #e7edf4 100%);
+}
+
+.desc-mode-btn.is-active:hover {
+    background: linear-gradient(180deg, #33914c 0%, #245f33 100%);
+}
+
+.desc-mode-btn:active {
+    transform: translateY(1px);
+}
+
+.desc-action-btn {
+    border: 1px solid #c9d5e1;
+    background: linear-gradient(180deg, #ffffff 0%, #f3f6f9 100%);
+    color: #1e293b;
+    border-radius: 10px;
+    padding: 9px 14px;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    line-height: 1;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.08s ease;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.96) inset, 0 2px 6px rgba(15, 23, 42, 0.04);
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.desc-action-btn:hover {
+    background: linear-gradient(180deg, #ffffff 0%, #e9eff5 100%);
+    border-color: #aab8c6;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.desc-action-btn:active {
+    transform: translateY(1px);
+    box-shadow: inset 0 2px 6px rgba(15, 23, 42, 0.15);
+}
+
+.desc-table-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding: 12px;
+    border: 1px solid #d9e0e8;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #ffffff 0%, #f4f7fa 100%);
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255,255,255,0.96);
+}
+
+.desc-table-toolbar button i,
+.desc-mode-btn i {
+    font-size: 0.95em;
+}
+
+.desc-table-shell {
+    border: 1px solid #cbd5e1;
+    border-radius: 14px;
+    background: #ffffff;
+    overflow: auto;
+    resize: vertical;
+    height: 420px;
+    min-height: 260px;
+    max-height: 78vh;
+    box-shadow: 0 3px 14px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.96);
+}
+
+.desc-custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    min-width: 820px;
+    background: #ffffff;
+    color: #1f2937;
+}
+
+.desc-custom-table td,
+.desc-custom-table th {
+    border: 1px solid #d8e0e8;
+    padding: 10px 12px;
+    vertical-align: top;
+    font-size: 13px;
+    line-height: 1.45;
+    min-width: 140px;
+    background: #ffffff;
+    color: #1f2937;
+}
+
+.desc-custom-table td {
+    position: relative;
+}
+
+.desc-cell-editor {
+    min-height: 28px;
+    outline: none;
+    white-space: pre-wrap;
+    word-break: break-word;
+    border-radius: 2px;
+}
+
+.desc-cell-editor:focus {
+    background: #f8fcff;
+}
+
+.desc-custom-table th {
+    background: linear-gradient(180deg, #f7fafc 0%, #ebf1f6 100%);
+    font-weight: 800;
+    color: #243447;
+}
+
+.desc-custom-table td[contenteditable="true"],
+.desc-custom-table th[contenteditable="true"] {
+    outline: none;
+    cursor: text;
+}
+
+.desc-custom-table td.is-selected,
+.desc-custom-table th.is-selected {
+    background: linear-gradient(180deg, #eef6ff 0%, #dcecff 100%);
+    box-shadow: inset 0 0 0 2px #2f7fd6;
+}
+
+.desc-custom-table img {
+    max-width: 100%;
+    height: auto;
+    display: inline-block;
+}
+
+.desc-cell-image-wrap {
+    position: relative;
+    display: inline-block;
+    margin: 8px 8px 0 0;
+    padding: 3px;
+    border: 1px solid #d0dbe6;
+    border-radius: 10px;
+    background: #ffffff;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+}
+
+.desc-cell-image-wrap img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+}
+
+.desc-cell-image-delete {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 18px;
+    height: 18px;
+    border: 1px solid #e57d7d;
+    border-radius: 999px;
+    background: #e05252;
+    color: #fff;
+    font-size: 11px;
+    line-height: 1;
+    font-weight: 800;
+    cursor: pointer;
+    padding: 0;
+}
+
+.desc-cell-image-delete:hover {
+    background: #bf3d3d;
+}
+
+.desc-custom-table .desc-head-letter {
+    background: linear-gradient(180deg, #edf2f6 0%, #dfe6ed 100%);
+    color: #334155;
+    text-align: center;
+    font-weight: 800;
+    width: 56px;
+    min-width: 56px;
+    max-width: 56px;
+}
+
+.desc-custom-table .desc-head-letter {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.desc-custom-table .desc-head-label {
+    background: linear-gradient(180deg, #f7fafc 0%, #ebf1f6 100%);
+    font-weight: 800;
+}
+
+.desc-custom-table .desc-head-label input,
+.desc-custom-table .desc-head-label [contenteditable="true"] {
+    border: 0;
+    background: transparent;
+    color: #1f2937;
+    width: 100%;
+    font: inherit;
+    outline: none;
+}
+
+#editDescriptionTableSelectionCount {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(180deg, #f3fbf5 0%, #e6f4e9 100%);
+    border: 1px solid #c8dfcc;
+    color: #1f5f31 !important;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+}
+
+#editDescriptionTableHint {
+    color: #5b6b7c !important;
+}
+
+#editDescriptionTableEditor thead tr:first-child th,
+#editDescriptionTableEditor thead tr:nth-child(2) th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+#editDescriptionTableEditor thead tr:first-child th,
+#editDescriptionTableEditor thead tr:nth-child(2) th {
+    background-clip: padding-box;
+}
+
+#editDescriptionTableEditor thead tr:first-child th {
+    top: 0;
+}
+
+#editDescriptionTableEditor thead tr:nth-child(2) th {
+    top: 35px;
+}
+
+.edit-description-field textarea#editDescription {
+    min-height: 220px;
+    max-height: 72vh;
+    resize: vertical;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+#editDescription {
+    max-height: 72vh;
+    resize: vertical;
+}
 </style>
 
 <script>
 // Edit product modal functionality
 var _andisonCategories = <?php echo json_encode(array_map(function($c){ return ['id'=>$c['id'],'name'=>$c['name'],'subcategories'=>$c['subcategories']??[]]; }, $allCategories), JSON_HEX_TAG); ?>;
+var _selectedBrandKeyForEditor = <?php echo json_encode((string)$selectedBrandKey, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
 var _subSubcategoryDisabledParents = ['welding-head-and-face-protection'];
 
 function isSubSubcategoryDisabledForSubcategory(subId) {
@@ -1663,6 +2579,8 @@ function parseSpecificationsForEditor(rawSpecifications) {
         table: [],
         matrix: null,
         sourceHtml: '',
+        secondTableText: '',
+        specImage: '',
     };
 
     if (!source) return result;
@@ -1670,11 +2588,28 @@ function parseSpecificationsForEditor(rawSpecifications) {
     try {
         var parsed = JSON.parse(source);
         if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+            result.specImage = String(parsed.specImage || parsed.spec_image || '').trim();
             var hasTables = Array.isArray(parsed.tables);
+            if (parsed.format === 'andison_specs_v3' && hasTables && parsed.tables.length === 0) {
+                result.text = String(parsed.text || '').trim();
+                return result;
+            }
             if (parsed.format === 'andison_specs_v3' && hasTables && parsed.tables.length > 0) {
                 result.text = String(parsed.text || '').trim();
                 var first = parsed.tables[0] || {};
                 result.sourceHtml = String(first.tableHtml || '').trim();
+
+                for (var ti = 1; ti < parsed.tables.length; ti++) {
+                    var extra = parsed.tables[ti] || {};
+                    var extraMatrix = extra.tableMatrix && typeof extra.tableMatrix === 'object' ? extra.tableMatrix : null;
+                    if (!extraMatrix) continue;
+                    var extraText = matrixPayloadToTabText(extraMatrix);
+                    if (extraText !== '') {
+                        result.secondTableText = extraText;
+                        break;
+                    }
+                }
+
                 var matrixRawV3 = first.tableMatrix && typeof first.tableMatrix === 'object' ? first.tableMatrix : null;
                 if (matrixRawV3) {
                     var modeV3 = matrixRawV3.mode === 'grouped-pairs' ? 'grouped-pairs' : 'standard';
@@ -1683,8 +2618,8 @@ function parseSpecificationsForEditor(rawSpecifications) {
                         : [];
 
                     if (headersV3.length > 0) {
-                        var leadV3 = Math.max(1, parseInt(matrixRawV3.leadColumns, 10) || 1);
-                        if (leadV3 >= headersV3.length) leadV3 = Math.max(1, headersV3.length - 1);
+                        var leadV3 = Math.max(0, parseInt(matrixRawV3.leadColumns, 10) || 0);
+                        if (leadV3 >= headersV3.length) leadV3 = Math.max(0, headersV3.length - 1);
                         var rowsV3 = normalizeSpecMatrixRows(matrixRawV3.rows || [], headersV3.length);
                         if (rowsV3.length === 0) rowsV3 = [new Array(headersV3.length).fill('')];
                         result.matrix = {
@@ -1716,7 +2651,7 @@ function parseSpecificationsForEditor(rawSpecifications) {
                 var matrixRaw = parsed.tableMatrix || {};
                 var mode = matrixRaw.mode === 'grouped-pairs' ? 'grouped-pairs' : 'standard';
                 var leadColumns = parseInt(matrixRaw.leadColumns, 10);
-                if (!isFinite(leadColumns) || leadColumns < 1) leadColumns = 1;
+                if (!isFinite(leadColumns) || leadColumns < 0) leadColumns = 0;
                 var headers = Array.isArray(matrixRaw.headers)
                     ? matrixRaw.headers.map(function(h) { return String(h || '').trim(); }).filter(function(h) { return h !== ''; })
                     : [];
@@ -1727,7 +2662,7 @@ function parseSpecificationsForEditor(rawSpecifications) {
                     }
 
                     if (leadColumns >= headers.length) {
-                        leadColumns = Math.max(1, headers.length - 1);
+                        leadColumns = Math.max(0, headers.length - 1);
                     }
 
                     var groups = normalizeGroupedGroups(matrixRaw.groups || [], Math.max(1, headers.length - leadColumns));
@@ -1904,9 +2839,15 @@ var _specTableRows = [['', '']];
 var _specTableGroups = [];
 var _specTableMerges = [];
 var _specTableSourceHtml = '';
-var _specTableLeadColumns = 1;
+var _specTableLeadColumns = 0;
 var _specTableRowMerges = [];
 var _specTableHasUserInput = false;  // Track if user has actively used the table builder
+var _specShowGroupHeaderControls = false;
+
+var _specSecondTableMode = 'standard';
+var _specSecondTableHeaders = ['Parameter', 'Value'];
+var _specSecondTableRows = [['', '']];
+var _specSecondTableHasUserInput = false;
 
 function escapeSpecHtml(str) {
     return String(str || '')
@@ -1987,9 +2928,9 @@ function normalizeGroupedGroups(groups, dataColumnCount) {
 
 function getGroupedLeadColumnCount() {
     var lead = parseInt(_specTableLeadColumns, 10);
-    if (!isFinite(lead) || lead < 1) lead = 1;
+    if (!isFinite(lead) || lead < 0) lead = 0;
     if (Array.isArray(_specTableHeaders) && _specTableHeaders.length > 0 && lead >= _specTableHeaders.length) {
-        lead = Math.max(1, _specTableHeaders.length - 1);
+        lead = Math.max(0, _specTableHeaders.length - 1);
     }
     return lead;
 }
@@ -2084,7 +3025,7 @@ function normalizeSpecTableState() {
     if (!Array.isArray(_specTableMerges)) _specTableMerges = [];
     if (!Array.isArray(_specTableRowMerges)) _specTableRowMerges = [];
     _specTableLeadColumns = parseInt(_specTableLeadColumns, 10);
-    if (!isFinite(_specTableLeadColumns) || _specTableLeadColumns < 1) _specTableLeadColumns = 1;
+    if (!isFinite(_specTableLeadColumns) || _specTableLeadColumns < 0) _specTableLeadColumns = 0;
 
     if (_specTableMode === 'grouped-pairs') {
         if (_specTableHeaders.length === 0) {
@@ -2092,16 +3033,31 @@ function normalizeSpecTableState() {
         }
 
         if (_specTableLeadColumns >= _specTableHeaders.length) {
-            _specTableLeadColumns = Math.max(1, _specTableHeaders.length - 1);
+            _specTableLeadColumns = Math.max(0, _specTableHeaders.length - 1);
         }
 
-        _specTableHeaders[0] = String(_specTableHeaders[0] || 'Model').trim() || 'Model';
-
         var leadCols = getGroupedLeadColumnCount();
-        var dataCols = Math.max(1, _specTableHeaders.length - leadCols);
-        _specTableGroups = normalizeGroupedGroups(_specTableGroups, dataCols);
+        var currentDataCols = Math.max(1, _specTableHeaders.length - leadCols);
 
-        var normalizedDataCols = getGroupedDataColumnCount(_specTableGroups);
+        // If groups are missing, create one group that covers current data columns.
+        if (!Array.isArray(_specTableGroups) || _specTableGroups.length === 0) {
+            _specTableGroups = [{ title: 'Group 1', span: currentDataCols, rowSpan: false }];
+        }
+
+        // Preserve existing visible columns: never silently drop trailing columns.
+        // If header/data has more columns than group spans, extend the last group.
+        var groupedCols = getGroupedDataColumnCount(_specTableGroups);
+        if (currentDataCols > groupedCols) {
+            var lastIdx = _specTableGroups.length - 1;
+            var lastSpan = parseInt(_specTableGroups[lastIdx] && _specTableGroups[lastIdx].span, 10);
+            if (!isFinite(lastSpan) || lastSpan < 1) lastSpan = 1;
+            _specTableGroups[lastIdx].span = lastSpan + (currentDataCols - groupedCols);
+            groupedCols = currentDataCols;
+        }
+
+        _specTableGroups = normalizeGroupedGroups(_specTableGroups, Math.max(1, groupedCols));
+
+        var normalizedDataCols = Math.max(groupedCols, getGroupedDataColumnCount(_specTableGroups));
         var targetHeaders = leadCols + normalizedDataCols;
         _specTableHeaders = _specTableHeaders.slice(0, targetHeaders);
         while (_specTableHeaders.length < targetHeaders) {
@@ -2211,7 +3167,11 @@ function ensureSpecTableGridSize(minRows, minCols) {
     if (!isFinite(targetCols) || targetCols < 1) targetCols = 1;
 
     while (_specTableHeaders.length < targetCols) {
-        _specTableHeaders.push('Column ' + (_specTableHeaders.length + 1));
+        if (_specTableMode === 'grouped-pairs') {
+            _specTableHeaders.push(getDefaultGroupedSubHeader(_specTableHeaders.length));
+        } else {
+            _specTableHeaders.push('Column ' + (_specTableHeaders.length + 1));
+        }
     }
 
     _specTableRows = _specTableRows.map(function(row) {
@@ -2397,7 +3357,7 @@ function parseClipboardHtmlTable(rawHtml) {
             }
             break;
         }
-        if (leadColumns < 1) leadColumns = 1;
+        if (leadColumns < 0) leadColumns = 0;
 
         var groups = [];
 
@@ -2560,7 +3520,7 @@ function applyPastedSpecHtml(rawHtml) {
     _specTableHeaders = parsed.headers.slice(0);
     _specTableRows = Array.isArray(parsed.rows) ? parsed.rows.slice(0) : [];
     _specTableGroups = Array.isArray(parsed.groups) ? parsed.groups.slice(0) : [];
-    _specTableLeadColumns = Math.max(1, parseInt(parsed.leadColumns, 10) || 1);
+    _specTableLeadColumns = Math.max(0, parseInt(parsed.leadColumns, 10) || 0);
     _specTableMerges = Array.isArray(parsed.merges) ? parsed.merges.slice(0) : [];
     _specTableRowMerges = Array.isArray(parsed.rowMerges) ? parsed.rowMerges.slice(0) : [];
     _specTableSourceHtml = String(parsed.tableHtml || '').trim();
@@ -2576,22 +3536,970 @@ function applyPastedSpecHtml(rawHtml) {
     return true;
 }
 
-function applyPastedSpecText(rawText, startRow, startCol) {
-    if (_specTableMode !== 'standard') return false;
+function applySmartFullTablePaste(matrix, rowOffset, colOffset) {
+    if (!Array.isArray(matrix) || matrix.length < 2) return false;
+    if (rowOffset !== 0 || colOffset !== 0) return false;
 
+    var maxCols = matrix.reduce(function(max, row) {
+        return Math.max(max, Array.isArray(row) ? row.length : 0);
+    }, 0);
+    if (maxCols < 2) return false;
+
+    function normalizeRow(row, width) {
+        var out = Array.isArray(row) ? row.slice(0, width) : [];
+        while (out.length < width) out.push('');
+        return out.map(function(cell) { return String(cell || '').trim(); });
+    }
+
+    function nonEmptyCount(row) {
+        var count = 0;
+        for (var i = 0; i < row.length; i++) {
+            if (String(row[i] || '').trim() !== '') count++;
+        }
+        return count;
+    }
+
+    function looksLikeGroupedHeader(rows, width) {
+        if (!Array.isArray(rows) || rows.length < 3) return false;
+        var top = normalizeRow(rows[0], width);
+        var sub = normalizeRow(rows[1], width);
+
+        var topNonEmpty = nonEmptyCount(top);
+        var subNonEmpty = nonEmptyCount(sub);
+        var topHasBlank = top.some(function(v) { return String(v || '').trim() === ''; });
+        var subMostlyFilled = subNonEmpty >= Math.max(2, width - 1);
+
+        return topHasBlank && topNonEmpty >= 2 && subMostlyFilled;
+    }
+
+    function applyStandardFromMatrix(rows, width) {
+        var headerRow = normalizeRow(rows[0], width);
+        var headers = headerRow.map(function(h, idx) {
+            var label = String(h || '').trim();
+            return label !== '' ? label : ('Column ' + (idx + 1));
+        });
+
+        var dataRows = rows.slice(1).map(function(row) {
+            return normalizeRow(row, width).map(function(cell) { return String(cell || ''); });
+        });
+        if (dataRows.length === 0) dataRows = [new Array(width).fill('')];
+
+        _specTableMode = 'standard';
+        _specTableHeaders = headers;
+        _specTableRows = dataRows;
+        _specTableGroups = [];
+        _specTableLeadColumns = 0;
+        _specTableMerges = [];
+        _specTableRowMerges = [];
+        _specTableSourceHtml = '';
+
+        normalizeSpecTableState();
+        renderSpecTableBuilder();
+        syncSpecificationsHiddenField();
+        return true;
+    }
+
+    function applyGroupedFromMatrix(rows, width) {
+        var top = normalizeRow(rows[0], width);
+        var sub = normalizeRow(rows[1], width);
+
+        var leadColumns = 0;
+        if (String(top[0] || '').trim() !== '' && String(sub[0] || '').trim() !== '') {
+            leadColumns = 0;
+        }
+
+        var groups = [];
+        var c = leadColumns;
+        while (c < width) {
+            var title = String(top[c] || '').trim();
+            var span = 1;
+
+            if (title === '') {
+                title = groups.length > 0 ? groups[groups.length - 1].title : ('Group ' + (groups.length + 1));
+            }
+
+            var next = c + 1;
+            while (next < width) {
+                var nextTitle = String(top[next] || '').trim();
+                if (nextTitle !== '') break;
+                span++;
+                next++;
+            }
+
+            groups.push({
+                title: title,
+                span: span,
+                rowSpan: false,
+            });
+
+            c += span;
+        }
+
+        if (groups.length === 0) {
+            return applyStandardFromMatrix(rows.slice(1), width);
+        }
+
+        var headers = sub.map(function(h, idx) {
+            var label = String(h || '').trim();
+            if (label === '' && idx === 0) return String(top[0] || 'Model').trim() || 'Model';
+            if (label === '') return 'Column ' + (idx + 1);
+            return label;
+        });
+
+        var dataRows = rows.slice(2).map(function(row) {
+            return normalizeRow(row, width).map(function(cell) { return String(cell || ''); });
+        });
+        if (dataRows.length === 0) dataRows = [new Array(width).fill('')];
+
+        _specTableMode = 'grouped-pairs';
+        _specTableLeadColumns = leadColumns;
+        _specTableHeaders = headers;
+        _specTableGroups = groups;
+        _specTableRows = dataRows;
+        _specTableMerges = [];
+        _specTableRowMerges = [];
+        _specTableSourceHtml = '';
+
+        normalizeSpecTableState();
+        renderSpecTableBuilder();
+        syncSpecificationsHiddenField();
+        return true;
+    }
+
+    if (looksLikeGroupedHeader(matrix, maxCols)) {
+        return applyGroupedFromMatrix(matrix, maxCols);
+    }
+
+    return applyStandardFromMatrix(matrix, maxCols);
+}
+
+function parseTabularTextToMatrix(rawText) {
     var normalized = String(rawText || '').replace(/\r\n?/g, '\n');
-    if (normalized.trim() === '') return false;
-
-    var looksTabular = normalized.indexOf('\t') !== -1 || normalized.indexOf('\n') !== -1;
-    if (!looksTabular) return false;
+    if (normalized.trim() === '') return [];
 
     var lines = normalized.split('\n');
-    while (lines.length > 0 && lines[lines.length - 1] === '') lines.pop();
-    if (lines.length === 0) return false;
+    while (lines.length > 0 && String(lines[lines.length - 1] || '').trim() === '') lines.pop();
+    if (lines.length === 0) return [];
 
+    // Analyze first few lines to detect format
+    var sampleLines = lines.slice(0, Math.min(3, lines.length));
+    var hasTabs = sampleLines.some(function(line) { return line.indexOf('\t') !== -1; });
+    var hasMultipleSpaces = sampleLines.some(function(line) { return /\s{2,}/.test(line); });
+    
     var matrix = lines.map(function(line) {
-        return line.split('\t');
+        var trimmedLine = String(line || '').trim();
+        
+        // Priority 1: Tab-separated (Excel default)
+        if (line.indexOf('\t') !== -1) {
+            return line.split('\t').map(function(cell) { return String(cell || '').trim(); });
+        }
+        
+        // Priority 2: Multiple spaces (fallback for copied tables)
+        if (hasMultipleSpaces && /\s{2,}/.test(line)) {
+            var cells = trimmedLine.split(/\s{2,}/);
+            if (cells.length > 1) {
+                return cells.map(function(cell) { return String(cell || '').trim(); });
+            }
+        }
+        
+        // If no separators found, return single cell
+        return [trimmedLine];
     });
+
+    return matrix;
+}
+
+function buildStandardMatrixPayloadFromTabText(rawText) {
+    var matrix = parseTabularTextToMatrix(rawText);
+    if (!Array.isArray(matrix) || matrix.length === 0) return null;
+
+    var maxCols = matrix.reduce(function(max, row) {
+        return Math.max(max, Array.isArray(row) ? row.length : 0);
+    }, 0);
+    if (maxCols < 1) return null;
+
+    var normalizeRow = function(row) {
+        var out = Array.isArray(row) ? row.slice(0, maxCols) : [];
+        while (out.length < maxCols) out.push('');
+        return out.map(function(cell) { return String(cell || '').trim(); });
+    };
+
+    var headers = normalizeRow(matrix[0]).map(function(h, idx) {
+        return h !== '' ? h : ('Column ' + (idx + 1));
+    });
+
+    var rows = matrix.slice(1).map(normalizeRow);
+    if (rows.length === 0) rows = [new Array(maxCols).fill('')];
+
+    var hasAnyData = rows.some(function(row) {
+        return row.some(function(cell) { return String(cell || '').trim() !== ''; });
+    });
+    if (!hasAnyData) return null;
+
+    return {
+        mode: 'standard',
+        headers: headers,
+        rows: rows,
+        merges: [],
+    };
+}
+
+function matrixPayloadToTabText(matrixRaw) {
+    if (!matrixRaw || typeof matrixRaw !== 'object') return '';
+
+    var headers = Array.isArray(matrixRaw.headers)
+        ? matrixRaw.headers.map(function(h) { return String(h || '').trim(); })
+        : [];
+    var rows = Array.isArray(matrixRaw.rows) ? matrixRaw.rows : [];
+
+    var width = Math.max(headers.length, rows.reduce(function(max, row) {
+        return Math.max(max, Array.isArray(row) ? row.length : 0);
+    }, 0));
+
+    if (width < 1) return '';
+
+    while (headers.length < width) headers.push('');
+
+    var lines = [headers.join('\t')];
+    rows.forEach(function(row) {
+        var out = Array.isArray(row) ? row.slice(0, width) : [];
+        while (out.length < width) out.push('');
+        lines.push(out.map(function(cell) { return String(cell || '').trim(); }).join('\t'));
+    });
+
+    return lines.join('\n').trim();
+}
+
+function renderExcelLikePreviewTable(host, matrix) {
+    if (!host || !matrix || !Array.isArray(matrix.headers)) return;
+
+    var table = document.createElement('table');
+    table.style.cssText = 'width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px;';
+
+    var thead = document.createElement('thead');
+    var headerRow = document.createElement('tr');
+    matrix.headers.forEach(function(header) {
+        var th = document.createElement('th');
+        th.textContent = String(header || '').trim();
+        th.style.cssText = 'padding:4px 8px;border:1px solid #4c6382;background:#9fc1f0;color:#111827;font-weight:700;text-align:center;vertical-align:middle;word-break:break-word;';
+        headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+    matrix.rows.forEach(function(row, rowIdx) {
+        var tr = document.createElement('tr');
+        row.forEach(function(cell) {
+            var td = document.createElement('td');
+            td.textContent = String(cell || '').trim();
+            td.style.cssText = 'padding:4px 8px;border:1px solid #4c6382;background:' + (rowIdx % 2 === 0 ? '#a9c7f3' : '#b3cef5') + ';color:#111827;vertical-align:middle;word-break:break-word;white-space:normal;';
+            tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+
+    host.innerHTML = '';
+    host.appendChild(table);
+}
+
+function normalizeSecondSpecTableState() {
+    if (_specSecondTableMode !== 'standard') _specSecondTableMode = 'standard';
+
+    if (!Array.isArray(_specSecondTableHeaders) || _specSecondTableHeaders.length < 1) {
+        _specSecondTableHeaders = ['Parameter', 'Value'];
+    }
+
+    if (!Array.isArray(_specSecondTableRows) || _specSecondTableRows.length < 1) {
+        _specSecondTableRows = [['', '']];
+    }
+
+    var colCount = Math.max(1, _specSecondTableHeaders.length);
+    _specSecondTableHeaders = _specSecondTableHeaders.map(function(h, idx) {
+        var value = String(h || '').trim();
+        return value !== '' ? value : (idx === 0 ? 'Parameter' : (idx === 1 ? 'Value' : 'Column ' + (idx + 1)));
+    });
+
+    _specSecondTableRows = _specSecondTableRows.map(function(row) {
+        var next = Array.isArray(row) ? row.slice(0) : [];
+        while (next.length < colCount) next.push('');
+        if (next.length > colCount) next = next.slice(0, colCount);
+        return next.map(function(cell) { return String(cell || ''); });
+    });
+
+    if (_specSecondTableRows.length === 0) {
+        _specSecondTableRows = [new Array(colCount).fill('')];
+    }
+}
+
+function secondSpecTablePayload() {
+    normalizeSecondSpecTableState();
+    return {
+        mode: 'standard',
+        headers: _specSecondTableHeaders.map(function(h) { return String(h || '').trim(); }),
+        rows: _specSecondTableRows.map(function(row) {
+            return row.map(function(cell) { return String(cell || '').trim(); });
+        }),
+        merges: [],
+    };
+}
+
+function syncSecondSpecTableHiddenField() {
+    var textInput = document.getElementById('specSecondTableText');
+    if (!textInput) return;
+    textInput.value = matrixPayloadToTabText(secondSpecTablePayload());
+}
+
+function focusSecondSpecTableCell(rowIdx, colIdx) {
+    var selector = '.spec-second-table-input[data-row="' + rowIdx + '"][data-col="' + colIdx + '"]';
+    var input = document.querySelector(selector);
+    if (!input) return false;
+
+    input.focus();
+    input.select();
+    return true;
+}
+
+function autoResizeSecondSpecCell(el) {
+    if (!el) return;
+    el.style.height = 'auto';
+    var nextHeight = Math.max(34, el.scrollHeight);
+    el.style.height = nextHeight + 'px';
+}
+
+function ensureSecondSpecTableGridSize(minRows, minCols) {
+    normalizeSecondSpecTableState();
+
+    var targetRows = parseInt(minRows, 10);
+    var targetCols = parseInt(minCols, 10);
+    if (!isFinite(targetRows) || targetRows < 1) targetRows = 1;
+    if (!isFinite(targetCols) || targetCols < 1) targetCols = 1;
+
+    while (_specSecondTableHeaders.length < targetCols) {
+        _specSecondTableHeaders.push('Column ' + (_specSecondTableHeaders.length + 1));
+    }
+
+    _specSecondTableRows = _specSecondTableRows.map(function(row) {
+        var next = Array.isArray(row) ? row.slice(0) : [];
+        while (next.length < _specSecondTableHeaders.length) next.push('');
+        return next;
+    });
+
+    while (_specSecondTableRows.length < targetRows) {
+        _specSecondTableRows.push(new Array(_specSecondTableHeaders.length).fill(''));
+    }
+}
+
+function renderSecondSpecTableBuilder() {
+    normalizeSecondSpecTableState();
+
+    var modeSel = document.getElementById('specSecondTableMode');
+    if (modeSel) modeSel.value = _specSecondTableMode;
+
+    var head = document.getElementById('specSecondTableHead');
+    var body = document.getElementById('specSecondTableBody');
+    var wrap = document.getElementById('specSecondTableBuilderWrap');
+    var help = document.getElementById('specSecondTableHelpText');
+    if (!head || !body) {
+        syncSecondSpecTableHiddenField();
+        return;
+    }
+
+    if (wrap) {
+        wrap.style.border = '1px solid #4b5563';
+        wrap.style.background = 'linear-gradient(180deg,#101217 0%,#171b24 100%)';
+        wrap.style.boxShadow = 'inset 0 0 0 1px rgba(255,255,255,0.03)';
+    }
+    if (help) {
+        help.innerHTML = '<i class="bi bi-info-circle"></i> Copy from Excel, then click "PASTE TABLE".';
+    }
+
+    head.innerHTML = '';
+    body.innerHTML = '';
+
+    var headRow = document.createElement('tr');
+
+    var indexHead = document.createElement('th');
+    indexHead.style.cssText = 'width:42px;padding:8px;border-bottom:1px solid #6b7280;border-right:1px solid #6b7280;background:#0f131a;color:#cbd5e1;text-align:center;font-size:10px;font-weight:800;';
+    indexHead.textContent = '#';
+    headRow.appendChild(indexHead);
+
+    _specSecondTableHeaders.forEach(function(header, colIdx) {
+        var th = document.createElement('th');
+        th.style.cssText = 'padding:8px;border-bottom:1px solid #6b7280;border-right:1px solid #6b7280;background:#11151d;vertical-align:middle;';
+
+        var wrap = document.createElement('div');
+        wrap.style.cssText = 'display:grid;grid-template-columns:auto 1fr auto;gap:6px;align-items:center;';
+
+        var colLabel = document.createElement('span');
+        colLabel.textContent = getSpecColumnLabel(colIdx);
+        colLabel.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border:1px solid #4b5563;border-radius:5px;background:#1f2530;color:#e5e7eb;font-size:10px;font-weight:800;';
+        wrap.appendChild(colLabel);
+
+        var input = document.createElement('input');
+        input.type = 'text';
+        input.value = header;
+        input.placeholder = 'Column ' + (colIdx + 1);
+        input.style.cssText = 'width:100%;min-width:110px;padding:7px 9px;border:1px solid #6b7280;border-radius:7px;font-size:11px;font-weight:700;color:#f3f4f6;background:#1f2530;';
+        input.addEventListener('input', function() {
+            _specSecondTableHasUserInput = true;
+            _specSecondTableHeaders[colIdx] = this.value;
+            syncSecondSpecTableHiddenField();
+        });
+        wrap.appendChild(input);
+
+        if (_specSecondTableHeaders.length > 1) {
+            var removeColBtn = document.createElement('button');
+            removeColBtn.type = 'button';
+            removeColBtn.innerHTML = '&times;';
+            removeColBtn.title = 'Remove column';
+            removeColBtn.style.cssText = 'width:24px;height:24px;border-radius:6px;border:1px solid #7f1d1d;background:#2a1014;color:#fca5a5;font-size:16px;line-height:1;cursor:pointer;flex-shrink:0;';
+            removeColBtn.addEventListener('click', function() {
+                removeSecondSpecTableColumn(colIdx);
+            });
+            wrap.appendChild(removeColBtn);
+        }
+
+        th.appendChild(wrap);
+        headRow.appendChild(th);
+    });
+
+    var actionHead = document.createElement('th');
+    actionHead.style.cssText = 'width:42px;padding:8px;border-bottom:1px solid #6b7280;background:#11151d;';
+    headRow.appendChild(actionHead);
+    head.appendChild(headRow);
+
+    _specSecondTableRows.forEach(function(row, rowIdx) {
+        var tr = document.createElement('tr');
+        if (rowIdx % 2 === 1) tr.style.backgroundColor = 'rgba(255,255,255,0.02)';
+
+        var idxTd = document.createElement('td');
+        idxTd.style.cssText = 'padding:6px 8px;border-bottom:1px solid #6b7280;border-right:1px solid #6b7280;background:#0f131a;color:#cbd5e1;text-align:center;font-size:11px;font-weight:700;';
+        idxTd.textContent = String(rowIdx + 1);
+        tr.appendChild(idxTd);
+
+        _specSecondTableHeaders.forEach(function(header, colIdx) {
+            var td = document.createElement('td');
+            td.style.cssText = 'padding:6px 8px;border-bottom:1px solid #6b7280;border-right:1px solid #6b7280;background:transparent;';
+
+            var cellInput = document.createElement('textarea');
+            cellInput.value = row[colIdx] || '';
+            cellInput.className = 'spec-second-table-input';
+            cellInput.setAttribute('data-row', String(rowIdx));
+            cellInput.setAttribute('data-col', String(colIdx));
+            cellInput.rows = 1;
+            cellInput.style.cssText = 'width:100%;min-height:34px;padding:7px 9px;border:1px solid #6b7280;border-radius:7px;font-size:12px;line-height:1.45;color:#f3f4f6;background:#1f2530;resize:vertical;overflow:hidden;white-space:pre-wrap;';
+            (function(r, c, inputEl) {
+                inputEl.addEventListener('input', function() {
+                    _specSecondTableHasUserInput = true;
+                    _specSecondTableRows[r][c] = this.value;
+                    autoResizeSecondSpecCell(this);
+                    syncSecondSpecTableHiddenField();
+                });
+                inputEl.addEventListener('keydown', function(evt) {
+                    handleSecondSpecCellKeyDown(evt, r, c);
+                });
+                inputEl.addEventListener('paste', function(evt) {
+                    handleSecondSpecCellPaste(evt, r, c, inputEl);
+                });
+            })(rowIdx, colIdx, cellInput);
+
+            autoResizeSecondSpecCell(cellInput);
+
+            td.appendChild(cellInput);
+            tr.appendChild(td);
+        });
+
+        var actionTd = document.createElement('td');
+        actionTd.style.cssText = 'padding:6px 8px;border-bottom:1px solid #6b7280;text-align:center;background:transparent;';
+        var removeRowBtn = document.createElement('button');
+        removeRowBtn.type = 'button';
+        removeRowBtn.innerHTML = '<i class="bi bi-trash"></i>';
+        removeRowBtn.title = 'Remove row';
+        removeRowBtn.style.cssText = 'width:28px;height:28px;border-radius:7px;border:1px solid #7f1d1d;background:#2a1014;color:#fca5a5;cursor:pointer;';
+        (function(r) {
+            removeRowBtn.addEventListener('click', function() {
+                removeSecondSpecTableDataRow(r);
+            });
+        })(rowIdx);
+        actionTd.appendChild(removeRowBtn);
+        tr.appendChild(actionTd);
+
+        body.appendChild(tr);
+    });
+
+    syncSecondSpecTableHiddenField();
+}
+
+function setSecondSpecTableMode(value, forceRender) {
+    _specSecondTableMode = 'standard';
+    var modeSel = document.getElementById('specSecondTableMode');
+    if (modeSel) modeSel.value = _specSecondTableMode;
+    if (forceRender !== false) renderSecondSpecTableBuilder();
+}
+
+function addSecondSpecTableColumn(label) {
+    _specSecondTableHasUserInput = true;
+    normalizeSecondSpecTableState();
+    _specSecondTableHeaders.push(String(label || ('Column ' + (_specSecondTableHeaders.length + 1))));
+    _specSecondTableRows = _specSecondTableRows.map(function(row) {
+        row.push('');
+        return row;
+    });
+    renderSecondSpecTableBuilder();
+}
+
+function addSecondSpecTableDataRow(initialValues) {
+    _specSecondTableHasUserInput = true;
+    normalizeSecondSpecTableState();
+    var row = new Array(_specSecondTableHeaders.length).fill('');
+    if (Array.isArray(initialValues)) {
+        for (var i = 0; i < Math.min(initialValues.length, row.length); i++) {
+            row[i] = String(initialValues[i] || '');
+        }
+    }
+    _specSecondTableRows.push(row);
+    renderSecondSpecTableBuilder();
+}
+
+function removeSecondSpecTableColumn(colIdx) {
+    _specSecondTableHasUserInput = true;
+    normalizeSecondSpecTableState();
+    if (_specSecondTableHeaders.length <= 1) return;
+    _specSecondTableHeaders.splice(colIdx, 1);
+    _specSecondTableRows = _specSecondTableRows.map(function(row) {
+        row.splice(colIdx, 1);
+        return row;
+    });
+    renderSecondSpecTableBuilder();
+}
+
+function removeSecondSpecTableDataRow(rowIdx) {
+    _specSecondTableHasUserInput = true;
+    normalizeSecondSpecTableState();
+    if (_specSecondTableRows.length <= 1) {
+        _specSecondTableRows[0] = new Array(_specSecondTableHeaders.length).fill('');
+    } else {
+        _specSecondTableRows.splice(rowIdx, 1);
+    }
+    renderSecondSpecTableBuilder();
+}
+
+function clearSecondSpecTableValues() {
+    _specSecondTableHasUserInput = true;
+    normalizeSecondSpecTableState();
+    _specSecondTableRows = [new Array(_specSecondTableHeaders.length).fill('')];
+    renderSecondSpecTableBuilder();
+}
+
+function resetSecondSpecTableFresh() {
+    _specSecondTableHasUserInput = true;
+    _specSecondTableMode = 'standard';
+    _specSecondTableHeaders = ['Parameter', 'Value'];
+    _specSecondTableRows = [['', '']];
+    renderSecondSpecTableBuilder();
+}
+
+function applySecondPastedSpecText(rawText, startRow, startCol) {
+    var matrix = parseTabularTextToMatrix(rawText);
+    if (!Array.isArray(matrix) || matrix.length === 0) return false;
+
+    var looksTabular = matrix.length > 1 || (Array.isArray(matrix[0]) && matrix[0].length > 1);
+    if (!looksTabular) return false;
+
+    var maxCols = matrix.reduce(function(max, row) {
+        return Math.max(max, row.length);
+    }, 0);
+    if (maxCols < 1) return false;
+
+    var rowOffset = Math.max(0, parseInt(startRow, 10) || 0);
+    var colOffset = Math.max(0, parseInt(startCol, 10) || 0);
+    ensureSecondSpecTableGridSize(rowOffset + matrix.length, colOffset + maxCols);
+
+    for (var r = 0; r < matrix.length; r++) {
+        for (var c = 0; c < maxCols; c++) {
+            _specSecondTableRows[rowOffset + r][colOffset + c] = String((matrix[r] && matrix[r][c]) || '');
+        }
+    }
+
+    renderSecondSpecTableBuilder();
+    window.requestAnimationFrame(function() {
+        focusSecondSpecTableCell(rowOffset, colOffset);
+    });
+
+    return true;
+}
+
+function applySecondPastedSpecHtml(rawHtml, startRow, startCol) {
+    var parsed = parseClipboardHtmlTable(rawHtml);
+    if (!parsed || !Array.isArray(parsed.headers) || parsed.headers.length < 1) return false;
+
+    var headers = parsed.headers.map(function(h, idx) {
+        var label = String(h || '').trim();
+        return label !== '' ? label : ('Column ' + (idx + 1));
+    });
+
+    var rows = Array.isArray(parsed.rows) ? parsed.rows.map(function(row) {
+        var out = Array.isArray(row) ? row.slice(0, headers.length) : [];
+        while (out.length < headers.length) out.push('');
+        return out.map(function(cell) { return String(cell || ''); });
+    }) : [];
+
+    if (rows.length === 0) rows = [new Array(headers.length).fill('')];
+
+    var rowOffset = Math.max(0, parseInt(startRow, 10) || 0);
+    var colOffset = Math.max(0, parseInt(startCol, 10) || 0);
+
+    if (rowOffset === 0 && colOffset === 0) {
+        _specSecondTableMode = 'standard';
+        _specSecondTableHeaders = headers;
+        _specSecondTableRows = rows;
+        _specSecondTableHasUserInput = true;
+        renderSecondSpecTableBuilder();
+        window.requestAnimationFrame(function() {
+            focusSecondSpecTableCell(0, 0);
+        });
+        return true;
+    }
+
+    ensureSecondSpecTableGridSize(rowOffset + rows.length, colOffset + headers.length);
+    for (var r = 0; r < rows.length; r++) {
+        for (var c = 0; c < headers.length; c++) {
+            _specSecondTableRows[rowOffset + r][colOffset + c] = String((rows[r] && rows[r][c]) || '');
+        }
+    }
+
+    _specSecondTableHasUserInput = true;
+    renderSecondSpecTableBuilder();
+    window.requestAnimationFrame(function() {
+        focusSecondSpecTableCell(rowOffset, colOffset);
+    });
+
+    return true;
+}
+
+function handleSecondSpecCellPaste(event, rowIdx, colIdx, inputEl) {
+    var clipboard = event.clipboardData || window.clipboardData;
+    var beforeValue = inputEl ? String(inputEl.value || '') : '';
+
+    if (!clipboard) {
+        setTimeout(function() {
+            if (!inputEl) return;
+            var afterValue = String(inputEl.value || '').trim();
+            if (afterValue === '' || afterValue === String(beforeValue || '').trim()) return;
+            if (applySecondPastedSpecText(afterValue, rowIdx, colIdx)) return;
+            syncSecondSpecTableHiddenField();
+        }, 0);
+        return;
+    }
+
+    var html = '';
+    try {
+        html = clipboard.getData('text/html');
+    } catch (e) {
+        html = '';
+    }
+
+    if (html && applySecondPastedSpecHtml(html, rowIdx, colIdx)) {
+        event.preventDefault();
+        return;
+    }
+
+    var text = clipboard.getData('text');
+    if (applySecondPastedSpecText(text, rowIdx, colIdx)) {
+        event.preventDefault();
+        return;
+    }
+
+    setTimeout(function() {
+        if (!inputEl) return;
+        var afterValue = String(inputEl.value || '').trim();
+        if (afterValue === '' || afterValue === String(beforeValue || '').trim()) return;
+        if (applySecondPastedSpecText(afterValue, rowIdx, colIdx)) return;
+        syncSecondSpecTableHiddenField();
+    }, 0);
+}
+
+function handleSecondSpecCellKeyDown(event, rowIdx, colIdx) {
+    var nextRow = rowIdx;
+    var nextCol = colIdx;
+    var handled = false;
+
+    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+        handled = true;
+        nextRow = event.shiftKey ? rowIdx - 1 : rowIdx + 1;
+    } else if (event.key === 'ArrowDown' && event.altKey) {
+        handled = true;
+        nextRow = rowIdx + 1;
+    } else if (event.key === 'ArrowUp' && event.altKey) {
+        handled = true;
+        nextRow = rowIdx - 1;
+    } else if (event.key === 'Tab') {
+        handled = true;
+        if (event.shiftKey) {
+            if (colIdx > 0) {
+                nextCol = colIdx - 1;
+            } else {
+                nextRow = Math.max(0, rowIdx - 1);
+                nextCol = Math.max(0, _specSecondTableHeaders.length - 1);
+            }
+        } else if (colIdx < _specSecondTableHeaders.length - 1) {
+            nextCol = colIdx + 1;
+        } else {
+            nextRow = rowIdx + 1;
+            nextCol = 0;
+        }
+    }
+
+    if (!handled) return;
+
+    event.preventDefault();
+    if (nextRow < 0) nextRow = 0;
+    if (nextCol < 0) nextCol = 0;
+
+    ensureSecondSpecTableGridSize(nextRow + 1, nextCol + 1);
+    renderSecondSpecTableBuilder();
+    window.requestAnimationFrame(function() {
+        focusSecondSpecTableCell(nextRow, nextCol);
+    });
+}
+
+function convertSecondSpecificationsTextToTable() {
+    var input = document.getElementById('specSecondTableText');
+    var raw = input ? String(input.value || '').trim() : '';
+
+    if (raw === '') {
+        renderSecondSpecTableBuilder();
+        return;
+    }
+
+    var matrix = buildStandardMatrixPayloadFromTabText(raw);
+    if (!matrix) {
+        customAlert('No table data detected in the second table text.');
+        return;
+    }
+
+    _specSecondTableMode = 'standard';
+    _specSecondTableHeaders = matrix.headers.slice(0);
+    _specSecondTableRows = matrix.rows.map(function(row) { return row.slice(0); });
+    _specSecondTableHasUserInput = true;
+    renderSecondSpecTableBuilder();
+}
+
+function setSecondSpecificationsEditor(rawText) {
+    var raw = String(rawText || '').trim();
+    _specSecondTableMode = 'standard';
+    var addBtn = document.getElementById('specAddSecondTableBtn');
+    var container = document.getElementById('specSecondTableContainer');
+
+    if (raw === '') {
+        _specSecondTableHeaders = ['Parameter', 'Value'];
+        _specSecondTableRows = [['', '']];
+        _specSecondTableHasUserInput = false;
+        if (addBtn) addBtn.style.display = 'inline-flex';
+        if (container) container.style.display = 'none';
+        renderSecondSpecTableBuilder();
+        return;
+    }
+
+    var matrix = buildStandardMatrixPayloadFromTabText(raw);
+    if (matrix) {
+        _specSecondTableHeaders = matrix.headers.slice(0);
+        _specSecondTableRows = matrix.rows.map(function(row) { return row.slice(0); });
+        _specSecondTableHasUserInput = true;
+    } else {
+        _specSecondTableHeaders = ['Parameter', 'Value'];
+        _specSecondTableRows = [['', '']];
+        _specSecondTableHasUserInput = false;
+    }
+
+    if (addBtn) addBtn.style.display = 'none';
+    if (container) container.style.display = 'block';
+
+    renderSecondSpecTableBuilder();
+}
+
+function showSecondTableEditor() {
+    var addBtn = document.getElementById('specAddSecondTableBtn');
+    var container = document.getElementById('specSecondTableContainer');
+
+    if (addBtn) addBtn.style.display = 'none';
+    if (container) container.style.display = 'block';
+
+    renderSecondSpecTableBuilder();
+    window.requestAnimationFrame(function() {
+        focusSecondSpecTableCell(0, 0);
+    });
+}
+
+function showSecondTableTextInput() {
+    showSecondTableEditor();
+}
+
+function openSecondTablePasteDialog(startRow, startCol, initialText) {
+    var existing = document.getElementById('specSecondPasteDialog');
+    if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+
+    var overlay = document.createElement('div');
+    overlay.id = 'specSecondPasteDialog';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,0.45);padding:16px;';
+
+    var card = document.createElement('div');
+    card.style.cssText = 'width:min(720px,95vw);background:#fff;border:1px solid #dbe1ea;border-radius:12px;box-shadow:0 20px 40px rgba(15,23,42,0.25);padding:12px;';
+
+    var title = document.createElement('div');
+    title.style.cssText = 'font-size:13px;font-weight:800;color:#1f2937;margin-bottom:8px;';
+    title.textContent = 'Paste Second Table Data';
+
+    var note = document.createElement('div');
+    note.style.cssText = 'font-size:11px;color:#64748b;margin-bottom:8px;';
+    note.textContent = 'Paste from Google Docs/Excel here, then click Apply.';
+
+    var textarea = document.createElement('textarea');
+    textarea.style.cssText = 'width:100%;min-height:220px;padding:8px 10px;border:1.5px solid #dbe1ea;border-radius:8px;font-size:11px;font-family:Consolas,Courier New,monospace;resize:vertical;background:#fff;color:#111827;';
+    textarea.placeholder = 'Paste tabular data here...';
+    textarea.value = String(initialText || '');
+
+    var actions = document.createElement('div');
+    actions.style.cssText = 'display:flex;justify-content:flex-end;gap:8px;margin-top:10px;';
+
+    var cancelBtn = document.createElement('button');
+    cancelBtn.type = 'button';
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.style.cssText = 'padding:7px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc;color:#334155;font-size:11px;font-weight:700;cursor:pointer;';
+
+    var applyBtn = document.createElement('button');
+    applyBtn.type = 'button';
+    applyBtn.textContent = 'Apply Paste';
+    applyBtn.style.cssText = 'padding:7px 12px;border-radius:8px;border:1px solid #93c5fd;background:#eff6ff;color:#1d4ed8;font-size:11px;font-weight:800;cursor:pointer;';
+
+    function closeDialog() {
+        if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
+    }
+
+    cancelBtn.addEventListener('click', closeDialog);
+    overlay.addEventListener('click', function(evt) {
+        if (evt.target === overlay) closeDialog();
+    });
+
+    applyBtn.addEventListener('click', function() {
+        var raw = String(textarea.value || '').trim();
+        if (raw === '') {
+            customAlert('Paste table text first.');
+            textarea.focus();
+            return;
+        }
+
+        if (!applySecondPastedSpecText(raw, startRow, startCol)) {
+            customAlert('Could not detect tabular data. Try copying directly from the table in Docs.');
+            textarea.focus();
+            return;
+        }
+
+        closeDialog();
+    });
+
+    actions.appendChild(cancelBtn);
+    actions.appendChild(applyBtn);
+    card.appendChild(title);
+    card.appendChild(note);
+    card.appendChild(textarea);
+    card.appendChild(actions);
+    overlay.appendChild(card);
+    document.body.appendChild(overlay);
+
+    window.requestAnimationFrame(function() {
+        textarea.focus();
+        if (textarea.value) textarea.select();
+    });
+}
+
+function pasteExcelIntoSecondSpecTable() {
+    showSecondTableEditor();
+    var active = document.activeElement;
+    var startRow = 0;
+    var startCol = 0;
+
+    if (active && active.classList && active.classList.contains('spec-second-table-input')) {
+        startRow = Math.max(0, parseInt(active.getAttribute('data-row'), 10) || 0);
+        startCol = Math.max(0, parseInt(active.getAttribute('data-col'), 10) || 0);
+    }
+
+    if (navigator.clipboard && navigator.clipboard.read) {
+        navigator.clipboard.read().then(function(items) {
+            if (Array.isArray(items)) {
+                for (var i = 0; i < items.length; i++) {
+                    var item = items[i];
+                    if (item && item.types && item.types.indexOf('text/html') !== -1) {
+                        item.getType('text/html').then(function(blob) {
+                            return blob.text();
+                        }).then(function(html) {
+                            if (applySecondPastedSpecHtml(html, startRow, startCol)) return;
+                            if (navigator.clipboard && navigator.clipboard.readText) {
+                                navigator.clipboard.readText().then(function(text) {
+                                    if (applySecondPastedSpecText(text, startRow, startCol)) return;
+                                    openSecondTablePasteDialog(startRow, startCol, text);
+                                }).catch(function() {
+                                    openSecondTablePasteDialog(startRow, startCol, '');
+                                });
+                                return;
+                            }
+                            openSecondTablePasteDialog(startRow, startCol, '');
+                        }).catch(function() {
+                            openSecondTablePasteDialog(startRow, startCol, '');
+                        });
+                        return;
+                    }
+                }
+            }
+
+            if (navigator.clipboard && navigator.clipboard.readText) {
+                navigator.clipboard.readText().then(function(text) {
+                    if (applySecondPastedSpecText(text, startRow, startCol)) return;
+                    openSecondTablePasteDialog(startRow, startCol, text);
+                }).catch(function() {
+                    openSecondTablePasteDialog(startRow, startCol, '');
+                });
+                return;
+            }
+
+            openSecondTablePasteDialog(startRow, startCol, '');
+        }).catch(function() {
+            if (navigator.clipboard && navigator.clipboard.readText) {
+                navigator.clipboard.readText().then(function(text) {
+                    if (applySecondPastedSpecText(text, startRow, startCol)) return;
+                    openSecondTablePasteDialog(startRow, startCol, text);
+                }).catch(function() {
+                    openSecondTablePasteDialog(startRow, startCol, '');
+                });
+                return;
+            }
+
+            openSecondTablePasteDialog(startRow, startCol, '');
+        });
+        return;
+    }
+
+    if (navigator.clipboard && navigator.clipboard.readText) {
+        navigator.clipboard.readText().then(function(text) {
+            if (applySecondPastedSpecText(text, startRow, startCol)) return;
+            openSecondTablePasteDialog(startRow, startCol, text);
+        }).catch(function() {
+            openSecondTablePasteDialog(startRow, startCol, '');
+        });
+        return;
+    }
+
+    openSecondTablePasteDialog(startRow, startCol, '');
+}
+
+function applyPastedSpecText(rawText, startRow, startCol) {
+    var matrix = parseTabularTextToMatrix(rawText);
+    if (!Array.isArray(matrix) || matrix.length === 0) return false;
+
+    var looksTabular = matrix.length > 1 || (Array.isArray(matrix[0]) && matrix[0].length > 1);
+    if (!looksTabular) return false;
 
     var maxCols = matrix.reduce(function(max, row) {
         return Math.max(max, row.length);
@@ -2601,10 +4509,30 @@ function applyPastedSpecText(rawText, startRow, startCol) {
     var rowOffset = Math.max(0, parseInt(startRow, 10) || 0);
     var colOffset = Math.max(0, parseInt(startCol, 10) || 0);
 
+    // Smart full-table replace when pasting from top-left.
+    // This lets users paste varying table formats without manual header setup.
+    if (applySmartFullTablePaste(matrix, rowOffset, colOffset)) {
+        window.requestAnimationFrame(function() {
+            focusSpecTableCell(0, 0);
+        });
+        return true;
+    }
+
     ensureSpecTableGridSize(rowOffset + matrix.length, colOffset + maxCols);
     _specTableMerges = [];
     _specTableRowMerges = [];
     _specTableSourceHtml = '';
+
+    if (_specTableMode === 'grouped-pairs') {
+        var lead = getGroupedLeadColumnCount();
+        if (lead >= _specTableHeaders.length) {
+            lead = Math.max(1, _specTableHeaders.length - 1);
+            _specTableLeadColumns = lead;
+        }
+
+        var dataCols = Math.max(1, _specTableHeaders.length - lead);
+        _specTableGroups = normalizeGroupedGroups(_specTableGroups, dataCols);
+    }
 
     for (var r = 0; r < matrix.length; r++) {
         for (var c = 0; c < maxCols; c++) {
@@ -2621,10 +4549,64 @@ function applyPastedSpecText(rawText, startRow, startCol) {
     return true;
 }
 
+function buildSpecTableFromQuickPaste() {
+    _specTableHasUserInput = true;
+    var input = document.getElementById('specQuickPasteInput');
+    if (!input) return;
+
+    var raw = String(input.value || '');
+    if (raw.trim() === '') {
+        customAlert('Paste table text first, then click Build Table.');
+        return;
+    }
+
+    var matrix = parseTabularTextToMatrix(raw);
+    if (!Array.isArray(matrix) || matrix.length === 0) {
+        customAlert('No table data detected in the paste box.');
+        return;
+    }
+
+    if (applySmartFullTablePaste(matrix, 0, 0)) {
+        customAlert('Table built successfully.');
+        window.requestAnimationFrame(function() {
+            focusSpecTableCell(0, 0);
+        });
+        return;
+    }
+
+    if (applyPastedSpecText(raw, 0, 0)) {
+        customAlert('Table built successfully.');
+        window.requestAnimationFrame(function() {
+            focusSpecTableCell(0, 0);
+        });
+        return;
+    }
+
+    customAlert('Could not detect a valid table. Try pasting tab-separated data from Excel.');
+}
+
+function clearSpecQuickPasteInput() {
+    var input = document.getElementById('specQuickPasteInput');
+    if (!input) return;
+    input.value = '';
+    input.focus();
+}
+
 function handleSpecCellPaste(event, rowIdx, colIdx) {
-    if (_specTableMode !== 'standard') return;
     var clipboard = event.clipboardData || window.clipboardData;
-    if (!clipboard) return;
+    var beforeValue = event.target ? String(event.target.value || '') : '';
+
+    if (!clipboard) {
+        setTimeout(function() {
+            var inputEl = event.target;
+            if (!inputEl) return;
+            var afterValue = String(inputEl.value || '').trim();
+            if (afterValue === '' || afterValue === String(beforeValue || '').trim()) return;
+            if (applyPastedSpecText(afterValue, rowIdx, colIdx)) return;
+            syncSpecificationsHiddenField();
+        }, 0);
+        return;
+    }
 
     var html = '';
     try {
@@ -2633,7 +4615,7 @@ function handleSpecCellPaste(event, rowIdx, colIdx) {
         html = '';
     }
 
-    if (html && applyPastedSpecHtml(html)) {
+    if (html && applyPastedSpecHtml(html, rowIdx, colIdx)) {
         event.preventDefault();
         return;
     }
@@ -2641,7 +4623,17 @@ function handleSpecCellPaste(event, rowIdx, colIdx) {
     var text = clipboard.getData('text');
     if (applyPastedSpecText(text, rowIdx, colIdx)) {
         event.preventDefault();
+        return;
     }
+
+    setTimeout(function() {
+        var inputEl = event.target;
+        if (!inputEl) return;
+        var afterValue = String(inputEl.value || '').trim();
+        if (afterValue === '' || afterValue === String(beforeValue || '').trim()) return;
+        if (applyPastedSpecText(afterValue, rowIdx, colIdx)) return;
+        syncSpecificationsHiddenField();
+    }, 0);
 }
 
 function handleSpecCellKeyDown(event, rowIdx, colIdx) {
@@ -2671,12 +4663,11 @@ function handleSpecCellKeyDown(event, rowIdx, colIdx) {
                 nextRow = Math.max(0, rowIdx - 1);
                 nextCol = Math.max(0, _specTableHeaders.length - 1);
             }
+        } else if (colIdx < _specTableHeaders.length - 1) {
+            nextCol = colIdx + 1;
         } else {
-            if (colIdx < _specTableHeaders.length - 1) {
-            } else {
-                nextRow = rowIdx + 1;
-                nextCol = 0;
-            }
+            nextRow = rowIdx + 1;
+            nextCol = 0;
         }
     }
 
@@ -2695,65 +4686,161 @@ function handleSpecCellKeyDown(event, rowIdx, colIdx) {
     });
 }
 
-function pasteExcelIntoSpecTable() {
+function pasteExcelIntoSpecTable(forceTopLeft) {
     _specTableHasUserInput = true;
-    var pos = getSpecCellPositionFromElement(document.activeElement);
 
-    if (!navigator.clipboard || (!navigator.clipboard.readText && !navigator.clipboard.read)) {
-        customAlert('Clipboard API is not available. Click a cell then use Ctrl+V to paste from Excel.');
+    var active = document.activeElement;
+    var startRow = 0;
+    var startCol = 0;
+
+    if (!forceTopLeft && active && active.classList && active.classList.contains('spec-table-input')) {
+        startRow = Math.max(0, parseInt(active.getAttribute('data-row'), 10) || 0);
+        startCol = Math.max(0, parseInt(active.getAttribute('data-col'), 10) || 0);
+    }
+
+    if (navigator.clipboard && navigator.clipboard.read) {
+        navigator.clipboard.read().then(function(items) {
+            if (Array.isArray(items)) {
+                for (var i = 0; i < items.length; i++) {
+                    var item = items[i];
+                    if (item && item.types && item.types.indexOf('text/html') !== -1) {
+                        item.getType('text/html').then(function(blob) {
+                            return blob.text();
+                        }).then(function(html) {
+                            if (applyPastedSpecHtml(html, startRow, startCol)) return;
+                            if (navigator.clipboard && navigator.clipboard.readText) {
+                                navigator.clipboard.readText().then(function(text) {
+                                    if (applyPastedSpecText(text, startRow, startCol)) return;
+                                    openSpecTablePasteDialog(startRow, startCol, text);
+                                }).catch(function() {
+                                    openSpecTablePasteDialog(startRow, startCol, '');
+                                });
+                                return;
+                            }
+                            openSpecTablePasteDialog(startRow, startCol, '');
+                        }).catch(function() {
+                            openSpecTablePasteDialog(startRow, startCol, '');
+                        });
+                        return;
+                    }
+                }
+            }
+
+            if (navigator.clipboard && navigator.clipboard.readText) {
+                navigator.clipboard.readText().then(function(text) {
+                    if (applyPastedSpecText(text, startRow, startCol)) return;
+                    openSpecTablePasteDialog(startRow, startCol, text);
+                }).catch(function() {
+                    openSpecTablePasteDialog(startRow, startCol, '');
+                });
+                return;
+            }
+
+            openSpecTablePasteDialog(startRow, startCol, '');
+        }).catch(function() {
+            if (navigator.clipboard && navigator.clipboard.readText) {
+                navigator.clipboard.readText().then(function(text) {
+                    if (applyPastedSpecText(text, startRow, startCol)) return;
+                    openSpecTablePasteDialog(startRow, startCol, text);
+                }).catch(function() {
+                    openSpecTablePasteDialog(startRow, startCol, '');
+                });
+                return;
+            }
+
+            openSpecTablePasteDialog(startRow, startCol, '');
+        });
         return;
     }
 
-    function fallbackPasteText() {
-        if (!navigator.clipboard.readText) {
-            customAlert('Clipboard permission denied. Click a cell then use Ctrl+V to paste from Excel.');
-            return;
-        }
+    if (navigator.clipboard && navigator.clipboard.readText) {
         navigator.clipboard.readText().then(function(text) {
-            if (!applyPastedSpecText(text, pos.row, pos.col)) {
-                customAlert('No Excel-style table data found in clipboard.');
-            }
+            if (applyPastedSpecText(text, startRow, startCol)) return;
+            openSpecTablePasteDialog(startRow, startCol, text);
         }).catch(function() {
-            customAlert('Clipboard permission denied. Click a cell then use Ctrl+V to paste from Excel.');
+            openSpecTablePasteDialog(startRow, startCol, '');
         });
-    }
-
-    if (!navigator.clipboard.read) {
-        fallbackPasteText();
         return;
     }
 
-    navigator.clipboard.read().then(function(items) {
-        if (!Array.isArray(items) || items.length === 0) {
-            fallbackPasteText();
+    openSpecTablePasteDialog(startRow, startCol, '');
+}
+
+function openSpecTablePasteDialog(startRow, startCol, initialText) {
+    var existing = document.getElementById('specPasteDialog');
+    if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+
+    var overlay = document.createElement('div');
+    overlay.id = 'specPasteDialog';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,0.45);padding:16px;';
+
+    var card = document.createElement('div');
+    card.style.cssText = 'width:min(720px,95vw);background:#fff;border:1px solid #dbe1ea;border-radius:12px;box-shadow:0 20px 40px rgba(15,23,42,0.25);padding:12px;';
+
+    var title = document.createElement('div');
+    title.style.cssText = 'font-size:13px;font-weight:800;color:#1f2937;margin-bottom:8px;';
+    title.textContent = 'Paste Table Data';
+
+    var note = document.createElement('div');
+    note.style.cssText = 'font-size:11px;color:#64748b;margin-bottom:8px;';
+    note.textContent = 'Paste from Google Docs/Excel here, then click Apply.';
+
+    var textarea = document.createElement('textarea');
+    textarea.style.cssText = 'width:100%;min-height:220px;padding:8px 10px;border:1.5px solid #dbe1ea;border-radius:8px;font-size:11px;font-family:Consolas,Courier New,monospace;resize:vertical;background:#fff;color:#111827;';
+    textarea.placeholder = 'Paste tabular data here...';
+    textarea.value = String(initialText || '');
+
+    var actions = document.createElement('div');
+    actions.style.cssText = 'display:flex;justify-content:flex-end;gap:8px;margin-top:10px;';
+
+    var cancelBtn = document.createElement('button');
+    cancelBtn.type = 'button';
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.style.cssText = 'padding:7px 12px;border-radius:8px;border:1px solid #cbd5e1;background:#f8fafc;color:#334155;font-size:11px;font-weight:700;cursor:pointer;';
+
+    var applyBtn = document.createElement('button');
+    applyBtn.type = 'button';
+    applyBtn.textContent = 'Apply Paste';
+    applyBtn.style.cssText = 'padding:7px 12px;border-radius:8px;border:1px solid #93c5fd;background:#eff6ff;color:#1d4ed8;font-size:11px;font-weight:800;cursor:pointer;';
+
+    function closeDialog() {
+        if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
+    }
+
+    cancelBtn.addEventListener('click', closeDialog);
+    overlay.addEventListener('click', function(evt) {
+        if (evt.target === overlay) closeDialog();
+    });
+
+    applyBtn.addEventListener('click', function() {
+        var raw = String(textarea.value || '').trim();
+        if (raw === '') {
+            customAlert('Paste table text first.');
+            textarea.focus();
             return;
         }
 
-        var htmlReader = null;
-        for (var i = 0; i < items.length; i++) {
-            var it = items[i];
-            if (it && Array.isArray(it.types) && it.types.indexOf('text/html') !== -1) {
-                htmlReader = it;
-                break;
-            }
-        }
-
-        if (!htmlReader) {
-            fallbackPasteText();
+        if (!applyPastedSpecText(raw, startRow, startCol)) {
+            customAlert('Could not detect tabular data. Try copying directly from Excel or Docs.');
+            textarea.focus();
             return;
         }
 
-        htmlReader.getType('text/html').then(function(blob) {
-            return blob.text();
-        }).then(function(html) {
-            if (!applyPastedSpecHtml(html)) {
-                fallbackPasteText();
-            }
-        }).catch(function() {
-            fallbackPasteText();
-        });
-    }).catch(function() {
-        fallbackPasteText();
+        closeDialog();
+    });
+
+    actions.appendChild(cancelBtn);
+    actions.appendChild(applyBtn);
+    card.appendChild(title);
+    card.appendChild(note);
+    card.appendChild(textarea);
+    card.appendChild(actions);
+    overlay.appendChild(card);
+    document.body.appendChild(overlay);
+
+    window.requestAnimationFrame(function() {
+        textarea.focus();
+        if (textarea.value) textarea.select();
     });
 }
 
@@ -2775,20 +4862,31 @@ function updateSpecTableModeUi() {
     }
 
     var addColBtn = document.getElementById('specAddColumnBtn');
+    var addSingleColBtn = document.getElementById('specAddSingleColumnBtn');
+    var toggleGroupBtn = document.getElementById('specToggleGroupHeaderBtn');
     if (addColBtn) {
         if (_specTableMode === 'grouped-pairs') {
             addColBtn.innerHTML = '<i class="bi bi-layout-three-columns"></i> Add Group';
+            if (addSingleColBtn) addSingleColBtn.style.display = 'inline-flex';
+            if (toggleGroupBtn) {
+                toggleGroupBtn.style.display = 'inline-flex';
+                toggleGroupBtn.innerHTML = _specShowGroupHeaderControls
+                    ? '<i class="bi bi-sliders"></i> Hide Group Settings'
+                    : '<i class="bi bi-sliders"></i> Show Group Settings';
+            }
         } else {
             addColBtn.innerHTML = '<i class="bi bi-layout-three-columns"></i> Add Column';
+            if (addSingleColBtn) addSingleColBtn.style.display = 'none';
+            if (toggleGroupBtn) toggleGroupBtn.style.display = 'none';
         }
     }
 
     var help = document.getElementById('specTableHelpText');
     if (help) {
         if (_specTableMode === 'grouped-pairs') {
-            help.innerHTML = '<i class="bi bi-info-circle"></i> Grouped mode supports merged headers: set each group title and span (number of merged columns).';
+            help.innerHTML = '<i class="bi bi-info-circle"></i> Copy from Excel, then click "PASTE TABLE".';
         } else {
-            help.innerHTML = '<i class="bi bi-info-circle"></i> Spreadsheet mode: use Tab/Enter/Arrow Up/Arrow Down and paste multi-cell data directly from Excel.';
+            help.innerHTML = '<i class="bi bi-info-circle"></i> Copy from Excel, then click "PASTE TABLE".';
         }
     }
 }
@@ -2840,9 +4938,9 @@ function applySpecBuilderAutoSizing() {
     for (var i = 0; i < dataColCount; i++) {
         var col = document.createElement('col');
         var chars = Math.max(8, Math.min(56, charSizes[i]));
-        var width = Math.round(chars * 8.2 + 48);
-        if (width < 140) width = 140;
-        if (width > 520) width = 520;
+        var width = Math.round(chars * 6.6 + 30);
+        if (width < 88) width = 88;
+        if (width > 260) width = 260;
         col.style.width = width + 'px';
         colgroup.appendChild(col);
     }
@@ -2862,7 +4960,7 @@ function renderGroupedHeaderControls() {
     var wrap = document.getElementById('specGroupHeaderWrap');
     if (!wrap) return;
 
-    if (_specTableMode !== 'grouped-pairs') {
+    if (_specTableMode !== 'grouped-pairs' || !_specShowGroupHeaderControls) {
         wrap.style.display = 'none';
         wrap.innerHTML = '';
         return;
@@ -2883,14 +4981,14 @@ function renderGroupedHeaderControls() {
     leadLabel.textContent = 'Row-merged columns';
     var leadInput = document.createElement('input');
     leadInput.type = 'number';
-    leadInput.min = '1';
+    leadInput.min = '0';
     leadInput.max = '12';
     leadInput.value = String(getGroupedLeadColumnCount());
     leadInput.style.cssText = 'padding:6px 8px;border:1.5px solid #bfdbfe;border-radius:7px;font-size:11px;text-align:center;';
     leadInput.addEventListener('change', function() {
         _specTableSourceHtml = '';
         var nextLead = parseInt(this.value, 10);
-        if (!isFinite(nextLead) || nextLead < 1) nextLead = 1;
+        if (!isFinite(nextLead) || nextLead < 0) nextLead = 0;
         _specTableLeadColumns = nextLead;
         normalizeSpecTableState();
         renderSpecTableBuilder();
@@ -2921,8 +5019,10 @@ function renderGroupedHeaderControls() {
             input.addEventListener('input', function() {
                 if (!_specTableGroups[groupIdx]) return;
                 _specTableGroups[groupIdx].title = this.value;
-                renderSpecTableBuilder();
                 syncSpecificationsHiddenField();
+            });
+            input.addEventListener('blur', function() {
+                renderSpecTableBuilder();
             });
 
             var spanInput = document.createElement('input');
@@ -3080,6 +5180,12 @@ function renderGroupedHeaderControls() {
     wrap.appendChild(addMergeBtn);
 }
 
+function toggleSpecGroupHeaderControls(forceValue) {
+    var next = typeof forceValue === 'boolean' ? forceValue : !_specShowGroupHeaderControls;
+    _specShowGroupHeaderControls = !!next;
+    renderSpecTableBuilder();
+}
+
 function renderSpecTableBuilder() {
     normalizeSpecTableState();
     updateSpecTableModeUi();
@@ -3103,11 +5209,11 @@ function renderSpecTableBuilder() {
             (function(colIdx) {
                 var firstTop = document.createElement('th');
                 firstTop.rowSpan = 2;
-                firstTop.style.cssText = 'padding:8px;border-bottom:1px solid #cbd5e1;background:#111827;color:#fff;vertical-align:middle;';
+                firstTop.style.cssText = 'padding:6px 7px;border-bottom:1px solid #93b4dc;border-right:1px solid #93b4dc;background:linear-gradient(180deg,#2f5f9d 0%,#1f4a82 55%,#183a67 100%);color:#fff;vertical-align:middle;';
                 var firstTopInput = document.createElement('input');
                 firstTopInput.type = 'text';
                 firstTopInput.value = _specTableHeaders[colIdx] || (colIdx === 0 ? 'Model' : ('Column ' + (colIdx + 1)));
-                firstTopInput.style.cssText = 'width:100%;padding:7px 9px;border:1px solid #4b5563;border-radius:7px;font-size:11px;font-weight:700;background:#1f2937;color:#fff;';
+                firstTopInput.style.cssText = 'width:100%;padding:6px 8px;border:1px solid #9ec0ea;border-radius:7px;font-size:11px;font-weight:700;background:rgba(255,255,255,0.95);color:#183153;';
                 firstTopInput.addEventListener('input', function() {
                     _specTableSourceHtml = '';
                     _specTableHeaders[colIdx] = this.value;
@@ -3129,14 +5235,14 @@ function renderSpecTableBuilder() {
             } else {
                 gTh.colSpan = gSpan;
             }
-            gTh.style.cssText = 'padding:9px 8px;border-bottom:1px solid #374151;background:#111827;color:#fff;font-size:11px;font-weight:800;text-align:center;';
+            gTh.style.cssText = 'padding:7px 8px;border-bottom:1px solid #93b4dc;border-right:1px solid #93b4dc;background:linear-gradient(180deg,#2f5f9d 0%,#1f4a82 55%,#183a67 100%);color:#fff;font-size:11px;font-weight:800;text-align:center;';
             gTh.textContent = String(gInfo.title || ('Group ' + (g + 1)));
             groupRow.appendChild(gTh);
         }
 
         var actionHeadTop = document.createElement('th');
         actionHeadTop.rowSpan = 2;
-        actionHeadTop.style.cssText = 'width:42px;padding:8px;border-bottom:1px solid #cbd5e1;background:#111827;';
+        actionHeadTop.style.cssText = 'width:40px;padding:6px;border-bottom:1px solid #93b4dc;background:linear-gradient(180deg,#2f5f9d 0%,#1f4a82 55%,#183a67 100%);';
         groupRow.appendChild(actionHeadTop);
         head.appendChild(groupRow);
 
@@ -3156,12 +5262,12 @@ function renderSpecTableBuilder() {
             for (var si = 0; si < sgSpan; si++) {
                 (function(colIdx) {
                     var th = document.createElement('th');
-                    th.style.cssText = 'padding:8px;border-bottom:1px solid #e5e7eb;background:#f8fafc;vertical-align:middle;';
+                    th.style.cssText = 'padding:6px;border-bottom:1px solid #c7d7ed;border-right:1px solid #c7d7ed;background:#eef4fb;vertical-align:middle;';
                     var input = document.createElement('input');
                     input.type = 'text';
                     input.value = _specTableHeaders[colIdx] || '';
                     input.placeholder = (colIdx % 2 === 1) ? 'cfm' : 'm3/hr';
-                    input.style.cssText = 'width:100%;padding:7px 9px;border:1.5px solid #dbe1ea;border-radius:7px;font-size:11px;font-weight:700;color:#1f2937;background:#fff;';
+                    input.style.cssText = 'width:100%;padding:6px 8px;border:1.5px solid #bfd4ef;border-radius:7px;font-size:11px;font-weight:700;color:#1f2937;background:#fff;text-align:center;';
                     input.addEventListener('input', function() {
                         _specTableSourceHtml = '';
                         _specTableHeaders[colIdx] = this.value;
@@ -3262,6 +5368,7 @@ function renderSpecTableBuilder() {
     _specTableRows.forEach(function(row, rowIdx) {
         var tr = document.createElement('tr');
         if (rowIdx % 2 === 1) tr.style.backgroundColor = isStandardDark ? 'rgba(255,255,255,0.02)' : '#fcfdff';
+            var isGroupedMode = _specTableMode === 'grouped-pairs';
 
         if (_specTableMode === 'standard') {
             var idxTd = document.createElement('td');
@@ -3280,7 +5387,9 @@ function renderSpecTableBuilder() {
             var td = document.createElement('td');
             td.style.cssText = isStandardDark
                 ? 'padding:6px 8px;border-bottom:1px solid #6b7280;border-right:1px solid #6b7280;background:transparent;'
-                : 'padding:6px 8px;border-bottom:1px solid #eef2f6;';
+                : (isGroupedMode
+                    ? 'padding:5px 6px;border-bottom:1px solid #d7deea;border-right:1px solid #d7deea;background:#ffffff;'
+                    : 'padding:6px 8px;border-bottom:1px solid #d7deea;border-right:1px solid #d7deea;background:#ffffff;');
 
             var rowMergeSpan = parseInt(rowMergeStarts[rowIdx + ':' + colIdx], 10);
             if (isFinite(rowMergeSpan) && rowMergeSpan > 1) {
@@ -3296,7 +5405,9 @@ function renderSpecTableBuilder() {
             cellInput.rows = 1;
             cellInput.style.cssText = isStandardDark
                 ? 'width:100%;min-height:34px;padding:7px 9px;border:1px solid #6b7280;border-radius:7px;font-size:12px;line-height:1.45;color:#f3f4f6;background:#1f2530;resize:vertical;overflow:hidden;white-space:pre-wrap;'
-                : 'width:100%;min-height:34px;padding:7px 9px;border:1.5px solid #e5e7eb;border-radius:7px;font-size:12px;line-height:1.45;resize:vertical;overflow:hidden;white-space:pre-wrap;';
+                : (isGroupedMode
+                    ? 'width:100%;min-height:30px;padding:6px 8px;border:1.5px solid #d6dfec;border-radius:7px;font-size:12px;line-height:1.35;color:#2d3a4f;background:#fdfefe;resize:vertical;overflow:hidden;white-space:pre-wrap;'
+                    : 'width:100%;min-height:34px;padding:7px 9px;border:1.5px solid #d6dfec;border-radius:7px;font-size:12px;line-height:1.45;color:#2d3a4f;background:#fdfefe;resize:vertical;overflow:hidden;white-space:pre-wrap;');
             (function(r, c, inputEl) {
                 inputEl.addEventListener('input', function() {
                     _specTableHasUserInput = true;
@@ -3322,14 +5433,18 @@ function renderSpecTableBuilder() {
         var actionTd = document.createElement('td');
         actionTd.style.cssText = isStandardDark
             ? 'padding:6px 8px;border-bottom:1px solid #6b7280;text-align:center;background:transparent;'
-            : 'padding:6px 8px;border-bottom:1px solid #eef2f6;text-align:center;';
+            : (isGroupedMode
+                ? 'padding:5px 6px;border-bottom:1px solid #d7deea;text-align:center;background:#ffffff;'
+                : 'padding:6px 8px;border-bottom:1px solid #d7deea;text-align:center;background:#ffffff;');
         var removeRowBtn = document.createElement('button');
         removeRowBtn.type = 'button';
         removeRowBtn.innerHTML = '<i class="bi bi-trash"></i>';
         removeRowBtn.title = 'Remove row';
         removeRowBtn.style.cssText = isStandardDark
             ? 'width:28px;height:28px;border-radius:7px;border:1px solid #7f1d1d;background:#2a1014;color:#fca5a5;cursor:pointer;'
-            : 'width:28px;height:28px;border-radius:7px;border:1px solid #fecaca;background:#fef2f2;color:#dc2626;cursor:pointer;';
+            : (isGroupedMode
+                ? 'width:26px;height:26px;border-radius:7px;border:1px solid #fecaca;background:#fef2f2;color:#dc2626;cursor:pointer;'
+                : 'width:28px;height:28px;border-radius:7px;border:1px solid #fecaca;background:#fef2f2;color:#dc2626;cursor:pointer;');
         (function(r) {
             removeRowBtn.addEventListener('click', function() {
                 removeSpecTableDataRow(r);
@@ -3360,6 +5475,36 @@ function addSpecTableColumn(label) {
     });
     renderSpecTableBuilder();
     syncSpecificationsHiddenField();
+}
+
+function addSpecTableSingleColumn(label) {
+    _specTableHasUserInput = true;
+    normalizeSpecTableState();
+    _specTableSourceHtml = '';
+    _specTableRowMerges = [];
+
+    if (_specTableMode === 'grouped-pairs') {
+        if (!Array.isArray(_specTableGroups) || _specTableGroups.length === 0) {
+            _specTableGroups = [{ title: 'Group 1', span: 1, rowSpan: false }];
+        } else {
+            var lastIdx = _specTableGroups.length - 1;
+            var lastSpan = parseInt(_specTableGroups[lastIdx] && _specTableGroups[lastIdx].span, 10);
+            if (!isFinite(lastSpan) || lastSpan < 1) lastSpan = 1;
+            _specTableGroups[lastIdx].span = lastSpan + 1;
+        }
+
+        _specTableHeaders.push(String(label || getDefaultGroupedSubHeader(_specTableHeaders.length)));
+        _specTableRows = _specTableRows.map(function(row) {
+            row.push('');
+            return row;
+        });
+
+        renderSpecTableBuilder();
+        syncSpecificationsHiddenField();
+        return;
+    }
+
+    addSpecTableColumn(label);
 }
 
 function removeSpecTableColumn(colIdx) {
@@ -3428,6 +5573,35 @@ function removeSpecTableDataRow(rowIdx) {
             return { row: start, col: col, rowSpan: nextSpan };
         }).filter(function(m) { return !!m; });
     }
+    renderSpecTableBuilder();
+    syncSpecificationsHiddenField();
+}
+
+function clearSpecTableValues() {
+    _specTableHasUserInput = true;
+    normalizeSpecTableState();
+    _specTableSourceHtml = '';
+    _specTableMerges = [];
+    _specTableRowMerges = [];
+
+    _specTableRows = [new Array(_specTableHeaders.length).fill('')];
+
+    renderSpecTableBuilder();
+    syncSpecificationsHiddenField();
+}
+
+function resetSpecTableFresh() {
+    _specTableHasUserInput = true;
+    _specTableMode = 'standard';
+    _specTableLeadColumns = 0;
+    _specTableHeaders = ['Parameter', 'Value'];
+    _specTableRows = [['', '']];
+    _specTableGroups = [];
+    _specTableMerges = [];
+    _specTableRowMerges = [];
+    _specTableSourceHtml = '';
+
+    normalizeSpecTableState();
     renderSpecTableBuilder();
     syncSpecificationsHiddenField();
 }
@@ -3505,7 +5679,7 @@ function removeSpecTableGroup(groupIdx) {
     _specTableRowMerges = [];
     if (_specTableGroups.length <= 1) {
         _specTableGroups = getDefaultGroupedGroups();
-        _specTableLeadColumns = 1;
+        _specTableLeadColumns = 0;
         var minHeaders = _specTableLeadColumns + getGroupedDataColumnCount(_specTableGroups);
         var firstHeader = String(_specTableHeaders[0] || 'Model').trim() || 'Model';
         _specTableHeaders = [firstHeader];
@@ -3557,6 +5731,7 @@ function setSpecTableMode(mode, keepData) {
     if (prevMode !== nextMode && keepData) {
         if (nextMode === 'grouped-pairs') {
             _specTableMerges = [];
+            _specShowGroupHeaderControls = false;
             if (_specTableHeaders.length === 0) {
                 _specTableHeaders = getDefaultGroupedHeaders();
             }
@@ -3568,6 +5743,7 @@ function setSpecTableMode(mode, keepData) {
             }
         } else {
             _specTableGroups = [];
+            _specShowGroupHeaderControls = false;
         }
     }
 
@@ -3582,7 +5758,7 @@ function applyAirflowSpecTemplate() {
     _specTableMerges = [];
     _specTableRowMerges = [];
     _specTableSourceHtml = '';
-    _specTableLeadColumns = 1;
+    _specTableLeadColumns = 0;
     _specTableHeaders = ['Model', 'cfm', 'm3/hr', 'cfm', 'm3/hr', 'cfm', 'm3/hr', 'cfm', 'm3/hr'];
     _specTableGroups = [
         { title: 'Free Air', span: 2, rowSpan: false },
@@ -3655,7 +5831,7 @@ function convertSpecificationsTextToTable() {
 
     _specTableHasUserInput = true;
     _specTableMode = 'standard';
-    _specTableLeadColumns = 1;
+    _specTableLeadColumns = 0;
     _specTableGroups = [];
     _specTableMerges = [];
     _specTableRowMerges = [];
@@ -3699,72 +5875,115 @@ function hasGroupedTableContent() {
 function syncSpecificationsHiddenField() {
     var hiddenInput = document.getElementById('editSpecifications');
     var textArea = document.getElementById('editSpecificationsText');
+    var secondTableInput = document.getElementById('specSecondTableText');
     if (!hiddenInput || !textArea) return;
 
     var textValue = String(textArea.value || '').trim();
+    var secondTableText = secondTableInput ? String(secondTableInput.value || '').trim() : '';
+    var secondTableMatrix = buildStandardMatrixPayloadFromTabText(secondTableText);
+    var hasSecondTable = !!secondTableMatrix;
+
+    var currentMatrixPayload = (_specTableMode === 'grouped-pairs')
+        ? {
+            mode: 'grouped-pairs',
+            leadColumns: getGroupedLeadColumnCount(),
+            headers: _specTableHeaders.map(function(h){ return String(h || '').trim(); }),
+            groups: _specTableGroups.map(function(g){
+                return {
+                    title: String((g && g.title) || '').trim(),
+                    span: Math.max(1, parseInt(g && g.span, 10) || 1),
+                    rowSpan: !!(g && g.rowSpan),
+                };
+            }),
+            rows: _specTableRows.map(function(row) {
+                return row.map(function(cell) { return String(cell || '').trim(); });
+            }),
+            rowMerges: _specTableRowMerges.map(function(m) {
+                return {
+                    row: Math.max(0, parseInt(m && m.row, 10) || 0),
+                    col: Math.max(0, parseInt(m && m.col, 10) || 0),
+                    rowSpan: Math.max(2, parseInt(m && m.rowSpan, 10) || 2),
+                };
+            }),
+        }
+        : {
+            mode: 'standard',
+            headers: _specTableHeaders.map(function(h){ return String(h || '').trim(); }),
+            rows: _specTableRows.map(function(row) {
+                return row.map(function(cell) { return String(cell || '').trim(); });
+            }),
+            merges: _specTableMerges.map(function(m) {
+                return {
+                    row: Math.max(0, parseInt(m && m.row, 10) || 0),
+                    col: Math.max(1, parseInt(m && m.col, 10) || 1),
+                    span: Math.max(2, parseInt(m && m.span, 10) || 2),
+                };
+            }),
+        };
 
     // If user hasn't actively used the table builder and there's only text, save as plain text
-    if (!_specTableHasUserInput && _specTableRows.length === 1 && _specTableRows[0].every(function(cell) { return String(cell).trim() === ''; })) {
+    if (!hasSecondTable && !_specTableHasUserInput && _specTableRows.length === 1 && _specTableRows[0].every(function(cell) { return String(cell).trim() === ''; })) {
         hiddenInput.value = textValue;
         return;
     }
 
     if (_specTableMode === 'grouped-pairs') {
         if (!hasGroupedTableContent()) {
-            hiddenInput.value = textValue;
+            if (!hasSecondTable) {
+                hiddenInput.value = textValue;
+                return;
+            }
+
+            hiddenInput.value = JSON.stringify({
+                format: 'andison_specs_v3',
+                text: textValue,
+                tables: [{
+                    tableHtml: '',
+                    tableMatrix: secondTableMatrix,
+                }],
+            });
+            return;
+        }
+
+        if (hasSecondTable) {
+            hiddenInput.value = JSON.stringify({
+                format: 'andison_specs_v3',
+                text: textValue,
+                tables: [{
+                    tableHtml: '',
+                    tableMatrix: currentMatrixPayload,
+                }, {
+                    tableHtml: '',
+                    tableMatrix: secondTableMatrix,
+                }],
+            });
             return;
         }
 
         hiddenInput.value = JSON.stringify({
             format: 'andison_specs_v2',
             text: textValue,
-            tableMatrix: {
-                mode: 'grouped-pairs',
-                leadColumns: getGroupedLeadColumnCount(),
-                headers: _specTableHeaders.map(function(h){ return String(h || '').trim(); }),
-                groups: _specTableGroups.map(function(g){
-                    return {
-                        title: String((g && g.title) || '').trim(),
-                        span: Math.max(1, parseInt(g && g.span, 10) || 1),
-                        rowSpan: !!(g && g.rowSpan),
-                    };
-                }),
-                rows: _specTableRows.map(function(row) {
-                    return row.map(function(cell) { return String(cell || '').trim(); });
-                }),
-                rowMerges: _specTableRowMerges.map(function(m) {
-                    return {
-                        row: Math.max(0, parseInt(m && m.row, 10) || 0),
-                        col: Math.max(0, parseInt(m && m.col, 10) || 0),
-                        rowSpan: Math.max(2, parseInt(m && m.rowSpan, 10) || 2),
-                    };
-                }),
-            },
+            tableMatrix: currentMatrixPayload,
         });
         return;
     }
 
     if (_specTableSourceHtml !== '') {
+        var sourceTables = [{
+            tableHtml: _specTableSourceHtml,
+            tableMatrix: currentMatrixPayload,
+        }];
+        if (hasSecondTable) {
+            sourceTables.push({
+                tableHtml: '',
+                tableMatrix: secondTableMatrix,
+            });
+        }
+
         hiddenInput.value = JSON.stringify({
             format: 'andison_specs_v3',
             text: textValue,
-            tables: [{
-                tableHtml: _specTableSourceHtml,
-                tableMatrix: {
-                    mode: 'standard',
-                    headers: _specTableHeaders.map(function(h){ return String(h || '').trim(); }),
-                    rows: _specTableRows.map(function(row) {
-                        return row.map(function(cell) { return String(cell || '').trim(); });
-                    }),
-                    merges: _specTableMerges.map(function(m) {
-                        return {
-                            row: Math.max(0, parseInt(m && m.row, 10) || 0),
-                            col: Math.max(1, parseInt(m && m.col, 10) || 1),
-                            span: Math.max(2, parseInt(m && m.span, 10) || 2),
-                        };
-                    }),
-                },
-            }],
+            tables: sourceTables,
         });
         return;
     }
@@ -3774,23 +5993,25 @@ function syncSpecificationsHiddenField() {
     });
 
     if (hasStandardMerge) {
+        if (hasSecondTable) {
+            hiddenInput.value = JSON.stringify({
+                format: 'andison_specs_v3',
+                text: textValue,
+                tables: [{
+                    tableHtml: '',
+                    tableMatrix: currentMatrixPayload,
+                }, {
+                    tableHtml: '',
+                    tableMatrix: secondTableMatrix,
+                }],
+            });
+            return;
+        }
+
         hiddenInput.value = JSON.stringify({
             format: 'andison_specs_v2',
             text: textValue,
-            tableMatrix: {
-                mode: 'standard',
-                headers: _specTableHeaders.map(function(h){ return String(h || '').trim(); }),
-                rows: _specTableRows.map(function(row) {
-                    return row.map(function(cell) { return String(cell || '').trim(); });
-                }),
-                merges: _specTableMerges.map(function(m) {
-                    return {
-                        row: Math.max(0, parseInt(m && m.row, 10) || 0),
-                        col: Math.max(1, parseInt(m && m.col, 10) || 1),
-                        span: Math.max(2, parseInt(m && m.span, 10) || 2),
-                    };
-                }),
-            },
+            tableMatrix: currentMatrixPayload,
         });
         return;
     }
@@ -3799,7 +6020,34 @@ function syncSpecificationsHiddenField() {
 
     // Only convert to JSON if user explicitly used table builder or there's actual table data
     if (!_specTableHasUserInput || tableRows.length === 0) {
+        if (hasSecondTable) {
+            hiddenInput.value = JSON.stringify({
+                format: 'andison_specs_v3',
+                text: textValue,
+                tables: [{
+                    tableHtml: '',
+                    tableMatrix: secondTableMatrix,
+                }],
+            });
+            return;
+        }
+
         hiddenInput.value = textValue;
+        return;
+    }
+
+    if (hasSecondTable) {
+        hiddenInput.value = JSON.stringify({
+            format: 'andison_specs_v3',
+            text: textValue,
+            tables: [{
+                tableHtml: '',
+                tableMatrix: currentMatrixPayload,
+            }, {
+                tableHtml: '',
+                tableMatrix: secondTableMatrix,
+            }],
+        });
         return;
     }
 
@@ -3816,6 +6064,8 @@ function setSpecificationsEditor(rawSpecifications) {
     if (!textArea) return;
 
     textArea.value = parsed.text;
+    setSpecImagePreview(parsed.specImage || '');
+    setSecondSpecificationsEditor(parsed.secondTableText || '');
 
     // Track whether the original format had table data
     _specTableHasUserInput = !!(parsed.matrix || (parsed.table && parsed.table.length > 0));
@@ -3827,12 +6077,12 @@ function setSpecificationsEditor(rawSpecifications) {
         _specTableSourceHtml = String(parsed.sourceHtml || '').trim();
         if (_specTableMode === 'grouped-pairs') {
             _specTableLeadColumns = parseInt(parsed.matrix.leadColumns, 10);
-            if (!isFinite(_specTableLeadColumns) || _specTableLeadColumns < 1) _specTableLeadColumns = 1;
+            if (!isFinite(_specTableLeadColumns) || _specTableLeadColumns < 0) _specTableLeadColumns = 0;
             _specTableGroups = normalizeGroupedGroups(parsed.matrix.groups || [], Math.max(1, _specTableHeaders.length - getGroupedLeadColumnCount()));
             _specTableMerges = [];
             _specTableRowMerges = Array.isArray(parsed.matrix.rowMerges) ? parsed.matrix.rowMerges : [];
         } else {
-            _specTableLeadColumns = 1;
+            _specTableLeadColumns = 0;
             _specTableGroups = [];
             _specTableMerges = Array.isArray(parsed.matrix.merges) ? parsed.matrix.merges : [];
             _specTableRowMerges = [];
@@ -3840,7 +6090,7 @@ function setSpecificationsEditor(rawSpecifications) {
     } else if (parsed.table && parsed.table.length > 0) {
         // User had table data, so populate table builder
         _specTableMode = 'standard';
-        _specTableLeadColumns = 1;
+        _specTableLeadColumns = 0;
         _specTableGroups = [];
         _specTableMerges = [];
         _specTableRowMerges = [];
@@ -3852,7 +6102,7 @@ function setSpecificationsEditor(rawSpecifications) {
     } else {
         // Plain text only - don't populate table builder with defaults
         _specTableMode = 'standard';
-        _specTableLeadColumns = 1;
+        _specTableLeadColumns = 0;
         _specTableGroups = [];
         _specTableMerges = [];
         _specTableRowMerges = [];
@@ -4040,17 +6290,1186 @@ function ensureGlobalProductModal() {
     return modal;
 }
 
+var _editDescriptionStarterSeeded = false;
+
+function isLikelyRichDescription(content) {
+    var value = String(content || '').trim();
+    if (value === '') return false;
+    return /<\s*(table|tr|td|th|thead|tbody|tfoot|img)\b/i.test(value);
+}
+
+function getEditDescriptionEditor() {
+    return null;
+}
+
+function getEditDescriptionContent() {
+    var textarea = document.getElementById('editDescription');
+    return textarea ? textarea.value : '';
+}
+
+function setEditDescriptionContent(content) {
+    var html = String(content || '');
+    var textarea = document.getElementById('editDescription');
+    if (textarea) textarea.value = html;
+}
+
+function isEditDescriptionEmpty(content) {
+    var html = String(content || '').trim();
+    if (html === '') return true;
+
+    var stripped = html
+        .replace(/<\s*br\s*\/?\s*>/gi, '\n')
+        .replace(/<\/(p|div|li|h[1-6]|tr|table)\s*>/gi, '\n')
+        .replace(/<(p|div|li|h[1-6]|tr|table)\b[^>]*>/gi, '')
+        .replace(/&nbsp;/gi, ' ')
+        .replace(/<[^>]+>/g, '')
+        .trim();
+
+    return stripped === '';
+}
+
+function escapeEditDescriptionHtml(value) {
+    return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+function buildEditDescriptionStarterTable() {
+    return [
+        '<table style="width:100%;border-collapse:collapse;">',
+        '<thead>',
+        '<tr>',
+        '<th>Section</th>',
+        '<th>Details</th>',
+        '</tr>',
+        '</thead>',
+        '<tbody>',
+        '<tr>',
+        '<td>Feature 1</td>',
+        '<td>Add your description here.</td>',
+        '</tr>',
+        '<tr>',
+        '<td>Feature 2</td>',
+        '<td>Use merged cells or upload images if needed.</td>',
+        '</tr>',
+        '<tr>',
+        '<td>Feature 3</td>',
+        '<td>Edit this starter table as your template.</td>',
+        '</tr>',
+        '</tbody>',
+        '</table>'
+    ].join('');
+}
+
+function normalizeEditDescriptionLines(content) {
+    var html = String(content || '');
+    if (!html.trim()) return [];
+
+    var temp = document.createElement('div');
+    temp.innerHTML = html
+        .replace(/<\s*br\s*\/?\s*>/gi, '\n')
+        .replace(/<\/(p|div|li|h[1-6]|tr)\s*>/gi, '\n')
+        .replace(/<(p|div|li|h[1-6]|tr)\b[^>]*>/gi, '');
+
+    var text = (temp.textContent || temp.innerText || '')
+        .replace(/\u00a0/g, ' ')
+        .replace(/\n{3,}/g, '\n\n')
+        .trim();
+
+    if (!text) return [];
+
+    return text
+        .split(/\r?\n+/)
+        .map(function(line) {
+            return line.trim();
+        })
+        .filter(function(line) {
+            return line !== '';
+        });
+}
+
+function buildEditDescriptionTableFromText(content) {
+    var lines = normalizeEditDescriptionLines(content);
+    if (!lines.length) {
+        return buildEditDescriptionStarterTable();
+    }
+
+    var rowsHtml = lines.map(function(line) {
+        var label = line;
+        var value = '';
+
+        if (/\t/.test(line)) {
+            var tabParts = line.split(/\t+/);
+            label = tabParts.shift() || '';
+            value = tabParts.join(' ').trim();
+        } else if (line.indexOf(':') !== -1) {
+            var colonIndex = line.indexOf(':');
+            label = line.slice(0, colonIndex);
+            value = line.slice(colonIndex + 1);
+        } else if (/\s{2,}/.test(line)) {
+            var spaceParts = line.split(/\s{2,}/);
+            label = spaceParts.shift() || '';
+            value = spaceParts.join(' ').trim();
+        }
+
+        label = label.trim();
+        value = value.trim();
+
+        if (!label && !value) return '';
+
+        if (!value) {
+            value = 'Add details here.';
+        }
+
+        return '<tr><td>' + escapeEditDescriptionHtml(label) + '</td><td>' + escapeEditDescriptionHtml(value) + '</td></tr>';
+    }).filter(function(row) {
+        return row !== '';
+    }).join('');
+
+    if (!rowsHtml) {
+        rowsHtml = '<tr><td>Item 1</td><td>Add details here.</td></tr>';
+    }
+
+    return [
+        '<table style="width:100%;border-collapse:collapse;">',
+        '<thead><tr><th>Label</th><th>Details</th></tr></thead>',
+        '<tbody>',
+        rowsHtml,
+        '</tbody>',
+        '</table>'
+    ].join('');
+}
+
+var _editDescriptionMode = 'plain';
+var _editDescriptionStarterSeeded = false;
+var _editDescriptionTableHtmlCache = '';
+var _editDescriptionCellIdSeq = 0;
+var _editDescriptionPendingImageCell = null;
+var _editDescriptionSelectionAnchor = null;
+var _editDescriptionSelectionDragActive = false;
+var _editDescriptionSelectionDragAnchor = null;
+
+function descriptionTableGetTextarea() {
+    return document.getElementById('editDescription');
+}
+
+function descriptionTableGetPanel() {
+    return document.getElementById('editDescriptionTablePanel');
+}
+
+function descriptionTableGetEditor() {
+    return document.getElementById('editDescriptionTableEditor');
+}
+
+function descriptionTableHasTableMarkup(content) {
+    return /<\s*table\b/i.test(String(content || ''));
+}
+
+function descriptionTableExtractTableHtml(content) {
+    var wrapper = document.createElement('div');
+    wrapper.innerHTML = String(content || '');
+    var table = wrapper.querySelector('table');
+    return table ? table.outerHTML : '';
+}
+
+function descriptionTableEnsureCellIds(table) {
+    if (!table) return;
+    table.querySelectorAll('tbody td, thead .desc-head-label').forEach(function(cell) {
+        if (!cell.getAttribute('data-desc-cell-id')) {
+            _editDescriptionCellIdSeq += 1;
+            cell.setAttribute('data-desc-cell-id', 'desc-cell-' + _editDescriptionCellIdSeq);
+        }
+        if (cell.classList.contains('desc-head-label')) {
+            cell.setAttribute('contenteditable', 'true');
+            cell.spellcheck = true;
+        } else {
+            cell.removeAttribute('contenteditable');
+            var editor = cell.querySelector('.desc-cell-editor');
+            if (editor) {
+                editor.setAttribute('contenteditable', 'true');
+                editor.spellcheck = true;
+            }
+        }
+    });
+}
+
+function descriptionTableBuildImageWrapper(url, altText) {
+    var safeUrl = escapeEditDescriptionHtml(url || '');
+    var safeAlt = escapeEditDescriptionHtml(altText || 'Description image');
+    return '<span class="desc-cell-image-wrap" contenteditable="false">' +
+        '<button type="button" class="desc-cell-image-delete" data-desc-image-delete aria-label="Remove image">x</button>' +
+        '<img src="' + safeUrl + '" alt="' + safeAlt + '">' +
+        '</span>';
+}
+
+function descriptionTableClearSelection() {
+    var table = descriptionTableGetEditor();
+    if (!table) return;
+    table.querySelectorAll('tbody .is-selected').forEach(function(cell) {
+        cell.classList.remove('is-selected');
+    });
+    descriptionTableRefreshSelectionUi();
+}
+
+function descriptionTableGetSelectedCells() {
+    var table = descriptionTableGetEditor();
+    if (!table) return [];
+    return Array.prototype.slice.call(table.querySelectorAll('tbody .is-selected'));
+}
+
+function descriptionTableUpdateSelectionCount() {
+    var counter = document.getElementById('editDescriptionTableSelectionCount');
+    if (!counter) return;
+    var selected = descriptionTableGetSelectedCells().length;
+    counter.textContent = 'Selected cells: ' + selected;
+}
+
+function descriptionTableSelectCell(cell, additive) {
+    var table = descriptionTableGetEditor();
+    if (!table || !cell) return;
+
+    if (!additive) {
+        descriptionTableClearSelection();
+    }
+
+    cell.classList.add('is-selected');
+    descriptionTableRefreshSelectionUi();
+    descriptionTableUpdateSelectionCount();
+}
+
+function descriptionTableGetCellInfo(cell) {
+    if (!cell) return null;
+    var map = descriptionTableBuildGrid();
+    return map.positions.get(cell) || null;
+}
+
+function descriptionTableSelectCellRange(startCell, endCell) {
+    var startInfo = descriptionTableGetCellInfo(startCell);
+    var endInfo = descriptionTableGetCellInfo(endCell);
+    if (!startInfo || !endInfo) return;
+
+    var map = descriptionTableBuildGrid();
+    var minRow = Math.min(startInfo.row, endInfo.row);
+    var maxRow = Math.max(startInfo.row, endInfo.row);
+    var minCol = Math.min(startInfo.col, endInfo.col);
+    var maxCol = Math.max(startInfo.col, endInfo.col);
+
+    descriptionTableClearSelection();
+    for (var r = minRow; r <= maxRow; r++) {
+        for (var c = minCol; c <= maxCol; c++) {
+            var target = map.grid[r] && map.grid[r][c];
+            if (target) {
+                target.classList.add('is-selected');
+            }
+        }
+    }
+    descriptionTableRefreshSelectionUi();
+    descriptionTableUpdateSelectionCount();
+}
+
+function descriptionTableToggleCellSelection(cell) {
+    if (!cell) return;
+    cell.classList.toggle('is-selected');
+    descriptionTableRefreshSelectionUi();
+    descriptionTableUpdateSelectionCount();
+}
+
+function descriptionTableStartDragSelection(cell) {
+    if (!cell) return;
+    _editDescriptionSelectionDragActive = true;
+    _editDescriptionSelectionDragAnchor = cell;
+    descriptionTableClearSelection();
+    descriptionTableSelectCell(cell, false);
+    _editDescriptionSelectionAnchor = cell;
+}
+
+function descriptionTableExtendDragSelection(cell) {
+    if (!_editDescriptionSelectionDragActive || !_editDescriptionSelectionDragAnchor || !cell) return;
+    descriptionTableSelectCellRange(_editDescriptionSelectionDragAnchor, cell);
+}
+
+function descriptionTableStopDragSelection() {
+    _editDescriptionSelectionDragActive = false;
+    _editDescriptionSelectionDragAnchor = null;
+}
+
+function descriptionTableIsCellSelectionTarget(node) {
+    return !!(node && !node.closest('.desc-cell-editor'));
+}
+
+function descriptionTableRefreshSelectionUi() {
+    var table = descriptionTableGetEditor();
+    if (!table) return;
+}
+
+function descriptionTableDeleteSelectedCells() {
+    var selected = descriptionTableGetSelectedCells();
+    if (!selected.length) return;
+
+    selected.forEach(function(cell) {
+        cell.removeAttribute('rowspan');
+        cell.removeAttribute('colspan');
+        cell.innerHTML = '&nbsp;';
+        cell.classList.remove('is-selected');
+    });
+
+    descriptionTableClearSelection();
+    if (selected[0]) {
+        descriptionTableSelectCell(selected[0], false);
+    }
+
+    descriptionTableUpdateSelectionCount();
+
+    _editDescriptionTableHtmlCache = descriptionTableSerialize();
+}
+
+function descriptionTableRemoveImage(button) {
+    if (!button) return;
+    var wrap = button.closest('.desc-cell-image-wrap');
+    if (!wrap) return;
+    var cell = wrap.closest('td');
+    wrap.remove();
+    if (cell) {
+        var editor = cell.querySelector('.desc-cell-editor');
+        if (editor && editor.textContent.trim() === '') {
+            editor.innerHTML = '&nbsp;';
+        }
+    }
+    _editDescriptionTableHtmlCache = descriptionTableSerialize();
+}
+
+function descriptionTableEnsureBindings() {
+    var table = descriptionTableGetEditor();
+    if (!table || table._andisonBound) return;
+
+    table._andisonBound = true;
+    table.addEventListener('click', function(event) {
+        var selectBtn = event.target.closest('[data-desc-cell-select]');
+        if (selectBtn) {
+            var selectCell = selectBtn.closest('td');
+            if (!selectCell) return;
+
+            if (event.shiftKey && _editDescriptionSelectionAnchor) {
+                descriptionTableSelectCellRange(_editDescriptionSelectionAnchor, selectCell);
+            } else if (event.ctrlKey || event.metaKey) {
+                descriptionTableToggleCellSelection(selectCell);
+                _editDescriptionSelectionAnchor = selectCell;
+            } else {
+                descriptionTableToggleCellSelection(selectCell);
+                _editDescriptionSelectionAnchor = selectCell;
+            }
+
+            _editDescriptionTableHtmlCache = descriptionTableSerialize();
+            event.preventDefault();
+            event.stopPropagation();
+            return;
+        }
+
+        var imageDeleteBtn = event.target.closest('[data-desc-image-delete]');
+        if (imageDeleteBtn) {
+            descriptionTableRemoveImage(imageDeleteBtn);
+            event.preventDefault();
+            event.stopPropagation();
+            return;
+        }
+
+        var cell = event.target.closest('tbody td');
+        if (!cell || !table.contains(cell)) return;
+        if (!descriptionTableIsCellSelectionTarget(event.target)) {
+            return;
+        }
+
+        if (event.shiftKey && _editDescriptionSelectionAnchor) {
+            descriptionTableSelectCellRange(_editDescriptionSelectionAnchor, cell);
+            return;
+        }
+
+        if (event.ctrlKey || event.metaKey) {
+            descriptionTableToggleCellSelection(cell);
+            _editDescriptionSelectionAnchor = cell;
+            _editDescriptionTableHtmlCache = descriptionTableSerialize();
+            return;
+        }
+
+        descriptionTableClearSelection();
+        descriptionTableSelectCell(cell, false);
+        _editDescriptionSelectionAnchor = cell;
+    });
+
+    table.addEventListener('mousedown', function(event) {
+        if (!descriptionTableIsCellSelectionTarget(event.target)) return;
+
+        var cell = event.target.closest('tbody td');
+        if (!cell || !table.contains(cell)) return;
+
+        event.preventDefault();
+        descriptionTableStartDragSelection(cell);
+    });
+
+    table.addEventListener('mousemove', function(event) {
+        if (!_editDescriptionSelectionDragActive) return;
+        if (!descriptionTableIsCellSelectionTarget(event.target)) return;
+
+        var cell = event.target.closest('tbody td');
+        if (!cell || !table.contains(cell)) return;
+        descriptionTableExtendDragSelection(cell);
+    });
+
+    document.addEventListener('mouseup', function() {
+        if (_editDescriptionSelectionDragActive) {
+            descriptionTableStopDragSelection();
+        }
+    });
+
+    table.addEventListener('keydown', function(event) {
+        if (event.key === 'Backspace' || event.key === 'Delete') {
+            var selectedCells = descriptionTableGetSelectedCells();
+            if (selectedCells.length) {
+                event.preventDefault();
+                descriptionTableDeleteSelectedCells();
+            }
+        }
+    });
+
+    table.addEventListener('input', function() {
+        if (_editDescriptionMode === 'table') {
+            _editDescriptionTableHtmlCache = descriptionTableSerialize();
+        }
+    });
+}
+
+function descriptionTableBuildStarterHtml() {
+    return [
+        '<table class="desc-custom-table">',
+        '<thead>',
+        '<tr>',
+        '<th class="desc-head-letter">A</th>',
+        '<th class="desc-head-letter">B</th>',
+        '</tr>',
+        '<tr>',
+        '<th class="desc-head-label" contenteditable="true">Parameter</th>',
+        '<th class="desc-head-label" contenteditable="true">Value</th>',
+        '</tr>',
+        '</thead>',
+        '<tbody>',
+        '<tr>',
+        '<td><div class="desc-cell-editor" contenteditable="true">Add your description here.</div></td>',
+        '<td><div class="desc-cell-editor" contenteditable="true">Use merged cells or upload images if needed.</div></td>',
+        '</tr>',
+        '</tbody>',
+        '</table>'
+    ].join('');
+}
+
+function descriptionTableBuildTextTable(content) {
+    var lines = normalizeEditDescriptionLines(content);
+    if (!lines.length) {
+        return descriptionTableBuildStarterHtml();
+    }
+
+    var rows = lines.map(function(line) {
+        var label = line;
+        var value = '';
+
+        if (/\t/.test(line)) {
+            var tabParts = line.split(/\t+/);
+            label = tabParts.shift() || '';
+            value = tabParts.join(' ').trim();
+        } else if (line.indexOf(':') !== -1) {
+            var colonIndex = line.indexOf(':');
+            label = line.slice(0, colonIndex);
+            value = line.slice(colonIndex + 1);
+        } else if (/\s{2,}/.test(line)) {
+            var spaceParts = line.split(/\s{2,}/);
+            label = spaceParts.shift() || '';
+            value = spaceParts.join(' ').trim();
+        }
+
+        label = label.trim();
+        value = value.trim();
+
+        if (!label && !value) return '';
+        if (!value) value = 'Add details here.';
+
+        return '<tr><td>' + escapeEditDescriptionHtml(label) + '</td><td>' + escapeEditDescriptionHtml(value) + '</td></tr>';
+    }).filter(function(row) {
+        return row !== '';
+    }).join('');
+
+    if (!rows) {
+        rows = '<tr><td>Item 1</td><td>Add details here.</td></tr>';
+    }
+
+    return [
+        '<table style="width:100%;border-collapse:collapse;">',
+        '<tbody>',
+        rows,
+        '</tbody>',
+        '</table>'
+    ].join('');
+}
+
+function descriptionTableStripControlGlyphs(value) {
+    return String(value || '').replace(/[☐☑□]/g, '');
+}
+
+function descriptionTableRender(html) {
+    var table = descriptionTableGetEditor();
+    if (!table) return;
+
+    var sourceHtml = String(html || '').trim();
+    if (!sourceHtml) {
+        sourceHtml = descriptionTableBuildStarterHtml();
+    }
+
+    var wrapper = document.createElement('div');
+    wrapper.innerHTML = sourceHtml;
+    var sourceTable = wrapper.querySelector('table');
+    if (sourceTable && sourceTable.querySelector('thead') && sourceTable.querySelector('tbody')) {
+        table.outerHTML = sourceTable.outerHTML;
+        table = descriptionTableGetEditor();
+    } else {
+        table.innerHTML = descriptionTableBuildStarterHtml();
+        var body = table.querySelector('tbody');
+        var rows = sourceTable ? Array.prototype.slice.call(sourceTable.querySelectorAll('tr')) : [];
+
+        if (rows.length) {
+            body.innerHTML = '';
+            rows.forEach(function(row) {
+                var cells = Array.prototype.slice.call(row.querySelectorAll('th,td')).map(function(cell) {
+                    return descriptionTableStripControlGlyphs(String(cell.innerHTML || '')).trim();
+                }).filter(function(value) { return value !== ''; });
+                if (!cells.length) return;
+                var tr = document.createElement('tr');
+                tr.innerHTML = '<td><div class="desc-cell-editor" contenteditable="true">' + (cells[0] || '&nbsp;') + '</div></td>' +
+                    '<td><div class="desc-cell-editor" contenteditable="true">' + (cells[1] || '&nbsp;') + '</div></td>';
+                body.appendChild(tr);
+            });
+        }
+    }
+
+    descriptionTableInjectCellSelectors(table);
+    descriptionTableEnsureCellIds(table);
+    descriptionTableEnsureBindings();
+    descriptionTableClearSelection();
+    _editDescriptionSelectionAnchor = null;
+    descriptionTableSelectFirstCell();
+    descriptionTableUpdateSelectionCount();
+    _editDescriptionTableHtmlCache = descriptionTableSerialize();
+}
+
+function descriptionTableSelectFirstCell() {
+    var table = descriptionTableGetEditor();
+    if (!table) return;
+    var firstCell = table.querySelector('tbody td');
+    if (firstCell) {
+        descriptionTableSelectCell(firstCell, false);
+    }
+}
+
+function descriptionTableSerialize() {
+    var table = descriptionTableGetEditor();
+    if (!table) return '';
+
+    var clone = table.cloneNode(true);
+    clone.querySelectorAll('.desc-cell-image-delete').forEach(function(btn) {
+        btn.remove();
+    });
+    clone.querySelectorAll('.desc-cell-editor').forEach(function(editor) {
+        editor.innerHTML = descriptionTableStripControlGlyphs(editor.innerHTML);
+        editor.removeAttribute('contenteditable');
+    });
+    clone.querySelectorAll('td,th').forEach(function(cell) {
+        cell.removeAttribute('data-desc-cell-id');
+        cell.classList.remove('is-selected');
+    });
+
+    return clone.outerHTML;
+}
+
+function descriptionTableExtractPlainText() {
+    var table = descriptionTableGetEditor();
+    if (!table) return '';
+
+    var lines = Array.prototype.slice.call(table.tBodies[0].rows).map(function(row) {
+        var cellTexts = Array.prototype.slice.call(row.querySelectorAll('td .desc-cell-editor')).map(function(cell) {
+            return descriptionTableStripControlGlyphs(String(cell.textContent || '')).replace(/\s+/g, ' ').trim();
+        }).filter(function(value) {
+            return value !== '';
+        });
+
+        if (!cellTexts.length) return '';
+        if (cellTexts.length === 1) return cellTexts[0];
+        return cellTexts[0] + ': ' + cellTexts.slice(1).join(' | ');
+    }).filter(function(line) {
+        return line !== '';
+    });
+
+    return lines.join('\n');
+}
+
+function descriptionTableUpdateTextFallback() {
+    var textarea = descriptionTableGetTextarea();
+    if (!textarea) return;
+    textarea.value = descriptionTableExtractPlainText();
+}
+
+function descriptionTableInsertStarterTable() {
+    _editDescriptionStarterSeeded = true;
+    _editDescriptionTableHtmlCache = descriptionTableBuildStarterHtml();
+    descriptionTableRender(_editDescriptionTableHtmlCache);
+}
+
+function descriptionTableInjectCellSelectors(table) {
+    if (!table) return;
+
+    Array.prototype.slice.call(table.querySelectorAll('.desc-cell-select-toggle')).forEach(function(btn) {
+        btn.remove();
+    });
+
+    Array.prototype.slice.call(table.querySelectorAll('tbody td')).forEach(function(cell) {
+        cell.style.position = 'relative';
+    });
+
+    Array.prototype.slice.call(table.querySelectorAll('tbody td')).forEach(function(cell) {
+        var editor = cell.querySelector('.desc-cell-editor');
+        if (!editor) {
+            editor = document.createElement('div');
+            editor.className = 'desc-cell-editor';
+            editor.setAttribute('contenteditable', 'true');
+            editor.innerHTML = descriptionTableStripControlGlyphs(cell.textContent || '&nbsp;');
+
+            Array.prototype.slice.call(cell.childNodes).forEach(function(node) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    node.remove();
+                }
+            });
+
+            cell.appendChild(editor);
+        } else {
+            editor.innerHTML = descriptionTableStripControlGlyphs(editor.innerHTML);
+        }
+    });
+
+    Array.prototype.slice.call(table.querySelectorAll('.desc-cell-image-wrap')).forEach(function(wrap) {
+        if (wrap.querySelector('.desc-cell-image-delete')) return;
+        var deleteBtn = document.createElement('button');
+        deleteBtn.type = 'button';
+        deleteBtn.className = 'desc-cell-image-delete';
+        deleteBtn.setAttribute('data-desc-image-delete', '1');
+        deleteBtn.setAttribute('aria-label', 'Remove image');
+        deleteBtn.textContent = 'x';
+        wrap.insertBefore(deleteBtn, wrap.firstChild);
+    });
+
+    descriptionTableRefreshSelectionUi();
+}
+
+function descriptionTableLoadFromCurrentContent() {
+    var content = String(descriptionTableGetTextarea() ? descriptionTableGetTextarea().value : '').trim();
+    if (descriptionTableHasTableMarkup(content)) {
+        _editDescriptionTableHtmlCache = descriptionTableExtractTableHtml(content) || descriptionTableBuildStarterHtml();
+        descriptionTableRender(_editDescriptionTableHtmlCache);
+        return;
+    }
+
+    if (content !== '') {
+        _editDescriptionTableHtmlCache = descriptionTableBuildTextTable(content);
+        descriptionTableRender(_editDescriptionTableHtmlCache);
+        return;
+    }
+
+    descriptionTableInsertStarterTable();
+}
+
+function descriptionTableBuildGrid() {
+    var table = descriptionTableGetEditor();
+    var grid = [];
+    var positions = new Map();
+    if (!table) return { grid: grid, positions: positions, rowCount: 0, colCount: 0 };
+
+    var rows = Array.prototype.slice.call((table.tBodies && table.tBodies[0]) ? table.tBodies[0].rows : []);
+    var maxCols = 0;
+
+    for (var r = 0; r < rows.length; r++) {
+        if (!grid[r]) grid[r] = [];
+        var col = 0;
+        Array.prototype.slice.call(rows[r].querySelectorAll('td')).forEach(function(cell) {
+            while (grid[r][col]) col += 1;
+
+            var rowSpan = parseInt(cell.getAttribute('rowspan') || '1', 10);
+            var colSpan = parseInt(cell.getAttribute('colspan') || '1', 10);
+            if (!isFinite(rowSpan) || rowSpan < 1) rowSpan = 1;
+            if (!isFinite(colSpan) || colSpan < 1) colSpan = 1;
+
+            positions.set(cell, { row: r, col: col, rowSpan: rowSpan, colSpan: colSpan });
+
+            for (var rr = 0; rr < rowSpan; rr++) {
+                if (!grid[r + rr]) grid[r + rr] = [];
+                for (var cc = 0; cc < colSpan; cc++) {
+                    grid[r + rr][col + cc] = cell;
+                }
+            }
+
+            col += colSpan;
+            if (col > maxCols) maxCols = col;
+        });
+    }
+
+    return { grid: grid, positions: positions, rowCount: rows.length, colCount: maxCols };
+}
+
+function descriptionTableRenderSimpleRows(rows, useHeaderRow) {
+    var html = ['<table class="desc-custom-table">', '<thead>',
+        '<tr><th class="desc-head-letter">A</th><th class="desc-head-letter">B</th></tr>',
+        '<tr><th class="desc-head-label" contenteditable="true">Parameter</th><th class="desc-head-label" contenteditable="true">Value</th></tr>',
+        '</thead>', '<tbody>'];
+    rows.forEach(function(row, rowIndex) {
+        html.push('<tr>');
+        html.push('<td contenteditable="true">' + (row[0] || '&nbsp;') + '</td>');
+        html.push('<td contenteditable="true">' + (row[1] || '&nbsp;') + '</td>');
+        html.push('</tr>');
+    });
+    html.push('</tbody></table>');
+    descriptionTableRender(html.join(''));
+}
+
+function descriptionTableGetSelectedGridInfo() {
+    var table = descriptionTableGetEditor();
+    var selected = descriptionTableGetSelectedCells();
+    if (!table || !selected.length) return null;
+
+    var map = descriptionTableBuildGrid();
+    var cells = [];
+    selected.forEach(function(cell) {
+        var info = map.positions.get(cell);
+        if (info) cells.push({ cell: cell, info: info });
+    });
+
+    if (!cells.length) return null;
+    return { map: map, cells: cells };
+}
+
+function descriptionTableAddRow() {
+    var table = descriptionTableGetEditor();
+    if (!table) {
+        descriptionTableInsertStarterTable();
+        return;
+    }
+
+    var info = descriptionTableGetSelectedGridInfo();
+    var body = table.tBodies[0];
+    var insertAfter = body.rows.length - 1;
+    var colCount = Math.max(2, descriptionTableBuildGrid().colCount || 2);
+
+    if (info && info.cells.length) {
+        insertAfter = info.cells[0].info.row;
+        colCount = Math.max(colCount, info.map.colCount || colCount);
+    }
+
+    var row = body.insertRow(insertAfter + 1);
+    for (var c = 0; c < colCount; c++) {
+        var cell = row.insertCell(-1);
+        cell.setAttribute('contenteditable', 'true');
+        cell.textContent = 'New cell';
+    }
+
+    descriptionTableInjectCellSelectors(table);
+    descriptionTableEnsureCellIds(table);
+    descriptionTableRefreshSelectionUi();
+    descriptionTableUpdateSelectionCount();
+    _editDescriptionTableHtmlCache = descriptionTableSerialize();
+}
+
+function descriptionTableAddColumn() {
+    var table = descriptionTableGetEditor();
+    if (!table) {
+        descriptionTableInsertStarterTable();
+        return;
+    }
+
+    Array.prototype.slice.call(table.tBodies[0].rows).forEach(function(row) {
+        var cell = document.createElement('td');
+        cell.setAttribute('contenteditable', 'true');
+        cell.textContent = 'New cell';
+        row.appendChild(cell);
+    });
+
+    var headTop = table.tHead ? table.tHead.rows[0] : null;
+    var headLabels = table.tHead ? table.tHead.rows[1] : null;
+    if (headTop && headLabels) {
+        var newLetterIndex = Math.max(2, headTop.cells.length);
+        var newLetter = String.fromCharCode(64 + newLetterIndex + 1);
+        var topLetter = document.createElement('th');
+        topLetter.className = 'desc-head-letter';
+        topLetter.textContent = newLetter;
+        headTop.appendChild(topLetter);
+
+        var labelCell = document.createElement('th');
+        labelCell.className = 'desc-head-label';
+        labelCell.setAttribute('contenteditable', 'true');
+        labelCell.textContent = 'Column ' + newLetter;
+        headLabels.appendChild(labelCell);
+    }
+
+    descriptionTableInjectCellSelectors(table);
+    descriptionTableEnsureCellIds(table);
+    descriptionTableRefreshSelectionUi();
+    descriptionTableUpdateSelectionCount();
+    _editDescriptionTableHtmlCache = descriptionTableSerialize();
+}
+
+function descriptionTableDeleteRow() {
+    var table = descriptionTableGetEditor();
+    if (!table || !table.tBodies[0].rows.length) return;
+
+    var info = descriptionTableGetSelectedGridInfo();
+    var body = table.tBodies[0];
+    var rowsToDelete = [];
+
+    if (info && info.cells.length) {
+        info.cells.forEach(function(item) {
+            if (rowsToDelete.indexOf(item.info.row) === -1) {
+                rowsToDelete.push(item.info.row);
+            }
+        });
+    } else {
+        rowsToDelete.push(body.rows.length - 1);
+    }
+
+    rowsToDelete.sort(function(a, b) { return b - a; });
+    rowsToDelete.forEach(function(rowIndex) {
+        if (body.rows[rowIndex]) {
+            body.deleteRow(rowIndex);
+        }
+    });
+
+    if (!body.rows.length) {
+        descriptionTableInsertStarterTable();
+        return;
+    }
+
+    descriptionTableInjectCellSelectors(table);
+    descriptionTableEnsureCellIds(table);
+    descriptionTableRefreshSelectionUi();
+    descriptionTableUpdateSelectionCount();
+    _editDescriptionTableHtmlCache = descriptionTableSerialize();
+}
+
+function descriptionTableDeleteColumn() {
+    var table = descriptionTableGetEditor();
+    if (!table || !table.tBodies[0].rows.length) return;
+
+    var gridInfo = descriptionTableBuildGrid();
+    var colIndex = gridInfo.colCount > 0 ? gridInfo.colCount - 1 : 0;
+    var selected = descriptionTableGetSelectedGridInfo();
+    if (selected && selected.cells.length) {
+        colIndex = selected.cells[0].info.col;
+    }
+
+    Array.prototype.slice.call(table.tBodies[0].rows).forEach(function(row, rowIdx) {
+        var cells = Array.prototype.slice.call(row.querySelectorAll('td'));
+        for (var i = 0; i < cells.length; i++) {
+            var cell = cells[i];
+            var info = gridInfo.positions.get(cell);
+            if (info && info.col <= colIndex && colIndex < (info.col + info.colSpan)) {
+                if (info.colSpan > 1) {
+                    cell.setAttribute('colspan', String(info.colSpan - 1));
+                } else {
+                    cell.remove();
+                }
+                break;
+            }
+        }
+    });
+
+        var headerRows = table.tHead ? Array.prototype.slice.call(table.tHead.rows) : [];
+        headerRows.forEach(function(headerRow) {
+            var headerCells = Array.prototype.slice.call(headerRow.children).filter(function(cell) {
+                return !cell.classList.contains('desc-head-actions');
+            });
+            var headerCell = headerCells[colIndex];
+            if (headerCell) headerCell.remove();
+        });
+
+    if (!table.tBodies[0].rows.length || !table.tBodies[0].rows[0].querySelectorAll('td').length) {
+        descriptionTableInsertStarterTable();
+        return;
+    }
+
+    descriptionTableInjectCellSelectors(table);
+    descriptionTableEnsureCellIds(table);
+    descriptionTableRefreshSelectionUi();
+    descriptionTableUpdateSelectionCount();
+    _editDescriptionTableHtmlCache = descriptionTableSerialize();
+}
+
+function descriptionTableMergeCells() {
+    var selected = descriptionTableGetSelectedGridInfo();
+    if (!selected || selected.cells.length < 2) return;
+
+    var minRow = Infinity;
+    var minCol = Infinity;
+    var maxRow = -1;
+    var maxCol = -1;
+    var map = selected.map;
+    var selectedSet = new Set(selected.cells.map(function(item) { return item.cell; }));
+
+    selected.cells.forEach(function(item) {
+        var info = item.info;
+        if (info.row < minRow) minRow = info.row;
+        if (info.col < minCol) minCol = info.col;
+        if ((info.row + info.rowSpan - 1) > maxRow) maxRow = info.row + info.rowSpan - 1;
+        if ((info.col + info.colSpan - 1) > maxCol) maxCol = info.col + info.colSpan - 1;
+    });
+
+    for (var r = minRow; r <= maxRow; r++) {
+        for (var c = minCol; c <= maxCol; c++) {
+            var cell = map.grid[r] && map.grid[r][c];
+            if (!cell || !selectedSet.has(cell)) {
+                customAlert('Selected cells must form one continuous rectangle.');
+                return;
+            }
+        }
+    }
+
+    var anchor = null;
+    selected.cells.forEach(function(item) {
+        if (!anchor || item.info.row < anchor.info.row || (item.info.row === anchor.info.row && item.info.col < anchor.info.col)) {
+            anchor = item;
+        }
+    });
+
+    selected.cells.forEach(function(item) {
+        if (item.cell !== anchor.cell) {
+            item.cell.remove();
+        }
+    });
+
+    anchor.cell.setAttribute('rowspan', String((maxRow - minRow) + 1));
+    anchor.cell.setAttribute('colspan', String((maxCol - minCol) + 1));
+    descriptionTableEnsureCellIds(descriptionTableGetEditor());
+    descriptionTableClearSelection();
+    descriptionTableSelectCell(anchor.cell, false);
+    _editDescriptionSelectionAnchor = anchor.cell;
+    descriptionTableRefreshSelectionUi();
+    descriptionTableUpdateSelectionCount();
+    _editDescriptionTableHtmlCache = descriptionTableSerialize();
+}
+
+function descriptionTableSplitCell() {
+    var selected = descriptionTableGetSelectedGridInfo();
+    if (!selected || !selected.cells.length) return;
+
+    var anchor = selected.cells[0];
+    var cell = anchor.cell;
+    var rowSpan = parseInt(cell.getAttribute('rowspan') || '1', 10);
+    var colSpan = parseInt(cell.getAttribute('colspan') || '1', 10);
+    if (!isFinite(rowSpan) || rowSpan < 2) rowSpan = 1;
+    if (!isFinite(colSpan) || colSpan < 2) colSpan = 1;
+    if (rowSpan === 1 && colSpan === 1) return;
+
+    var map = descriptionTableBuildGrid();
+    var matrix = [];
+    for (var r = 0; r < map.rowCount; r++) {
+        matrix[r] = [];
+        for (var c = 0; c < map.colCount; c++) {
+            var source = map.grid[r] && map.grid[r][c];
+            if (!source) {
+                matrix[r][c] = '';
+                continue;
+            }
+
+            var info = map.positions.get(source);
+            if (info && info.row === r && info.col === c) {
+                matrix[r][c] = String(source.innerHTML || '').trim() || '&nbsp;';
+            } else {
+                matrix[r][c] = '';
+            }
+        }
+    }
+
+    descriptionTableRenderSimpleRows(matrix, false);
+    descriptionTableInjectCellSelectors(descriptionTableGetEditor());
+    descriptionTableRefreshSelectionUi();
+    descriptionTableUpdateSelectionCount();
+    _editDescriptionTableHtmlCache = descriptionTableSerialize();
+}
+
+function descriptionTableInsertImageIntoCell(cell, url) {
+    if (!cell || !url) return;
+    var editor = cell.querySelector('.desc-cell-editor') || cell;
+    editor.insertAdjacentHTML('beforeend', descriptionTableBuildImageWrapper(url, 'Description image'));
+    _editDescriptionTableHtmlCache = descriptionTableSerialize();
+}
+
+function descriptionTableUploadImage(file) {
+    return new Promise(function(resolve, reject) {
+        var formData = new FormData();
+        formData.append('action', 'upload_brand_description_image');
+        formData.append('brand', _selectedBrandKeyForEditor || '');
+        formData.append('description_image_file', file, file.name || 'description-image');
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'products.php?brand=' + encodeURIComponent(_selectedBrandKeyForEditor || ''));
+        xhr.withCredentials = true;
+
+        xhr.onload = function() {
+            if (xhr.status < 200 || xhr.status >= 300) {
+                reject('Upload failed (' + xhr.status + ')');
+                return;
+            }
+
+            var json;
+            try {
+                json = JSON.parse(xhr.responseText);
+            } catch (err) {
+                reject('Invalid upload response.');
+                return;
+            }
+
+            if (!json || typeof json.location !== 'string' || json.location === '') {
+                reject((json && json.error) ? json.error : 'Upload failed.');
+                return;
+            }
+
+            resolve(json.location);
+        };
+
+        xhr.onerror = function() {
+            reject('Image upload request failed.');
+        };
+
+        xhr.send(formData);
+    });
+}
+
+function descriptionTableInsertImagePrompt() {
+    var fileInput = document.getElementById('descriptionTableImageInput');
+    if (!fileInput) return;
+    _editDescriptionPendingImageCell = descriptionTableGetSelectedCells()[0] || (descriptionTableGetEditor() ? descriptionTableGetEditor().querySelector('tbody td') : null);
+    fileInput.value = '';
+    fileInput.click();
+}
+
+function descriptionTableHandleImageInput(input) {
+    var file = input && input.files && input.files[0] ? input.files[0] : null;
+    if (!file) return;
+
+    var targetCell = _editDescriptionPendingImageCell || descriptionTableGetSelectedCells()[0] || (descriptionTableGetEditor() ? descriptionTableGetEditor().querySelector('tbody td') : null);
+    _editDescriptionPendingImageCell = null;
+
+    descriptionTableUploadImage(file).then(function(url) {
+        descriptionTableInsertImageIntoCell(targetCell, url);
+    }).catch(function(err) {
+        customAlert(err || 'Image upload failed.');
+    }).finally(function() {
+        input.value = '';
+    });
+}
+
+function descriptionTableSwitchToTableMode(userTriggered, options) {
+    var panel = descriptionTableGetPanel();
+    var textarea = descriptionTableGetTextarea();
+    if (panel) panel.style.display = 'block';
+    if (textarea) textarea.style.display = 'none';
+
+    if (_editDescriptionTableHtmlCache && descriptionTableHasTableMarkup(_editDescriptionTableHtmlCache)) {
+        descriptionTableRender(_editDescriptionTableHtmlCache);
+    } else {
+        descriptionTableLoadFromCurrentContent();
+    }
+
+    if (userTriggered && (!options || !options.skipFocus)) {
+        setTimeout(function() {
+            var cell = descriptionTableGetEditor() ? descriptionTableGetEditor().querySelector('tbody td') : null;
+            if (cell) cell.focus();
+        }, 60);
+    }
+}
+
+function descriptionTableSwitchToPlainMode() {
+    var panel = descriptionTableGetPanel();
+    var textarea = descriptionTableGetTextarea();
+    if (_editDescriptionMode === 'table') {
+        _editDescriptionTableHtmlCache = descriptionTableSerialize();
+        if (textarea) textarea.value = descriptionTableExtractPlainText();
+    }
+    if (panel) panel.style.display = 'none';
+    if (textarea) textarea.style.display = 'block';
+}
+
+function setEditDescriptionMode(mode, userTriggered, options) {
+    options = options || {};
+    var normalizedMode = mode === 'table' ? 'table' : 'plain';
+    var previousMode = _editDescriptionMode;
+    _editDescriptionMode = normalizedMode;
+
+    var modeInput = document.getElementById('editDescriptionMode');
+    var plainBtn = document.getElementById('descModePlainBtn');
+    var tableBtn = document.getElementById('descModeTableBtn');
+    var hint = document.getElementById('editDescriptionModeHint');
+
+    if (modeInput) modeInput.value = normalizedMode;
+    if (plainBtn) plainBtn.classList.toggle('is-active', normalizedMode === 'plain');
+    if (tableBtn) tableBtn.classList.toggle('is-active', normalizedMode === 'table');
+
+    if (hint) {
+        hint.innerHTML = normalizedMode === 'table'
+            ? '<i class="bi bi-info-circle"></i> Custom Table Maker mode: select cells, merge them, add rows/columns, and upload images directly into cells.'
+            : '<i class="bi bi-info-circle"></i> Plain Text mode for normal descriptions.';
+    }
+
+    if (normalizedMode === 'table') {
+        descriptionTableSwitchToTableMode(userTriggered, options);
+        _editDescriptionStarterSeeded = true;
+    } else {
+        if (previousMode === 'table') {
+            descriptionTableSwitchToPlainMode();
+        } else {
+            var panel = descriptionTableGetPanel();
+            var textarea = descriptionTableGetTextarea();
+            if (panel) panel.style.display = 'none';
+            if (textarea) textarea.style.display = 'block';
+        }
+    }
+}
+
+function convertEditDescriptionTextToTableRows() {
+    var content = String(descriptionTableGetTextarea() ? descriptionTableGetTextarea().value : '');
+    var html = descriptionTableBuildTextTable(content);
+    _editDescriptionTableHtmlCache = html;
+    setEditDescriptionMode('table', true, { skipFocus: false });
+    descriptionTableRender(html);
+}
+
+function descriptionTableSyncBeforeSubmit() {
+    if (_editDescriptionMode === 'table') {
+        _editDescriptionTableHtmlCache = descriptionTableSerialize();
+        if (descriptionTableGetTextarea()) {
+            descriptionTableGetTextarea().value = _editDescriptionTableHtmlCache;
+        }
+    }
+}
+
 function openEditModal(index, name, model, type, price, badge, description, specifications, image, catId, subId, subSubId, imagesJson, datasheet) {
     var modal = ensureGlobalProductModal();
     if (!modal) return;
+    _editDescriptionStarterSeeded = false;
+    _editDescriptionTableHtmlCache = '';
+    _editDescriptionMode = 'plain';
     document.getElementById('editIndex').value = index;
     document.getElementById('editProductName').value = name;
     document.getElementById('editModel').value = model;
     document.getElementById('editType').value = type;
     syncTypePresetFromInput();
     document.getElementById('editPrice').value = price;
-    document.getElementById('editBadge').value = badge;
+    document.getElementById('editBadge').value = (badge === 'New Arrival') ? 'New' : badge;
     document.getElementById('editDescription').value = description;
+    setEditDescriptionMode(isLikelyRichDescription(description) ? 'table' : 'plain', false);
     setSpecificationsEditor(specifications);
 
     // Populate datasheet
@@ -4114,6 +7533,10 @@ function openEditModal(index, name, model, type, price, badge, description, spec
 
 function closeEditModal() {
     var modal = document.getElementById('editProductModal');
+    setEditDescriptionMode('plain', false);
+    _editDescriptionStarterSeeded = false;
+    _editDescriptionTableHtmlCache = '';
+    _editDescriptionMode = 'plain';
     modal.style.display = 'none';
     // Restore background scrolling
     document.body.style.overflow = '';
@@ -4132,6 +7555,7 @@ document.querySelectorAll('.edit-product-btn').forEach(function(btn){
         var badge = this.getAttribute('data-badge');
         var description = this.getAttribute('data-description');
         var specifications = this.getAttribute('data-specifications');
+        var specImage = this.getAttribute('data-spec-image') || '';
         var image  = this.getAttribute('data-image');
         var images = this.getAttribute('data-images') || '[]';
         var catId     = this.getAttribute('data-category');
@@ -4139,6 +7563,9 @@ document.querySelectorAll('.edit-product-btn').forEach(function(btn){
         var subSubId  = this.getAttribute('data-subsubcategory');
         var datasheet = this.getAttribute('data-datasheet') || '';
         openEditModal(index, name, model, type, price, badge, description, specifications, image, catId, subId, subSubId, images, datasheet);
+        if (specImage && !document.getElementById('existingSpecImageInput').value) {
+            setSpecImagePreview(specImage);
+        }
     });
 });
 
@@ -4167,6 +7594,7 @@ document.querySelector('.edit-product-form').addEventListener('submit', function
             var catSel = document.getElementById('editCategory');
             if (catSel) document.getElementById('finalCategoryId').value = catSel.value || '';
             updateFinalSubcategory();
+            descriptionTableSyncBeforeSubmit();
             syncSpecificationsHiddenField();
             f.submit();
         } else if (action !== 'add_product') {
@@ -4201,7 +7629,7 @@ function openAddProductModal() {
     
     // Change modal to "Add Product" mode
     modalHeader.innerHTML = '<i class="bi bi-plus-circle"></i> Add New Product';
-    form.action = 'products.php?brand=<?php echo urlencode($selectedBrand); ?>';
+    form.action = 'products.php?brand=<?php echo urlencode($selectedBrandKey); ?>';
     form.querySelector('[name="action"]').value = 'add_product';
     
     // Clear all fields
@@ -4213,7 +7641,9 @@ function openAddProductModal() {
     document.getElementById('editPrice').value = '';
     document.getElementById('editBadge').value = '';
     document.getElementById('editDescription').value = '';
+    setEditDescriptionMode('plain', false);
     setSpecificationsEditor('');
+    setSpecImagePreview('');
     // Clear datasheet
     setDatasheetPreview('');
     // Clear image slots
@@ -4274,6 +7704,70 @@ function handleDatasheetSelect(input) {
     document.getElementById('datasheetFileName').textContent = file.name;
     document.getElementById('datasheetLink').href = '#';
     document.getElementById('datasheetPreview').style.display = 'flex';
+}
+
+function setSpecImagePreview(url) {
+    var hidden = document.getElementById('existingSpecImageInput');
+    var preview = document.getElementById('specImagePreview');
+    var input = document.getElementById('specImageFile');
+    var thumb = document.getElementById('specImageThumb');
+    var fileNameEl = document.getElementById('specImageFileName');
+    var link = document.getElementById('specImageLink');
+
+    if (!hidden || !preview || !thumb || !fileNameEl || !link) return;
+
+    hidden.value = url || '';
+    if (input) input.value = '';
+
+    if (url) {
+        var parts = String(url).split('/');
+        fileNameEl.textContent = decodeURIComponent(parts[parts.length - 1]) || 'spec-image.jpg';
+        thumb.src = url;
+        link.href = url;
+        preview.style.display = 'flex';
+    } else {
+        thumb.src = '';
+        link.href = '#';
+        preview.style.display = 'none';
+    }
+}
+
+function removeSpecImage() {
+    setSpecImagePreview('');
+}
+
+function handleSpecImageSelect(input) {
+    if (!input || !input.files || !input.files.length) return;
+    var file = input.files[0];
+    if (!file.type || file.type.indexOf('image/') !== 0) {
+        customAlert('Please select an image file.');
+        input.value = '';
+        return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+        customAlert('Image size must be less than 10 MB.');
+        input.value = '';
+        return;
+    }
+
+    var preview = document.getElementById('specImagePreview');
+    var thumb = document.getElementById('specImageThumb');
+    var fileNameEl = document.getElementById('specImageFileName');
+    var link = document.getElementById('specImageLink');
+    var hidden = document.getElementById('existingSpecImageInput');
+
+    if (!preview || !thumb || !fileNameEl || !link || !hidden) return;
+
+    hidden.value = '';
+    fileNameEl.textContent = file.name;
+    link.href = '#';
+    preview.style.display = 'flex';
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        thumb.src = String((e && e.target && e.target.result) || '');
+    };
+    reader.readAsDataURL(file);
 }
 
 // Image preview modal
@@ -4434,7 +7928,7 @@ initEditModalResizer();
                     var tbody = document.querySelector('#productsTable tbody');
                     noResultsRow = document.createElement('tr');
                     noResultsRow.id = 'noSearchResults';
-                    noResultsRow.innerHTML = '<td colspan="6" style="background:#fff;border-radius:12px;padding:14px;border:1px dashed rgba(43,17,219,0.25);color:#374151;text-align:center;"><i class="bi bi-search"></i> No products found matching "' + searchTerm + '"</td>';
+                    noResultsRow.innerHTML = '<td colspan="7" style="background:#fff;border-radius:12px;padding:14px;border:1px dashed rgba(43,17,219,0.25);color:#374151;text-align:center;"><i class="bi bi-search"></i> No products found matching "' + searchTerm + '"</td>';
                     tbody.appendChild(noResultsRow);
                 } else {
                     noResultsRow.querySelector('td').innerHTML = '<i class="bi bi-search"></i> No products found matching "' + searchTerm + '"';
@@ -4445,6 +7939,59 @@ initEditModalResizer();
             }
         });
     }
+})();
+
+// Bulk selection functionality
+(function(){
+    var selectAllCheckbox = document.getElementById('selectAllCheckbox');
+    var productCheckboxes = document.querySelectorAll('.product-checkbox');
+    var bulkActionsBar = document.getElementById('bulkActionsBar');
+    var selectedCountText = document.getElementById('selectedCountText');
+    var selectedProductsContainer = document.getElementById('selectedProductsContainer');
+    
+    if (!selectAllCheckbox || productCheckboxes.length === 0) return;
+    
+    function updateBulkActionsBar() {
+        var checkedCount = document.querySelectorAll('.product-checkbox:checked').length;
+        
+        if (checkedCount > 0) {
+            bulkActionsBar.style.display = 'flex';
+            selectedCountText.textContent = checkedCount + ' product' + (checkedCount !== 1 ? 's' : '') + ' selected';
+            
+            // Update hidden inputs with selected product indices
+            selectedProductsContainer.innerHTML = '';
+            document.querySelectorAll('.product-checkbox:checked').forEach(function(checkbox) {
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'selected_products[]';
+                input.value = checkbox.value;
+                selectedProductsContainer.appendChild(input);
+            });
+        } else {
+            bulkActionsBar.style.display = 'none';
+            selectedProductsContainer.innerHTML = '';
+        }
+        
+        // Update select all checkbox state
+        var totalVisible = document.querySelectorAll('.product-row:not([style*="display: none"]) .product-checkbox').length;
+        var checkedVisible = document.querySelectorAll('.product-row:not([style*="display: none"]) .product-checkbox:checked').length;
+        selectAllCheckbox.checked = totalVisible > 0 && checkedVisible === totalVisible;
+        selectAllCheckbox.indeterminate = checkedVisible > 0 && checkedVisible < totalVisible;
+    }
+    
+    // Handle individual checkboxes
+    productCheckboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', updateBulkActionsBar);
+    });
+    
+    // Handle select all checkbox
+    selectAllCheckbox.addEventListener('change', function() {
+        var isChecked = this.checked;
+        document.querySelectorAll('.product-row:not([style*="display: none"]) .product-checkbox').forEach(function(checkbox) {
+            checkbox.checked = isChecked;
+        });
+        updateBulkActionsBar();
+    });
 })();
 </script>
 
@@ -4459,7 +8006,7 @@ initEditModalResizer();
             <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:12px 14px;margin-bottom:18px;font-size:12px;color:#0369a1;line-height:1.6;">
                 <strong>Instructions:</strong><br>
                 1. Download the template CSV below.<br>
-                2. Fill in your products — one row per product.<br>
+                2. Fill in the brand and product details — the brand column decides where each row is imported and can create a new brand if needed.<br>
                 3. <code>model</code> and <code>type</code> columns are required.<br>
                 4. Use image/datasheet URLs (not file uploads).<br>
                 5. Save as CSV (UTF-8) and import here.
@@ -4469,7 +8016,7 @@ initEditModalResizer();
             </a>
             <form id="importCsvForm" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="action" value="import_csv">
-                <input type="hidden" name="brand" id="importCsvBrand" value="<?php echo htmlspecialchars($selectedBrand, ENT_QUOTES); ?>">
+                <input type="hidden" name="brand" id="importCsvBrand" value="<?php echo htmlspecialchars($selectedBrandKey, ENT_QUOTES); ?>">
                 <div style="margin-bottom:16px;">
                     <label style="font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Select CSV File</label>
                     <input type="file" name="csv_file" id="csvFileInput" accept=".csv,text/csv" required

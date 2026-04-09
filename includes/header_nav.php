@@ -185,39 +185,29 @@
     }
 
     .search-bar .search-field {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        position: relative;
-    }
-
-    .search-bar input {
+                padding-left: 0;
+                padding-right: 0;
+                gap: 0;
+                min-height: auto;
+                overflow-x: hidden;
+                overflow-y: visible;
+                justify-content: center;
+                flex-wrap: wrap;
         width: 100%;
         height: 46px;
         padding: 10px 16px 10px 40px;
-        border: 2px solid rgba(255,255,255,0.3);
-        border-radius: 6px;
-        font-size: 15px;
-        background: rgba(255,255,255,0.95);
-        color: #333;
-    }
-
-    .search-bar input::placeholder {
-        color: #999;
-    }
+                gap: 0;
+                flex-wrap: wrap;
+                flex-shrink: 1;
+                justify-content: center;
 
     .search-bar .search-field::before {
         content: '🔍';
-        position: absolute;
-        left: 12px;
-        font-size: 16px;
+                white-space: normal;
+                font-size: 11px;
+                padding: 10px 8px;
         pointer-events: none;
         color: #666;
-    }
-
-    .search-btn {
-        display: none;
     }
 
     .inquiry-btn,
@@ -582,32 +572,40 @@
         nav li { margin-right: 0; }
 
         .nav-inner {
+            position: relative;
             padding-left: 0;
             padding-right: 0;
             gap: 0;
-            min-height: auto;
-            overflow-x: hidden;
-            overflow-y: visible;
+            min-height: 44px;
+            overflow: visible;
             justify-content: center;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
         }
 
-        .nav-inner::-webkit-scrollbar { display: none; }
-
         .nav-list {
-            gap: 0;
-            flex-wrap: wrap;
-            flex-shrink: 1;
-            justify-content: center;
+            position: absolute;
+                    padding-left: 0; 
+                    padding-right: 0; 
+                    gap: 0; 
+                    min-height: auto; 
+                    overflow-x: hidden; 
+                    overflow-y: visible; 
+                    justify-content: center; 
+                    flex-wrap: wrap; 
+            align-items: center;
         }
 
         .nav-list > li > a {
-            white-space: normal;
+            white-space: nowrap;
             font-size: 11px;
             padding: 10px 8px;
         }
 
         .browse-toggle {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
             font-size: 12px;
             padding: 6px 8px;
             gap: 4px;

@@ -3855,7 +3855,7 @@ if (!$current_category) {
         // PAGINATION SYSTEM
         // ============================================
         var currentPage = 1;
-        var itemsPerPage = 8; // 2 rows x 4 columns
+        var itemsPerPage = 9; // 3 rows x 3 columns
         var allProductCards = [];
         var filteredCards = [];
 

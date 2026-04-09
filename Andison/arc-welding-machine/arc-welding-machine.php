@@ -1205,6 +1205,22 @@ if (!$current_category) {
                         $all_products = array_merge($all_products, $products);
                     }
                 }
+
+                $deduped_products = array();
+                foreach ($all_products as $product) {
+                    $model = strtolower(trim((string)($product['model'] ?? '')));
+                    $name = strtolower(trim((string)($product['name'] ?? ($product['product_name'] ?? ''))));
+                    $type = strtolower(trim((string)($product['type'] ?? '')));
+                    $brand = strtolower(trim((string)($product['brand'] ?? '')));
+                    $idKey = isset($product['id']) ? ('id:' . (string)$product['id']) : '';
+                    $semanticKey = trim($brand . '::' . $model . '::' . $name . '::' . $type, ':');
+                    $key = $semanticKey !== '' ? ('mk:' . $semanticKey) : ($idKey !== '' ? $idKey : ('mk:fallback:' . md5(json_encode($product))));
+
+                    if (!isset($deduped_products[$key])) {
+                        $deduped_products[$key] = $product;
+                    }
+                }
+                $all_products = array_values($deduped_products);
                 
                 // Display products
                 if (!empty($all_products)) {

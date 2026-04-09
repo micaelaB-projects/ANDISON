@@ -2,10 +2,97 @@
 require_once __DIR__ . '/includes/brands_info.php';
 require_once __DIR__ . '/includes/analytics.php';
 andison_track_visit('brand-detail');
-$_btrack = isset($_GET['name']) ? trim(strip_tags($_GET['name'])) : '';
-if ($_btrack) andison_track_brand_visit($_btrack);
+$brand_input = isset($_GET['name']) ? trim(strip_tags($_GET['name'])) : '';
+if ($brand_input) andison_track_brand_visit($brand_input);
 
-$brand_name = isset($_GET['name']) ? htmlspecialchars($_GET['name']) : 'Brand';
+function andison_brand_display_name(string $brand): string
+{
+    $normalized = strtolower(trim($brand));
+    if ($normalized === 'dryrod. ii' || $normalized === 'dryrod ii' || $normalized === 'phoenix dryrod' || $normalized === 'phoenix dry rod') {
+        return 'DryRod. II';
+    }
+    if ($normalized === 'bw' || $normalized === 'bw technologies') {
+        return 'BW Technologies';
+    }
+    if ($normalized === 'panasonic' || $normalized === 'panasonic connect') {
+        return 'Panasonic Connect';
+    }
+    if ($normalized === 'rae' || $normalized === 'rac' || $normalized === 'rae systems') {
+        return 'RAE SYSTEMS';
+    }
+    return $normalized === 'weiler' ? 'WEILER' : $brand;
+}
+
+function andison_brand_data_candidates(string $brand): array
+{
+    $normalized = strtolower(trim($brand));
+    if ($normalized === 'dryrod. ii' || $normalized === 'dryrod ii' || $normalized === 'phoenix dryrod' || $normalized === 'phoenix dry rod') {
+        return ['DryRod. II', 'DryRod II', 'Phoenix Dry Rod', 'Phoenix DryRod', 'PHOENIX DRY ROD', 'PHOENIX DRYROD'];
+    }
+    if ($normalized === 'bw' || $normalized === 'bw technologies') {
+        return ['BW', 'BW Technologies', 'BW TECHNOLOGIES'];
+    }
+    if ($normalized === 'panasonic connect' || $normalized === 'panasonic') {
+        return ['Panasonic Connect', 'PANASONIC'];
+    }
+    if ($normalized === 'rae' || $normalized === 'rac' || $normalized === 'rae systems') {
+        return ['RAE SYSTEMS', 'RAC'];
+    }
+    if ($normalized === 'weiler' || $normalized === 'weller') {
+        return ['WEILER', 'Weller'];
+    }
+    return [$brand];
+}
+
+function andison_pick_brand_bucket(array $brands, array $candidates): string
+{
+    foreach ($candidates as $candidate) {
+        if (isset($brands[$candidate]) && !empty($brands[$candidate]['products'])) {
+            return (string)$candidate;
+        }
+    }
+
+    foreach ($candidates as $candidate) {
+        if (isset($brands[$candidate])) {
+            return (string)$candidate;
+        }
+    }
+
+    return (string)($candidates[0] ?? '');
+}
+
+function andison_render_brand_description($rawDescription): string
+{
+    $value = trim((string)$rawDescription);
+    if ($value === '') {
+        return '';
+    }
+
+    $value = preg_replace('~<(button|input|textarea|select|option)[^>]*class=("|\")[^"\"]*(desc-cell-select-toggle|desc-cell-image-delete)[^"\"]*\2[^>]*>.*?</\1>~is', '', $value) ?? $value;
+    $value = preg_replace('~<input[^>]*(data-desc-cell-select|data-desc-image-delete)[^>]*\/?>~is', '', $value) ?? $value;
+    $value = preg_replace('~<button[^>]*(data-desc-cell-select|data-desc-image-delete|desc-cell-select-toggle|desc-cell-image-delete)[^>]*>.*?</button>~is', '', $value) ?? $value;
+    $value = preg_replace('~<(script|style|iframe|object|embed|form|input|button|textarea|select)[^>]*>.*?</\\1>~is', '', $value) ?? $value;
+    $value = preg_replace('/\son[a-z]+\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $value) ?? $value;
+    $allowed = '<p><br><strong><b><em><i><u><ul><ol><li><a><span><div><table><thead><tbody><tfoot><tr><th><td><img>';
+    $safeHtml = strip_tags($value, $allowed);
+    $safeHtml = preg_replace_callback('/\s(href|src)\s*=\s*("[^"]*"|\'[^\']*\'|[^\s>]+)/i', static function (array $m): string {
+        $attr = strtolower((string)$m[1]);
+        $uri = trim((string)$m[2], "\"'");
+        $check = strtolower(trim($uri));
+        if (str_starts_with($check, 'javascript:') || str_starts_with($check, 'data:text/html')) {
+            $uri = '#';
+        }
+        return ' ' . $attr . '="' . htmlspecialchars($uri, ENT_QUOTES) . '"';
+    }, $safeHtml) ?? $safeHtml;
+
+    if (strip_tags($value) === $value) {
+        return nl2br(htmlspecialchars($value));
+    }
+
+    return trim(str_replace(['☐', '☑', '□'], '', $safeHtml));
+}
+
+$brand_name = htmlspecialchars(andison_brand_display_name($brand_input));
 
 // Map all brand names to their logo filenames
 $logo_filename = function($brand) {
@@ -53,7 +140,8 @@ $logo_filename = function($brand) {
 };
 
 $brands_info = andison_get_brands_info();
-$brand_info = isset($brands_info[$brand_name]) ? $brands_info[$brand_name] : [
+$brand_key = andison_pick_brand_bucket($brands_info, andison_brand_data_candidates($brand_input));
+$brand_info = isset($brands_info[$brand_key]) ? $brands_info[$brand_key] : [
     'description' => 'Professional industrial products and solutions.',
     'products' => []
 ];
@@ -131,6 +219,71 @@ $brand_info = isset($brands_info[$brand_name]) ? $brands_info[$brand_name] : [
             color: #666;
             font-size: 16px;
             line-height: 1.6;
+        }
+
+        .brand-rich-description table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+        }
+
+        .brand-rich-description table.desc-custom-table {
+            background: #121722;
+            color: #e5e7eb;
+            table-layout: fixed;
+            border: 1px solid #404756;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .brand-rich-description th,
+        .brand-rich-description td {
+            border: 1px solid #d1d5db;
+            padding: 7px 9px;
+            vertical-align: top;
+            text-align: left;
+        }
+
+        .brand-rich-description table.desc-custom-table th,
+        .brand-rich-description table.desc-custom-table td {
+            border-color: #404756;
+            background: #1a202c;
+            color: #e5e7eb;
+            padding: 10px 12px;
+            line-height: 1.6;
+        }
+
+        .brand-rich-description table.desc-custom-table .desc-head-label {
+            background: #22293a;
+            font-weight: 800;
+        }
+
+        .brand-rich-description table.desc-custom-table .desc-cell-editor {
+            display: block;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .brand-rich-description table.desc-custom-table .desc-cell-image-wrap {
+            position: relative;
+            display: inline-block;
+            margin: 8px 8px 0 0;
+            padding: 2px;
+            border: 1px solid rgba(96, 165, 250, 0.25);
+            border-radius: 8px;
+            background: rgba(17, 24, 39, 0.85);
+        }
+
+        .brand-rich-description table.desc-custom-table .desc-cell-image-wrap img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+        }
+
+        .brand-rich-description img {
+            max-width: 100%;
+            height: auto;
         }
 
         .products-section {
@@ -305,7 +458,7 @@ $brand_info = isset($brands_info[$brand_name]) ? $brands_info[$brand_name] : [
             </div>
             <div class="brand-info">
                 <h1><?php echo $brand_name; ?></h1>
-                <p><?php echo $brand_info['description']; ?></p>
+                <div class="brand-rich-description"><?php echo andison_render_brand_description($brand_info['description'] ?? ''); ?></div>
             </div>
         </div>
 

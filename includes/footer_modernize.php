@@ -37,6 +37,11 @@ footer.footer-modernized .footer-main-grid {
     align-items: start;
 }
 
+footer.footer-modernized .footer-brand-col,
+footer.footer-modernized .footer-col {
+    min-width: 0;
+}
+
 footer.footer-modernized .footer-brand-logo {
     display: inline-block;
     margin-bottom: 12px;
@@ -188,25 +193,130 @@ footer.footer-modernized .footer-scroll-top:hover {
 }
 
 @media (max-width: 768px) {
-    footer.footer-modernized .footer-main-grid { grid-template-columns: 1fr; }
-    footer.footer-modernized .footer-col-title { font-size: 15px; }
-    footer.footer-modernized .footer-nav-links a { font-size: 15px; }
+    footer.footer-modernized {
+        padding-top: 24px !important;
+    }
+
+    footer.footer-modernized .footer-content {
+        gap: 8px;
+        padding: 0 10px 8px;
+    }
+
+    footer.footer-modernized .footer-main-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        align-items: stretch;
+    }
+
+    footer.footer-modernized .footer-brand-col {
+        grid-column: 1 / -1;
+        padding: 10px 11px 9px;
+        border-radius: 0;
+        background: transparent;
+        border: 0;
+        backdrop-filter: none;
+        box-shadow: none;
+        position: relative;
+        overflow: visible;
+    }
+
+    footer.footer-modernized .footer-brand-col::before,
+    footer.footer-modernized .footer-col::before {
+        content: none;
+        position: absolute;
+        left: 10px;
+        right: 10px;
+        top: 0;
+        height: 1px;
+        background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.35), rgba(255,255,255,0));
+        pointer-events: none;
+    }
+
+    footer.footer-modernized .footer-brand-logo {
+        margin-bottom: 6px;
+    }
+
+    footer.footer-modernized .footer-brand-logo img {
+        width: 148px;
+    }
+
+    footer.footer-modernized .footer-brand-blurb {
+        display: none;
+    }
+
+    footer.footer-modernized .footer-col {
+        padding: 10px 9px 9px;
+        border-radius: 0;
+        background: transparent;
+        border: 0;
+        backdrop-filter: none;
+        box-shadow: none;
+        min-height: 100%;
+        position: relative;
+        overflow: visible;
+    }
+
+    footer.footer-modernized .footer-col:last-child {
+        grid-column: 1 / -1;
+    }
+
+    footer.footer-modernized .footer-col-title {
+        font-size: 11px;
+        margin: 0 0 7px;
+        text-align: center;
+    }
+    footer.footer-modernized .footer-nav-links {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
+    }
+    footer.footer-modernized .footer-nav-links a {
+        font-size: 11px;
+        line-height: 1.1;
+        padding: 6px 2px;
+        border-radius: 0;
+        background: transparent;
+        text-align: left;
+        width: 100%;
+        min-height: auto;
+        display: flex;
+        align-items: center;
+        border: 0;
+        transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+    footer.footer-modernized .footer-nav-links a:hover {
+        background: transparent;
+        border-color: transparent;
+        transform: none;
+    }
+    footer.footer-modernized .footer-nav-links a:nth-child(1) { order: 1; }
+    footer.footer-modernized .footer-nav-links a:nth-child(2) { order: 3; }
+    footer.footer-modernized .footer-nav-links a:nth-child(3) { order: 5; }
+    footer.footer-modernized .footer-nav-links a:nth-child(4) { order: 2; }
+    footer.footer-modernized .footer-nav-links a:nth-child(5) { order: 4; }
+    footer.footer-modernized .footer-nav-links a:nth-child(6) { order: 6; }
+    footer.footer-modernized .footer-contact-list { gap: 5px; }
+    footer.footer-modernized .footer-contact-item { font-size: 11px; gap: 7px; line-height: 1.3; color: rgba(248, 250, 255, 0.92); }
+    footer.footer-modernized .footer-contact-item i { font-size: 12px; margin-top: 2px; color: rgba(230,236,255,0.95); }
 
     footer.footer-modernized .footer-bottom {
         flex-direction: column;
         align-items: center;
         padding-right: 0;
         padding-left: 0;
-        padding-bottom: 80px;
+        padding-bottom: 10px;
+        padding-top: 7px;
+        gap: 6px;
+        border-top-color: rgba(255, 255, 255, 0.24);
     }
 
-    footer.footer-modernized .footer-copyright { font-size: 15px; }
+    footer.footer-modernized .footer-copyright { font-size: 11px; line-height: 1.35; }
 
     footer.footer-modernized .footer-scroll-top {
-        width: 46px;
-        height: 46px;
-        right: 20px;
-        bottom: 18px;
+        width: 38px;
+        height: 38px;
+        right: 12px;
+        bottom: 12px;
     }
 }
 </style>
@@ -279,9 +389,10 @@ footer.footer-modernized .footer-scroll-top:hover {
                     + '<h4 class="footer-col-title">Navigation</h4>'
                     + '<nav class="footer-nav-links" aria-label="Footer navigation">'
                         + '<a href="/ANDISON/home.php">Home</a>'
-                        + '<a href="/ANDISON/industries.php">Industries and Services</a>'
-                        + '<a href="/ANDISON/aboutus.php">Our Company</a>'
-                        + '<a href="/ANDISON/brands.php">Products</a>'
+                        + '<a href="/ANDISON/aboutus.php">About Us</a>'
+                        + '<a href="/ANDISON/brands.php">Brands</a>'
+                        + '<a href="/ANDISON/industries.php">Industries</a>'
+                        + '<a href="/ANDISON/services.php">Services</a>'
                         + '<a href="/ANDISON/contact.php">Contact Us</a>'
                     + '</nav>'
                     + '</div>'

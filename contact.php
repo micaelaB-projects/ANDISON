@@ -29,10 +29,9 @@ $ytLinks = andison_get_youtube_links();
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            padding-top: 142px;
-            min-height: 100vh;
+            .sidebar {
+                position: static;
+            }
             display: flex;
             flex-direction: column;
         }
@@ -496,9 +495,9 @@ $ytLinks = andison_get_youtube_links();
         }
 
         nav li:nth-child(3) .nav-dropdown {
-            min-width: 650px;
-            max-width: 650px;
-            padding: 24px 28px;
+            min-width: 576px;
+            max-width: 576px;
+            padding: 20px 22px;
         }
 
         .nav-dropdown ul a {
@@ -515,12 +514,12 @@ $ytLinks = andison_get_youtube_links();
         nav li:nth-child(3) .nav-dropdown ul {
             display: grid !important;
             grid-template-columns: repeat(5, 1fr) !important;
-            gap: 12px 20px !important;
-            margin-top: 16px !important;
+            gap: 10px 14px !important;
+            margin-top: 14px !important;
         }
 
         nav li:nth-child(3) .nav-dropdown ul li {
-            min-height: 70px;
+            min-height: 58px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -531,12 +530,12 @@ $ytLinks = andison_get_youtube_links();
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            min-height: 60px !important;
+            min-height: 50px !important;
         }
 
         nav li:nth-child(3) .nav-dropdown ul a img {
-            max-width: 85px;
-            max-height: 45px;
+            max-width: 74px;
+            max-height: 37px;
             object-fit: contain;
             display: block;
             pointer-events: all;
@@ -786,7 +785,7 @@ $ytLinks = andison_get_youtube_links();
             text-align: center;
             max-width: 750px;
             margin: 0 auto 60px;
-            color: #8B4513;
+            color: #4b5563;
             line-height: 1.9;
             width: 100%;
             box-sizing: border-box;
@@ -970,7 +969,7 @@ $ytLinks = andison_get_youtube_links();
 
         .service-content p {
             font-size: 14px;
-            color: #8B4513;
+            color: #4b5563;
             line-height: 1.85;
             margin: 0;
         }
@@ -1767,7 +1766,7 @@ $ytLinks = andison_get_youtube_links();
         }
 
         .ci-value a {
-            color: #e67e22;
+            color: #2B11DB;
             text-decoration: none;
             font-weight: 600;
         }
@@ -1778,8 +1777,8 @@ $ytLinks = andison_get_youtube_links();
 
         .contact-cta-note {
             margin-top: 18px;
-            background: #fff8f0;
-            border-left: 3px solid #e67e22;
+            background: #f5f7ff;
+            border-left: 3px solid #2B11DB;
             padding: 12px 14px;
             font-size: 13px;
             color: #555;
@@ -1788,7 +1787,7 @@ $ytLinks = andison_get_youtube_links();
         }
 
         .contact-cta-note a {
-            color: #e67e22;
+            color: #2B11DB;
             font-weight: 700;
             text-decoration: none;
         }

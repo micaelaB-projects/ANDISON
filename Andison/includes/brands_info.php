@@ -37,6 +37,103 @@ if (!function_exists('andison_normalize_product_images')) {
     }
 }
 
+if (!function_exists('andison_product_semantic_key')) {
+    function andison_product_semantic_key(array $product): string
+    {
+        $normalize = static function (string $value): string {
+            $value = strtolower(trim($value));
+            return preg_replace('/\s+/', ' ', $value) ?? $value;
+        };
+
+        $brand = $normalize((string)($product['brand'] ?? ''));
+        $model = $normalize((string)($product['model'] ?? ''));
+        $name = $normalize((string)($product['product_name'] ?? ($product['name'] ?? '')));
+        $type = $normalize((string)($product['type'] ?? ''));
+
+        // Allow duplicate model entries (requested by admin workflow).
+        // Dedupe only when the broader business-identifying fields are also the same.
+        if ($model !== '') {
+            $category = $normalize((string)($product['category_id'] ?? ''));
+            $subcategory = $normalize((string)($product['subcategory_id'] ?? ''));
+            $subSubcategory = $normalize((string)($product['sub_subcategory_id'] ?? ''));
+            return implode('::', [$brand, $model, $name, $type, $category, $subcategory, $subSubcategory]);
+        }
+
+        return implode('::', [
+            $brand,
+            $name,
+            $type,
+        ]);
+    }
+}
+
+if (!function_exists('andison_canonical_brand_name')) {
+    function andison_canonical_brand_name(string $brand): string
+    {
+        $raw = trim($brand);
+        $normalized = strtolower($raw);
+
+        if ($normalized === 'dryrod. ii' || $normalized === 'dryrod ii' || $normalized === 'phoenix dry rod' || $normalized === 'phoenix dryrod') {
+            return 'DryRod. II';
+        }
+
+        if ($normalized === 'bw technologies' || $normalized === 'bw') {
+            return 'BW';
+        }
+
+        if ($normalized === 'hard worker' || $normalized === 'hard workers' || $normalized === 'hardworker') {
+            return 'HARDWORKER';
+        }
+
+        return $raw;
+    }
+}
+
+if (!function_exists('andison_product_record_score')) {
+    function andison_product_record_score(array $product): int
+    {
+        $score = 0;
+
+        $specifications = trim((string)($product['specifications'] ?? ($product['specs'] ?? '')));
+        if ($specifications !== '') {
+            $score += 120;
+            if (str_contains($specifications, 'andison_specs_v2') || str_contains($specifications, 'andison_specs_v3')) {
+                $score += 120;
+            }
+        }
+
+        $description = trim((string)($product['description'] ?? ''));
+        if ($description !== '') {
+            $score += 30;
+        }
+
+        $datasheet = trim((string)($product['datasheet'] ?? ''));
+        if ($datasheet !== '') {
+            $score += 25;
+        }
+
+        $images = andison_normalize_product_images($product);
+        $score += min(5, count($images)) * 5;
+
+        $model = trim((string)($product['model'] ?? ''));
+        if ($model !== '') {
+            $score += 10;
+        }
+
+        $type = trim((string)($product['type'] ?? ''));
+        if ($type !== '') {
+            $score += 8;
+        }
+
+        $id = isset($product['id']) ? (int)$product['id'] : 0;
+        if ($id > 0) {
+            $score += min(1000, $id);
+        }
+
+        return $score;
+    }
+}
+
 if (!function_exists('andison_get_brands_info')) {
     function andison_get_brands_info(bool $forceFresh = false): array
     {
@@ -53,7 +150,7 @@ if (!function_exists('andison_get_brands_info')) {
         // ── Parallel Supabase fetch ────────────────────────────────────────
         $fetched     = andison_sb_select_multi([
             'brands'   => 'brands?order=name',
-            'products' => 'products?select=*&limit=10000',
+            'products' => 'products?select=*&order=id.asc&limit=10000',
         ]);
         $brandsRaw      = $fetched['brands'] ?? [];
         $allProductsRaw = $fetched['products'] ?? [];
@@ -71,6 +168,28 @@ if (!function_exists('andison_get_brands_info')) {
         $brands      = $brandsRaw;
         $allProducts = $allProductsRaw;
 
+        $dedupeProducts = static function (array $products): array {
+            $byPrimaryKey = [];
+
+            foreach ($products as $product) {
+                $signature = andison_product_semantic_key($product);
+                $id = isset($product['id']) ? (int)$product['id'] : 0;
+                $primaryKey = $signature !== '' ? ('mk:' . $signature) : ($id > 0 ? ('id:' . $id) : ('fk:' . md5(json_encode($product))));
+
+                if (!isset($byPrimaryKey[$primaryKey])) {
+                    $byPrimaryKey[$primaryKey] = $product;
+                } else {
+                    $existingScore = andison_product_record_score($byPrimaryKey[$primaryKey]);
+                    $candidateScore = andison_product_record_score($product);
+                    if ($candidateScore >= $existingScore) {
+                        $byPrimaryKey[$primaryKey] = $product;
+                    }
+                }
+            }
+
+            return array_values($byPrimaryKey);
+        };
+
         if (empty($brands)) {
             if (is_array($cached) && !empty($cached)) return $cached;
             return [];
@@ -83,6 +202,8 @@ if (!function_exists('andison_get_brands_info')) {
         foreach ($allProducts as $product) {
             $brand = trim((string)($product['brand'] ?? ''));
             if ($brand === '') continue;
+            $brand = andison_canonical_brand_name($brand);
+            $product['brand'] = $brand;
             // Decode images JSON string from Supabase into array
             if (isset($product['images']) && is_string($product['images'])) {
                 $dec = json_decode($product['images'], true);
@@ -101,13 +222,13 @@ if (!function_exists('andison_get_brands_info')) {
         $result    = [];
         $processed = [];
         foreach ($brands as $brand) {
-            $name = $brand['name'] ?? '';
+            $name = andison_canonical_brand_name((string)($brand['name'] ?? ''));
             if ($name === '') continue;
             $lk = strtolower($name);
             $processed[$lk] = true;
             $result[$name] = [
                 'description' => $brand['description'] ?? '',
-                'products'    => $sbByLower[$lk] ?? [],
+                'products'    => $dedupeProducts($sbByLower[$lk] ?? []),
             ];
         }
 
@@ -115,7 +236,7 @@ if (!function_exists('andison_get_brands_info')) {
         foreach ($sbByLower as $lk => $prods) {
             if (isset($processed[$lk])) continue;
             $nm = $sbOrigCase[$lk];
-            $result[$nm] = ['description' => '', 'products' => $prods];
+            $result[$nm] = ['description' => '', 'products' => $dedupeProducts($prods)];
         }
 
         // ── Write cache ───────────────────────────────────────────────────
@@ -149,6 +270,9 @@ if (!function_exists('andison_save_single_brand')) {
             $rows = [];
             foreach ($products as $product) {
                 $images = andison_normalize_product_images($product);
+                $categoryId = trim((string)($product['category_id'] ?? ''));
+                $subcategoryId = trim((string)($product['subcategory_id'] ?? ''));
+                $subSubcategoryId = trim((string)($product['sub_subcategory_id'] ?? ''));
                 $rows[] = [
                     'brand'          => $brandName,
                     'product_name'   => $product['product_name'] ?? ($product['name'] ?? ''),
@@ -161,40 +285,84 @@ if (!function_exists('andison_save_single_brand')) {
                     'image'          => $product['image'] ?? ($images[0] ?? ''),
                     'datasheet'      => $product['datasheet'] ?? '',
                     'images'         => json_encode($images),
-                    'category_id'    => trim((string)($product['category_id'] ?? '')),
-                    'subcategory_id' => trim((string)($product['subcategory_id'] ?? '')),
-                    'sub_subcategory_id' => trim((string)($product['sub_subcategory_id'] ?? '')),
+                    'category_id'    => $categoryId === '' ? null : $categoryId,
+                    'subcategory_id' => $subcategoryId === '' ? null : $subcategoryId,
+                    'sub_subcategory_id' => $subSubcategoryId === '' ? null : $subSubcategoryId,
                 ];
             }
             return $rows;
         };
 
+        $dedupeIncomingProducts = static function (array $products): array {
+            $byPrimaryKey = [];
+
+            foreach ($products as $product) {
+                $signature = andison_product_semantic_key($product);
+                $id = isset($product['id']) ? (int)$product['id'] : 0;
+                $primaryKey = $signature !== '' ? ('mk:' . $signature) : ($id > 0 ? ('id:' . $id) : ('fk:' . md5(json_encode($product))));
+
+                if (!isset($byPrimaryKey[$primaryKey])) {
+                    $byPrimaryKey[$primaryKey] = $product;
+                    continue;
+                }
+
+                $existingScore = andison_product_record_score($byPrimaryKey[$primaryKey]);
+                $candidateScore = andison_product_record_score($product);
+                if ($candidateScore >= $existingScore) {
+                    $byPrimaryKey[$primaryKey] = $product;
+                }
+            }
+
+            return array_values($byPrimaryKey);
+        };
+
         $insertWithFallback = static function (array $rows): bool {
-            if (empty($rows)) return true;
+            if (empty($rows)) {
+                error_log("insertWithFallback: No rows to insert");
+                return true;
+            }
+
+            error_log("insertWithFallback: Attempting to insert " . count($rows) . " rows. First row fields: " . json_encode(array_keys($rows[0])));
 
             $ok = andison_sb_insert('products', $rows);
-            if ($ok) return true;
+            if ($ok) {
+                error_log("insertWithFallback: Insert succeeded on attempt 1");
+                return true;
+            }
+            error_log("insertWithFallback: Attempt 1 failed, trying without 'images' field");
 
             $noImgRows = array_map(static function (array $r): array {
                 unset($r['images']);
                 return $r;
             }, $rows);
             $ok = andison_sb_insert('products', $noImgRows);
-            if ($ok) return true;
+            if ($ok) {
+                error_log("insertWithFallback: Insert succeeded on attempt 2 (no images)");
+                return true;
+            }
+            error_log("insertWithFallback: Attempt 2 failed, trying without 'sub_subcategory_id'");
 
             $noSubSubRows = array_map(static function (array $r): array {
                 unset($r['sub_subcategory_id']);
                 return $r;
             }, $rows);
             $ok = andison_sb_insert('products', $noSubSubRows);
-            if ($ok) return true;
+            if ($ok) {
+                error_log("insertWithFallback: Insert succeeded on attempt 3 (no sub_subcategory_id)");
+                return true;
+            }
+            error_log("insertWithFallback: Attempt 3 failed, trying without both");
 
             $noImgNoSubSubRows = array_map(static function (array $r): array {
                 unset($r['images'], $r['sub_subcategory_id']);
                 return $r;
             }, $rows);
             $ok = andison_sb_insert('products', $noImgNoSubSubRows);
-            if ($ok) return true;
+            if ($ok) {
+                error_log("insertWithFallback: Insert succeeded on attempt 4");
+                return true;
+            }
+            error_log("insertWithFallback: Attempt 4 failed, trying stripped");
 
             $strippedRows = array_map(static function (array $r): array {
                 return array_intersect_key($r, array_flip([
@@ -204,14 +372,24 @@ if (!function_exists('andison_save_single_brand')) {
                 ]));
             }, $rows);
             $ok = andison_sb_insert('products', $strippedRows);
-            if ($ok) return true;
+            if ($ok) {
+                error_log("insertWithFallback: Insert succeeded on attempt 5 (stripped)");
+                return true;
+            }
+            error_log("insertWithFallback: Attempt 5 failed, trying legacy");
 
             $legacyStrippedRows = array_map(static function (array $r): array {
                 unset($r['sub_subcategory_id']);
                 return $r;
             }, $strippedRows);
 
-            return andison_sb_insert('products', $legacyStrippedRows);
+            $ok = andison_sb_insert('products', $legacyStrippedRows);
+            if ($ok) {
+                error_log("insertWithFallback: Insert succeeded on attempt 6 (legacy)");
+                return true;
+            }
+            error_log("insertWithFallback: ALL INSERT ATTEMPTS FAILED!");
+            return false;
         };
 
         try {
@@ -223,19 +401,54 @@ if (!function_exists('andison_save_single_brand')) {
                 andison_sb_insert('brands', [['name' => $name, 'description' => $data['description'] ?? '']]);
             }
 
-            $existingProductRows = andison_sb_select('products', 'brand=eq.' . rawurlencode($name) . '&limit=10000');
+            $existingProductRows = andison_sb_select('products', 'brand=ilike.' . rawurlencode($name) . '&limit=10000');
+
+            $normalizeBrand = static function (string $value): string {
+                $value = strtolower(trim($value));
+                return preg_replace('/\s+/', ' ', $value) ?? $value;
+            };
+
+            $allRowsForBrandScan = andison_sb_select('products', 'select=id,brand,product_name,model,type,category_id,subcategory_id,sub_subcategory_id&limit=10000');
+            $targetBrandKey = $normalizeBrand($name);
+            $normalizedBrandRows = [];
+            if (is_array($allRowsForBrandScan)) {
+                foreach ($allRowsForBrandScan as $scanRow) {
+                    $scanBrand = $normalizeBrand((string)($scanRow['brand'] ?? ''));
+                    if ($scanBrand !== '' && $scanBrand === $targetBrandKey) {
+                        $normalizedBrandRows[] = $scanRow;
+                    }
+                }
+            }
+
+            if (!empty($normalizedBrandRows)) {
+                $existingProductRows = array_merge($existingProductRows, $normalizedBrandRows);
+            }
             $incomingProducts = is_array($data['products'] ?? null) ? $data['products'] : [];
+            $incomingProducts = $dedupeIncomingProducts($incomingProducts);
+
+            $existingSemanticCount = count($dedupeIncomingProducts($existingProductRows));
+            $incomingSemanticCount = count($incomingProducts);
 
             // Guard against stale/partial payloads that could wipe products.
-            if ((!$allowProductCountDecrease && count($incomingProducts) < count($existingProductRows)) ||
+            if ((!$allowProductCountDecrease && $incomingSemanticCount < $existingSemanticCount) ||
                 (!$allowEmptyProducts && empty($incomingProducts) && !empty($existingProductRows))) {
                 return false;
             }
 
             // ── 2. Replace this brand's products: delete all then re-insert ───────
-            // Delete by brand name first (primary key for brand-owned rows)
-            if (!andison_sb_delete('products', 'brand=eq.' . rawurlencode($name))) {
-                return false;
+            // Delete by ilike and by explicit IDs to also clear legacy rows with inconsistent brand formatting.
+            andison_sb_delete('products', 'brand=ilike.' . rawurlencode($name));
+
+            $existingIds = array_values(array_unique(array_filter(array_map(static function (array $row): ?int {
+                return isset($row['id']) ? (int)$row['id'] : null;
+            }, $existingProductRows))));
+
+            if (!empty($existingIds)) {
+                foreach (array_chunk($existingIds, 200) as $idChunk) {
+                    if (!empty($idChunk)) {
+                        andison_sb_delete('products', 'id=in.(' . implode(',', $idChunk) . ')');
+                    }
+                }
             }
 
             $ok = true;

@@ -38,21 +38,23 @@ function andison_admin_header(string $title, string $active = 'dashboard'): void
         body{margin:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,#f5f7fb 0%,#eff2ff 100%);color:var(--text)}
         a{color:inherit}
         .shell{min-height:100vh;display:flex}
-        .sidebar{width:260px;background:linear-gradient(135deg,var(--accent) 0%, #1a0a8f 100%);color:#fff;padding:18px 14px;position:fixed;top:0;left:0;height:100vh;transition:transform 0.3s ease;z-index:10000}
+        .sidebar{width:260px;background:linear-gradient(135deg,var(--accent) 0%, #1a0a8f 100%);color:#fff;padding:18px 14px;position:fixed;top:0;left:0;height:100vh;transition:transform 0.3s ease;z-index:10000;display:flex;flex-direction:column}
         .sidebar.collapsed{transform:translateX(-260px)}
         .brand{display:flex;align-items:center;gap:10px;padding:10px 10px 16px}
         .brand .mark{width:48px;height:48px;border-radius:10px;background:rgba(255,255,255,0.16);display:grid;place-items:center;font-weight:900;font-size:20px}
         .brand .name{font-weight:900;letter-spacing:0.4px;line-height:1.1;font-size:16px}
         .brand .sub{font-size:12px;opacity:0.85}
-        .nav{display:flex;flex-direction:column;gap:8px;margin-top:10px}
-        .nav a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;text-decoration:none;font-weight:500;letter-spacing:0.2px;background:rgba(255,255,255,0.08);transition:all 0.2s ease}
+        .nav{display:flex;flex-direction:column;gap:8px;margin-top:10px;width:100%;min-width:0}
+        .nav a{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;text-decoration:none;font-weight:500;letter-spacing:0.2px;background:rgba(255,255,255,0.08);transition:all 0.2s ease;min-width:0;width:100%;box-sizing:border-box}
+        .nav a i{flex-shrink:0}
+        .nav a > span:not(.badge-inline){min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block}
         .nav a.active{background:rgba(0,215,179,0.22);outline:1px solid rgba(0,215,179,0.30)}
         .nav a:hover{background:rgba(255,255,255,0.18);transform:translateX(4px)}
         .nav.option{background:transparent;border-radius:10px;padding:8px 12px;margin:6px 8px;color:rgba(255,255,255,0.95);display:flex;align-items:center;gap:8px;text-decoration:none}
         .nav.option i{font-size:16px}
         .nav.option:hover{background:rgba(255,255,255,0.06);transform:translateX(4px)}
-        .sidebar .bottom{position:absolute;left:14px;right:14px;bottom:14px;display:flex;flex-direction:column;align-items:center;gap:18px;padding-bottom:6px}
-        .options-bottom{width:100%;display:flex;flex-direction:column;align-items:center;border-top:1px solid rgba(255,255,255,0.12);padding-top:16px}
+        .sidebar .bottom{position:relative;margin-top:auto;display:flex;flex-direction:column;align-items:center;gap:18px;padding-bottom:6px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.12)}
+        .options-bottom{width:100%;display:flex;flex-direction:column;align-items:center;border-top:1px solid rgba(255,255,255,0.12);padding-top:16px;gap:12px}
         .options-header{font-size:11px;font-weight:900;color:rgba(255,255,255,0.85);letter-spacing:1.2px;text-transform:uppercase;padding:0 8px;margin-bottom:16px;text-align:center;letter-spacing:0.9px}
         .options-bottom .nav.option{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 16px;margin:6px 0;color:rgba(255,255,255,0.90);gap:10px;text-decoration:none;border-radius:12px;transition:all 0.2s ease;position:relative}
         .options-bottom .nav.option::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,0.04);border-radius:12px;opacity:0;transition:opacity 0.2s ease;z-index:-1}
@@ -99,7 +101,8 @@ function andison_admin_header(string $title, string $active = 'dashboard'): void
         .table tr:hover td{background:#f9fafb}
         .table tr td:first-child{border-top-left-radius:14px;border-bottom-left-radius:14px}
         .table tr td:last-child{border-top-right-radius:14px;border-bottom-right-radius:14px}
-        .badge{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:900;background:rgba(43,17,219,0.10);color:var(--accent)}
+        .badge{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:900;background:rgba(43,17,219,0.10);color:var(--accent);white-space:nowrap;flex-shrink:0}
+        .nav a .badge-inline{background:rgba(239,68,68,0.85);color:#fff;font-size:11px;font-weight:900;padding:2px 7px;border-radius:999px;margin-left:4px;white-space:nowrap;flex-shrink:0}
         .flash{margin:0 0 18px;padding:14px 18px;border-radius:16px;border:1px solid;font-size:14px}
         .flash.success{background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.25);color:#065f46}
         .flash.error{background:rgba(239,68,68,0.06);border-color:rgba(239,68,68,0.25);color:#7f1d1d}
@@ -173,14 +176,14 @@ function andison_admin_header(string $title, string $active = 'dashboard'): void
             </div>
         </div>
         <nav class="nav">
-            <a href="index.php" class="<?php echo $active === 'dashboard' ? 'active' : ''; ?>"><i class="bi bi-grid"></i> Dashboard</a>
-            <a href="analytics.php" class="<?php echo $active === 'analytics' ? 'active' : ''; ?>"><i class="bi bi-bar-chart-line"></i> Analytics</a>
-            <a href="products.php" class="<?php echo $active === 'products' ? 'active' : ''; ?>"><i class="bi bi-box-seam"></i> Products</a>
-            <a href="categories.php" class="<?php echo $active === 'categories' ? 'active' : ''; ?>"><i class="bi bi-tag"></i> Categories</a>
-            <a href="featured.php" class="<?php echo $active === 'featured' ? 'active' : ''; ?>"><i class="bi bi-star"></i> Homepage Featured</a>
-            <a href="slider.php" class="<?php echo $active === 'slider' ? 'active' : ''; ?>"><i class="bi bi-images"></i> Homepage Slider</a>
-            <a href="youtube.php" class="<?php echo $active === 'youtube' ? 'active' : ''; ?>"><i class="bi bi-youtube"></i> YouTube Links</a>
-            <a href="inquiries.php" class="<?php echo $active === 'inquiries' ? 'active' : ''; ?>" id="nav-inquiries"><i class="bi bi-envelope-paper"></i> Inquiries<?php
+            <a href="index.php" class="<?php echo $active === 'dashboard' ? 'active' : ''; ?>"><i class="bi bi-grid"></i><span>Dashboard</span></a>
+            <a href="analytics.php" class="<?php echo $active === 'analytics' ? 'active' : ''; ?>"><i class="bi bi-bar-chart-line"></i><span>Analytics</span></a>
+            <a href="products.php" class="<?php echo $active === 'products' ? 'active' : ''; ?>"><i class="bi bi-box-seam"></i><span>Products</span></a>
+            <a href="categories.php" class="<?php echo $active === 'categories' ? 'active' : ''; ?>"><i class="bi bi-tag"></i><span>Categories</span></a>
+            <a href="featured.php" class="<?php echo $active === 'featured' ? 'active' : ''; ?>"><i class="bi bi-star"></i><span>Homepage Featured</span></a>
+            <a href="slider.php" class="<?php echo $active === 'slider' ? 'active' : ''; ?>"><i class="bi bi-images"></i><span>Homepage Slider</span></a>
+            <a href="youtube.php" class="<?php echo $active === 'youtube' ? 'active' : ''; ?>"><i class="bi bi-youtube"></i><span>YouTube Links</span></a>
+            <a href="inquiries.php" class="<?php echo $active === 'inquiries' ? 'active' : ''; ?>" id="nav-inquiries"><i class="bi bi-envelope-paper"></i><span>Inquiries</span><?php
                 // Show unread badge
                 require_once __DIR__ . '/../includes/supabase.php';
                 $unreadCount = 0;
@@ -199,7 +202,7 @@ function andison_admin_header(string $title, string $active = 'dashboard'): void
 
                 if ($unreadCount > 0):
                     $unreadBadge = $unreadCount > 99 ? '99+' : (string)$unreadCount;
-                    ?> <span style="background:rgba(239,68,68,0.85);color:#fff;font-size:11px;font-weight:900;padding:2px 7px;border-radius:999px;margin-left:auto;"><?php echo $unreadBadge; ?></span><?php endif; ?></a>
+                    ?> <span class="badge-inline"><?php echo $unreadBadge; ?></span><?php endif; ?></a>
         </nav>
 
         <div class="bottom">

@@ -58,19 +58,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $buttonText = (string)($_POST['button_text'] ?? '');
     $buttonUrl = (string)($_POST['button_url'] ?? '');
     $imageAlt = (string)($_POST['image_alt'] ?? '');
-    $mediaType = (string)($_POST['media_type'] ?? 'picture');
-    $allowedMediaTypes = ['picture', 'youtube', 'video', 'promo'];
-    if (!in_array($mediaType, $allowedMediaTypes, true)) {
-        $mediaType = 'picture';
-    }
-    $youtubeUrl = (string)($_POST['youtube_url'] ?? '');
+    $mediaType = 'picture';
     $eventDate = (string)($_POST['event_date'] ?? '');
     $eventLocation = (string)($_POST['event_location'] ?? '');
     $discount = (string)($_POST['discount'] ?? '');
     $offerText = (string)($_POST['offer_text'] ?? '');
 
     $newImagePath = $featured['image'] ?? '';
-    $newVideoPath = $featured['video_file'] ?? '';
+    $newVideoPath = '';
     $newYoutubeEmbed = '';
 
     if (in_array($mediaType, ['picture', 'promo'], true) && isset($_FILES['image']) && andison_admin_is_upload($_FILES['image'])) {
@@ -86,29 +81,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $newImagePath = $stored;
     }
 
-    if ($mediaType === 'video' && isset($_FILES['video']) && andison_admin_is_upload($_FILES['video'])) {
-        $stored = andison_admin_store_featured_video(
-            $_FILES['video'],
-            dirname(__DIR__) . '/assets/uploads/home/featured'
-        );
-        if ($stored === null) {
-            andison_set_flash('error', 'Invalid video upload. Please use MP4/WebM/OGG/MOV.');
-            header('Location: featured.php');
-            exit;
-        }
-        $newVideoPath = $stored;
-    }
-
-    if ($mediaType === 'youtube' && trim($youtubeUrl) !== '') {
-        $normalized = andison_normalize_youtube_to_embed(trim($youtubeUrl));
-        if ($normalized === '') {
-            andison_set_flash('error', 'Invalid YouTube URL/ID.');
-            header('Location: featured.php');
-            exit;
-        }
-        $newYoutubeEmbed = $normalized;
-    }
-
     $ok = andison_save_home_featured([
         'badge' => $badge,
         'title' => $title,
@@ -119,11 +91,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'event_location' => $eventLocation,
         'discount' => $discount,
         'offer_text' => $offerText,
-        'media_type' => $mediaType,
+        'media_type' => 'picture',
         'image' => $newImagePath,
         'image_alt' => $imageAlt,
-        'youtube_url' => $newYoutubeEmbed,
-        'video_file' => $newVideoPath,
+        'youtube_url' => '',
+        'video_file' => '',
     ]);
 
     if ($ok) {
@@ -158,41 +130,32 @@ andison_admin_header('Homepage Featured', 'featured');
 <div class="grid">
     <div style="grid-column:span 12;" class="feat-page-header">
         <div>
-            <div style="font-size:11px;font-weight:700;opacity:0.7;letter-spacing:0.6px;text-transform:uppercase;margin-bottom:4px;">Homepage Management</div>
-            <div style="font-size:20px;font-weight:800;letter-spacing:-0.2px;display:flex;align-items:center;gap:8px;"><i class="bi bi-star-fill" style="color:#fbbf24;"></i> Featured Section</div>
+            <div class="feat-page-kicker">Homepage Management</div>
+            <div class="feat-page-title"><i class="bi bi-star-fill" style="color:#fbbf24;"></i> Featured Section</div>
         </div>
-        <span style="font-size:12px;opacity:0.75;">Controls the featured banner on your homepage</span>
+        <span class="feat-page-subtitle">Controls the featured banner on your homepage</span>
     </div>
 
     <section class="card" style="grid-column:span 12;">
-        <form method="post" action="featured.php" enctype="multipart/form-data" id="featuredForm">
-            <!-- Content -->
-            <div style="margin-bottom:24px;">
+        <form method="post" action="featured.php" enctype="multipart/form-data" id="featuredForm" class="feat-form">
+            <div class="feat-main-col">
+            <div class="feat-panel">
                 <div class="feat-section-hd">
                     <div class="feat-hd-icon" style="background:rgba(43,17,219,0.1);"><i class="bi bi-info-circle" style="color:#2B11DB;font-size:13px;"></i></div>
                     <span class="feat-hd-title">Content Information</span>
                 </div>
                 
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+                <div class="feat-grid-2" style="margin-bottom:14px;">
                     <div class="field" style="margin:0;">
                         <label for="badge">Badge <small style="color:#9ca3af;font-weight:400;">(e.g. EVENTS, NEW)</small></label>
                         <input id="badge" name="badge" type="text" value="<?php echo htmlspecialchars((string)($featured['badge'] ?? '')); ?>" placeholder="e.g., EVENTS" class="feat-input">
                     </div>
 
                     <div class="field" style="margin:0;">
-                        <label for="media_type">Media Type</label>
-                        <select id="media_type" name="media_type" class="feat-input" style="cursor:pointer;">
-                            <option value="picture" <?php echo ($featured['media_type'] ?? 'picture') === 'picture' ? 'selected' : ''; ?>>Picture</option>
-                            <option value="promo" <?php echo ($featured['media_type'] ?? '') === 'promo' ? 'selected' : ''; ?>>Promotional Ad</option>
-                            <option value="youtube" <?php echo ($featured['media_type'] ?? '') === 'youtube' ? 'selected' : ''; ?>>YouTube Video</option>
-                            <option value="video" <?php echo ($featured['media_type'] ?? '') === 'video' ? 'selected' : ''; ?>>Video File</option>
-                        </select>
+                        <label>Media Type</label>
+                        <input type="text" value="Picture Only" class="feat-input" readonly>
+                        <input type="hidden" id="media_type" name="media_type" value="picture">
                     </div>
-                </div>
-
-                <div id="promo_note" style="display:<?php echo (($featured['media_type'] ?? '') === 'promo') ? 'block' : 'none'; ?>;margin-top:10px;padding:10px 12px;border:1px solid #fde68a;background:#fffbeb;border-radius:8px;color:#92400e;font-size:12px;">
-                    <i class="bi bi-megaphone-fill" style="margin-right:6px;"></i>
-                    Promotional Ad mode uses your sales fields and CTA button to highlight promos on the homepage.
                 </div>
 
                 <div class="field" style="margin:0 0 14px;">
@@ -207,15 +170,14 @@ andison_admin_header('Homepage Featured', 'featured');
                 </div>
             </div>
 
-            <!-- Event & Sales -->
-            <div style="margin-bottom:24px;">
+            <div class="feat-panel">
                 <div class="feat-section-hd">
                     <div class="feat-hd-icon" style="background:rgba(245,158,11,0.1);"><i class="bi bi-calendar-event" style="color:#f59e0b;font-size:13px;"></i></div>
                     <span class="feat-hd-title">Event &amp; Sales Information</span>
-                    <span style="font-size:11px;color:#9ca3af;margin-left:4px;">Optional</span>
+                    <span class="feat-section-note">Optional</span>
                 </div>
                 
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+                <div class="feat-grid-2" style="margin-bottom:14px;">
                     <div class="field" style="margin:0;">
                         <label for="event_date">Event Date</label>
                         <input id="event_date" name="event_date" type="text" value="<?php echo htmlspecialchars((string)($featured['event_date'] ?? '')); ?>" placeholder="e.g., February 10, 2026" class="feat-input">
@@ -227,7 +189,7 @@ andison_admin_header('Homepage Featured', 'featured');
                     </div>
                 </div>
 
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                <div class="feat-grid-2">
                     <div class="field" style="margin:0;">
                         <label for="discount">Discount / Offer</label>
                         <input id="discount" name="discount" type="text" value="<?php echo htmlspecialchars((string)($featured['discount'] ?? '')); ?>" placeholder="e.g., 20% OFF" class="feat-input">
@@ -240,14 +202,13 @@ andison_admin_header('Homepage Featured', 'featured');
                 </div>
             </div>
 
-            <!-- CTA Button -->
-            <div style="margin-bottom:24px;">
+            <div class="feat-panel">
                 <div class="feat-section-hd">
                     <div class="feat-hd-icon" style="background:rgba(16,185,129,0.1);"><i class="bi bi-hand-index-fill" style="color:#10b981;font-size:12px;"></i></div>
                     <span class="feat-hd-title">Call-to-Action Button</span>
                 </div>
 
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                <div class="feat-grid-2">
                     <div class="field" style="margin:0;">
                         <label for="button_text">Button Text</label>
                         <input id="button_text" name="button_text" type="text" value="<?php echo htmlspecialchars((string)($featured['button_text'] ?? '')); ?>" placeholder="e.g., Learn More, Shop Now" class="feat-input">
@@ -259,9 +220,10 @@ andison_admin_header('Homepage Featured', 'featured');
                     </div>
                 </div>
             </div>
+            </div>
 
-            <!-- Media Content -->
-            <div style="margin-bottom:20px;">
+            <div class="feat-side-col">
+            <div class="feat-panel feat-panel--sticky">
                 <div class="feat-section-hd">
                     <div class="feat-hd-icon" style="background:rgba(139,92,246,0.1);"><i class="bi bi-camera" style="color:#8b5cf6;font-size:13px;"></i></div>
                     <span class="feat-hd-title">Media Content</span>
@@ -270,42 +232,27 @@ andison_admin_header('Homepage Featured', 'featured');
                 <!-- Preview -->
                 <div class="feat-preview-box" id="preview_container" title="Click to view full size">
                     <?php
-                    $mType = $featured['media_type'] ?? 'picture';
-                        if ($mType === 'picture' || $mType === 'promo'):
-                            $imgPath = (string)($featured['image'] ?? '');
-                            $displayImgPath = $imgPath;
-                            // Convert andison/assets/... to ../assets/... for admin display
-                            if (strpos($imgPath, 'andison/') === 0) {
-                                $displayImgPath = '../' . substr($imgPath, 8);
-                            } elseif ($imgPath !== '' && !preg_match('~^(https?://|\\.\\./|/)~i', $imgPath)) {
-                                $displayImgPath = '../' . $imgPath;
-                            }
-                            $img = htmlspecialchars($displayImgPath, ENT_QUOTES);
-                        ?>
-                            <img id="image_preview" src="<?php echo $img; ?>" alt="preview" style="width:100%;max-height:280px;object-fit:contain;border-radius:8px;box-shadow:0 4px 12px rgba(43,17,219,0.1);" data-src="<?php echo $img; ?>">
-                        <?php elseif ($mType === 'youtube'): 
-                            $ytUrl = htmlspecialchars((string)($featured['youtube_url'] ?? ''), ENT_QUOTES);
-                        ?>
-                            <iframe id="youtube_preview" src="<?php echo $ytUrl; ?>" style="width:100%;height:280px;border:0;border-radius:8px;box-shadow:0 4px 12px rgba(43,17,219,0.1);" allowfullscreen data-src="<?php echo $ytUrl; ?>"></iframe>
-                        <?php elseif ($mType === 'video'):
-                            $vidPath = (string)($featured['video_file'] ?? '');
-                            $displayVidPath = $vidPath;
-                            // Convert andison/assets/... to ../assets/... for admin display
-                            if (strpos($vidPath, 'andison/') === 0) {
-                                $displayVidPath = '../' . substr($vidPath, 8);
-                            } elseif ($vidPath !== '' && !preg_match('~^(https?://|\\.\\./|/)~i', $vidPath)) {
-                                $displayVidPath = '../' . $vidPath;
-                            }
-                        ?>
-                            <video id="video_preview" controls style="width:100%;max-height:280px;border-radius:8px;box-shadow:0 4px 12px rgba(43,17,219,0.1);" data-src="<?php echo htmlspecialchars($displayVidPath, ENT_QUOTES); ?>">
-                                <source src="<?php echo htmlspecialchars($displayVidPath); ?>" type="video/mp4">
-                            </video>
-                        <?php endif; ?>
+                    $imgPath = (string)($featured['image'] ?? '');
+                    $displayImgPath = $imgPath;
+                    // Convert andison/assets/... to ../assets/... for admin display
+                    if (strpos($imgPath, 'andison/') === 0) {
+                        $displayImgPath = '../' . substr($imgPath, 8);
+                    } elseif ($imgPath !== '' && !preg_match('~^(https?://|\.\./|/)~i', $imgPath)) {
+                        $displayImgPath = '../' . $imgPath;
+                    }
+                    if ($displayImgPath !== ''):
+                        $img = htmlspecialchars($displayImgPath, ENT_QUOTES);
+                    ?>
+                        <img id="image_preview" src="<?php echo $img; ?>" alt="preview" style="width:100%;max-height:280px;object-fit:contain;border-radius:8px;box-shadow:0 4px 12px rgba(43,17,219,0.1);" data-src="<?php echo $img; ?>">
+                    <?php else: ?>
+                        <div style="color:#94a3b8;font-size:13px;">No image uploaded yet</div>
+                    <?php endif; ?>
                     </div>
                 </div>
 
+                <div class="feat-upload-stack">
                 <!-- Upload Fields -->
-                <div id="field_picture" style="display:<?php echo ($mType === 'picture' || $mType === 'promo') ? 'block' : 'none'; ?>;">
+                <div id="field_picture" style="display:block;">
                     <div class="feat-upload-zone" onclick="document.getElementById('image').click();">
                         <i class="bi bi-cloud-upload uz-icon"></i>
                         <div class="uz-title">Click to upload picture</div>
@@ -318,27 +265,15 @@ andison_admin_header('Homepage Featured', 'featured');
                         <small style="color:#9ca3af;font-size:11px;margin-top:4px;display:block;">Used for accessibility and SEO</small>
                     </div>
                 </div>
-
-                <div id="field_youtube" style="display:<?php echo ($mType === 'youtube') ? 'block' : 'none'; ?>;">
-                    <div class="field" style="margin:0;">
-                        <label for="youtube_url"><i class="bi bi-youtube" style="color:#ef4444;margin-right:4px;"></i> YouTube URL or Video ID</label>
-                        <input id="youtube_url" name="youtube_url" type="text" value="<?php echo htmlspecialchars((string)($featured['youtube_url'] ?? '')); ?>" placeholder="Paste: https://www.youtube.com/watch?v=... or video ID" class="feat-input">
-                        <small style="color:#9ca3af;font-size:11px;margin-top:4px;display:block;">Supports full URLs or YouTube video IDs</small>
-                    </div>
                 </div>
 
-                <div id="field_video" style="display:<?php echo ($mType === 'video') ? 'block' : 'none'; ?>;">
-                    <div class="feat-upload-zone" onclick="document.getElementById('video').click();">
-                        <i class="bi bi-cloud-upload uz-icon"></i>
-                        <div class="uz-title">Click to upload video</div>
-                        <div class="uz-hint">MP4, WebM, OGG or MOV</div>
-                    </div>
-                    <input id="video" name="video" type="file" accept="video/*" style="display:none;">
+                <div class="feat-help-card">
+                    Tip: featured section now supports <strong>picture upload only</strong>. The front-end display automatically adjusts to the uploaded image dimensions.
                 </div>
             </div>
+            </div>
 
-            <!-- Save -->
-            <div style="display:flex;justify-content:flex-end;padding-top:16px;border-top:1px solid #f3f4f6;">
+            <div class="feat-save-row">
                 <button class="btn btn-primary" type="submit" style="font-size:13px;padding:10px 22px;"><i class="bi bi-check-circle"></i> Save Featured Section</button>
             </div>
         </form>
@@ -367,74 +302,259 @@ document.getElementById('featuredForm').addEventListener('submit', function(e){
     to { opacity: 1; }
 }
 
-    #preview_container img, #preview_container video, #preview_container iframe { max-height:200px; }
+    .feat-page-header {
+        background: linear-gradient(135deg, #2B11DB 0%, #4f35e8 100%);
+        border-radius: 18px;
+        padding: 20px 24px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        box-shadow: 0 16px 36px rgba(43, 17, 219, 0.16);
+    }
+
+    .feat-page-kicker {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        opacity: 0.75;
+        margin-bottom: 4px;
+    }
+
+    .feat-page-title {
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: -0.3px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .feat-page-subtitle {
+        font-size: 12px;
+        opacity: 0.78;
+        max-width: 280px;
+        text-align: right;
+    }
+
+    .feat-form {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+        gap: 18px;
+        align-items: start;
+    }
+
+    .feat-main-col,
+    .feat-side-col {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .feat-panel {
+        background: #fff;
+        border: 1px solid #e8edf5;
+        border-radius: 16px;
+        padding: 18px;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+    }
+
+    .feat-panel--sticky {
+        position: static;
+        top: auto;
+    }
+
+    .feat-section-hd {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .feat-hd-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .feat-hd-title {
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: #374151;
+    }
+
+    .feat-section-note {
+        font-size: 11px;
+        color: #9ca3af;
+        margin-left: 4px;
+    }
+
+    .feat-grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .feat-upload-zone {
+        border: 1.5px dashed #d6dbe6;
+        border-radius: 14px;
+        padding: 18px;
+        text-align: center;
+        cursor: pointer;
+        transition: border-color 0.2s, background 0.2s, transform 0.2s;
+        background: linear-gradient(180deg, #fbfcff 0%, #f7f9fc 100%);
+        margin-bottom: 14px;
+    }
+
+    .feat-upload-zone:hover {
+        border-color: #2B11DB;
+        background: rgba(43, 17, 219, 0.03);
+        transform: translateY(-1px);
+    }
+
+    .feat-upload-zone .uz-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        color: #2B11DB;
+        background: rgba(43, 17, 219, 0.08);
+        margin-bottom: 8px;
+    }
+
+    .feat-upload-zone .uz-title {
+        font-weight: 700;
+        color: #374151;
+        font-size: 13px;
+        margin-bottom: 4px;
+    }
+
+    .feat-upload-zone .uz-hint {
+        font-size: 11px;
+        color: #6b7280;
+    }
+
+    .feat-input {
+        border: 1.5px solid #d9deea !important;
+        border-radius: 10px !important;
+        transition: border-color 0.2s, box-shadow 0.2s, background 0.2s !important;
+        background: #fff !important;
+    }
+
+    .feat-input:focus {
+        outline: none !important;
+        border-color: #2B11DB !important;
+        box-shadow: 0 0 0 4px rgba(43, 17, 219, 0.09) !important;
+    }
+
+    .feat-preview-box {
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        background: linear-gradient(180deg, #fbfcff 0%, #f4f7fb 100%);
+        min-height: 280px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin-bottom: 14px;
+        cursor: pointer;
+        transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .feat-preview-box:hover {
+        border-color: #2B11DB;
+        transform: translateY(-1px);
+    }
+
+    #preview_container img,
+    #preview_container video,
+    #preview_container iframe {
+        max-height: 320px;
+    }
+
+    .feat-upload-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .feat-help-card {
+        padding: 14px 16px;
+        background: #f8faff;
+        border: 1px solid #e7ecf7;
+        border-radius: 14px;
+        color: #475569;
+        font-size: 13px;
+        line-height: 1.65;
+    }
+
+    .feat-save-row {
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 16px;
+        border-top: 1px solid #f3f4f6;
+        margin-top: 4px;
+        grid-column: 1 / -1;
+    }
+
+    @media (max-width: 1100px) {
+        .feat-form {
+            grid-template-columns: 1fr;
+        }
+
+        .feat-panel--sticky {
+            position: static;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .feat-grid-2 {
+            grid-template-columns: 1fr;
+        }
+
+        .feat-page-header {
+            padding: 18px 16px;
+        }
+
+        .feat-page-subtitle {
+            text-align: left;
+            max-width: none;
+        }
+
+        .feat-panel {
+            padding: 16px;
+        }
+    }
 </style>
 
 <script>
 (function(){
-    var mediaTypeSelect = document.getElementById('media_type');
-    var fieldPicture = document.getElementById('field_picture');
-    var fieldYoutube = document.getElementById('field_youtube');
-    var fieldVideo = document.getElementById('field_video');
-    var promoNote = document.getElementById('promo_note');
     var previewContainer = document.getElementById('preview_container');
 
     var imageInput = document.getElementById('image');
-    var videoInput = document.getElementById('video');
-    var youtubeInput = document.getElementById('youtube_url');
-
-    function updateMediaFields() {
-        var type = mediaTypeSelect.value;
-        fieldPicture.style.display = (type === 'picture' || type === 'promo') ? 'flex' : 'none';
-        fieldYoutube.style.display = type === 'youtube' ? 'flex' : 'none';
-        fieldVideo.style.display = type === 'video' ? 'flex' : 'none';
-        promoNote.style.display = type === 'promo' ? 'block' : 'none';
-    }
-
-    mediaTypeSelect.addEventListener('change', updateMediaFields);
 
     // Live preview for image upload
     imageInput.addEventListener('change', function(e){
         if (e.target.files && e.target.files[0]) {
             var reader = new FileReader();
             reader.onload = function(ev){
-                previewContainer.innerHTML = '<img id="image_preview" src="' + ev.target.result + '" alt="preview" style="width:100%;max-height:240px;object-fit:cover;border-radius:12px;" data-src="' + ev.target.result + '">';
+                previewContainer.innerHTML = '<img id="image_preview" src="' + ev.target.result + '" alt="preview" style="width:100%;max-height:320px;object-fit:contain;border-radius:12px;" data-src="' + ev.target.result + '">';
             };
             reader.readAsDataURL(e.target.files[0]);
-        }
-    });
-
-    // Live preview for video upload
-    videoInput.addEventListener('change', function(e){
-        if (e.target.files && e.target.files[0]) {
-            var url = URL.createObjectURL(e.target.files[0]);
-            previewContainer.innerHTML = '<video id="video_preview" controls style="width:100%;max-height:240px;border-radius:12px;" data-src="' + url + '"><source src="' + url + '" type="video/mp4"></video>';
-        }
-    });
-
-    // Live preview for YouTube URL
-    youtubeInput.addEventListener('input', function(e){
-        var val = e.target.value.trim();
-        if (val === '') return;
-        
-        // Simple YouTube ID extraction
-        var videoId = '';
-        if (val.match(/^[A-Za-z0-9_-]{6,}$/)) {
-            videoId = val;
-        } else if (val.indexOf('youtu.be/') > -1) {
-            videoId = val.split('youtu.be/')[1].split(/[?&]/)[0];
-        } else if (val.indexOf('youtube.com/watch') > -1) {
-            var match = val.match(/[?&]v=([^&]+)/);
-            if (match) videoId = match[1];
-        } else if (val.indexOf('youtube.com/embed/') > -1) {
-            videoId = val.split('youtube.com/embed/')[1].split(/[?&]/)[0];
-        } else if (val.indexOf('youtube.com/shorts/') > -1) {
-            videoId = val.split('youtube.com/shorts/')[1].split(/[?&]/)[0];
-        }
-
-        if (videoId) {
-            var embedUrl = 'https://www.youtube.com/embed/' + videoId;
-            previewContainer.innerHTML = '<iframe src="' + embedUrl + '" style="width:100%;height:240px;border:0;border-radius:12px;" allowfullscreen data-src="' + embedUrl + '"></iframe>';
         }
     });
 
@@ -442,12 +562,8 @@ document.getElementById('featuredForm').addEventListener('submit', function(e){
     previewContainer.addEventListener('click', function(e){
         var target = e.target;
         var src = target.getAttribute('data-src');
-        
-        if (!src && target.tagName === 'VIDEO') {
-            src = target.querySelector('source') ? target.querySelector('source').src : null;
-        }
-        
-        if (src && target.tagName !== 'VIDEO') {
+
+        if (src && target.tagName === 'IMG') {
             openPreviewModal(src, target.tagName);
         }
     });
@@ -458,8 +574,6 @@ document.getElementById('featuredForm').addEventListener('submit', function(e){
         
         if (type === 'IMG') {
             content.innerHTML = '<img src="' + src + '" style="max-width:95%;max-height:95%;border-radius:12px;box-shadow:0 10px 50px rgba(0,0,0,0.5);" onclick="event.stopPropagation()">';
-        } else if (type === 'IFRAME') {
-            content.innerHTML = '<iframe src="' + src + '" style="width:95%;max-width:1600px;height:90%;border:0;border-radius:12px;box-shadow:0 10px 50px rgba(0,0,0,0.5);" allowfullscreen onclick="event.stopPropagation()"></iframe>';
         }
         
         modal.style.display = 'block';

@@ -496,9 +496,9 @@ $ytLinks = andison_get_youtube_links();
         }
 
         nav li:nth-child(3) .nav-dropdown {
-            min-width: 650px;
-            max-width: 650px;
-            padding: 24px 28px;
+            min-width: 576px;
+            max-width: 576px;
+            padding: 20px 22px;
         }
 
         .nav-dropdown ul a {
@@ -515,12 +515,12 @@ $ytLinks = andison_get_youtube_links();
         nav li:nth-child(3) .nav-dropdown ul {
             display: grid !important;
             grid-template-columns: repeat(5, 1fr) !important;
-            gap: 12px 20px !important;
-            margin-top: 16px !important;
+            gap: 10px 14px !important;
+            margin-top: 14px !important;
         }
 
         nav li:nth-child(3) .nav-dropdown ul li {
-            min-height: 70px;
+            min-height: 58px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -531,12 +531,12 @@ $ytLinks = andison_get_youtube_links();
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            min-height: 60px !important;
+            min-height: 50px !important;
         }
 
         nav li:nth-child(3) .nav-dropdown ul a img {
-            max-width: 85px;
-            max-height: 45px;
+            max-width: 74px;
+            max-height: 37px;
             object-fit: contain;
             display: block;
             pointer-events: all;
@@ -1802,10 +1802,37 @@ $ytLinks = andison_get_youtube_links();
                 padding: 0 12px;
             }
 
-            .nav-inner { padding-left: 50px; padding-right: 6px; min-height: 40px; overflow-x: auto; overflow-y: visible; justify-content: flex-start; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+            .nav-inner {
+                padding-left: 0;
+                padding-right: 0;
+                gap: 0;
+                min-height: auto;
+                overflow-x: hidden;
+                overflow-y: visible;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
             .nav-inner::-webkit-scrollbar { display: none; }
-            .nav-list { position: static; transform: none; left: auto; flex-wrap: nowrap; flex-shrink: 0; gap: 0; }
-            .browse-toggle { position: static; transform: none; left: auto; top: auto; padding: 6px 10px; }
+
+            .nav-list {
+                gap: 0;
+                flex-wrap: wrap;
+                flex-shrink: 1;
+                justify-content: center;
+            }
+
+            .nav-list > li > a {
+                white-space: normal;
+                font-size: 11px;
+                padding: 10px 8px;
+            }
+
+            .browse-toggle {
+                font-size: 12px;
+                padding: 6px 8px;
+                gap: 4px;
+            }
         }
 
         /* Global animation utilities (shared) */

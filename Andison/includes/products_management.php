@@ -33,11 +33,11 @@ function andison_normalize_product_row(array $row): array
     return $row;
 }
 
-function andison_get_products_for_subcategory(string $categoryId, string $subcategoryId): array
+function andison_get_products_for_subcategory(string $categoryId, string $subcategoryId, int $limit = 0): array
 {
     $rows = andison_sb_select(
         'products',
-        'category_id=eq.' . rawurlencode($categoryId) . '&limit=10000'
+        'category_id=eq.' . rawurlencode($categoryId) . '&order=id.asc&limit=10000'
     );
 
     if (empty($rows)) {
@@ -121,17 +121,94 @@ function andison_get_products_for_subcategory(string $categoryId, string $subcat
         $deduped[$key] = $row;
     }
 
-    return array_map('andison_normalize_product_row', array_values($deduped));
+    $normalized = array_map('andison_normalize_product_row', array_values($deduped));
+    if ($limit > 0) {
+        return array_slice($normalized, 0, $limit);
+    }
+    return $normalized;
 }
 
-function andison_get_products_for_category(string $categoryId): array
+function andison_get_products_for_category(string $categoryId, int $limit = 0): array
 {
     // Query Supabase for all products under this category (no subcategory filter)
-    $filter = 'category_id=eq.' . rawurlencode($categoryId) . '&limit=5000';
+    $filter = 'category_id=eq.' . rawurlencode($categoryId) . '&order=id.asc&limit=5000';
     $rows = andison_sb_select('products', $filter);
 
     if (!empty($rows)) {
-        return array_map('andison_normalize_product_row', $rows);
+        $scoreRow = static function (array $row): int {
+            $score = 0;
+            $specifications = trim((string)($row['specifications'] ?? ($row['specs'] ?? '')));
+            if ($specifications !== '') {
+                $score += 120;
+                if (str_contains($specifications, 'andison_specs_v2') || str_contains($specifications, 'andison_specs_v3')) {
+                    $score += 120;
+                }
+            }
+
+            $description = trim((string)($row['description'] ?? ''));
+            if ($description !== '') {
+                $score += 30;
+            }
+
+            $datasheet = trim((string)($row['datasheet'] ?? ''));
+            if ($datasheet !== '') {
+                $score += 20;
+            }
+
+            $images = [];
+            if (isset($row['images']) && is_string($row['images'])) {
+                $decoded = json_decode($row['images'], true);
+                $images = is_array($decoded) ? $decoded : [];
+            } elseif (isset($row['images']) && is_array($row['images'])) {
+                $images = $row['images'];
+            } elseif (!empty($row['image'])) {
+                $images = [$row['image']];
+            }
+            $score += min(5, count($images)) * 5;
+
+            $id = isset($row['id']) ? (int)$row['id'] : 0;
+            if ($id > 0) {
+                $score += min(1000, $id);
+            }
+
+            return $score;
+        };
+
+        $deduped = [];
+        foreach ($rows as $row) {
+            $normalize = static function (string $value): string {
+                $value = strtolower(trim($value));
+                return preg_replace('/\s+/', ' ', $value) ?? $value;
+            };
+
+            $brand = $normalize((string)($row['brand'] ?? ''));
+            $model = $normalize((string)($row['model'] ?? ''));
+            $name = $normalize((string)($row['product_name'] ?? ($row['name'] ?? '')));
+            $type = $normalize((string)($row['type'] ?? ''));
+
+            $semanticKey = $model !== ''
+                ? implode('::', [$brand, $model])
+                : implode('::', [$brand, $name, $type]);
+            $idKey = isset($row['id']) ? 'id:' . (string)$row['id'] : '';
+            $key = $semanticKey !== '' ? ('mk:' . $semanticKey) : ($idKey !== '' ? $idKey : ('mk:fallback:' . md5(json_encode($row))));
+
+            if (!isset($deduped[$key])) {
+                $deduped[$key] = $row;
+                continue;
+            }
+
+            $existingScore = $scoreRow($deduped[$key]);
+            $candidateScore = $scoreRow($row);
+            if ($candidateScore >= $existingScore) {
+                $deduped[$key] = $row;
+            }
+        }
+
+        $normalized = array_map('andison_normalize_product_row', array_values($deduped));
+        if ($limit > 0) {
+            return array_slice($normalized, 0, $limit);
+        }
+        return $normalized;
     }
 
     return [];
@@ -166,7 +243,7 @@ function andison_save_products_for_subcategory(string $categoryId, string $subca
 
 function andison_get_product_by_id(string $categoryId, string $subcategoryId, string $productId): ?array
 {
-    $products = andison_get_products_for_subcategory($categoryId, $subcategoryId);
+    $products = andison_get_products_for_subcategory($categoryId, $subcategoryId, 0);
     
     foreach ($products as $product) {
         if (($product['id'] ?? '') === $productId) {

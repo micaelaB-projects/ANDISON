@@ -626,21 +626,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .back-btn {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            background: linear-gradient(135deg, #00D7B3 0%, #00bfb3 100%);
+            justify-content: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #11d7b8 0%, #00b3c7 100%);
             color: #fff;
-            border: none;
-            border-radius: 10px;
-            padding: 9px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            border-radius: 12px;
+            padding: 10px 16px;
             font-size: 14px;
-            font-weight: 700;
+            font-weight: 800;
+            letter-spacing: 0.3px;
             cursor: pointer;
             text-decoration: none;
             white-space: nowrap;
-            transition: opacity 0.2s, transform 0.15s;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.22s ease;
             font-family: inherit;
+            box-shadow: 0 6px 18px rgba(0, 191, 179, 0.35);
         }
-        .back-btn:hover { opacity: 0.88; transform: translateY(-1px); color: #fff; }
+        .back-btn .btn-icon {
+            font-size: 16px;
+            line-height: 1;
+        }
+        .back-btn:hover {
+            color: #fff;
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #18d6c0 0%, #0098dc 100%);
+            box-shadow: 0 9px 20px rgba(0, 151, 221, 0.35);
+        }
+        .back-btn:active { transform: translateY(0); }
+        .back-btn:focus-visible {
+            outline: 2px solid #c9fff3;
+            outline-offset: 2px;
+        }
+
+        @media (max-width: 1200px) and (min-width: 769px) {
+            .back-btn {
+                padding: 9px 14px;
+                font-size: 13px;
+                gap: 6px;
+            }
+            .back-btn .btn-icon { font-size: 15px; }
+        }
 
         /* Navigation */
         nav {
@@ -831,9 +857,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         nav li:nth-child(3) .nav-dropdown {
-            min-width: 650px;
-            max-width: 650px;
-            padding: 24px 28px;
+            min-width: 576px;
+            max-width: 576px;
+            padding: 20px 22px;
         }
 
         .nav-dropdown ul a {
@@ -850,12 +876,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         nav li:nth-child(3) .nav-dropdown ul {
             display: grid !important;
             grid-template-columns: repeat(5, 1fr) !important;
-            gap: 12px 20px !important;
-            margin-top: 16px !important;
+            gap: 10px 14px !important;
+            margin-top: 14px !important;
         }
 
         nav li:nth-child(3) .nav-dropdown ul li {
-            min-height: 70px;
+            min-height: 58px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -866,12 +892,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            min-height: 60px !important;
+            min-height: 50px !important;
         }
 
         nav li:nth-child(3) .nav-dropdown ul a img {
-            max-width: 85px;
-            max-height: 45px;
+            max-width: 74px;
+            max-height: 37px;
             object-fit: contain;
             display: block;
             pointer-events: all;
@@ -1668,6 +1694,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             .inquiry-btn .btn-text { display: none; }
             .inquiry-btn .btn-icon { font-size: 28px; }
+
+            .back-btn {
+                min-width: 40px;
+                min-height: 40px;
+                padding: 8px;
+                border-radius: 10px;
+                gap: 0;
+                box-shadow: 0 4px 12px rgba(0, 151, 221, 0.3);
+            }
+
+            .back-btn .btn-text { display: none; }
+            .back-btn .btn-icon { font-size: 20px; }
 
             .cart-badge {
                 background: #2196F3 !important;
@@ -3032,7 +3070,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div class="right-actions">
-                <a href="javascript:history.back()" class="back-btn"><i class="bi bi-arrow-left btn-icon"></i> <span class="btn-text">BACK</span></a>
+                <a href="home.php" class="back-btn" data-back-nav><i class="bi bi-arrow-left btn-icon"></i> <span class="btn-text">BACK</span></a>
                 <a href="inquirylist.php" class="inquiry-btn"><i class="bi bi-card-checklist btn-icon"></i> <span class="btn-text">INQUIRY LIST</span> <span class="cart-badge hidden" id="cartBadge">0</span></a>
             </div>
         </div>
@@ -3938,6 +3976,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             window.addEventListener('storage', updateCartBadge);
             window.addEventListener('inquiryItemsUpdated', updateCartBadge);
             setInterval(updateCartBadge, 500);
+        })();
+    </script>
+
+    <script>
+        (function(){
+            var backLinks = document.querySelectorAll('[data-back-nav]');
+            backLinks.forEach(function(link){
+                link.addEventListener('click', function(e){
+                    if (window.history.length > 1) {
+                        e.preventDefault();
+                        window.history.back();
+                    }
+                });
+            });
         })();
     </script>
 

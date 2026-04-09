@@ -52,97 +52,259 @@ $matches = array_slice($matches, 0, 80);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height:1.6; color:#333; background: linear-gradient(135deg, #f8f9fa 0%, #f0f2f5 100%); padding-top:110px; min-height: 100vh; }
+        body { font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height:1.6; color:#333; background: linear-gradient(135deg, #f8f9fa 0%, #f0f2f5 100%); padding-top:142px; min-height: 100vh; display:flex; flex-direction:column; }
 
-        header { background: linear-gradient(135deg, #2B11DB 0%, #2B11DB 100%); color:white; padding:14px 0; position:fixed; top:0; left:0; right:0; z-index:1000; box-shadow: 0 4px 16px rgba(43, 17, 219, 0.2); }
-        .header-top { display:flex; align-items:center; max-width:1200px; margin:0 auto; padding:0 20px; gap:20px; }
+        header { background: linear-gradient(135deg, #2B11DB 0%, #2B11DB 100%); color:white; padding:14px 0; position:fixed; top:0; left:0; right:0; z-index:1200; width:100%; }
+        .header-top { display:flex; align-items:center; max-width:1200px; margin:0 auto; padding:0 20px; gap:20px; margin-bottom:12px; }
+        .logo { font-size:16px; font-weight:700; display:flex; align-items:center; gap:10px; flex:0 0 auto; }
+        .logo-box { background:transparent; color:#2b00d9; padding:0; border-radius:0; font-weight:800; letter-spacing:0.6px; }
         .logo-box img { height:50px; width:auto; display:block; }
 
-        .search-bar { flex: 1 1 auto; display:flex; justify-content:center; max-width: 720px; margin: 0 0 0 20px; }
+        .search-bar { flex: 1 1 auto; display:flex; justify-content:center; max-width: 600px; margin: 0 0 0 20px; }
         .search-bar .search-field { width:100%; display:flex; align-items:center; gap:8px; position:relative; margin:0; }
         .search-bar input { width:100%; height:46px; padding:10px 16px 10px 40px; border:2px solid rgba(255,255,255,0.3); border-radius:6px; font-size:15px; background: rgba(255,255,255,0.95); color:#333; transition: all 0.3s ease; }
         .search-bar input:focus { outline: none; background: #fff; border-color: rgba(255,255,255,0.8); box-shadow: 0 0 0 3px rgba(43, 17, 219, 0.1); }
         .search-bar input::placeholder { color:#999; }
         .search-bar .search-field i { position:absolute; left:12px; font-size:16px; pointer-events:none; color:#666; }
 
-        .right-actions { margin-left: 12px; display:flex; align-items:center; gap:10px; }
-        .back-btn { 
-            background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%); 
-            color: #333; 
-            border: none; 
-            padding: 10px 18px; 
-            border-radius: 6px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            text-decoration: none; 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 8px; 
-            font-size: 15px; 
-            line-height: 1.3; 
-            height: auto; 
-            min-height: 40px; 
-            transition: all 0.3s ease; 
-        }
-        .back-btn:hover { 
-            background: linear-gradient(135deg, #00FFD1 0%, #00FFD1 100%); 
-            transform: translateY(-2px); 
-            box-shadow: 0 4px 12px rgba(0, 255, 209, 0.4); 
-            color: #333; 
-        }
-        .inquiry-btn,
-        .cart-icon-wrapper { display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; text-decoration: none; color: #1a1a2e; font-weight: 700; padding: 12px 28px; border-radius: 25px; transition: all 0.35s ease; background: linear-gradient(135deg, #00E5C8  0%, #347aec   100%); line-height: 1.3; height: auto; min-height: 40px; }
-        .inquiry-btn:hover,
-        .cart-icon-wrapper:hover { background: linear-gradient(135deg, #00FFD1 0%, #00FFD1 100%); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 255, 209, 0.4); color: #1a1a2e; }
-        
+        .right-actions { margin-left: 12px; display:flex; align-items:center; gap:12px; }
         .inquiry-btn,
         .cart-icon-wrapper {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             cursor: pointer;
             text-decoration: none;
-            color: #333;
-            font-weight: 600;
-            padding: 10px 18px;
-            border-radius: 6px;
+            color: white;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 8px;
             transition: all 0.3s ease;
-            background: linear-gradient(135deg, #00D7B3 0%, #00D7B3 100%);
+            background: linear-gradient(135deg, #00E5C8 0%, #347aec 100%);
+            position: relative;
+            font-size: 14px;
+            white-space: nowrap;
+            box-shadow: 0 4px 15px rgba(0,188,212,0.4);
         }
 
         .inquiry-btn:hover,
         .cart-icon-wrapper:hover {
-            background: linear-gradient(135deg, #00FFD1 0%, #00FFD1 100%);
+            background: linear-gradient(135deg, #00ACC1, #00796B);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 255, 209, 0.4);
-            color: #333;
+            box-shadow: 0 6px 20px rgba(0,188,212,0.5);
+            color: white;
         }
+
+        .inquiry-btn .btn-icon { display: inline; }
+        .inquiry-btn .btn-text { display: inline; }
 
         .inquiry-btn {
             position: relative;
         }
 
         .cart-badge {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
+            background: #c70d0d;
             color: white;
             font-size: 11px;
             font-weight: 700;
-            padding: 2px 6px;
             border-radius: 50%;
-            min-width: 20px;
+            width: 20px;
             height: 20px;
-            text-align: center;
-            line-height: 16px;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 8px rgba(255, 102, 102, 0.4);
-            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(199,13,13,0.5);
+            position: static;
+            margin-left: 2px;
         }
 
         .cart-badge.hidden {
             display: none;
+        }
+
+        /* Navigation */
+        nav {
+            position: relative;
+            background: rgba(0, 215, 179, 0.85);
+            backdrop-filter: blur(10px);
+            overflow: visible;
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            min-height: 52px;
+            gap: 0;
+            justify-content: center;
+        }
+
+        .nav-list {
+            list-style: none;
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 30px;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .nav-list li { position: relative; }
+        .nav-list a { text-decoration: none; display: block; }
+        .nav-list a:hover { color: rgba(255,255,255,0.8); }
+
+        .nav-list > li > a {
+            position: relative;
+            padding: 10px 14px;
+            color: white;
+            transition: color 180ms ease, background 180ms ease;
+            border-radius: 6px;
+        }
+
+        .nav-list > li > a::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 2px;
+            transform: translateX(-50%) scaleX(0);
+            transform-origin: center;
+            width: 44px;
+            height: 5px;
+            border-radius: 6px;
+            background: linear-gradient(90deg, #00ffd1 0%, #00d4aa 50%, #2B11DB 100%);
+            box-shadow: 0 2px 10px rgba(0,212,170,0.35);
+            pointer-events: none;
+            transition: transform 180ms ease, width 180ms ease;
+        }
+
+        .nav-list > li > a:hover::after,
+        .nav-list > li > a.active::after {
+            transform: translateX(-50%) scaleX(1);
+            width: 44px;
+        }
+
+        .nav-list > li > a:hover {
+            background: rgba(0,0,0,0.10);
+        }
+
+        .nav-list > li > a.active {
+            background: rgba(0,0,0,0.14);
+            color: #fff;
+            font-weight: 700;
+            box-shadow: inset 0 -6px 18px rgba(0,0,0,0.06);
+        }
+
+        .nav-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(8px);
+            background: white;
+            min-width: 240px;
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+            z-index: 110;
+            padding: 14px;
+            margin-top: 8px;
+        }
+
+        .nav-dropdown::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 10px solid white;
+            filter: drop-shadow(0 -2px 2px rgba(0,0,0,0.05));
+        }
+
+        .nav-list > li:hover .nav-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .nav-dropdown h4 {
+            color: #2b00d9;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .nav-dropdown ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-dropdown ul a {
+            color: #333;
+            font-size: 14px;
+            padding: 8px 10px;
+            display: block;
+            border-radius: 6px;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .nav-dropdown ul a:hover {
+            background: #f0f5ff;
+            color: #2B11DB;
+        }
+
+        .nav-dropdown p {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        nav li:nth-child(3) .nav-dropdown {
+            min-width: 576px;
+            max-width: 576px;
+            padding: 20px 22px;
+        }
+
+        nav li:nth-child(3) .nav-dropdown ul {
+            display: grid !important;
+            grid-template-columns: repeat(5, 1fr) !important;
+            gap: 10px 14px !important;
+            margin-top: 14px !important;
+        }
+
+        nav li:nth-child(3) .nav-dropdown ul li {
+            min-height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        nav li:nth-child(3) .nav-dropdown ul a {
+            padding: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-height: 50px !important;
+        }
+
+        nav li:nth-child(3) .nav-dropdown ul a img {
+            max-width: 74px;
+            max-height: 37px;
+            object-fit: contain;
+            display: block;
+            pointer-events: all;
+            cursor: pointer;
         }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 32px 20px; }
@@ -196,14 +358,107 @@ $matches = array_slice($matches, 0, 80);
         .no-results small { font-size: 14px; font-weight: 600; opacity: 0.8; }
         .hint { padding: 24px 28px; border-radius: 14px; background: linear-gradient(135deg, #f0f4ff 0%, #f7f8ff 100%); border:2px solid #e2e6ff; color:#333; font-weight: 600; line-height: 1.8; }
 
+        @media (min-width: 1024px) and (max-width: 1366px) {
+            .container {
+                max-width: 1120px;
+                padding: 28px 18px;
+            }
+            .results-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 22px;
+            }
+            .result-body { padding: 20px; }
+            .result-model { font-size: 17px; }
+        }
+
         @media (max-width: 768px) {
-            body { padding-top: 140px; }
-            .header-top { flex-direction: column; align-items: stretch; gap: 12px; }
-            .logo-box { text-align: center; }
-            .right-actions { margin-left: 8px; margin-right: 8px; padding-right: 8px; justify-content: flex-end; gap: 8px; }
-            .container { padding: 28px 16px; }
-            .results-header { flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: 32px; }
+            body { padding-top: 142px; }
+            .header-top {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                align-items: center;
+                gap: 8px;
+                padding: 0 10px;
+                margin-bottom: 8px;
+            }
+            .logo { flex: 0 0 auto; }
+            .logo-box img { height: 36px; }
+            .search-bar {
+                position: static;
+                transform: none;
+                flex: 1 1 0;
+                min-width: 0;
+                width: auto;
+                max-width: none;
+                margin: 0;
+            }
+            .search-bar .search-field { width: 100%; }
+            .search-bar input {
+                width: 100%;
+                height: 36px;
+                font-size: 12px;
+                padding: 6px 8px 6px 30px;
+            }
+            .search-bar .search-field i { font-size: 13px; left: 8px; }
+            .right-actions {
+                flex: 0 0 auto;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: 8px;
+                margin-left: 8px;
+                margin-right: 8px;
+                padding-right: 8px;
+            }
+            .inquiry-btn,
+            .cart-icon-wrapper {
+                background: transparent !important;
+                box-shadow: none !important;
+                padding: 6px !important;
+                font-size: 28px !important;
+                position: relative;
+            }
+            .inquiry-btn .btn-text { display: none; }
+            .inquiry-btn .btn-icon { font-size: 28px; }
+            .cart-badge {
+                background: #2196F3 !important;
+                box-shadow: 0 2px 8px rgba(33,150,243,0.5) !important;
+                width: 26px !important;
+                height: 26px !important;
+                font-size: 13px !important;
+                position: absolute !important;
+                top: -4px !important;
+                right: -8px !important;
+                margin-left: 0 !important;
+            }
+            .cart-badge.hidden { display: inline-flex !important; }
+            .nav-inner {
+                padding-left: 0;
+                padding-right: 0;
+                gap: 0;
+                min-height: auto;
+                overflow-x: hidden;
+                overflow-y: visible;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            .nav-list {
+                gap: 0;
+                flex-wrap: wrap;
+                flex-shrink: 1;
+                justify-content: center;
+            }
+            .nav-list > li > a {
+                white-space: normal;
+                font-size: 11px;
+                padding: 10px 8px;
+            }
+            .nav-dropdown { display: none; }
+            .container { padding: 24px 14px 28px; }
+            .results-header { flex-direction: column; align-items: flex-start; gap: 14px; margin-bottom: 22px; padding-bottom: 14px; }
             .results-header h1 { font-size: 28px; }
+            .results-header .count { width: 100%; justify-content: center; border-radius: 14px; }
             .results-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
             .result-card { min-height: 300px; }
             .result-image { height: 160px; }
@@ -211,8 +466,6 @@ $matches = array_slice($matches, 0, 80);
         }
 
         @media (max-width: 480px) {
-            .header-top { padding: 0 12px; }
-            .back-btn, .inquiry-btn { padding: 8px 16px; font-size: 12px; }
             .container { padding: 20px 12px; }
             .results-header h1 { font-size: 24px; }
             .results-grid { grid-template-columns: 1fr; gap: 16px; }
@@ -238,11 +491,111 @@ $matches = array_slice($matches, 0, 80);
         </div>
 
         <div class="right-actions">
-            <a href="javascript:history.back()" class="back-btn">BACK</a>
-            <a href="#" class="inquiry-btn email-admin-btn" data-subject="Client Inquiry" aria-label="Email Admin" title="Email Admin"><i class="bi bi-envelope" aria-hidden="true"></i></a>
-            <a href="inquirylist.php" class="inquiry-btn">INQUIRY LIST <span class="cart-badge hidden" id="cartBadge">0</span></a>
+            <a href="#" class="inquiry-btn email-admin-btn" data-subject="Client Inquiry" aria-label="Message" title="Message"><i class="bi bi-envelope" aria-hidden="true"></i></a>
+            <a href="inquirylist.php" class="inquiry-btn"><i class="bi bi-card-checklist btn-icon"></i> <span class="btn-text">INQUIRY LIST</span> <span class="cart-badge hidden" id="cartBadge">0</span></a>
         </div>
     </div>
+
+    <nav>
+        <div class="nav-inner">
+            <ul class="nav-list">
+                <li>
+                    <a href="home.php" class="active">Home</a>
+                    <div class="nav-dropdown">
+                        <h4>Welcome</h4>
+                        <p>Discover our complete range of industrial welding solutions and equipment.</p>
+                    </div>
+                </li>
+                <li>
+                    <a href="aboutus.php">About Us</a>
+                    <div class="nav-dropdown">
+                        <h4>Our Company</h4>
+                        <ul>
+                            <li><a href="aboutus.php#mission">Our Mission</a></li>
+                            <li><a href="aboutus.php#history">Company History</a></li>
+                            <li><a href="aboutus.php#team">Our Team</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <a href="brands.php">Brands</a>
+                    <div class="nav-dropdown">
+                        <h4>Featured Brands</h4>
+                        <ul>
+                            <li><a href="brand.php?name=Panasonic%20Connect"><img src="assets/brands/PANASONIC.jpg" alt="Panasonic Connect" title="Panasonic Connect"></a></li>
+                            <li><a href="brand.php?name=Robot%20Systems"><img src="assets/brands/ROBOT SYSTEMS.png" alt="Robot Systems Peripherals" title="Robot Systems Peripherals"></a></li>
+                            <li><a href="brand.php?name=Kobelco"><img src="assets/brands/KOBELCO.jpg" alt="Kobelco" title="Kobelco"></a></li>
+                            <li><a href="brand.php?name=Metrode"><img src="assets/brands/METRODE.jpg" alt="Metrode" title="Metrode"></a></li>
+                            <li><a href="brand.php?name=DryRod.%20II"><img src="assets/brands/DRYROD.jpg" alt="DryRod. II" title="DryRod. II"></a></li>
+                            <li><a href="brand.php?name=Weldcraft"><img src="assets/brands/WELDCRAFT.png" alt="Weldcraft" title="Weldcraft"></a></li>
+                            <li><a href="brand.php?name=Truweld"><img src="assets/brands/TRUWELD.jpg" alt="Truweld" title="Truweld"></a></li>
+                            <li><a href="brand.php?name=Arcair"><img src="assets/brands/ARCAIR.jpg" alt="Arcair" title="Arcair"></a></li>
+                            <li><a href="brand.php?name=MAGNAFLUX"><img src="assets/brands/MAGNAFLUX.jpg" alt="Magnaflux" title="Magnaflux"></a></li>
+                            <li><a href="brand.php?name=Tempilstik"><img src="assets/brands/TEMPILSTIK.jpg" alt="Tempilstik" title="Tempilstik"></a></li>
+                            <li><a href="brand.php?name=TANAKA"><img src="assets/brands/TANAKA.jpg" alt="Tanaka" title="Tanaka"></a></li>
+                            <li><a href="brand.php?name=CHIYODA"><img src="assets/brands/CHIYODA.jpg" alt="Chiyoda" title="Chiyoda"></a></li>
+                            <li><a href="brand.php?name=Yutaka"><img src="assets/brands/YUTAKA.jpg" alt="Yutaka" title="Yutaka"></a></li>
+                            <li><a href="brand.php?name=HARDWORKER"><img src="assets/brands/HARDWORKER.jpg" alt="Hard Workers" title="Hard Workers"></a></li>
+                            <li><a href="brand.php?name=Soyer"><img src="assets/brands/SOYER.jpg" alt="Soyer" title="Soyer"></a></li>
+                            <li><a href="brand.php?name=Aquasol"><img src="assets/brands/AQUASOL.jpg" alt="Aquasol" title="Aquasol"></a></li>
+                            <li><a href="brand.php?name=SK%20And%20GAL%20GAGE"><img src="assets/brands/SK%20AND%20GAL%20GAGE.jpg" alt="SK And GAL GAGE" title="SK And GAL GAGE"></a></li>
+                            <li><a href="brand.php?name=COPPUS"><img src="assets/brands/COPPUS.jpg" alt="Coppus" title="Coppus"></a></li>
+                            <li><a href="brand.php?name=BW%20Technologies"><img src="assets/brands/BW%20TECHNOLOGIES.jpg" alt="BW Technologies" title="BW Technologies"></a></li>
+                            <li><a href="brand.php?name=RAE%20SYSTEMS"><img src="assets/brands/RAE%20SYSTEMS.jpg" alt="RAE Systems" title="RAE Systems"></a></li>
+                            <li><a href="brand.php?name=WELDAS"><img src="assets/brands/WELDAS.jpg" alt="Weldas" title="Weldas"></a></li>
+                            <li><a href="brand.php?name=UVEX"><img src="assets/brands/UVEX.jpg" alt="Uvex" title="Uvex"></a></li>
+                            <li><a href="brand.php?name=ACES"><img src="assets/brands/ACES.jpg" alt="Aces" title="Aces"></a></li>
+                            <li><a href="brand.php?name=MICROGARD"><img src="assets/brands/MICROGARD.jpg" alt="Microgard" title="Microgard"></a></li>
+                            <li><a href="brand.php?name=ANSELL"><img src="assets/brands/ANSELL.jpg" alt="Ansell" title="Ansell"></a></li>
+                            <li><a href="brand.php?name=Alfra"><img src="assets/brands/ALFRA.jpg" alt="Alfra" title="Alfra"></a></li>
+                            <li><a href="brand.php?name=BOSCH"><img src="assets/brands/BOSCH.jpg" alt="Bosch" title="Bosch"></a></li>
+                            <li><a href="brand.php?name=Makita"><img src="assets/brands/MAKITA.jpg" alt="Makita" title="Makita"></a></li>
+                            <li><a href="brand.php?name=Weller"><img src="assets/brands/WEILER.jpg" alt="Weller" title="Weller"></a></li>
+                            <li><a href="brand.php?name=Garryson"><img src="assets/brands/GARRYSON.jpg" alt="Garryson" title="Garryson"></a></li>
+                            <li><a href="brand.php?name=REVOLT"><img src="assets/brands/REVOLT.png" alt="REVOLT" title="REVOLT"></a></li>
+                            <li><a href="brand.php?name=Technotex"><img src="assets/brands/TECHNOTEX.png" alt="Technotex" title="Technotex"></a></li>
+                            <li><a href="brand.php?name=Spilfyter"><img src="assets/brands/SPILFYTER.jpg" alt="Spilfyter" title="Spilfyter"></a></li>
+                            <li><a href="brand.php?name=Dalo"><img src="assets/brands/DALO.jpg" alt="Dalo" title="Dalo"></a></li>
+                            <li><a href="brand.php?name=MOTOLITE"><img src="assets/brands/MOTOLITE.jpg" alt="Motolite" title="Motolite"></a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <a href="industries.php">Industries</a>
+                    <div class="nav-dropdown">
+                        <h4>Industries We Serve</h4>
+                        <ul>
+                            <li><a href="industries.php#motor-vehicle">Motor Vehicle Industry</a></li>
+                            <li><a href="industries.php#metal-fabrication">Metal Fabrication and Industrial</a></li>
+                            <li><a href="industries.php#power-generation">Power Generation</a></li>
+                            <li><a href="industries.php#oil-petrochemical">Oil and Petrochemical Industry</a></li>
+                            <li><a href="industries.php#mining">Mining Industry</a></li>
+                            <li><a href="industries.php#shipyard">Shipyard</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <a href="services.php">Services</a>
+                    <div class="nav-dropdown">
+                        <h4>Our Services</h4>
+                        <ul>
+                            <li><a href="services.php#consultation">Technical Consultation</a></li>
+                            <li><a href="services.php#training">Training Programs</a></li>
+                            <li><a href="services.php#maintenance">Equipment Maintenance</a></li>
+                            <li><a href="services.php#support">After-Sales Support</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <a href="contact.php">Contact Us</a>
+                    <div class="nav-dropdown">
+                        <h4>Get In Touch</h4>
+                        <p>Reach out to our team for inquiries, quotes, or technical support.</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
 </header>
 
 <main class="container">
