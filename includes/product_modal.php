@@ -15,31 +15,31 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 }
 ?>
 <!-- ══ PRODUCT DETAIL MODAL ══ -->
-<div id="prodDetailOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(7,10,26,.62);backdrop-filter:blur(9px) saturate(118%);-webkit-backdrop-filter:blur(9px) saturate(118%);z-index:99999;align-items:flex-start;justify-content:center;padding:clamp(18px,2.2vw,28px) clamp(8px,1.1vw,14px) clamp(16px,2vw,24px);box-sizing:border-box;overflow-y:auto;animation:fadeIn .2s ease;">
-    <div id="prodDetailModal" style="background:#fff;border-radius:22px;max-width:min(92vw,1220px);width:min(92vw,1220px);max-height:min(88vh,900px);height:auto;overflow:hidden;box-shadow:0 25px 70px rgba(0,0,0,.32),0 0 1px rgba(0,0,0,.1);position:relative;animation:modalIn .3s cubic-bezier(0.34, 1.56, 0.64, 1);flex-shrink:0;margin:0 auto;">
+<div id="prodDetailOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(7,10,26,.62);backdrop-filter:blur(9px) saturate(118%);-webkit-backdrop-filter:blur(9px) saturate(118%);z-index:99999;align-items:center;justify-content:center;padding:clamp(18px,2.2vw,28px) clamp(8px,1.1vw,14px) clamp(16px,2vw,24px);box-sizing:border-box;overflow:hidden;animation:fadeIn .2s ease;">
+    <div id="prodDetailModal" style="background:#fff;border-radius:22px;max-width:min(92vw,1220px);width:min(92vw,1220px);max-height:88vh;height:88vh;overflow:hidden;box-shadow:0 25px 70px rgba(0,0,0,.32),0 0 1px rgba(0,0,0,.1);position:relative;animation:modalIn .3s cubic-bezier(0.34, 1.56, 0.64, 1);flex-shrink:0;margin:0 auto;">
     <button id="prodDetailClose" style="position:absolute;top:18px;right:18px;background:rgba(0,0,0,0.05);border:none;font-size:28px;cursor:pointer;color:#555;line-height:1;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:10;\">&times;</button>
     
     <div style="display:flex;gap:0;flex-wrap:wrap;height:100%;">
       <!-- LEFT SIDE: Product Images Gallery -->
-    <div style="flex:0 0 33%;background:linear-gradient(180deg, #f9f9fc 0%, #f0f3ff 50%, #f8fafd 100%);border-radius:24px 0 0 24px;padding:clamp(12px,1.5vw,20px) clamp(18px,2vw,30px);display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden;">
+    <div style="flex:0 0 33%;background:linear-gradient(180deg, #f9f9fc 0%, #f0f3ff 50%, #f8fafd 100%);border-radius:24px 0 0 24px;padding:clamp(12px,1.5vw,20px) clamp(18px,2vw,30px);display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:10px;position:relative;overflow:hidden;min-height:0;">
         <!-- Decorative top accent -->
         <div style="position:absolute;top:0;right:0;width:120px;height:120px;background:linear-gradient(135deg, rgba(43,17,219,0.06) 0%, transparent 70%);border-radius:0 0 0 100%;pointer-events:none;"></div>
         
-        <div id="prodImageGallery" style="height:clamp(220px,42vh,400px);background:#fff;border-radius:20px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;flex-shrink:0;box-shadow:0 16px 40px rgba(43,17,219,0.18), 0 0 1px rgba(43,17,219,0.3), inset 0 1px 0 rgba(255,255,255,0.9);border:1px solid rgba(43,17,219,0.12);">
+        <div id="prodImageGallery" style="height:clamp(170px,30vh,300px);background:#fff;border-radius:20px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;flex-shrink:0;box-shadow:0 16px 40px rgba(43,17,219,0.18), 0 0 1px rgba(43,17,219,0.3), inset 0 1px 0 rgba(255,255,255,0.9);border:1px solid rgba(43,17,219,0.12);">
           <img id="prodMainImg" src="" alt="" style="max-width:100%;max-height:100%;object-fit:contain;padding:clamp(14px,1.5vw,24px);width:100%;">
           <i id="prodNoImg" class="bi bi-tools" style="display:none;font-size:80px;color:#d4d9e6;"></i>
         </div>
         
         <!-- Image thumbnails carousel -->
-        <div id="prodThumbnailsWrap" style="display:none;background:linear-gradient(135deg, rgba(43,17,219,0.05) 0%, rgba(43,17,219,0.02) 100%);border-radius:16px;padding:12px;border:1.5px solid rgba(43,17,219,0.1);flex-shrink:0;">
-          <div id="prodThumbnails" style="display:flex;gap:12px;flex-wrap:wrap;max-height:85px;overflow-y:auto;justify-content:center;"></div>
+        <div id="prodThumbnailsWrap" style="display:none;background:linear-gradient(135deg, rgba(43,17,219,0.05) 0%, rgba(43,17,219,0.02) 100%);border-radius:16px;padding:12px;border:1.5px solid rgba(43,17,219,0.1);flex-shrink:0;width:100%;">
+          <div id="prodThumbnails" style="display:flex;gap:12px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;justify-content:flex-start;padding-bottom:8px;"></div>
         </div>
         
         <!-- Datasheet button -->
         <!-- (Datasheet button/preview moved to right column) -->
         
         <!-- Related Products -->
-                <div id="relatedProductsWrap" style="display:none;flex-shrink:0;position:relative;z-index:2;margin-top:4px;">
+                <div id="relatedProductsWrap" style="display:none;position:relative;z-index:2;margin-top:4px;min-height:0;overflow-y:auto;">
                     <div class="related-products-title"><i class="bi bi-boxes"></i> MORE FROM THIS BRAND</div>
                                         <div id="relatedProductsGrid" style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px;align-content:start;"></div>
         </div>
@@ -49,9 +49,9 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
     <div style="position:absolute;left:33%;top:0;bottom:0;width:1px;background:linear-gradient(180deg, transparent 0%, rgba(43,17,219,0.1) 30%, rgba(43,17,219,0.1) 70%, transparent 100%);pointer-events:none;"></div>
       
       <!-- RIGHT SIDE: Product Information -->
-    <div style="flex:0 0 67%;display:flex;flex-direction:column;overflow:hidden;">
+    <div style="flex:0 0 67%;display:grid;grid-template-rows:minmax(0,1fr) auto;overflow:hidden;min-height:0;height:100%;">
         <!-- Scrollable content area -->
-        <div style="flex:1 1 auto;overflow-y:auto;padding:clamp(14px,2vw,24px) clamp(22px,3vw,44px) clamp(12px,1.5vw,18px);min-height:0;">
+        <div id="prodDetailContentScroll" style="overflow-y:auto;overflow-x:hidden;padding:clamp(14px,2vw,24px) clamp(22px,3vw,44px) clamp(12px,1.5vw,18px);min-height:0;height:100%;">
           <!-- Header Section -->
           <div style="margin-bottom:24px;padding-bottom:20px;border-bottom:2px solid #f0f4ff;">
             <span id="prodDetailBrand" style="font-size:9px;font-weight:950;color:#2B11DB;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:block;background:linear-gradient(135deg, rgba(43,17,219,0.12) 0%, rgba(43,17,219,0.06) 100%);padding:8px 14px;border-radius:8px;width:fit-content;border-left:3px solid #2B11DB;"></span>
@@ -129,7 +129,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 #prodDetailOverlay,
 #prodDetailModal > div,
 #prodDetailModal > div > div:first-child,
-#prodDetailModal > div > div:last-child > div:first-child,
+#prodDetailContentScroll,
 #prodThumbnails,
 #prodSpecsTableWrap {
     scrollbar-width: thin;
@@ -139,7 +139,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 #prodDetailOverlay::-webkit-scrollbar,
 #prodDetailModal > div::-webkit-scrollbar,
 #prodDetailModal > div > div:first-child::-webkit-scrollbar,
-#prodDetailModal > div > div:last-child > div:first-child::-webkit-scrollbar,
+#prodDetailContentScroll::-webkit-scrollbar,
 #prodThumbnails::-webkit-scrollbar,
 #prodSpecsTableWrap::-webkit-scrollbar {
     width: 12px;
@@ -149,7 +149,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 #prodDetailOverlay::-webkit-scrollbar-track,
 #prodDetailModal > div::-webkit-scrollbar-track,
 #prodDetailModal > div > div:first-child::-webkit-scrollbar-track,
-#prodDetailModal > div > div:last-child > div:first-child::-webkit-scrollbar-track,
+#prodDetailContentScroll::-webkit-scrollbar-track,
 #prodThumbnails::-webkit-scrollbar-track,
 #prodSpecsTableWrap::-webkit-scrollbar-track {
     background: linear-gradient(180deg, rgba(43,17,219,0.06) 0%, rgba(43,17,219,0.02) 100%);
@@ -160,7 +160,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 #prodDetailOverlay::-webkit-scrollbar-thumb,
 #prodDetailModal > div::-webkit-scrollbar-thumb,
 #prodDetailModal > div > div:first-child::-webkit-scrollbar-thumb,
-#prodDetailModal > div > div:last-child > div:first-child::-webkit-scrollbar-thumb,
+#prodDetailContentScroll::-webkit-scrollbar-thumb,
 #prodThumbnails::-webkit-scrollbar-thumb,
 #prodSpecsTableWrap::-webkit-scrollbar-thumb {
     background: linear-gradient(180deg, #5a44f2 0%, #2B11DB 52%, #1f0aa1 100%);
@@ -172,7 +172,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 #prodDetailOverlay::-webkit-scrollbar-thumb:hover,
 #prodDetailModal > div::-webkit-scrollbar-thumb:hover,
 #prodDetailModal > div > div:first-child::-webkit-scrollbar-thumb:hover,
-#prodDetailModal > div > div:last-child > div:first-child::-webkit-scrollbar-thumb:hover,
+#prodDetailContentScroll::-webkit-scrollbar-thumb:hover,
 #prodThumbnails::-webkit-scrollbar-thumb:hover,
 #prodSpecsTableWrap::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(180deg, #6b57ff 0%, #3a1df1 50%, #220cae 100%);
@@ -183,8 +183,8 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
   display: flex !important;
   gap: 0 !important;
   width: 100% !important;
-  flex: 1 1 auto !important;
-  overflow-y: auto !important;
+  height: 100% !important;
+  overflow: hidden !important;
   min-height: 0 !important;
 }
 
@@ -193,21 +193,33 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
   background: linear-gradient(180deg, #f9f9fc 0%, #f0f4ff 100%);
   border-radius:24px 0 0 24px;
     padding:clamp(18px,2vw,30px);
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-    gap: 16px;
+  overflow: hidden !important;
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr);
+    min-height: 0 !important;
+    gap: 12px;
 }
 
 #prodDetailModal > div > div:last-child {
     flex: 0 0 67%;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    overflow: hidden;
+    min-height: 0 !important;
+    height: 100% !important;
+}
+
+#prodDetailContentScroll {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    -webkit-overflow-scrolling: touch;
 }
 
 #prodImageGallery {
-    height:clamp(220px, 42vh, 400px);
+    height:clamp(170px, 30vh, 300px);
   background: #fff;
   border-radius:20px;
   display:flex;
@@ -631,10 +643,12 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
     border-radius: 12px;
     background: linear-gradient(180deg, rgba(43,17,219,0.06) 0%, rgba(43,17,219,0.02) 100%);
     border: 1px solid rgba(43,17,219,0.12);
+    min-height: 0;
+    overflow-y: auto;
 }
 
 #relatedProductsGrid {
-    gap: 8px;
+    gap: 6px;
     align-content: start;
     max-height: none;
     overflow: visible;
@@ -673,8 +687,8 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
   flex-direction: column;
   align-items: center;
     justify-content: flex-start;
-    padding: 8px 7px 9px;
-    min-height: 122px;
+    padding: 7px 6px 8px;
+    min-height: 104px;
     height: auto;
 }
 
@@ -712,7 +726,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 
 .related-product-media {
     width: 100%;
-    min-height: 70px;
+    min-height: 58px;
     border-radius: 10px;
     background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.95) 0%, rgba(243,246,255,0.9) 58%, rgba(233,238,255,0.85) 100%);
     border: 1px solid rgba(43,17,219,0.08);
@@ -725,7 +739,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 .related-product-item img {
     width: 80%;
     max-width: 118px;
-    height: 58px;
+        height: 46px;
   object-fit: contain;
     transition: transform 0.3s ease;
     margin-top: 0;
@@ -740,14 +754,14 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
   font-weight: 800;
   color: #2B11DB;
   text-align: center;
-    margin-top: 6px;
+    margin-top: 5px;
     line-height: 1.16;
     letter-spacing: 0;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    min-height: 30px;
+    min-height: 24px;
     text-wrap: balance;
 }
 
@@ -755,10 +769,6 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
     #relatedProductsWrap {
         padding: 6px;
         border-radius: 12px;
-    }
-
-    #relatedProductsGrid {
-        max-height: 220px;
     }
 
     .related-products-title {
@@ -846,6 +856,13 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
             var availableHeight = window.innerHeight - (verticalPad * 2);
             modalShell.style.maxHeight = Math.max(320, availableHeight) + 'px';
         }
+
+        var contentScroll = document.getElementById('prodDetailContentScroll');
+        if (contentScroll) {
+            contentScroll.style.overflowY = 'auto';
+            contentScroll.style.overflowX = 'hidden';
+            contentScroll.style.maxHeight = '100%';
+        }
     }
 
     function resolveBasePath() {
@@ -877,18 +894,34 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         }
         raw = raw.replace(/^\/andison\//i, '/Andison/');
         raw = raw.replace(/^(\.\.\/)+/, '');
-
+    
         if (raw.indexOf('/') === 0) {
             return (_modalBase !== '' ? _modalBase : '') + raw;
         }
 
-        return (_modalBase !== '' ? _modalBase + '/' : '/') + raw.replace(/^\.\//, '');
+        return (_modalBase !== '' ? _modalBase + '/' : '/') + raw.replace(/^\.\//, ''); 
     }
 
     var modalBrandLogoMap = <?php echo $modal_brand_logo_map_json; ?>;
 
-    function getModalBrandLogo(brandName) {
+    function normalizeModalBrandName(brandName) {
         var cleanBrand = String(brandName || '').trim();
+        if (!cleanBrand) return '';
+
+        var lower = cleanBrand.toLowerCase();
+        var compact = lower.replace(/[^a-z0-9]+/g, '');
+        if (lower === 'bw' || lower === 'bw technologies' || compact === 'bw' || compact === 'bwtechnologies') return 'BW Technologies';
+        if (lower === 'panasonic' || lower === 'panasonic connect') return 'Panasonic Connect';
+        if (lower === 'hard worker' || lower === 'hard workers' || lower === 'hardworker') return 'HARDWORKER';
+        if (lower === 'dryrod. ii' || lower === 'dryrod ii' || lower === 'phoenix dryrod' || lower === 'phoenix dry rod') return 'DryRod. II';
+        if (lower === 'rae' || lower === 'rae systems' || lower === 'rac') return 'RAC';
+        if (lower === 'weiler' || lower === 'weller') return 'Weller';
+
+        return cleanBrand;
+    }
+
+    function getModalBrandLogo(brandName) {
+        var cleanBrand = normalizeModalBrandName(brandName);
         if (!cleanBrand) return '';
 
         if (modalBrandLogoMap && Object.prototype.hasOwnProperty.call(modalBrandLogoMap, cleanBrand)) {
@@ -2718,7 +2751,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                     return;
                 }
                 
-                // Keep this section compact and fully visible without its own scrollbar.
+                // Keep related products compact: show up to 4 items.
                 var maxItems = Math.min(allProducts.length, 4);
                 var relatedProducts = allProducts.sort(function() { return Math.random() - 0.5; }).slice(0, maxItems);
 
@@ -2851,11 +2884,6 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 
                 console.log('Final grid item count:', grid.children.length);
 
-                // Hard safety cap: never render more than 4 related cards.
-                while (grid.children.length > 4) {
-                    grid.removeChild(grid.lastChild);
-                }
-
                 applyRelatedGridLayout(relatedProducts);
                 
                 wrap.style.display = 'block';
@@ -2899,8 +2927,11 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         var brand    = firstNonEmptyText([
             card.getAttribute('data-brand'),
             card.querySelector('.add-to-inquiry') ? card.querySelector('.add-to-inquiry').getAttribute('data-brand') : '',
+            card.getAttribute('data-badge'),
+            card.querySelector('.product-badge, .brand-badge, .badge') ? card.querySelector('.product-badge, .brand-badge, .badge').textContent : '',
             (typeof BRAND_NAME !== 'undefined' ? BRAND_NAME : '')
         ]);
+        brand = normalizeModalBrandName(brand);
         var specsRaw = card.getAttribute('data-specs')  || '[]';
         var imagesRaw = card.getAttribute('data-images') || '[]';
         var specs    = [];
@@ -3223,6 +3254,11 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 
         // Fit modal from just below header to bottom of viewport.
         applyModalViewportLayout();
+
+        var contentScroll = document.getElementById('prodDetailContentScroll');
+        if (contentScroll) {
+            contentScroll.scrollTop = 0;
+        }
 
         overlay.style.display    = 'flex';
         document.body.style.overflow = 'hidden';

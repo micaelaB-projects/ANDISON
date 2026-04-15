@@ -8,6 +8,7 @@ require_once __DIR__ . '/_layout.php';
 
 // Load all data for metrics
 require_once __DIR__ . '/../includes/supabase.php';
+require_once __DIR__ . '/../includes/brands_info.php';
 require_once __DIR__ . '/../includes/categories_info.php';
 require_once __DIR__ . '/../includes/home_slider.php';
 require_once __DIR__ . '/../includes/home_featured.php';
@@ -25,8 +26,66 @@ arsort($analyticsBrands);
 $analyticsCategories = $analytics['categories'] ?? [];
 arsort($analyticsCategories);
 
+function andison_dashboard_brand_display_label(string $brand): string
+{
+    $normalized = strtolower(trim($brand));
+    if ($normalized === 'hard worker' || $normalized === 'hard workers' || $normalized === 'hardworker') {
+        return 'HARDWORKER';
+    }
+    if ($normalized === 'dryrod. ii' || $normalized === 'dryrod ii' || $normalized === 'phoenix dryrod' || $normalized === 'phoenix dry rod') {
+        return 'DryRod. II';
+    }
+    if ($normalized === 'ansell') {
+        return 'ANSELL';
+    }
+    if ($normalized === 'panasonic' || $normalized === 'panasonic connect') {
+        return 'Panasonic Connect';
+    }
+    if ($normalized === 'rae' || $normalized === 'rac' || $normalized === 'rae systems') {
+        return 'RAE SYSTEMS';
+    }
+    return $normalized === 'weller' ? 'WEILER' : $brand;
+}
+
+// Match products.php dropdown behavior exactly: hide aliases and dedupe by display label.
+$dashboardBrands = andison_get_brands_info(true);
+$dashboardRawBrandNames = array_keys($dashboardBrands);
+$dashboardBrandDisplayToKey = [];
+$dashboardHiddenBrandDisplayKeys = [
+    'aer service' => true,
+    'wire wizard' => true,
+    'tokin arc' => true,
+    'alphatec' => true,
+    'bw technologies' => true,
+    'hard worker' => true,
+    'phoenix dryrod' => true,
+    'phoenix dry rod' => true,
+    'sk' => true,
+    'gal gage' => true,
+];
+
+foreach ($dashboardRawBrandNames as $brandKey) {
+    $display = andison_dashboard_brand_display_label((string)$brandKey);
+    $displayKey = strtolower(trim($display));
+    if ($displayKey === '' || isset($dashboardHiddenBrandDisplayKeys[$displayKey])) {
+        continue;
+    }
+
+    if (!isset($dashboardBrandDisplayToKey[$displayKey])) {
+        $dashboardBrandDisplayToKey[$displayKey] = (string)$brandKey;
+        continue;
+    }
+
+    $currentKey = $dashboardBrandDisplayToKey[$displayKey];
+    $currentCount = count($dashboardBrands[$currentKey]['products'] ?? []);
+    $newCount = count($dashboardBrands[$brandKey]['products'] ?? []);
+    if ($newCount > $currentCount) {
+        $dashboardBrandDisplayToKey[$displayKey] = (string)$brandKey;
+    }
+}
+
 // Lightweight aggregate metrics to keep dashboard responsive on large datasets.
-$totalBrands = andison_sb_count('brands');
+$totalBrands = count($dashboardBrandDisplayToKey);
 $totalProducts = andison_sb_count('products');
 
 // Calculate category metrics from a single products query.
@@ -62,7 +121,10 @@ $totalCategoryProducts = 0;
 foreach ($productRowsForMetrics as $row) {
     $brandName = trim((string)($row['brand'] ?? ''));
     if ($brandName !== '') {
-        $brandsWithProductsMap[strtolower($brandName)] = true;
+        $brandDisplayKey = strtolower(trim(andison_dashboard_brand_display_label($brandName)));
+        if ($brandDisplayKey !== '') {
+            $brandsWithProductsMap[$brandDisplayKey] = true;
+        }
     }
 
     $storedSubId = trim((string)($row['subcategory_id'] ?? ''));
@@ -81,7 +143,13 @@ foreach ($productRowsForMetrics as $row) {
     }
 }
 
-$brandsWithProducts = count($brandsWithProductsMap);
+// Only count brands that are visible in the products dropdown logic.
+$brandsWithProducts = 0;
+foreach ($dashboardBrandDisplayToKey as $displayKey => $brandKey) {
+    if (isset($brandsWithProductsMap[$displayKey])) {
+        $brandsWithProducts++;
+    }
+}
 
 $sliderCount = 0;
 foreach ($sliders as $slide) {
