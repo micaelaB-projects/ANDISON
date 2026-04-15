@@ -4,10 +4,62 @@ andison_track_visit('services');
 require_once __DIR__ . '/Andison/includes/home_featured.php';
 require_once __DIR__ . '/Andison/includes/home_slider.php';
 require_once __DIR__ . '/Andison/includes/youtube_links.php';
+require_once __DIR__ . '/Andison/includes/footer_settings.php';
 
 $featured = andison_get_home_featured();
 $slides = andison_get_home_slider();
 $ytLinks = andison_get_youtube_links();
+$footerSettings = andison_get_footer_settings();
+
+$page_title = 'Contact Us';
+$company_name = 'ANDISON INDUSTRIAL';
+$contactEmail = trim((string)($footerSettings['contact_email'] ?? 'info@andison-industrial.com'));
+
+$manilaTitle = trim((string)($footerSettings['manila_title'] ?? 'Manila'));
+$manilaAddress = trim((string)($footerSettings['manila_address'] ?? ''));
+$manilaPhone1 = trim((string)($footerSettings['manila_phone_1'] ?? ''));
+$manilaPhone2 = trim((string)($footerSettings['manila_phone_2'] ?? ''));
+
+$calabarzonTitle = trim((string)($footerSettings['calabarzon_title'] ?? 'Calabarzon'));
+$calabarzonAddress = trim((string)($footerSettings['calabarzon_address'] ?? ''));
+$calabarzonPhone = trim((string)($footerSettings['calabarzon_phone'] ?? ''));
+
+$manilaMapQuery = rawurlencode(preg_replace('/\s+/', ' ', $manilaAddress));
+$calabarzonMapQuery = rawurlencode(preg_replace('/\s+/', ' ', $calabarzonAddress));
+
+if (!function_exists('andison_contact_tel_href')) {
+    function andison_contact_tel_href(string $phone): string
+    {
+        $phone = trim($phone);
+        if ($phone === '') {
+            return '';
+        }
+        $normalized = preg_replace('/[^0-9+]/', '', $phone);
+        return $normalized !== null ? $normalized : '';
+    }
+}
+
+if (!function_exists('andison_contact_lines_html')) {
+    function andison_contact_lines_html(array $lines): string
+    {
+        $safe = [];
+        foreach ($lines as $line) {
+            $line = trim((string)$line);
+            if ($line === '') {
+                continue;
+            }
+            $safe[] = htmlspecialchars($line, ENT_QUOTES);
+        }
+        return implode('<br>', $safe);
+    }
+}
+
+if (!function_exists('andison_contact_text_with_breaks')) {
+    function andison_contact_text_with_breaks(string $text): string
+    {
+        return nl2br(htmlspecialchars(trim($text), ENT_QUOTES));
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -1819,18 +1871,6 @@ $ytLinks = andison_get_youtube_links();
     </style>
 </head>
 <body>
-        <?php
-        // Set page title
-        $page_title = "Contact Us";
-        $company_name = "ANDISON INDUSTRIAL";
-        
-        // Contact information
-        $phone = "+1(234) 567 8900";
-        $phone2 = "+1(234) 567 8900";
-        $phone3 = "+1(639) 977 803 7398";
-        $email = "info@andison-industrial.com";
-    ?>
-
     <!-- Header -->
     <header>
         <div class="header-top">
@@ -1971,41 +2011,34 @@ $ytLinks = andison_get_youtube_links();
                 <div class="contact-location-card">
                     <div class="contact-map">
                         <iframe
-                            src="https://maps.google.com/maps?q=917-919+Luzon+Street,+Tondo,+Manila,+Philippines&output=embed"
+                            src="https://maps.google.com/maps?q=<?php echo htmlspecialchars($manilaMapQuery, ENT_QUOTES); ?>&output=embed"
                             allowfullscreen
                             loading="lazy"
                             referrerpolicy="no-referrer-when-downgrade">
                         </iframe>
                     </div>
                     <div class="contact-info">
-                        <h3 class="contact-city">MANILA</h3>
+                        <h3 class="contact-city"><?php echo htmlspecialchars(strtoupper($manilaTitle), ENT_QUOTES); ?></h3>
                         <ul class="contact-details-list">
                             <li>
                                 <span class="ci-marker"><i class="bi bi-geo-alt-fill"></i></span>
                                 <span class="ci-block">
                                     <span class="ci-label">ADDRESS:</span>
-                                    <span class="ci-value">917-919 Luzon Street, Barangay 260 Zone 024 1012 Tondo I/II NCR,<br>City of Manila, First District, Philippines</span>
+                                    <span class="ci-value"><?php echo andison_contact_text_with_breaks($manilaAddress); ?></span>
                                 </span>
                             </li>
                             <li>
                                 <span class="ci-marker"><i class="bi bi-telephone-fill"></i></span>
                                 <span class="ci-block">
                                     <span class="ci-label">PHONE:</span>
-                                    <span class="ci-value">(+632) 8394-4953<br>(+632) 8243-2873</span>
-                                </span>
-                            </li>
-                            <li>
-                                <span class="ci-marker"><i class="bi bi-printer-fill"></i></span>
-                                <span class="ci-block">
-                                    <span class="ci-label">FAX:</span>
-                                    <span class="ci-value">(+632) 8394-4953<br>(+632) 8252-9224</span>
+                                    <span class="ci-value"><?php echo andison_contact_lines_html([$manilaPhone1, $manilaPhone2]); ?></span>
                                 </span>
                             </li>
                             <li>
                                 <span class="ci-marker"><i class="bi bi-envelope-fill"></i></span>
                                 <span class="ci-block">
                                     <span class="ci-label">EMAIL:</span>
-                                    <span class="ci-value"><a href="mailto:info@andison-industrial.com">info@andison-industrial.com</a></span>
+                                    <span class="ci-value"><a href="mailto:<?php echo htmlspecialchars($contactEmail, ENT_QUOTES); ?>"><?php echo htmlspecialchars($contactEmail, ENT_QUOTES); ?></a></span>
                                 </span>
                             </li>
                         </ul>
@@ -2016,46 +2049,39 @@ $ytLinks = andison_get_youtube_links();
                 <div class="contact-location-card">
                     <div class="contact-map">
                         <iframe
-                            src="https://maps.google.com/maps?q=298+P.+Zamora+Street,+Batangas+City,+Batangas,+Philippines&output=embed"
+                            src="https://maps.google.com/maps?q=<?php echo htmlspecialchars($calabarzonMapQuery, ENT_QUOTES); ?>&output=embed"
                             allowfullscreen
                             loading="lazy"
                             referrerpolicy="no-referrer-when-downgrade">
                         </iframe>
                     </div>
                     <div class="contact-info">
-                        <h3 class="contact-city">CALABARZON</h3>
+                        <h3 class="contact-city"><?php echo htmlspecialchars(strtoupper($calabarzonTitle), ENT_QUOTES); ?></h3>
                         <ul class="contact-details-list">
                             <li>
                                 <span class="ci-marker"><i class="bi bi-geo-alt-fill"></i></span>
                                 <span class="ci-block">
                                     <span class="ci-label">ADDRESS:</span>
-                                    <span class="ci-value">298 P. Zamora Street, Barangay 16, 4200 Batangas City, Batangas Philippines</span>
+                                    <span class="ci-value"><?php echo andison_contact_text_with_breaks($calabarzonAddress); ?></span>
                                 </span>
                             </li>
                             <li>
                                 <span class="ci-marker"><i class="bi bi-telephone-fill"></i></span>
                                 <span class="ci-block">
                                     <span class="ci-label">PHONE:</span>
-                                    <span class="ci-value">(+6343) 425 4128</span>
-                                </span>
-                            </li>
-                            <li>
-                                <span class="ci-marker"><i class="bi bi-printer-fill"></i></span>
-                                <span class="ci-block">
-                                    <span class="ci-label">FAX:</span>
-                                    <span class="ci-value">(+6343) 723 3198</span>
+                                    <span class="ci-value"><?php echo htmlspecialchars($calabarzonPhone, ENT_QUOTES); ?></span>
                                 </span>
                             </li>
                             <li>
                                 <span class="ci-marker"><i class="bi bi-envelope-fill"></i></span>
                                 <span class="ci-block">
                                     <span class="ci-label">EMAIL:</span>
-                                    <span class="ci-value"><a href="mailto:info@andison-industrial.com">info@andison-industrial.com</a></span>
+                                    <span class="ci-value"><a href="mailto:<?php echo htmlspecialchars($contactEmail, ENT_QUOTES); ?>"><?php echo htmlspecialchars($contactEmail, ENT_QUOTES); ?></a></span>
                                 </span>
                             </li>
                         </ul>
                         <div class="contact-cta-note">
-                            Do you have questions about how we can help your company? Send us an <a href="mailto:info@andison-industrial.com">email</a> and we&rsquo;ll get in touch shortly.
+                            Do you have questions about how we can help your company? Send us an <a href="mailto:<?php echo htmlspecialchars($contactEmail, ENT_QUOTES); ?>">email</a> and we&rsquo;ll get in touch shortly.
                         </div>
                     </div>
                 </div>
@@ -2067,29 +2093,29 @@ $ytLinks = andison_get_youtube_links();
                 <p class="contact-quick-subtitle">Need urgent assistance? Reach our team directly for fast support and quotations.</p>
 
                 <div class="contact-quick-actions">
-                    <a class="contact-quick-action" href="tel:+63283944953">
+                    <a class="contact-quick-action" href="tel:<?php echo htmlspecialchars(andison_contact_tel_href($manilaPhone1), ENT_QUOTES); ?>">
                         <i class="bi bi-telephone-fill"></i>
                         <span>
-                            <strong>Call Manila</strong>
-                            (+632) 8394-4953<br>
+                            <strong>Call <?php echo htmlspecialchars($manilaTitle, ENT_QUOTES); ?></strong>
+                            <?php echo htmlspecialchars($manilaPhone1, ENT_QUOTES); ?><br>
                             <small>Local line</small>
                         </span>
                     </a>
 
-                    <a class="contact-quick-action" href="tel:+63434254128">
+                    <a class="contact-quick-action" href="tel:<?php echo htmlspecialchars(andison_contact_tel_href($calabarzonPhone), ENT_QUOTES); ?>">
                         <i class="bi bi-telephone-fill"></i>
                         <span>
-                            <strong>Call Calabarzon</strong>
-                            (+6343) 425 4128<br>
+                            <strong>Call <?php echo htmlspecialchars($calabarzonTitle, ENT_QUOTES); ?></strong>
+                            <?php echo htmlspecialchars($calabarzonPhone, ENT_QUOTES); ?><br>
                             <small>Batangas branch</small>
                         </span>
                     </a>
 
-                    <a class="contact-quick-action" href="mailto:info@andison-industrial.com">
+                    <a class="contact-quick-action" href="mailto:<?php echo htmlspecialchars($contactEmail, ENT_QUOTES); ?>">
                         <i class="bi bi-envelope-fill"></i>
                         <span>
                             <strong>Email Sales</strong>
-                            info@andison-industrial.com<br>
+                            <?php echo htmlspecialchars($contactEmail, ENT_QUOTES); ?><br>
                             <small>Quotation and support</small>
                         </span>
                     </a>

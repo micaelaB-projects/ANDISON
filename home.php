@@ -5,7 +5,7 @@ require_once __DIR__ . '/Andison/includes/home_featured.php';
 require_once __DIR__ . '/Andison/includes/home_slider.php';
 require_once __DIR__ . '/Andison/includes/youtube_links.php';
 
-$featured = andison_get_home_featured();
+$featured = andison_get_home_featured(true);
 $slides = andison_get_home_slider();
 $ytLinks = andison_get_youtube_links();
 ?>
@@ -980,7 +980,7 @@ $ytLinks = andison_get_youtube_links();
         }
 
         .featured-content h3 {
-            font-size: clamp(32px, 5vw, 52px);
+            font-size: clamp(27.2px, 5vw, 44.2px);
             margin-bottom: 0;
             color: #2B11DB;
             font-weight: 800;
@@ -1451,7 +1451,7 @@ $ytLinks = andison_get_youtube_links();
             }
 
             .featured-content h3 {
-                font-size: clamp(30px, 9vw, 40px);
+                font-size: clamp(25.5px, 9vw, 34px);
                 font-weight: 800;
             }
 
@@ -2053,7 +2053,7 @@ $ytLinks = andison_get_youtube_links();
 
                     <!-- Description -->
                     <?php if (!empty($featured['description'])): ?>
-                        <p><?php echo htmlspecialchars((string)($featured['description'] ?? ''), ENT_QUOTES); ?></p>
+                        <?php echo andison_home_featured_format_open_text((string)($featured['description'] ?? '')); ?>
                     <?php endif; ?>
 
                     <!-- Call-to-Action Button -->

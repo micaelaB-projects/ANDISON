@@ -10,6 +10,22 @@ require_once __DIR__ . '/../includes/home_featured.php';
 require_once __DIR__ . '/../includes/youtube_links.php';
 
 $featured = andison_get_home_featured();
+$featuredRows = andison_sb_select('home_featured', 'limit=1');
+$featuredRaw = !empty($featuredRows[0]) && is_array($featuredRows[0]) ? $featuredRows[0] : [];
+$fallbackDefaultImage = '';
+$fallbackDefaultImageAlt = '';
+$fallbackDefaultTitle = '';
+$fallbackDefaultDescription = '';
+if (!empty($featuredRaw)) {
+    $fallbackStoredImage = trim((string)($featuredRaw['youtube_url'] ?? ''));
+    $fallbackMeta = andison_home_featured_read_fallback_meta($featuredRaw);
+    if (andison_home_featured_looks_like_image_reference($fallbackStoredImage)) {
+        $fallbackDefaultImage = $fallbackStoredImage;
+    }
+    $fallbackDefaultImageAlt = $fallbackMeta['image_alt'] ?? '';
+    $fallbackDefaultTitle = $fallbackMeta['title'] ?? '';
+    $fallbackDefaultDescription = $fallbackMeta['description'] ?? '';
+}
  
 function andison_admin_is_upload(array $f): bool
 {
@@ -63,10 +79,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $eventLocation = (string)($_POST['event_location'] ?? '');
     $discount = (string)($_POST['discount'] ?? '');
     $offerText = (string)($_POST['offer_text'] ?? '');
+    $defaultImageAlt = (string)($_POST['default_image_alt'] ?? '');
+    $defaultTitle = (string)($_POST['default_title'] ?? '');
+    $defaultDescription = (string)($_POST['default_description'] ?? '');
 
     $newImagePath = $featured['image'] ?? '';
-    $newVideoPath = '';
-    $newYoutubeEmbed = '';
+    $newDefaultImagePath = $fallbackDefaultImage;
 
     if (in_array($mediaType, ['picture', 'promo'], true) && isset($_FILES['image']) && andison_admin_is_upload($_FILES['image'])) {
         $stored = andison_admin_store_featured_image(
@@ -79,6 +97,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
         $newImagePath = $stored;
+    }
+
+    if (isset($_FILES['default_image']) && andison_admin_is_upload($_FILES['default_image'])) {
+        $storedDefault = andison_admin_store_featured_image(
+            $_FILES['default_image'],
+            dirname(__DIR__) . '/assets/uploads/home/featured'
+        );
+        if ($storedDefault === null) {
+            andison_set_flash('error', 'Invalid default image upload. Please use JPG/PNG/WebP/GIF/AVIF.');
+            header('Location: featured.php');
+            exit;
+        }
+        $newDefaultImagePath = $storedDefault;
+    }
+
+    $fallbackMetaPayload = json_encode([
+        'image_alt' => trim($defaultImageAlt),
+        'title' => trim($defaultTitle),
+        'description' => trim($defaultDescription),
+    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    if (!is_string($fallbackMetaPayload) || $fallbackMetaPayload === '') {
+        $fallbackMetaPayload = '';
     }
 
     $ok = andison_save_home_featured([
@@ -94,8 +134,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'media_type' => 'picture',
         'image' => $newImagePath,
         'image_alt' => $imageAlt,
-        'youtube_url' => '',
-        'video_file' => '',
+        'youtube_url' => $newDefaultImagePath,
+        'video_file' => $fallbackMetaPayload,
     ]);
 
     if ($ok) {
@@ -263,6 +303,47 @@ andison_admin_header('Homepage Featured', 'featured');
                         <label for="image_alt">Image Alt Text</label>
                         <input id="image_alt" name="image_alt" type="text" value="<?php echo htmlspecialchars((string)($featured['image_alt'] ?? '')); ?>" placeholder="Describe the image for accessibility" class="feat-input">
                         <small style="color:#9ca3af;font-size:11px;margin-top:4px;display:block;">Used for accessibility and SEO</small>
+                    </div>
+
+                    <div style="margin:14px 0;border-top:1px solid #eef2f7;"></div>
+
+                    <?php
+                    $defaultDisplayImgPath = '';
+                    if ($fallbackDefaultImage !== '') {
+                        $defaultDisplayImgPath = $fallbackDefaultImage;
+                        if (strpos($defaultDisplayImgPath, 'andison/') === 0) {
+                            $defaultDisplayImgPath = '../' . substr($defaultDisplayImgPath, 8);
+                        } elseif (!preg_match('~^(https?://|\.\./|/)~i', $defaultDisplayImgPath)) {
+                            $defaultDisplayImgPath = '../' . $defaultDisplayImgPath;
+                        }
+                    }
+                    ?>
+
+                    <label style="display:block;font-size:11px;font-weight:700;color:#374151;letter-spacing:0.5px;text-transform:uppercase;margin:0 0 8px;">Default Fallback Image</label>
+                    <div class="feat-upload-zone" onclick="document.getElementById('default_image').click();">
+                        <i class="bi bi-image uz-icon"></i>
+                        <div class="uz-title">Click to upload default fallback image</div>
+                        <div class="uz-hint">Shown automatically after promo date expires</div>
+                    </div>
+                    <input id="default_image" name="default_image" type="file" accept="image/*" style="display:none;">
+
+                    <div id="default_image_preview_wrap" style="margin-top:10px;<?php echo $defaultDisplayImgPath === '' ? 'display:none;' : 'display:block;'; ?>">
+                        <img id="default_image_preview" src="<?php echo htmlspecialchars($defaultDisplayImgPath, ENT_QUOTES); ?>" alt="default fallback preview" style="width:100%;max-height:200px;object-fit:contain;border-radius:10px;border:1px solid #e5e7eb;background:#f8fafc;padding:8px;">
+                    </div>
+
+                    <div class="field" style="margin:10px 0 0;">
+                        <label for="default_image_alt">Default Image Alt Text</label>
+                        <input id="default_image_alt" name="default_image_alt" type="text" value="<?php echo htmlspecialchars((string)$fallbackDefaultImageAlt); ?>" placeholder="Describe the default fallback image" class="feat-input">
+                    </div>
+
+                    <div class="field" style="margin:10px 0 0;">
+                        <label for="default_title">Default Fallback Title</label>
+                        <input id="default_title" name="default_title" type="text" value="<?php echo htmlspecialchars((string)$fallbackDefaultTitle); ?>" placeholder="Shown after promo date expires" class="feat-input">
+                    </div>
+
+                    <div class="field" style="margin:10px 0 0;">
+                        <label for="default_description">Default Fallback Description</label>
+                        <textarea id="default_description" name="default_description" rows="3" class="feat-input" style="resize:vertical;font-family:inherit;" placeholder="Default description shown after promo expiry"><?php echo htmlspecialchars((string)$fallbackDefaultDescription); ?></textarea>
                     </div>
                 </div>
                 </div>
@@ -546,27 +627,51 @@ document.getElementById('featuredForm').addEventListener('submit', function(e){
     var previewContainer = document.getElementById('preview_container');
 
     var imageInput = document.getElementById('image');
+    var defaultImageInput = document.getElementById('default_image');
+    var defaultImagePreview = document.getElementById('default_image_preview');
+    var defaultImagePreviewWrap = document.getElementById('default_image_preview_wrap');
 
     // Live preview for image upload
-    imageInput.addEventListener('change', function(e){
-        if (e.target.files && e.target.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function(ev){
-                previewContainer.innerHTML = '<img id="image_preview" src="' + ev.target.result + '" alt="preview" style="width:100%;max-height:320px;object-fit:contain;border-radius:12px;" data-src="' + ev.target.result + '">';
-            };
-            reader.readAsDataURL(e.target.files[0]);
-        }
-    });
+    if (imageInput) {
+        imageInput.addEventListener('change', function(e){
+            if (e.target.files && e.target.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(ev){
+                    previewContainer.innerHTML = '<img id="image_preview" src="' + ev.target.result + '" alt="preview" style="width:100%;max-height:320px;object-fit:contain;border-radius:12px;" data-src="' + ev.target.result + '">';
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+    }
+
+    if (defaultImageInput) {
+        defaultImageInput.addEventListener('change', function(e){
+            if (e.target.files && e.target.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(ev){
+                    if (defaultImagePreview) {
+                        defaultImagePreview.src = ev.target.result;
+                    }
+                    if (defaultImagePreviewWrap) {
+                        defaultImagePreviewWrap.style.display = 'block';
+                    }
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+    }
 
     // Make preview container clickable
-    previewContainer.addEventListener('click', function(e){
-        var target = e.target;
-        var src = target.getAttribute('data-src');
+    if (previewContainer) {
+        previewContainer.addEventListener('click', function(e){
+            var target = e.target;
+            var src = target.getAttribute('data-src');
 
-        if (src && target.tagName === 'IMG') {
-            openPreviewModal(src, target.tagName);
-        }
-    });
+            if (src && target.tagName === 'IMG') {
+                openPreviewModal(src, target.tagName);
+            }
+        });
+    }
 
     function openPreviewModal(src, type) {
         var modal = document.getElementById('previewModal');

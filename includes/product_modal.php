@@ -109,7 +109,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
   </div>
 </div>
 
-<div id="prodImageZoomOverlay" style="display:none;position:fixed;inset:0;background:rgba(8,10,22,0.92);backdrop-filter:blur(3px);z-index:12000;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;">
+<div id="prodImageZoomOverlay" style="display:none;position:fixed;inset:0;background:rgba(8,10,22,0.92);backdrop-filter:blur(3px);z-index:100120;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;">
     <button id="prodImageZoomClose" type="button" aria-label="Close zoomed image" style="position:absolute;top:20px;right:20px;width:44px;height:44px;border:none;border-radius:999px;background:rgba(255,255,255,0.14);color:#fff;font-size:28px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;">&times;</button>
     <img id="prodImageZoomImg" src="" alt="" style="max-width:min(96vw,1600px);max-height:92vh;object-fit:contain;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.14);background:rgba(255,255,255,0.02);">
 </div>

@@ -181,6 +181,7 @@ function andison_admin_header(string $title, string $active = 'dashboard'): void
             <a href="products.php" class="<?php echo $active === 'products' ? 'active' : ''; ?>"><i class="bi bi-box-seam"></i><span>Products</span></a>
             <a href="categories.php" class="<?php echo $active === 'categories' ? 'active' : ''; ?>"><i class="bi bi-tag"></i><span>Categories</span></a>
             <a href="featured.php" class="<?php echo $active === 'featured' ? 'active' : ''; ?>"><i class="bi bi-star"></i><span>Homepage Featured</span></a>
+            <a href="footer.php" class="<?php echo $active === 'footer' ? 'active' : ''; ?>"><i class="bi bi-layout-text-window"></i><span>Footer Details</span></a>
             <a href="slider.php" class="<?php echo $active === 'slider' ? 'active' : ''; ?>"><i class="bi bi-images"></i><span>Homepage Slider</span></a>
             <a href="youtube.php" class="<?php echo $active === 'youtube' ? 'active' : ''; ?>"><i class="bi bi-youtube"></i><span>YouTube Links</span></a>
             <a href="inquiries.php" class="<?php echo $active === 'inquiries' ? 'active' : ''; ?>" id="nav-inquiries"><i class="bi bi-envelope-paper"></i><span>Inquiries</span><?php

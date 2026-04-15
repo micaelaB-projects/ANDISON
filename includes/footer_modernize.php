@@ -321,8 +321,53 @@ footer.footer-modernized .footer-scroll-top:hover {
 }
 </style>
 
+<?php
+require_once __DIR__ . '/../Andison/includes/footer_settings.php';
+$andisonFooterSettings = andison_get_footer_settings();
+?>
+
 <script>
 (function(){
+    var footerSettings = <?php echo json_encode($andisonFooterSettings, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE); ?>;
+
+    function escHtml(value) {
+        return String(value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function escHtmlWithBreaks(value) {
+        return escHtml(value).replace(/\n/g, '<br>');
+    }
+
+    function footerContactItem(iconClass, text) {
+        var safeText = String(text || '').trim();
+        if (!safeText) {
+            return '';
+        }
+        return '<li class="footer-contact-item"><i class="' + iconClass + '"></i><span>' + escHtml(safeText) + '</span></li>';
+    }
+
+    function footerContactEmailItem(iconClass, email) {
+        var safeEmail = String(email || '').trim();
+        if (!safeEmail) {
+            return '';
+        }
+        return '<li class="footer-contact-item"><i class="' + iconClass + '"></i><span>Email: <a href="mailto:' + escHtml(safeEmail) + '" style="color:inherit;text-decoration:none;">' + escHtml(safeEmail) + '</a></span></li>';
+    }
+
+    function footerNavLink(href, label) {
+        var safeHref = String(href || '').trim();
+        var safeLabel = String(label || '').trim();
+        if (!safeHref || !safeLabel) {
+            return '';
+        }
+        return '<a href="' + escHtml(safeHref) + '">' + escHtml(safeLabel) + '</a>';
+    }
+
     function modernizeLegacyFooter() {
         var footer = document.querySelector('footer');
         if (!footer) return;
@@ -338,7 +383,10 @@ footer.footer-modernized .footer-scroll-top:hover {
 
         footer.classList.add('footer-modernized');
 
-        var copyrightText = (legacyCopyright.textContent || '').trim();
+        var copyrightText = String(footerSettings.copyright || '').trim();
+        if (!copyrightText) {
+            copyrightText = (legacyCopyright.textContent || '').trim();
+        }
         if (!copyrightText) {
             copyrightText = 'Copyright 2021 Andison Industrial Sales Inc.';
         }
@@ -356,6 +404,15 @@ footer.footer-modernized .footer-scroll-top:hover {
             return '';
         })();
 
+        var footerNavLinksHtml = [
+            footerNavLink('/ANDISON/home.php', 'Home'),
+            footerNavLink('/ANDISON/aboutus.php', 'About Us'),
+            footerNavLink('/ANDISON/brands.php', 'Brands'),
+            footerNavLink('/ANDISON/industries.php', 'Industries'),
+            footerNavLink('/ANDISON/services.php', 'Services'),
+            footerNavLink('/ANDISON/contact.php', 'Contact Us')
+        ].join('');
+
         footerContent.innerHTML = (
             ''
             + '<div class="footer-main-grid">'
@@ -363,37 +420,32 @@ footer.footer-modernized .footer-scroll-top:hover {
                     + '<a href="/ANDISON/home.php" class="footer-brand-logo" aria-label="Andison Industrial Home">'
                         + '<img src="/ANDISON/assets/HOME/image-removebg-preview.png" alt="Andison Industrial">'
                     + '</a>'
-                    + '<p class="footer-brand-blurb">Andison Industrial Sales Inc., is a leading local industrial supply company, delivering high quality solutions, representing various world-class brands since 1994.</p>'
+                    + '<p class="footer-brand-blurb">' + escHtmlWithBreaks(footerSettings.brand_blurb || '') + '</p>'
                 + '</div>'
 
                 + '<div class="footer-col">'
-                    + '<h4 class="footer-col-title">Manila</h4>'
+                    + '<h4 class="footer-col-title">' + escHtml(footerSettings.manila_title || 'Manila') + '</h4>'
                     + '<ul class="footer-contact-list">'
-                        + '<li class="footer-contact-item"><i class="bi bi-geo-alt-fill"></i><span>Andison Bldg., Ground Flr. 917-919 Luzon St., Sta. Cruz, Manila, 1003 Philippines</span></li>'
-                        + '<li class="footer-contact-item"><i class="bi bi-telephone-fill"></i><span>Phone: (+632) 8584-4958</span></li>'
-                        + '<li class="footer-contact-item"><i class="bi bi-telephone-fill"></i><span>(+632) 8243-2873</span></li>'
-                        + '<li class="footer-contact-item"><i class="bi bi-printer-fill"></i><span>Fax: (+632) 8252-9224</span></li>'
+                        + footerContactItem('bi bi-geo-alt-fill', footerSettings.manila_address || '')
+                        + footerContactItem('bi bi-telephone-fill', (footerSettings.manila_phone_1 || '') ? ('Phone: ' + String(footerSettings.manila_phone_1 || '').trim()) : '')
+                        + footerContactItem('bi bi-telephone-fill', footerSettings.manila_phone_2 || '')
+                        + footerContactEmailItem('bi bi-envelope-fill', footerSettings.contact_email || '')
                     + '</ul>'
                 + '</div>'
 
                 + '<div class="footer-col">'
-                    + '<h4 class="footer-col-title">Calabarzon</h4>'
+                    + '<h4 class="footer-col-title">' + escHtml(footerSettings.calabarzon_title || 'Calabarzon') + '</h4>'
                     + '<ul class="footer-contact-list">'
-                        + '<li class="footer-contact-item"><i class="bi bi-geo-alt-fill"></i><span>29B P. Zamora Street, Batangas City, 4200 Philippines</span></li>'
-                        + '<li class="footer-contact-item"><i class="bi bi-telephone-fill"></i><span>Phone: (+6343) 425 4126</span></li>'
-                        + '<li class="footer-contact-item"><i class="bi bi-printer-fill"></i><span>Fax: (+6343) 723-3108</span></li>'
+                        + footerContactItem('bi bi-geo-alt-fill', footerSettings.calabarzon_address || '')
+                        + footerContactItem('bi bi-telephone-fill', (footerSettings.calabarzon_phone || '') ? ('Phone: ' + String(footerSettings.calabarzon_phone || '').trim()) : '')
+                        + footerContactEmailItem('bi bi-envelope-fill', footerSettings.contact_email || '')
                     + '</ul>'
                 + '</div>'
 
                 + '<div class="footer-col">'
-                    + '<h4 class="footer-col-title">Navigation</h4>'
+                    + '<h4 class="footer-col-title">' + escHtml(footerSettings.navigation_title || 'Navigation') + '</h4>'
                     + '<nav class="footer-nav-links" aria-label="Footer navigation">'
-                        + '<a href="/ANDISON/home.php">Home</a>'
-                        + '<a href="/ANDISON/aboutus.php">About Us</a>'
-                        + '<a href="/ANDISON/brands.php">Brands</a>'
-                        + '<a href="/ANDISON/industries.php">Industries</a>'
-                        + '<a href="/ANDISON/services.php">Services</a>'
-                        + '<a href="/ANDISON/contact.php">Contact Us</a>'
+                        + footerNavLinksHtml
                     + '</nav>'
                     + '</div>'
             + '</div>'
