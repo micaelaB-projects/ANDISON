@@ -569,23 +569,25 @@ if ($category_idx !== null) {
         background: rgba(0, 215, 179, 0.2);
     }
     .mini-sidebar-icon.active-icon {
-        background: #00D7B3;
-        color: #2B11DB;
+        background: rgba(0, 0, 0, 0.28);
+        border: 1px solid rgba(0, 215, 179, 0.45);
+        color: #00FFE0;
         font-weight: 600;
     }
     .mini-sidebar-icon.active-icon .label {
-        color: #2B11DB;
+        color: #00FFE0;
         font-weight: 600;
     }
     
     /* Also highlight active-parent class (used for category highlighting) */
     .mini-sidebar-icon.active-parent {
-        background: #00D7B3;
-        color: #2B11DB;
+        background: rgba(0, 0, 0, 0.28);
+        border: 1px solid rgba(0, 215, 179, 0.45);
+        color: #00FFE0;
         font-weight: 600;
     }
     .mini-sidebar-icon.active-parent .label {
-        color: #2B11DB;
+        color: #00FFE0;
         font-weight: 600;
     }
     .mini-sidebar.expanded .mini-sidebar-icon.active-parent {
@@ -738,7 +740,13 @@ if ($category_idx !== null) {
     }
 
     /* ── Main content shifts to avoid being covered by the mini sidebar ── */
+    html {
+        width: 100%;
+        overflow-x: hidden !important;
+    }
     body {
+        max-width: 100vw;
+        overflow-x: hidden !important;
         padding-left: 80px !important;
         transition: padding-left var(--sidebar-speed) var(--sidebar-ease) !important;
         will-change: padding-left;
@@ -1291,7 +1299,7 @@ if ($category_idx !== null) {
     <div class="mini-sidebar-icon has-sub" data-target="<?php echo $_sidebar_base; ?>gas-detectors/gas-detectors.php" title="Gas Detectors"><img class="mini-sidebar-img" src="<?php echo $_sidebar_base; ?>assets/icons/edited-icons/portable-gas-detector-Photoroom.png" alt=""><span class="label">Gas Detectors</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
     <div class="mini-sidebar-icon has-sub" data-target="<?php echo $_sidebar_base; ?>portable-ventilators/portable-ventilators.php" title="Portable Ventilators"><img class="mini-sidebar-img" src="<?php echo $_sidebar_base; ?>assets/icons/edited-icons/portable-ventilators-Photoroom.png" alt=""><span class="label">Portable Ventilators</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
     <div class="mini-sidebar-icon has-sub" data-target="<?php echo $_sidebar_base; ?>power-tools/power-tools.php" title="Power Tools"><img class="mini-sidebar-img" src="<?php echo $_sidebar_base; ?>assets/icons/edited-icons/power-tools-Photoroom.png" alt=""><span class="label">Power Tools</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
-    <div class="mini-sidebar-icon has-sub" data-target="<?php echo $_sidebar_base; ?>protection/protection.php" title="Personal Protective Equipment"><img class="mini-sidebar-img" src="<?php echo $_sidebar_base; ?>assets/icons/edited-icons/protective-and-safety-Photoroom.png" alt=""><span class="label">PPE</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
+    <div class="mini-sidebar-icon has-sub" data-target="<?php echo $_sidebar_base; ?>protection/protection.php" title="Personal Protective Equipment"><img class="mini-sidebar-img" src="<?php echo $_sidebar_base; ?>assets/icons/edited-icons/protective-and-safety-Photoroom.png" alt=""><span class="label">Personal Protective Equipment</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
     <div class="mini-sidebar-icon has-sub" data-target="<?php echo $_sidebar_base; ?>welding-accessories/welding-accessories.php" title="Welding Accessories"><img class="mini-sidebar-img" src="<?php echo $_sidebar_base; ?>assets/icons/edited-icons/welding-accessories-Photoroom.png" alt=""><span class="label">Welding Accessories</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
     <div class="mini-sidebar-icon has-sub" data-target="<?php echo $_sidebar_base; ?>welding-consumables/welding-consumables.php" title="Welding Consumables"><img class="mini-sidebar-img" src="<?php echo $_sidebar_base; ?>assets/icons/edited-icons/welding-consumables-Photoroom.png" alt=""><span class="label">Welding Consumables</span><span class="sub-indicator"><i class="bi bi-chevron-right"></i></span></div>
     <button class="mini-sidebar-toggle" id="expandSidebar" title="Toggle Sidebar"><i class="bi bi-chevron-right"></i></button>

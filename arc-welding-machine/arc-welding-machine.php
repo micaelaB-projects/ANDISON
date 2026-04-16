@@ -1543,7 +1543,8 @@ if (!$current_category) {
             padding: 60px 0 40px;
             text-align: center;
             margin-top: auto;
-            width: 100vw;
+            width: 100%;
+            max-width: 100%;
             position: relative;
             left: 0;
             right: 0;
@@ -4052,11 +4053,6 @@ if (!$current_category) {
                 document.querySelector('.product-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
-    </script>
-
-
-
-        });
     </script>
 
 <script>var CATEGORY_NAME = '<?php echo htmlspecialchars($category_name ?? 'Category', ENT_QUOTES); ?>';</script>

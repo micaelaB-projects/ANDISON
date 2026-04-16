@@ -50,6 +50,8 @@ if (!$current_category) {
 
         html {
             height: 100%;
+            width: 100%;
+            overflow-x: hidden;
         }
 
         body {
@@ -62,6 +64,8 @@ if (!$current_category) {
             display: flex;
             flex-direction: column;
             background: #f8f9fa;
+            max-width: 100vw;
+            overflow-x: hidden;
         }
 
         /* Header */
@@ -653,6 +657,9 @@ if (!$current_category) {
             padding: 30px 20px;
             margin-top: auto;
             border-top: 3px solid #2B11DB;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
         }
 
         .footer-content {
