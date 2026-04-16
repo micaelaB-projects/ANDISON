@@ -98,6 +98,7 @@ $brand_name = htmlspecialchars(andison_brand_display_name($brand_input));
 $logo_filename = function($brand) {
     $logoMap = [
         'Panasonic Connect' => 'PANASONIC',
+        'BW' => 'BW TECHNOLOGIES',
         'BW Technologies' => 'BW TECHNOLOGIES',
         'Weldcraft' => 'WELDCRAFT',
         'Soyer' => 'SOYER',

@@ -32,8 +32,8 @@ footer.footer-modernized .footer-content {
 
 footer.footer-modernized .footer-main-grid {
     display: grid;
-    grid-template-columns: minmax(240px, 1.25fr) minmax(220px, 1fr) minmax(220px, 1fr) minmax(200px, 1fr);
-    gap: 90px;
+    grid-template-columns: minmax(240px, 1.25fr) minmax(220px, 1fr) minmax(220px, 1fr) minmax(200px, 1fr) minmax(150px, 0.8fr);
+    gap: 56px;
     align-items: start;
 }
 
@@ -133,6 +133,46 @@ footer.footer-modernized .footer-nav-links a:hover::after {
     width: 100%;
 }
 
+footer.footer-modernized .footer-socials {
+    margin-top: 0;
+}
+
+footer.footer-modernized .footer-socials-title {
+    margin: 0 0 10px;
+    color: #ffffff;
+    font-size: 13px;
+    letter-spacing: 0.7px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+footer.footer-modernized .footer-social-links {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+footer.footer-modernized .footer-social-link {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #f3f5ff;
+    border: 1px solid #d7defd;
+    color: #2b11db;
+    text-decoration: none;
+    font-size: 16px;
+    box-shadow: 0 6px 14px rgba(8, 16, 52, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+footer.footer-modernized .footer-social-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 18px rgba(8, 16, 52, 0.28);
+}
+
 footer.footer-modernized .footer-bottom {
     border-top: 1px solid rgba(255, 255, 255, 0.16);
     padding: 18px 86px 20px;
@@ -183,7 +223,7 @@ footer.footer-modernized .footer-scroll-top:hover {
 
 @media (max-width: 1180px) {
     footer.footer-modernized .footer-main-grid {
-        grid-template-columns: repeat(2, minmax(220px, 1fr));
+        grid-template-columns: repeat(3, minmax(180px, 1fr));
         gap: 24px 28px;
     }
 
@@ -298,6 +338,9 @@ footer.footer-modernized .footer-scroll-top:hover {
     footer.footer-modernized .footer-contact-list { gap: 5px; }
     footer.footer-modernized .footer-contact-item { font-size: 11px; gap: 7px; line-height: 1.3; color: rgba(248, 250, 255, 0.92); }
     footer.footer-modernized .footer-contact-item i { font-size: 12px; margin-top: 2px; color: rgba(230,236,255,0.95); }
+    footer.footer-modernized .footer-socials { margin-top: 10px; }
+    footer.footer-modernized .footer-socials-title { font-size: 11px; margin-bottom: 7px; }
+    footer.footer-modernized .footer-social-link { width: 30px; height: 30px; font-size: 14px; }
 
     footer.footer-modernized .footer-bottom {
         flex-direction: column;
@@ -368,6 +411,14 @@ $andisonFooterSettings = andison_get_footer_settings();
         return '<a href="' + escHtml(safeHref) + '">' + escHtml(safeLabel) + '</a>';
     }
 
+    function footerSocialLink(href, iconClass, label) {
+        var safeHref = String(href || '').trim();
+        if (!safeHref) {
+            return '';
+        }
+        return '<a class="footer-social-link" href="' + escHtml(safeHref) + '" target="_blank" rel="noopener noreferrer" aria-label="' + escHtml(label) + '" title="' + escHtml(label) + '"><i class="' + iconClass + '"></i></a>';
+    }
+
     function modernizeLegacyFooter() {
         var footer = document.querySelector('footer');
         if (!footer) return;
@@ -413,6 +464,11 @@ $andisonFooterSettings = andison_get_footer_settings();
             footerNavLink('/ANDISON/contact.php', 'Contact Us')
         ].join('');
 
+        var footerSocialLinksHtml = [
+            footerSocialLink(footerSettings.facebook_url || '', 'bi bi-facebook', 'Facebook'),
+            footerSocialLink(footerSettings.linkedin_url || '', 'bi bi-linkedin', 'LinkedIn')
+        ].join('');
+
         footerContent.innerHTML = (
             ''
             + '<div class="footer-main-grid">'
@@ -448,6 +504,10 @@ $andisonFooterSettings = andison_get_footer_settings();
                         + footerNavLinksHtml
                     + '</nav>'
                     + '</div>'
+
+                + (footerSocialLinksHtml
+                    ? '<div class="footer-col"><div class="footer-socials"><h5 class="footer-socials-title">Socials</h5><div class="footer-social-links">' + footerSocialLinksHtml + '</div></div></div>'
+                    : '')
             + '</div>'
             + '<div class="footer-bottom">'
                 + '<p class="footer-copyright">' + copyrightText + '</p>'

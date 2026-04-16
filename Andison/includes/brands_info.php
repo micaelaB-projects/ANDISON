@@ -89,6 +89,51 @@ if (!function_exists('andison_canonical_brand_name')) {
     }
 }
 
+if (!function_exists('andison_brand_row_unpack')) {
+    function andison_brand_row_unpack(array $brandRow): array
+    {
+        $raw = (string)($brandRow['description'] ?? '');
+        $raw = trim($raw);
+        if ($raw === '') {
+            return ['description' => '', 'logo' => ''];
+        }
+
+        $decoded = json_decode($raw, true);
+        if (
+            is_array($decoded)
+            && (string)($decoded['format'] ?? '') === 'andison_brand_v1'
+        ) {
+            return [
+                'description' => trim((string)($decoded['description'] ?? '')),
+                'logo' => trim((string)($decoded['logo'] ?? '')),
+            ];
+        }
+
+        return ['description' => $raw, 'logo' => ''];
+    }
+}
+
+if (!function_exists('andison_brand_row_pack')) {
+    function andison_brand_row_pack(string $description, string $logoUrl = ''): string
+    {
+        $description = trim($description);
+        $logoUrl = trim($logoUrl);
+
+        if ($logoUrl === '') {
+            return $description;
+        }
+
+        $payload = [
+            'format' => 'andison_brand_v1',
+            'description' => $description,
+            'logo' => $logoUrl,
+        ];
+
+        $encoded = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        return (is_string($encoded) && $encoded !== '') ? $encoded : $description;
+    }
+}
+
 if (!function_exists('andison_product_record_score')) {
     function andison_product_record_score(array $product): int
     {
@@ -226,8 +271,10 @@ if (!function_exists('andison_get_brands_info')) {
             if ($name === '') continue;
             $lk = strtolower($name);
             $processed[$lk] = true;
+            $brandMeta = andison_brand_row_unpack(is_array($brand) ? $brand : []);
             $result[$name] = [
-                'description' => $brand['description'] ?? '',
+                'description' => $brandMeta['description'] ?? '',
+                'logo' => $brandMeta['logo'] ?? '',
                 'products'    => $dedupeProducts($sbByLower[$lk] ?? []),
             ];
         }
@@ -236,7 +283,7 @@ if (!function_exists('andison_get_brands_info')) {
         foreach ($sbByLower as $lk => $prods) {
             if (isset($processed[$lk])) continue;
             $nm = $sbOrigCase[$lk];
-            $result[$nm] = ['description' => '', 'products' => $dedupeProducts($prods)];
+            $result[$nm] = ['description' => '', 'logo' => '', 'products' => $dedupeProducts($prods)];
         }
 
         // ── Write cache ───────────────────────────────────────────────────
@@ -394,11 +441,21 @@ if (!function_exists('andison_save_single_brand')) {
 
         try {
             // ── 1. Save brand row (update if exists, insert if new) ──────────────
-            $existing = andison_sb_select('brands', 'select=id&name=eq.' . rawurlencode($name) . '&limit=1');
+            $existing = andison_sb_select('brands', 'select=id,name,description&name=eq.' . rawurlencode($name) . '&limit=1');
+            $incomingLogo = trim((string)($data['logo'] ?? ''));
             if (!empty($existing)) {
-                andison_sb_update('brands', ['description' => $data['description'] ?? ''], 'name=eq.' . rawurlencode($name));
+                $existingMeta = andison_brand_row_unpack((array)$existing[0]);
+                $packedDescription = andison_brand_row_pack(
+                    (string)($data['description'] ?? ''),
+                    $incomingLogo !== '' ? $incomingLogo : (string)($existingMeta['logo'] ?? '')
+                );
+                andison_sb_update('brands', ['description' => $packedDescription], 'name=eq.' . rawurlencode($name));
             } else {
-                andison_sb_insert('brands', [['name' => $name, 'description' => $data['description'] ?? '']]);
+                $packedDescription = andison_brand_row_pack(
+                    (string)($data['description'] ?? ''),
+                    $incomingLogo
+                );
+                andison_sb_insert('brands', [['name' => $name, 'description' => $packedDescription]]);
             }
 
             $existingProductRows = andison_sb_select('products', 'brand=ilike.' . rawurlencode($name) . '&limit=10000');
@@ -490,6 +547,67 @@ if (!function_exists('andison_save_brands_info')) {
             }
         }
         return $allOk;
+    }
+}
+
+if (!function_exists('andison_create_brand')) {
+    function andison_create_brand(string $name, string $description = '', string $logoUrl = ''): bool
+    {
+        $name = trim(andison_canonical_brand_name($name));
+        $description = trim($description);
+        $logoUrl = trim($logoUrl);
+        if ($name === '') {
+            return false;
+        }
+
+        $existing = andison_sb_select('brands', 'select=id,name,description&name=eq.' . rawurlencode($name) . '&limit=1');
+        if (!empty($existing[0])) {
+            if ($description !== '' || $logoUrl !== '') {
+                $existingMeta = andison_brand_row_unpack((array)$existing[0]);
+                $packedDescription = andison_brand_row_pack(
+                    $description !== '' ? $description : (string)($existingMeta['description'] ?? ''),
+                    $logoUrl !== '' ? $logoUrl : (string)($existingMeta['logo'] ?? '')
+                );
+                andison_sb_update('brands', ['description' => $packedDescription], 'name=eq.' . rawurlencode($name));
+            }
+            @unlink(dirname(__DIR__) . '/data/_cache/brands_full.cache');
+            return true;
+        }
+
+        $packedDescription = andison_brand_row_pack($description, $logoUrl);
+
+        $ok = andison_sb_insert('brands', [[
+            'name' => $name,
+            'description' => $packedDescription,
+        ]]);
+
+        if ($ok) {
+            @unlink(dirname(__DIR__) . '/data/_cache/brands_full.cache');
+        }
+
+        return $ok;
+    }
+}
+
+if (!function_exists('andison_delete_brand')) {
+    function andison_delete_brand(string $name): bool
+    {
+        $name = trim($name);
+        if ($name === '') {
+            return false;
+        }
+
+        // Remove linked products first so this brand cannot be surfaced from products fallback.
+        $productsDeleted = andison_sb_delete('products', 'brand=ilike.' . rawurlencode($name));
+        $brandDeleted = andison_sb_delete('brands', 'name=eq.' . rawurlencode($name));
+
+        // Consider success if either side deleted rows; both calls are idempotent.
+        $ok = $productsDeleted || $brandDeleted;
+        if ($ok) {
+            @unlink(dirname(__DIR__) . '/data/_cache/brands_full.cache');
+        }
+
+        return $ok;
     }
 }
 

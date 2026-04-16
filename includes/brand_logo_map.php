@@ -19,6 +19,7 @@ $brand_logo_map = [
     'Aquasol' => 'assets/brands/AQUASOL.jpg',
     'SK And GAL GAGE' => 'assets/brands/SK AND GAL GAGE.jpg',
     'COPPUS' => 'assets/brands/COPPUS.jpg',
+    'BW' => 'assets/brands/BW TECHNOLOGIES.jpg',
     'BW Technologies' => 'assets/brands/BW TECHNOLOGIES.jpg',
     'RAC' => 'assets/brands/RAE SYSTEMS.jpg',
     'WELDAS' => 'assets/brands/WELDAS.jpg',

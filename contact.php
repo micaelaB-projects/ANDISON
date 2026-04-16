@@ -23,6 +23,8 @@ $manilaPhone2 = trim((string)($footerSettings['manila_phone_2'] ?? ''));
 $calabarzonTitle = trim((string)($footerSettings['calabarzon_title'] ?? 'Calabarzon'));
 $calabarzonAddress = trim((string)($footerSettings['calabarzon_address'] ?? ''));
 $calabarzonPhone = trim((string)($footerSettings['calabarzon_phone'] ?? ''));
+$facebookUrl = trim((string)($footerSettings['facebook_url'] ?? ''));
+$linkedinUrl = trim((string)($footerSettings['linkedin_url'] ?? ''));
 
 $manilaMapQuery = rawurlencode(preg_replace('/\s+/', ' ', $manilaAddress));
 $calabarzonMapQuery = rawurlencode(preg_replace('/\s+/', ' ', $calabarzonAddress));
@@ -60,6 +62,34 @@ if (!function_exists('andison_contact_text_with_breaks')) {
         return nl2br(htmlspecialchars(trim($text), ENT_QUOTES));
     }
 }
+
+if (!function_exists('andison_contact_safe_external_url')) {
+    function andison_contact_safe_external_url(string $url): string
+    {
+        $url = trim($url);
+        if ($url === '') {
+            return '';
+        }
+
+        if (!preg_match('~^https?://~i', $url)) {
+            $url = 'https://' . ltrim($url, '/');
+        }
+
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            return '';
+        }
+
+        $scheme = strtolower((string)parse_url($url, PHP_URL_SCHEME));
+        if ($scheme !== 'http' && $scheme !== 'https') {
+            return '';
+        }
+
+        return $url;
+    }
+}
+
+$facebookUrlSafe = andison_contact_safe_external_url($facebookUrl);
+$linkedinUrlSafe = andison_contact_safe_external_url($linkedinUrl);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -1737,6 +1767,53 @@ if (!function_exists('andison_contact_text_with_breaks')) {
             line-height: 1.5;
         }
 
+        .contact-socials {
+            border-top: 1px solid #e8ecff;
+            padding-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .contact-socials-title {
+            margin: 0;
+            color: #2B11DB;
+            font-size: 11px;
+            letter-spacing: 0.45px;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .contact-socials-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .contact-social-link {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #dfe5ff;
+            background: #f6f8ff;
+            color: #2B11DB;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .contact-social-link i {
+            font-size: 17px;
+            line-height: 1;
+        }
+
+        .contact-social-link:hover {
+            border-color: #b9c6ff;
+            box-shadow: 0 6px 16px rgba(43, 17, 219, 0.12);
+            transform: translateY(-2px);
+        }
+
         .contact-location-card {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -2138,6 +2215,22 @@ if (!function_exists('andison_contact_text_with_breaks')) {
                     <div class="contact-quick-meta-item">
                         <strong>Response Time</strong>
                         <span>Usually within working hours</span>
+                    </div>
+                </div>
+
+                <div class="contact-socials" aria-label="Social media links">
+                    <p class="contact-socials-title">Socials</p>
+                    <div class="contact-socials-links">
+                        <?php if ($facebookUrlSafe !== ''): ?>
+                            <a class="contact-social-link" href="<?php echo htmlspecialchars($facebookUrlSafe, ENT_QUOTES); ?>" target="_blank" rel="noopener noreferrer" aria-label="Open Facebook">
+                                <i class="bi bi-facebook"></i>
+                            </a>
+                        <?php endif; ?>
+                        <?php if ($linkedinUrlSafe !== ''): ?>
+                            <a class="contact-social-link" href="<?php echo htmlspecialchars($linkedinUrlSafe, ENT_QUOTES); ?>" target="_blank" rel="noopener noreferrer" aria-label="Open LinkedIn">
+                                <i class="bi bi-linkedin"></i>
+                            </a>
+                        <?php endif; ?>
                     </div>
                 </div>
 

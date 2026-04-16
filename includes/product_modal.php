@@ -55,7 +55,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
           <!-- Header Section -->
           <div style="margin-bottom:24px;padding-bottom:20px;border-bottom:2px solid #f0f4ff;">
             <span id="prodDetailBrand" style="font-size:9px;font-weight:950;color:#2B11DB;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:block;background:linear-gradient(135deg, rgba(43,17,219,0.12) 0%, rgba(43,17,219,0.06) 100%);padding:8px 14px;border-radius:8px;width:fit-content;border-left:3px solid #2B11DB;"></span>
-            <h2 id="prodDetailName" style="font-size:clamp(28px,3vw,42px);font-weight:980;color:#0a0a1a;margin:10px 0 12px;line-height:1.12;letter-spacing:-0.7px;text-shadow:0 2px 8px rgba(0,0,0,0.08);"></h2>
+            <h2 id="prodDetailName" style="font-size:clamp(28px,3vw,42px);font-weight:500;color:#0a0a1a;margin:10px 0 12px;line-height:1.12;letter-spacing:-0.7px;text-shadow:0 2px 8px rgba(0,0,0,0.08);"></h2>
             <span id="prodDetailType" style="display:inline-block;background:linear-gradient(135deg, #2B11DB 0%, #1f0aa1 100%);color:#fff;font-size:10px;font-weight:950;padding:10px 20px;border-radius:24px;text-transform:uppercase;letter-spacing:1.2px;box-shadow:0 6px 16px rgba(43,17,219,0.28);"></span>
             <div id="prodDetailSubname" style="display:none;font-size:15px;font-weight:600;color:#555;margin-top:8px;letter-spacing:0.2px;"></div>
             <div id="prodDetailPrice" style="display:none;margin-top:10px;font-size:13px;font-weight:800;color:#2B11DB;background:rgba(43,17,219,0.08);padding:6px 14px;border-radius:20px;width:fit-content;letter-spacing:0.5px;"></div>
@@ -63,8 +63,8 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
           
           <!-- Description -->
           <div id="prodDescSection" style="display:none;margin-bottom:22px;padding:18px 20px;background:linear-gradient(135deg, rgba(43,17,219,0.06) 0%, rgba(43,17,219,0.03) 100%);border-radius:14px;border-left:4px solid #2B11DB;">
-            <div style="font-size:9px;font-weight:950;color:#2B11DB;letter-spacing:1.2px;margin-bottom:10px;text-transform:uppercase;display:flex;align-items:center;gap:6px;"><i class="bi bi-file-text"></i> OVERVIEW</div>
-                        <div id="prodDetailDesc" style="font-size:13px;color:#444;line-height:1.8;margin:0;font-weight:500;"></div>
+            <div style="font-size:17px;font-weight:950;color:#2B11DB;letter-spacing:1px;margin-bottom:10px;text-transform:uppercase;display:flex;align-items:center;gap:6px;"><i class="bi bi-file-text"></i> OVERVIEW</div>
+                        <div id="prodDetailDesc" style="font-size:16px;color:#444;line-height:1.8;margin:0;font-weight:500;"></div>
                         <div id="prodOverviewMediaWrap" style="display:none;margin:12px auto 0;width:72%;max-width:520px;">
                             <img id="prodOverviewMediaImg" src="" alt="Overview image" style="display:block;width:100%;height:140px;object-fit:contain;border-radius:12px;border:none;background:transparent;box-shadow:none;padding:0;">
                         </div>
@@ -72,10 +72,10 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
           
                     <!-- Specs -->
           <div id="prodSpecsSection" style="display:none;margin-bottom:24px;">
-            <div style="font-size:9px;font-weight:950;color:#2B11DB;letter-spacing:1.2px;margin-bottom:14px;text-transform:uppercase;display:flex;align-items:center;gap:6px;"><i class="bi bi-speedometer2"></i> SPECIFICATIONS</div>
+            <div style="font-size:17px;font-weight:950;color:#2B11DB;letter-spacing:1px;margin-bottom:14px;text-transform:uppercase;display:flex;align-items:center;gap:6px;"><i class="bi bi-speedometer2"></i> SPECIFICATIONS</div>
                         <div id="prodSpecsContent" style="display:block;">
                             <div id="prodSpecsDetails" style="min-width:0;">
-                                <div id="prodDetailSpecsText" style="display:none;margin:0 0 12px;padding:12px 14px;border-radius:12px;border-left:4px solid #2B11DB;background:linear-gradient(135deg, rgba(43,17,219,0.06) 0%, rgba(43,17,219,0.02) 100%);font-size:13px;color:#3f4459;line-height:1.75;"></div>
+                                <div id="prodDetailSpecsText" style="display:none;margin:0 0 12px;padding:12px 14px;border-radius:12px;border-left:4px solid #2B11DB;background:linear-gradient(135deg, rgba(43,17,219,0.06) 0%, rgba(43,17,219,0.02) 100%);font-size:16px;color:#3f4459;line-height:1.75;"></div>
                                 <div id="prodSpecsTableWrap" style="display:none;"></div>
                             </div>
                         </div>
@@ -87,7 +87,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
           </div>
           
           <!-- Default message -->
-          <div id="prodNoDetails" style="font-size:12px;color:#9a9fb5;line-height:1.8;font-style:italic;">
+          <div id="prodNoDetails" style="font-size:14px;color:#9a9fb5;line-height:1.8;font-style:italic;">
             <p style="margin:0;">Complete specifications and datasheets available upon request.</p>
           </div>
         </div>
@@ -254,7 +254,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
   filter: drop-shadow(0 8px 20px rgba(0,0,0,0.06));
 }
 #prodSpecsTableWrap {
-    overflow-x:auto;
+    overflow-x:visible;
 }
 
 #prodSpecsTableWrap .prod-detail-specs-table + .prod-detail-specs-table {
@@ -263,10 +263,10 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 
 #prodDetailSpecsTable,
 .prod-detail-specs-table {
-    width:max-content;
-    min-width:unset;
+    width:100%;
+    min-width:0;
     max-width:100%;
-    table-layout:auto;
+    table-layout:fixed;
     border-collapse:collapse;
     background:#fff;
     margin-left:auto;
@@ -280,15 +280,18 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 }
 #prodDetailSpecsTable th,
 .prod-detail-specs-table th { 
-  padding:13px 12px; 
+    padding:18px 18px; 
       text-align:center; 
   border-bottom:1px solid rgba(255,255,255,0.3);
   color:#fff;
-  font-size:10px;
+        font-size:16px;
   font-weight:950;
   text-transform:uppercase;
   letter-spacing:1px;
   font-weight: bold;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 #prodDetailSpecsTable tbody tr,
 .prod-detail-specs-table tbody tr { border-bottom:1px solid #f1f3f8; transition:all 0.2s ease; }
@@ -300,14 +303,17 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 .prod-detail-specs-table tbody tr:nth-child(even) { background:#fff; }
 #prodDetailSpecsTable td,
 .prod-detail-specs-table td { 
-  padding:11px 12px;
+    padding:16px 18px;
   border-bottom:1px solid #f1f3f8;
     color:#374151;
-  font-size:11px;
+        font-size:16px;
   line-height:1.5;
   font-weight:500;
         text-align:left;
     vertical-align:middle;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 #prodDetailSpecsTable td:first-child,
 .prod-detail-specs-table td:first-child{
@@ -315,7 +321,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
     color:#374151;
   background:linear-gradient(90deg, rgba(43,17,219,0.06) 0%, rgba(43,17,219,0.03) 100%);
     width:auto;
-  font-size:10.5px;
+        font-size:16px;
   letter-spacing:0.2px;
     text-align:left;
 }
@@ -1653,108 +1659,19 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
     function applyBodyBasedAutoTableSizing(table) {
         if (!table) return;
 
-        table.style.width = 'max-content';
-        table.style.minWidth = 'unset';
+        table.style.width = '100%';
+        table.style.minWidth = '0';
         table.style.maxWidth = '100%';
         table.style.tableLayout = 'fixed';
 
-        // Remove existing colgroup so we can re-calculate widths from current body data.
+        // Remove existing colgroup and keep a fluid full-width table.
         var existingColgroups = table.querySelectorAll('colgroup');
         existingColgroups.forEach(function(cg) {
             if (cg && cg.parentNode === table) {
                 table.removeChild(cg);
             }
         });
-
-        var bodyRows = Array.prototype.slice.call(table.querySelectorAll('tbody tr'));
-        var headRows = Array.prototype.slice.call(table.querySelectorAll('thead tr'));
-        var sourceRows = bodyRows.length > 0 ? bodyRows : headRows;
-        if (sourceRows.length === 0) return;
-
-        var colCount = 0;
-        sourceRows.forEach(function(tr) {
-            var rowCols = 0;
-            Array.prototype.slice.call(tr.children).forEach(function(cell) {
-                var cs = parseInt(cell.getAttribute('colspan') || '1', 10);
-                if (!isFinite(cs) || cs < 1) cs = 1;
-                rowCols += cs;
-            });
-            if (rowCols > colCount) colCount = rowCols;
-        });
-        if (colCount < 1) return;
-
-        var colChars = new Array(colCount).fill(6);
-
-        // Header has low influence; body content drives actual width.
-        headRows.forEach(function(tr) {
-            var colCursor = 0;
-            Array.prototype.slice.call(tr.children).forEach(function(cell) {
-                var cs = parseInt(cell.getAttribute('colspan') || '1', 10);
-                if (!isFinite(cs) || cs < 1) cs = 1;
-                var textLen = String(cell.textContent || '').trim().length;
-                var normalized = Math.max(1, Math.floor(Math.min(10, textLen) / cs));
-                for (var i = 0; i < cs && (colCursor + i) < colCount; i++) {
-                    colChars[colCursor + i] = Math.max(colChars[colCursor + i], normalized);
-                }
-                colCursor += cs;
-            });
-        });
-
-        bodyRows.forEach(function(tr) {
-            var colCursor = 0;
-            Array.prototype.slice.call(tr.children).forEach(function(cell) {
-                var cs = parseInt(cell.getAttribute('colspan') || '1', 10);
-                if (!isFinite(cs) || cs < 1) cs = 1;
-
-                var rawText = String(cell.textContent || '').trim();
-                var lines = rawText.split(/\n+/);
-                var longest = 0;
-                for (var li = 0; li < lines.length; li++) {
-                    var len = String(lines[li] || '').trim().length;
-                    if (len > longest) longest = len;
-                }
-                var normalized = Math.max(1, Math.floor(longest / cs));
-
-                for (var i = 0; i < cs && (colCursor + i) < colCount; i++) {
-                    colChars[colCursor + i] = Math.max(colChars[colCursor + i], normalized);
-                }
-                colCursor += cs;
-            });
-        });
-
-        var colgroup = document.createElement('colgroup');
-        var plannedWidths = [];
-        var totalPlannedWidth = 0;
-        for (var c = 0; c < colCount; c++) {
-            var basePx = Math.round(14 + (Math.min(colChars[c], 20) * 6.2));
-            var minPx = 64;
-            var maxPx = 210;
-
-            // Typical spec tables are 2 columns (label/value); keep them compact.
-            if (colCount === 2) {
-                minPx = c === 0 ? 170 : 240;
-                maxPx = c === 0 ? 300 : 460;
-            }
-
-            var widthPx = Math.max(minPx, Math.min(maxPx, basePx));
-            plannedWidths.push(widthPx);
-            totalPlannedWidth += widthPx;
-        }
-
-        // Prevent overly narrow rendering on 2-column technical data tables.
-        if (colCount === 2 && totalPlannedWidth < 620) {
-            var deficit = 620 - totalPlannedWidth;
-            plannedWidths[0] += Math.round(deficit * 0.35);
-            plannedWidths[1] += Math.round(deficit * 0.65);
-        }
-
-        for (var w = 0; w < plannedWidths.length; w++) {
-            var col = document.createElement('col');
-            var widthPx = plannedWidths[w];
-            col.style.width = widthPx + 'px';
-            colgroup.appendChild(col);
-        }
-        table.insertBefore(colgroup, table.firstChild);
+        return;
     }
 
     function renderSpecMatrixTable(matrix, table) {
@@ -1826,13 +1743,13 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 var leadTh = document.createElement('th');
                 leadTh.rowSpan = 2;
                 leadTh.textContent = headers[lc] || ('Column ' + (lc + 1));
-                leadTh.style.padding = '12px 10px';
+                leadTh.style.padding = '16px 14px';
                 leadTh.style.textAlign = 'center';
                 leadTh.style.borderBottom = '1px solid rgba(162, 191, 235, 0.45)';
                 leadTh.style.borderRight = '1px solid rgba(162, 191, 235, 0.45)';
                 leadTh.style.background = 'linear-gradient(180deg,#2a5b9c 0%,#173865 100%)';
                 leadTh.style.color = '#fff';
-                leadTh.style.fontSize = '11px';
+                leadTh.style.fontSize = '14px';
                 leadTh.style.fontWeight = '900';
                 topTr.appendChild(leadTh);
             }
@@ -1847,13 +1764,13 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                     gTh.colSpan = span;
                 }
                 gTh.textContent = groups[g].title || (g === 0 ? 'Free Air' : ('Group ' + (g + 1)));
-                gTh.style.padding = '10px 8px';
+                gTh.style.padding = '14px 12px';
                 gTh.style.textAlign = 'center';
                 gTh.style.borderBottom = '1px solid rgba(162, 191, 235, 0.45)';
                 gTh.style.borderRight = '1px solid rgba(162, 191, 235, 0.45)';
                 gTh.style.background = 'linear-gradient(180deg,#2a5b9c 0%,#173865 100%)';
                 gTh.style.color = '#fff';
-                gTh.style.fontSize = '11px';
+                gTh.style.fontSize = '14px';
                 gTh.style.fontWeight = '900';
                 topTr.appendChild(gTh);
             }
@@ -1876,13 +1793,13 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 for (var gs = 0; gs < g2span; gs++) {
                     var subTh = document.createElement('th');
                     subTh.textContent = headers[c] || ('Column ' + (c + 1));
-                    subTh.style.padding = '8px 8px';
+                    subTh.style.padding = '12px 10px';
                     subTh.style.textAlign = 'center';
                     subTh.style.borderBottom = '1px solid rgba(162, 191, 235, 0.45)';
                     subTh.style.borderRight = '1px solid rgba(162, 191, 235, 0.45)';
                     subTh.style.background = 'linear-gradient(180deg,#234f8b 0%,#163154 100%)';
                     subTh.style.color = '#f3f4f6';
-                    subTh.style.fontSize = '10px';
+                    subTh.style.fontSize = '13px';
                     subTh.style.fontWeight = '800';
                     subTr.appendChild(subTh);
                     subHeaderCount += 1;
@@ -1900,14 +1817,14 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
             for (var h = 0; h < headers.length; h++) {
                 var th = document.createElement('th');
                 th.textContent = headers[h] || ('Column ' + (h + 1));
-                th.style.padding = '12px 14px';
+                th.style.padding = '16px 16px';
                 th.style.textAlign = 'center';
                 th.style.borderBottom = '1px solid rgba(203,220,242,0.55)';
                 if (h < headers.length - 1) {
                     th.style.borderRight = '1px solid rgba(203,220,242,0.45)';
                 }
                 th.style.color = '#ffffff';
-                th.style.fontSize = '12px';
+                th.style.fontSize = '14px';
                 headerTr.appendChild(th);
             }
             thead.appendChild(headerTr);
@@ -2002,13 +1919,13 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                     td.colSpan = span;
                     td.style.textAlign = 'center';
                 }
-                td.style.padding = mode === 'grouped-pairs' ? '10px 10px' : '12px 14px';
+                td.style.padding = mode === 'grouped-pairs' ? '14px 14px' : '16px 16px';
                 td.style.borderBottom = '1px solid #e8ecf4';
                 var endCol = col + span - 1;
                 if (endCol < headers.length - 1) {
                     td.style.borderRight = '1px solid #e8ecf4';
                 }
-                td.style.fontSize = '13px';
+                td.style.fontSize = '15px';
                 td.style.whiteSpace = 'pre-line';
                 if (mode === 'grouped-pairs' && !td.style.textAlign) {
                     td.style.textAlign = 'left';
@@ -2079,12 +1996,12 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 
                 var th = document.createElement('th');
                 th.textContent = getDisplayLabel(hSpec.label);
-                th.style.padding = '12px 14px';
+                th.style.padding = '16px 16px';
                 th.style.textAlign = 'center';
                 th.style.borderBottom = '1px solid rgba(203,220,242,0.55)';
                 th.style.borderRight = '1px solid rgba(203,220,242,0.45)';
                 th.style.color = '#ffffff';
-                th.style.fontSize = '12px';
+                th.style.fontSize = '14px';
                 headerTr.appendChild(th);
             }
             thead.appendChild(headerTr);
@@ -2106,10 +2023,10 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                     var values = colSpec.value.split('|').map(function(v) { return v.trim(); });
                     var td = document.createElement('td');
                     td.textContent = values[rowIdx] || '';
-                    td.style.padding = '12px 14px';
+                    td.style.padding = '14px 16px';
                     td.style.borderBottom = '1px solid #e8ecf4';
                     td.style.borderRight = '1px solid #e8ecf4';
-                    td.style.fontSize = '13px';
+                    td.style.fontSize = '15px';
                     td.style.whiteSpace = 'pre-line';
                     td.style.textAlign = 'left';
                     td.style.verticalAlign = 'middle';
@@ -2137,6 +2054,10 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 td2.style.borderBottom = '1px solid #e8ecf4';
                 td2.style.textAlign = 'left';
                 td2.style.verticalAlign = 'middle';
+                td1.style.padding = '14px 16px';
+                td2.style.padding = '14px 16px';
+                td1.style.fontSize = '15px';
+                td2.style.fontSize = '15px';
                 tr.appendChild(td1);
                 tr.appendChild(td2);
                 tbody.appendChild(tr);
@@ -2231,14 +2152,14 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         function appendRenderedTable(rows, matrix, tableHtml) {
             var table = document.createElement('table');
             table.className = 'prod-detail-specs-table';
-            table.style.width = 'max-content';
-            table.style.minWidth = 'unset';
+            table.style.width = '100%';
+            table.style.minWidth = '0';
             table.style.maxWidth = '100%';
             table.style.marginLeft = 'auto';
             table.style.marginRight = 'auto';
             table.style.tableLayout = 'fixed';
             table.style.borderCollapse = 'collapse';
-            table.style.fontSize = '12px';
+            table.style.fontSize = '16px';
 
             var htmlSource = String(tableHtml || '').trim();
             if (htmlSource !== '') {

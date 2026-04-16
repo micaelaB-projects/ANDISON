@@ -4,10 +4,216 @@ andison_track_visit('brands');
 require_once __DIR__ . '/Andison/includes/home_featured.php';
 require_once __DIR__ . '/Andison/includes/home_slider.php';
 require_once __DIR__ . '/Andison/includes/youtube_links.php';
+require_once __DIR__ . '/Andison/includes/brands_info.php';
+require_once __DIR__ . '/includes/brand_logo_map.php';
 
 $featured = andison_get_home_featured();
 $slides = andison_get_home_slider();
 $ytLinks = andison_get_youtube_links();
+$brandsData = andison_get_brands_info();
+
+if (!function_exists('andison_brands_display_label')) {
+    function andison_brands_display_label(string $brand): string
+    {
+        $normalized = strtolower(trim($brand));
+        if ($normalized === 'hard worker' || $normalized === 'hard workers' || $normalized === 'hardworker') {
+            return 'HARDWORKER';
+        }
+        if ($normalized === 'dryrod. ii' || $normalized === 'dryrod ii' || $normalized === 'phoenix dryrod' || $normalized === 'phoenix dry rod') {
+            return 'DryRod. II';
+        }
+        if ($normalized === 'ansell') {
+            return 'ANSELL';
+        }
+        if ($normalized === 'panasonic' || $normalized === 'panasonic connect') {
+            return 'Panasonic Connect';
+        }
+        if ($normalized === 'rae' || $normalized === 'rac' || $normalized === 'rae systems') {
+            return 'RAE SYSTEMS';
+        }
+        return $normalized === 'weller' ? 'WEILER' : $brand;
+    }
+}
+
+if (!function_exists('andison_brands_logo_path')) {
+    function andison_brands_logo_path(string $brandKey, string $displayName, array $logoMap, array $brandInfo = []): string
+    {
+        $brandLogo = trim((string)($brandInfo['logo'] ?? ''));
+        if ($brandLogo !== '') {
+            return $brandLogo;
+        }
+
+        $candidates = [$brandKey, $displayName];
+        $normalized = strtolower(trim($brandKey));
+
+        if ($normalized === 'robot systems peripherals') {
+            $candidates[] = 'Robot Systems';
+        } elseif ($normalized === 'rae systems' || $normalized === 'rae' || $normalized === 'rac') {
+            $candidates[] = 'RAC';
+        } elseif ($normalized === 'magnaflux') {
+            $candidates[] = 'MAGNAFLUX';
+        } elseif ($normalized === 'weldas') {
+            $candidates[] = 'WELDAS';
+        } elseif ($normalized === 'uvex') {
+            $candidates[] = 'UVEX';
+        } elseif ($normalized === 'microgard') {
+            $candidates[] = 'MICROGARD';
+        } elseif ($normalized === 'ansell') {
+            $candidates[] = 'ANSELL';
+        } elseif ($normalized === 'bosch') {
+            $candidates[] = 'BOSCH';
+        } elseif ($normalized === 'revolt') {
+            $candidates[] = 'REVOLT';
+        } elseif ($normalized === 'motolite') {
+            $candidates[] = 'MOTOLITE';
+        } elseif ($normalized === 'sk and gal gage') {
+            $candidates[] = 'SK And GAL GAGE';
+        }
+
+        foreach ($candidates as $candidate) {
+            if (isset($logoMap[$candidate])) {
+                return (string)$logoMap[$candidate];
+            }
+        }
+
+        foreach ($logoMap as $mapName => $mapPath) {
+            if (strcasecmp((string)$mapName, $brandKey) === 0 || strcasecmp((string)$mapName, $displayName) === 0) {
+                return (string)$mapPath;
+            }
+        }
+
+        return '';
+    }
+}
+
+if (!function_exists('andison_brands_order_rank')) {
+    function andison_brands_order_rank(string $brand): int
+    {
+        static $rankMap = null;
+
+        if (!is_array($rankMap)) {
+            $ordered = [
+                'panasonic connect',
+                'robot systems peripherals',
+                'kobelco',
+                'metrode',
+                'dryrod. ii',
+                'weldcraft',
+                'truweld',
+                'arcair',
+                'magnaflux',
+                'tempilstik',
+                'tanaka',
+                'chiyoda',
+                'yutaka',
+                'hardworker',
+                'soyer',
+                'aquasol',
+                'sk and gal gage',
+                'coppus',
+                'bw technologies',
+                'rae systems',
+                'weldas',
+                'uvex',
+                'aces',
+                'microgard',
+                'ansell',
+                'alfra',
+                'bosch',
+                'makita',
+                'weiler',
+                'garryson',
+                'revolt',
+                'technotex',
+                'spillfyter',
+                'dalo',
+                'motolite',
+            ];
+
+            $rankMap = [];
+            foreach ($ordered as $idx => $name) {
+                $rankMap[$name] = $idx;
+            }
+        }
+
+        $normalized = strtolower(trim($brand));
+        $normalized = preg_replace('/\s+/', ' ', $normalized) ?? $normalized;
+
+        if ($normalized === 'robot systems' || $normalized === 'robot system peripherals') {
+            $normalized = 'robot systems peripherals';
+        } elseif ($normalized === 'dryrod ii' || $normalized === 'phoenix dryrod' || $normalized === 'phoenix dry rod') {
+            $normalized = 'dryrod. ii';
+        } elseif ($normalized === 'hard worker' || $normalized === 'hard workers' || $normalized === 'hardworker') {
+            $normalized = 'hardworker';
+        } elseif ($normalized === 'bw') {
+            $normalized = 'bw technologies';
+        } elseif ($normalized === 'rac' || $normalized === 'rae') {
+            $normalized = 'rae systems';
+        } elseif ($normalized === 'weller') {
+            $normalized = 'weiler';
+        } elseif ($normalized === 'spilfyter') {
+            $normalized = 'spillfyter';
+        }
+
+        return $rankMap[$normalized] ?? 10000;
+    }
+}
+
+$brandDisplayToKey = [];
+$hiddenBrandDisplayKeys = [
+    'aer service' => true,
+    'wire wizard' => true,
+    'tokin arc' => true,
+    'alphatec' => true,
+    'bw technologies' => true,
+    'hard worker' => true,
+    'phoenix dryrod' => true,
+    'phoenix dry rod' => true,
+    'sk' => true,
+    'gal gage' => true,
+];
+
+foreach (array_keys($brandsData) as $brandKey) {
+    $display = andison_brands_display_label((string)$brandKey);
+    $displayKey = strtolower(trim($display));
+    if ($displayKey === '' || isset($hiddenBrandDisplayKeys[$displayKey])) {
+        continue;
+    }
+
+    if (!isset($brandDisplayToKey[$displayKey])) {
+        $brandDisplayToKey[$displayKey] = (string)$brandKey;
+        continue;
+    }
+
+    $currentKey = $brandDisplayToKey[$displayKey];
+    $currentCount = count($brandsData[$currentKey]['products'] ?? []);
+    $newCount = count($brandsData[$brandKey]['products'] ?? []);
+    if ($newCount > $currentCount) {
+        $brandDisplayToKey[$displayKey] = (string)$brandKey;
+    }
+}
+
+$brandCards = [];
+foreach ($brandDisplayToKey as $displayKey => $brandKey) {
+    $displayName = andison_brands_display_label($brandKey);
+    $brandInfo = isset($brandsData[$brandKey]) && is_array($brandsData[$brandKey]) ? $brandsData[$brandKey] : [];
+    $brandCards[] = [
+        'key' => $brandKey,
+        'display' => $displayName,
+        'logo' => andison_brands_logo_path($brandKey, $displayName, isset($brand_logo_map) && is_array($brand_logo_map) ? $brand_logo_map : [], $brandInfo),
+    ];
+}
+
+usort($brandCards, static function (array $a, array $b): int {
+    $rankA = andison_brands_order_rank((string)$a['display']);
+    $rankB = andison_brands_order_rank((string)$b['display']);
+
+    if ($rankA !== $rankB) {
+        return $rankA <=> $rankB;
+    }
+
+    return strcasecmp((string)$a['display'], (string)$b['display']);
+});
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -543,6 +749,21 @@ $ytLinks = andison_get_youtube_links();
             cursor: pointer;
         }
 
+        nav li:nth-child(3) .nav-dropdown ul a .nav-brand-fallback {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 74px;
+            min-height: 37px;
+            font-size: 11px;
+            font-weight: 800;
+            color: #2B11DB;
+            border: 1px dashed #cfd8ff;
+            border-radius: 6px;
+            padding: 4px 8px;
+            text-align: center;
+        }
+
         nav li:nth-child(3) .nav-dropdown ul a {
             cursor: pointer;
         }
@@ -863,6 +1084,20 @@ $ytLinks = andison_get_youtube_links();
             height: 100%;
             object-fit: contain;
             padding: 12px;
+        }
+
+        .brand-logo-fallback {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2B11DB 0%, #00BCD4 100%);
+            color: #fff;
+            font-size: 28px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: 0.5px;
         }
 
         .brand-card h3 {
@@ -1922,41 +2157,17 @@ $ytLinks = andison_get_youtube_links();
                         <div class="nav-dropdown">
                             <h4>Featured Brands</h4>
                             <ul>
-                                <li><a href="brand.php?name=Panasonic%20Connect"><img src="assets/brands/PANASONIC.jpg" alt="Panasonic Connect" title="Panasonic Connect"></a></li>
-                                <li><a href="brand.php?name=Robot%20Systems"><img src="assets/brands/ROBOT SYSTEMS.png" alt="Robot Systems Peripherals" title="Robot Systems Peripherals"></a></li>
-                                <li><a href="brand.php?name=Kobelco"><img src="assets/brands/KOBELCO.jpg" alt="Kobelco" title="Kobelco"></a></li>
-                                <li><a href="brand.php?name=Metrode"><img src="assets/brands/METRODE.jpg" alt="Metrode" title="Metrode"></a></li>
-                                <li><a href="brand.php?name=DryRod.%20II"><img src="assets/brands/DRYROD.jpg" alt="DryRod. II" title="DryRod. II"></a></li>
-                                <li><a href="brand.php?name=Weldcraft"><img src="assets/brands/WELDCRAFT.png" alt="Weldcraft" title="Weldcraft"></a></li>
-                                <li><a href="brand.php?name=Truweld"><img src="assets/brands/TRUWELD.jpg" alt="Truweld" title="Truweld"></a></li>
-                                <li><a href="brand.php?name=Arcair"><img src="assets/brands/ARCAIR.jpg" alt="Arcair" title="Arcair"></a></li>
-                                <li><a href="brand.php?name=MAGNAFLUX"><img src="assets/brands/MAGNAFLUX.jpg" alt="Magnaflux" title="Magnaflux"></a></li>
-                                <li><a href="brand.php?name=Tempilstik"><img src="assets/brands/TEMPILSTIK.jpg" alt="Tempilstik" title="Tempilstik"></a></li>
-                                <li><a href="brand.php?name=TANAKA"><img src="assets/brands/TANAKA.jpg" alt="Tanaka" title="Tanaka"></a></li>
-                                <li><a href="brand.php?name=CHIYODA"><img src="assets/brands/CHIYODA.jpg" alt="Chiyoda" title="Chiyoda"></a></li>
-                                <li><a href="brand.php?name=Yutaka"><img src="assets/brands/YUTAKA.jpg" alt="Yutaka" title="Yutaka"></a></li>
-                                <li><a href="brand.php?name=HARDWORKER"><img src="assets/brands/HARDWORKER.jpg" alt="Hard Workers" title="Hard Workers"></a></li>
-                                <li><a href="brand.php?name=Soyer"><img src="assets/brands/SOYER.jpg" alt="Soyer" title="Soyer"></a></li>
-                                <li><a href="brand.php?name=Aquasol"><img src="assets/brands/AQUASOL.jpg" alt="Aquasol" title="Aquasol"></a></li>
-                                <li><a href="brand.php?name=SK%20And%20GAL%20GAGE"><img src="assets/brands/SK%20AND%20GAL%20GAGE.jpg" alt="SK And GAL GAGE" title="SK And GAL GAGE"></a></li>
-                                <li><a href="brand.php?name=COPPUS"><img src="assets/brands/COPPUS.jpg" alt="Coppus" title="Coppus"></a></li>
-                                <li><a href="brand.php?name=BW%20Technologies"><img src="assets/brands/BW%20TECHNOLOGIES.jpg" alt="BW Technologies" title="BW Technologies"></a></li>
-                                <li><a href="brand.php?name=RAE"><img src="assets/brands/RAE%20SYSTEMS.jpg" alt="RAE Systems" title="RAE Systems"></a></li>
-                                <li><a href="brand.php?name=WELDAS"><img src="assets/brands/WELDAS.jpg" alt="Weldas" title="Weldas"></a></li>
-                                <li><a href="brand.php?name=UVEX"><img src="assets/brands/UVEX.jpg" alt="Uvex" title="Uvex"></a></li>
-                                <li><a href="brand.php?name=ACES"><img src="assets/brands/ACES.jpg" alt="Aces" title="Aces"></a></li>
-                                <li><a href="brand.php?name=MICROGARD"><img src="assets/brands/MICROGARD.jpg" alt="Microgard" title="Microgard"></a></li>
-                                <li><a href="brand.php?name=ANSELL"><img src="assets/brands/ANSELL.jpg" alt="Ansell" title="Ansell"></a></li>
-                                <li><a href="brand.php?name=Alfra"><img src="assets/brands/ALFRA.jpg" alt="Alfra" title="Alfra"></a></li>
-                                <li><a href="brand.php?name=BOSCH"><img src="assets/brands/BOSCH.jpg" alt="Bosch" title="Bosch"></a></li>
-                                <li><a href="brand.php?name=Makita"><img src="assets/brands/MAKITA.jpg" alt="Makita" title="Makita"></a></li>
-                                <li><a href="brand.php?name=Weller"><img src="assets/brands/WEILER.jpg" alt="Weller" title="Weller"></a></li>
-                                <li><a href="brand.php?name=Garryson"><img src="assets/brands/GARRYSON.jpg" alt="Garryson" title="Garryson"></a></li>
-                                <li><a href="brand.php?name=REVOLT"><img src="assets/brands/REVOLT.png" alt="REVOLT" title="REVOLT"></a></li>
-                                <li><a href="brand.php?name=Technotex"><img src="assets/brands/TECHNOTEX.png" alt="Technotex" title="Technotex"></a></li>
-                                <li><a href="brand.php?name=Spilfyter"><img src="assets/brands/SPILFYTER.jpg" alt="Spilfyter" title="Spilfyter"></a></li>
-                                <li><a href="brand.php?name=Dalo"><img src="assets/brands/DALO.jpg" alt="Dalo" title="Dalo"></a></li>
-                                <li><a href="brand.php?name=MOTOLITE"><img src="assets/brands/MOTOLITE.jpg" alt="Motolite" title="Motolite"></a></li>
+                                <?php foreach ($brandCards as $brandCard): ?>
+                                    <li>
+                                        <a href="brand.php?name=<?php echo rawurlencode((string)$brandCard['display']); ?>" title="<?php echo htmlspecialchars((string)$brandCard['display'], ENT_QUOTES); ?>">
+                                            <?php if ((string)($brandCard['logo'] ?? '') !== ''): ?>
+                                                <img src="<?php echo htmlspecialchars((string)$brandCard['logo'], ENT_QUOTES); ?>" alt="<?php echo htmlspecialchars((string)$brandCard['display'], ENT_QUOTES); ?>">
+                                            <?php else: ?>
+                                                <span class="nav-brand-fallback"><?php echo htmlspecialchars((string)$brandCard['display'], ENT_QUOTES); ?></span>
+                                            <?php endif; ?>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
                             </ul>
                         </div>
                     </li>
@@ -2010,256 +2221,18 @@ $ytLinks = andison_get_youtube_links();
         </div>
 
         <div class="brands-grid">
-            <!-- Row 1 -->
-            <div class="brand-card" data-brand="Panasonic Connect">
-                <div class="brand-logo">
-                    <img src="assets/brands/PANASONIC.jpg" alt="Panasonic Connect">
+            <?php foreach ($brandCards as $brandCard): ?>
+                <div class="brand-card" data-brand="<?php echo htmlspecialchars((string)$brandCard['key'], ENT_QUOTES); ?>">
+                    <div class="brand-logo">
+                        <?php if ((string)($brandCard['logo'] ?? '') !== ''): ?>
+                            <img src="<?php echo htmlspecialchars((string)$brandCard['logo'], ENT_QUOTES); ?>" alt="<?php echo htmlspecialchars((string)$brandCard['display'], ENT_QUOTES); ?>">
+                        <?php else: ?>
+                            <span class="brand-logo-fallback"><?php echo htmlspecialchars(strtoupper(substr((string)$brandCard['display'], 0, 1)), ENT_QUOTES); ?></span>
+                        <?php endif; ?>
+                    </div>
+                    <h3><?php echo htmlspecialchars((string)$brandCard['display'], ENT_QUOTES); ?></h3>
                 </div>
-                <h3>Panasonic Connect</h3>
-            </div>
-
-            <div class="brand-card" data-brand="Robot Systems Peripherals">
-                <div class="brand-logo">
-                    <img src="assets/brands/ROBOT SYSTEMS.png" alt="Robot Systems Peripherals">
-                </div>
-                <h3>Robot Systems Peripherals</h3>
-            </div>
-
-            <div class="brand-card" data-brand="Kobelco">
-                <div class="brand-logo">
-                    <img src="assets/brands/KOBELCO.jpg" alt="Kobelco">
-                </div>
-                <h3>Kobelco</h3>
-            </div>
-
-            <div class="brand-card" data-brand="Metrode">
-                <div class="brand-logo">
-                    <img src="assets/brands/METRODE.jpg" alt="Metrode">
-                </div>
-                <h3>Metrode</h3>
-            </div>
-
-            <div class="brand-card" data-brand="DryRod. II">
-                <div class="brand-logo">
-                    <img src="assets/brands/DRYROD.jpg" alt="DryRod. II">
-                </div>
-                <h3>DryRod. II</h3>
-            </div>
-
-            <!-- Row 2 -->
-            <div class="brand-card" data-brand="Weldcraft">
-                <div class="brand-logo">
-                    <img src="assets/brands/WELDCRAFT.png" alt="Weldcraft">
-                </div>
-                <h3>Weldcraft</h3>
-            </div>
-
-            <div class="brand-card" data-brand="Truweld">
-                <div class="brand-logo">
-                    <img src="assets/brands/TRUWELD.jpg" alt="Truweld">
-                </div>
-                <h3>Truweld</h3>
-            </div>
-
-            <div class="brand-card" data-brand="Arcair">
-                <div class="brand-logo">
-                    <img src="assets/brands/ARCAIR.jpg" alt="Arcair">
-                </div>
-                <h3>Arcair</h3>
-            </div>
-
-            <div class="brand-card" data-brand="Magnaflux">
-                <div class="brand-logo">
-                    <img src="assets/brands/MAGNAFLUX.jpg" alt="Magnaflux">
-                </div>
-                <h3>Magnaflux</h3>
-            </div>
-
-            <div class="brand-card" data-brand="Tempilstik">
-                <div class="brand-logo">
-                    <img src="assets/brands/TEMPILSTIK.jpg" alt="Tempilstik">
-                </div>
-                <h3>Tempilstik</h3>
-            </div>
-
-            <div class="brand-card" data-brand="TANAKA">
-                <div class="brand-logo">
-                    <img src="assets/brands/TANAKA.jpg" alt="Tanaka">
-                </div>
-                <h3>Tanaka</h3>
-            </div>
-
-            <div class="brand-card" data-brand="CHIYODA">
-                <div class="brand-logo">
-                    <img src="assets/brands/CHIYODA.jpg" alt="Chiyoda">
-                </div>
-                <h3>Chiyoda</h3>
-            </div>
-
-            <div class="brand-card" data-brand="Yutaka">
-                <div class="brand-logo">
-                    <img src="assets/brands/YUTAKA.jpg" alt="Yutaka">
-                </div>
-                <h3>Yutaka</h3>
-            </div>
-
-            <div class="brand-card" data-brand="HARDWORKER">
-                <div class="brand-logo">
-                    <img src="assets/brands/HARDWORKER.jpg" alt="Hard Workers">
-                </div>
-                <h3>Hard Workers</h3>
-            </div>
-
-            <div class="brand-card" data-brand="Soyer">
-                <div class="brand-logo">
-                    <img src="assets/brands/SOYER.jpg" alt="Soyer">
-                </div>
-                <h3>Soyer</h3>
-            </div>
-
-            <!-- Row 3 -->
-            <div class="brand-card" data-brand="Aquasol">
-                <div class="brand-logo">
-                    <img src="assets/brands/AQUASOL.jpg" alt="Aquasol">
-                </div>
-                <h3>Aquasol</h3>
-            </div>
-
-            <div class="brand-card" data-brand="SK and Gal Gage">
-                <div class="brand-logo">
-                    <img src="assets/brands/SK AND GAL GAGE.jpg" alt="SK and Gal Gage">
-                </div>
-                <h3>SK and Gal Gage</h3>
-            </div>
-
-            <div class="brand-card" data-brand="Coppus">
-                <div class="brand-logo">
-                    <img src="assets/brands/COPPUS.jpg" alt="Coppus">
-                </div>
-                <h3>Coppus</h3>
-            </div>
-
-            <div class="brand-card" data-brand="BW Technologies">
-                <div class="brand-logo">
-                    <img src="assets/brands/BW TECHNOLOGIES.jpg" alt="BW Technologies">
-                </div>
-                <h3>BW Technologies</h3>
-            </div>
-
-            <div class="brand-card" data-brand="RAE Systems">
-                <div class="brand-logo">
-                    <img src="assets/brands/RAE SYSTEMS.jpg" alt="RAE Systems">
-                </div>
-                <h3>RAE Systems</h3>
-            </div>
-
-            <!-- Row 4 -->
-            <div class="brand-card" data-brand="Weldas">
-                <div class="brand-logo">
-                    <img src="assets/brands/WELDAS.jpg" alt="Weldas">
-                </div>
-                <h3>Weldas</h3>
-            </div>
-
-            <div class="brand-card" data-brand="Uvex">
-                <div class="brand-logo">
-                    <img src="assets/brands/UVEX.jpg" alt="Uvex">
-                </div>
-                <h3>Uvex</h3>
-            </div>
-
-            <div class="brand-card" data-brand="ACES">
-                <div class="brand-logo">
-                    <img src="assets/brands/ACES.jpg" alt="ACES">
-                </div>
-                <h3>ACES</h3>
-            </div>
-
-            <div class="brand-card" data-brand="Microgard">
-                <div class="brand-logo">
-                    <img src="assets/brands/MICROGARD.jpg" alt="Microgard">
-                </div>
-                <h3>Microgard</h3>
-            </div>
-
-            <div class="brand-card" data-brand="Ansell">
-                <div class="brand-logo">
-                    <img src="assets/brands/ANSELL.jpg" alt="Ansell">
-                </div>
-                <h3>Ansell</h3>
-            </div>
-
-            <!-- Row 5 -->
-            <div class="brand-card" data-brand="Alfra">
-                <div class="brand-logo">
-                    <img src="assets/brands/ALFRA.jpg" alt="Alfra">
-                </div>
-                <h3>Alfra</h3>
-            </div>
-
-            <div class="brand-card" data-brand="Bosch">
-                <div class="brand-logo">
-                    <img src="assets/brands/BOSCH.jpg" alt="Bosch">
-                </div>
-                <h3>Bosch</h3>
-            </div>
-
-            <div class="brand-card" data-brand="Makita">
-                <div class="brand-logo">
-                    <img src="assets/brands/MAKITA.jpg" alt="Makita">
-                </div>
-                <h3>Makita</h3>
-            </div>
-
-            <div class="brand-card" data-brand="Weiler">
-                <div class="brand-logo">
-                    <img src="assets/brands/WEILER.jpg" alt="Weiler">
-                </div>
-                <h3>Weiler</h3>
-            </div>
-
-            <div class="brand-card" data-brand="Garryson">
-                <div class="brand-logo">
-                    <img src="assets/brands/GARRYSON.jpg" alt="Garryson">
-                </div>
-                <h3>Garryson</h3>
-            </div>
-
-            <!-- Row 6 -->
-            <div class="brand-card" data-brand="Revolt">
-                <div class="brand-logo">
-                    <img src="assets/brands/REVOLT.png" alt="Revolt">
-                </div>
-                <h3>Revolt</h3>
-            </div>
-
-            <div class="brand-card" data-brand="Technotex">
-                <div class="brand-logo">
-                    <img src="assets/brands/TECHNOTEX.png" alt="Technotex">
-                </div>
-                <h3>Technotex</h3>
-            </div>
-
-            <div class="brand-card" data-brand="Spilfyter">
-                <div class="brand-logo">
-                    <img src="assets/brands/SPILFYTER.jpg" alt="Spilfyter">
-                </div>
-                <h3>Spilfyter</h3>
-            </div>
-
-            <div class="brand-card" data-brand="Dalo">
-                <div class="brand-logo">
-                    <img src="assets/brands/DALO.jpg" alt="Dalo">
-                </div>
-                <h3>Dalo</h3>
-            </div>
-
-            <div class="brand-card" data-brand="Motolite">
-                <div class="brand-logo">
-                    <img src="assets/brands/MOTOLITE.jpg" alt="Motolite">
-                </div>
-                <h3>Motolite</h3>
-            </div>
+            <?php endforeach; ?>
         </div>
     </section>
     </div><!-- /.page-content -->
@@ -2278,6 +2251,7 @@ $ytLinks = andison_get_youtube_links();
             </div>
         </div>
     </footer>
+    <?php require_once __DIR__ . '/includes/footer_modernize.php'; ?>
     <script>
         // Manage aria states for contact dropdown (improves accessibility)
         (function(){

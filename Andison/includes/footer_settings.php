@@ -17,46 +17,11 @@ if (!function_exists('andison_footer_settings_defaults')) {
             'calabarzon_address' => '29B P. Zamora Street, Batangas City, 4200 Philippines',
             'calabarzon_phone' => '(+6343) 425 4126',
             'contact_email' => 'info@andison-industrial.com',
+            'facebook_url' => '',
+            'linkedin_url' => '',
             'navigation_title' => 'Navigation',
             'copyright' => '© 2026 ANDISON INDUSTRIAL. All rights reserved.',
         ];
-    }
-}
-
-if (!function_exists('andison_footer_settings_path')) {
-    function andison_footer_settings_path(): string
-    {
-        return dirname(__DIR__) . '/data/footer_settings.json';
-    }
-}
-
-if (!function_exists('andison_footer_settings_read_legacy_json')) {
-    function andison_footer_settings_read_legacy_json(array $defaults): array
-    {
-        $path = andison_footer_settings_path();
-        if (!is_file($path)) {
-            return $defaults;
-        }
-
-        $raw = @file_get_contents($path);
-        if (!is_string($raw) || trim($raw) === '') {
-            return $defaults;
-        }
-
-        $decoded = json_decode($raw, true);
-        if (!is_array($decoded)) {
-            return $defaults;
-        }
-
-        $out = $defaults;
-        foreach ($defaults as $key => $defaultValue) {
-            if (!array_key_exists($key, $decoded)) {
-                continue;
-            }
-            $out[$key] = trim((string)$decoded[$key]);
-        }
-
-        return $out;
     }
 }
 
@@ -94,8 +59,7 @@ if (!function_exists('andison_get_footer_settings')) {
             }
         }
 
-        // Backward compatibility for older local file storage.
-        return andison_footer_settings_read_legacy_json($defaults);
+        return $defaults;
     }
 }
 

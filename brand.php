@@ -228,6 +228,7 @@ if (!function_exists('andison_render_brand_description')) {
 // Map brand names to logo filenames
 $logo_map = [
     'Panasonic Connect'      => 'PANASONIC',
+    'BW'                     => 'BW TECHNOLOGIES',
     'BW Technologies'        => 'BW TECHNOLOGIES',
     'Weldcraft'              => 'WELDCRAFT',
     'Soyer'                  => 'SOYER',
@@ -265,6 +266,7 @@ $logo_map = [
 
 // Map brand display names to canonical brand names (for lookups)
 $brand_name_map = [
+    'BW'                     => 'BW Technologies',
     'RAE'                    => 'RAE SYSTEMS',
     'RAC'                    => 'RAE SYSTEMS',
     'Robot Systems'          => 'Robot Systems Peripherals',
@@ -325,10 +327,16 @@ if ($resolvedBrandKey !== '' && isset($brands_info_data[$resolvedBrandKey])) {
 } else {
     $brand_info = [
         'description' => 'High-quality industrial products and solutions.',
+        'logo' => '',
         'products'    => [],
     ];
 }
 $brand_products = $brand_info['products'] ?? [];
+
+$brand_logo_src = trim((string)($brand_info['logo'] ?? ''));
+if ($brand_logo_src === '') {
+    $brand_logo_src = 'assets/brands/' . rawurlencode($logo_file) . '.' . $logo_ext;
+}
 
 /**
  * Auto-detect all numbered images for a product.
@@ -2935,7 +2943,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             <!-- Brand Header -->
             <div class="brand-header-card">
                 <div class="brand-logo-wrap">
-                    <img src="assets/brands/<?php echo rawurlencode($logo_file); ?>.<?php echo $logo_ext; ?>"
+                    <img src="<?php echo htmlspecialchars($brand_logo_src, ENT_QUOTES); ?>"
                          alt="<?php echo $brand_name; ?>"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                     <div class="brand-logo-placeholder" style="display:none;"><?php echo $brand_name; ?></div>

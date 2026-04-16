@@ -20,6 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'calabarzon_address' => (string)($_POST['calabarzon_address'] ?? ''),
         'calabarzon_phone' => (string)($_POST['calabarzon_phone'] ?? ''),
         'contact_email' => (string)($_POST['contact_email'] ?? ''),
+        'facebook_url' => (string)($_POST['facebook_url'] ?? ''),
+        'linkedin_url' => (string)($_POST['linkedin_url'] ?? ''),
         'navigation_title' => (string)($_POST['navigation_title'] ?? ''),
         'copyright' => (string)($_POST['copyright'] ?? ''),
     ];
@@ -87,6 +89,17 @@ andison_admin_header('Footer Details', 'footer');
             <div class="field" style="margin-bottom:14px;">
                 <label for="contact_email">Contact Email</label>
                 <input id="contact_email" name="contact_email" type="text" value="<?php echo htmlspecialchars((string)($settings['contact_email'] ?? ''), ENT_QUOTES); ?>" placeholder="e.g., info@andison-industrial.com">
+            </div>
+
+            <div class="two-col" style="margin-bottom:14px;">
+                <div class="field">
+                    <label for="facebook_url">Facebook Link</label>
+                    <input id="facebook_url" name="facebook_url" type="url" value="<?php echo htmlspecialchars((string)($settings['facebook_url'] ?? ''), ENT_QUOTES); ?>" placeholder="https://facebook.com/your-page">
+                </div>
+                <div class="field">
+                    <label for="linkedin_url">LinkedIn Link</label>
+                    <input id="linkedin_url" name="linkedin_url" type="url" value="<?php echo htmlspecialchars((string)($settings['linkedin_url'] ?? ''), ENT_QUOTES); ?>" placeholder="https://linkedin.com/company/your-company">
+                </div>
             </div>
 
             <div class="two-col" style="margin-bottom:14px;">

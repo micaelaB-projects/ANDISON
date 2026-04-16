@@ -58,6 +58,77 @@ function andison_brand_data_candidates(string $brand): array
     return [$brand];
 }
 
+function andison_brand_order_rank(string $brand): int
+{
+    static $rankMap = null;
+
+    if (!is_array($rankMap)) {
+        $ordered = [
+            'panasonic connect',
+            'robot systems peripherals',
+            'kobelco',
+            'metrode',
+            'dryrod. ii',
+            'weldcraft',
+            'truweld',
+            'arcair',
+            'magnaflux',
+            'tempilstik',
+            'tanaka',
+            'chiyoda',
+            'yutaka',
+            'hardworker',
+            'soyer',
+            'aquasol',
+            'sk and gal gage',
+            'coppus',
+            'bw technologies',
+            'rae systems',
+            'weldas',
+            'uvex',
+            'aces',
+            'microgard',
+            'ansell',
+            'alfra',
+            'bosch',
+            'makita',
+            'weiler',
+            'garryson',
+            'revolt',
+            'technotex',
+            'spillfyter',
+            'dalo',
+            'motolite',
+        ];
+
+        $rankMap = [];
+        foreach ($ordered as $idx => $name) {
+            $rankMap[$name] = $idx;
+        }
+    }
+
+    $normalized = strtolower(trim($brand));
+    $normalized = preg_replace('/\s+/', ' ', $normalized) ?? $normalized;
+
+    if ($normalized === 'robot systems' || $normalized === 'robot system peripherals') {
+        $normalized = 'robot systems peripherals';
+    } elseif ($normalized === 'dryrod ii' || $normalized === 'phoenix dryrod' || $normalized === 'phoenix dry rod') {
+        $normalized = 'dryrod. ii';
+    } elseif ($normalized === 'hard worker' || $normalized === 'hard workers' || $normalized === 'hardworker') {
+        $normalized = 'hardworker';
+    } elseif ($normalized === 'bw') {
+        $normalized = 'bw technologies';
+    } elseif ($normalized === 'rac' || $normalized === 'rae') {
+        $normalized = 'rae systems';
+    } elseif ($normalized === 'weller') {
+        $normalized = 'weiler';
+    } elseif ($normalized === 'spilfyter') {
+        $normalized = 'spillfyter';
+    }
+
+    return $rankMap[$normalized] ?? 10000;
+}
+
 function andison_pick_brand_bucket(array $brands, array $candidates): string
 {
     foreach ($candidates as $candidate) {
@@ -116,6 +187,13 @@ foreach ($rawBrandNames as $brandKey) {
 
 $brandNames = array_values($brandDisplayToKey);
 usort($brandNames, static function (string $a, string $b): int {
+    $rankA = andison_brand_order_rank(andison_brand_display_label($a));
+    $rankB = andison_brand_order_rank(andison_brand_display_label($b));
+
+    if ($rankA !== $rankB) {
+        return $rankA <=> $rankB;
+    }
+
     return strcasecmp(andison_brand_display_label($a), andison_brand_display_label($b));
 });
 
@@ -516,6 +594,36 @@ function andison_handle_brand_description_image_upload(): string
     return $url;
 }
 
+function andison_handle_brand_logo_upload(string $brandName, string $fileField = 'new_brand_logo'): string
+{
+    if (empty($_FILES[$fileField]) || ($_FILES[$fileField]['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+        throw new RuntimeException('Brand image is required.');
+    }
+
+    $f = $_FILES[$fileField];
+    $allowedExt = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'];
+    $allowedMime = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
+    $ext = strtolower(pathinfo((string)($f['name'] ?? ''), PATHINFO_EXTENSION));
+    $mime = mime_content_type($f['tmp_name']);
+
+    if (!in_array($ext, $allowedExt, true) || !in_array($mime, $allowedMime, true)) {
+        throw new RuntimeException('Invalid brand image type. Use JPG, PNG, WEBP, GIF, or AVIF.');
+    }
+
+    if (($f['size'] ?? 0) > 8 * 1024 * 1024) {
+        throw new RuntimeException('Brand image too large (max 8 MB).');
+    }
+
+    $base = andison_safe_filename($brandName !== '' ? $brandName : pathinfo((string)($f['name'] ?? 'brand-logo'), PATHINFO_FILENAME));
+    $destName = 'brand-logos/' . $base . '_' . date('Ymd_His') . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+    $url = andison_sb_storage_upload_tmp($f, 'product-images', $destName);
+    if (!is_string($url) || trim($url) === '') {
+        throw new RuntimeException('Brand image upload failed.');
+    }
+
+    return trim($url);
+}
+
 // ── CSV Template download (GET) ──────────────────────────────────────────────
 if (isset($_GET['action']) && $_GET['action'] === 'download_csv_template') {
     andison_require_admin();
@@ -532,6 +640,86 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_csv_template') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = isset($_POST['action']) ? (string)$_POST['action'] : '';
     $brand = isset($_POST['brand']) ? (string)$_POST['brand'] : '';
+
+    if ($action === 'add_brand') {
+        $newBrandName = trim((string)($_POST['new_brand_name'] ?? ''));
+        $newBrandDescription = trim((string)($_POST['new_brand_description'] ?? ''));
+
+        if ($newBrandName === '') {
+            andison_set_flash('error', 'Brand name is required.');
+            header('Location: products.php');
+            exit;
+        }
+
+        try {
+            $newBrandLogoUrl = andison_handle_brand_logo_upload($newBrandName);
+        } catch (Throwable $e) {
+            andison_set_flash('error', $e->getMessage());
+            header('Location: products.php');
+            exit;
+        }
+
+        if (andison_create_brand($newBrandName, $newBrandDescription, $newBrandLogoUrl)) {
+            andison_set_flash('success', 'Brand added.');
+            header('Location: products.php?brand=' . urlencode(andison_canonical_brand_name($newBrandName)));
+            exit;
+        }
+
+        andison_set_flash('error', 'Failed to add brand. Please try again.');
+        header('Location: products.php');
+        exit;
+    }
+
+    if ($action === 'delete_brand') {
+        $brandToDelete = trim((string)($_POST['brand_to_delete'] ?? $brand));
+        if ($brandToDelete === '') {
+            andison_set_flash('error', 'Please choose a brand to delete.');
+            header('Location: products.php');
+            exit;
+        }
+
+        if (andison_delete_brand($brandToDelete)) {
+            andison_set_flash('success', 'Brand deleted.');
+            header('Location: products.php');
+            exit;
+        }
+
+        andison_set_flash('error', 'Failed to delete brand.');
+        header('Location: products.php?brand=' . urlencode($brandToDelete));
+        exit;
+    }
+
+    if ($action === 'edit_brand_logo') {
+        $brandToEdit = trim((string)($_POST['brand_to_edit'] ?? $brand));
+        if ($brandToEdit === '') {
+            andison_set_flash('error', 'Please choose a brand to edit.');
+            header('Location: products.php');
+            exit;
+        }
+
+        $brandToEdit = andison_pick_brand_bucket($brands, andison_brand_data_candidates($brandToEdit));
+        if ($brandToEdit === '') {
+            $brandToEdit = andison_canonical_brand_name(trim((string)($_POST['brand_to_edit'] ?? $brand)));
+        }
+
+        try {
+            $updatedLogoUrl = andison_handle_brand_logo_upload($brandToEdit, 'edit_brand_logo');
+        } catch (Throwable $e) {
+            andison_set_flash('error', $e->getMessage());
+            header('Location: products.php?brand=' . urlencode($brandToEdit));
+            exit;
+        }
+
+        if (andison_create_brand($brandToEdit, '', $updatedLogoUrl)) {
+            andison_set_flash('success', 'Brand image updated.');
+            header('Location: products.php?brand=' . urlencode($brandToEdit));
+            exit;
+        }
+
+        andison_set_flash('error', 'Failed to update brand image. Please try again.');
+        header('Location: products.php?brand=' . urlencode($brandToEdit));
+        exit;
+    }
 
     $brand = andison_pick_brand_bucket($brands, andison_brand_data_candidates($brand));
 
@@ -1053,7 +1241,63 @@ andison_admin_header('Products', 'products');
                     <?php endforeach; ?>
                 </select>
             </form>
+            <button class="btn btn-outline" type="button" onclick="toggleAddBrandPanel()" style="font-size:12px;padding:8px 14px;"><i class="bi bi-plus-circle"></i> Add Brand</button>
+            <?php if ($selectedBrand !== ''): ?>
+                <button class="btn btn-outline" type="button" onclick="toggleEditBrandPanel()" style="font-size:12px;padding:8px 14px;"><i class="bi bi-pencil-square"></i> Edit Brand</button>
+            <?php endif; ?>
+            <?php if ($selectedBrand !== ''): ?>
+                <form method="post" action="products.php" onsubmit="return confirm('Delete brand <?php echo htmlspecialchars(andison_brand_display_label((string)$selectedBrand), ENT_QUOTES); ?> and all its products? This cannot be undone.');" style="margin:0;">
+                    <input type="hidden" name="action" value="delete_brand">
+                    <input type="hidden" name="brand_to_delete" value="<?php echo htmlspecialchars($selectedBrandKey, ENT_QUOTES); ?>">
+                    <button class="btn btn-danger" type="submit" style="font-size:12px;padding:8px 14px;"><i class="bi bi-trash"></i> Delete Brand</button>
+                </form>
+            <?php endif; ?>
         </div>
+    </section>
+
+    <?php if ($selectedBrand !== ''): ?>
+        <section class="card" id="editBrandPanel" style="grid-column:span 12;display:none;">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+                <h2 style="margin:0;font-size:16px;"><i class="bi bi-pencil-square"></i> Edit Brand Image</h2>
+                <button class="btn btn-outline" type="button" onclick="toggleEditBrandPanel()" style="font-size:12px;padding:6px 10px;"><i class="bi bi-x-lg"></i> Close</button>
+            </div>
+            <form method="post" action="products.php?brand=<?php echo urlencode($selectedBrandKey); ?>" enctype="multipart/form-data" style="display:grid;grid-template-columns:2fr 2.5fr auto;gap:10px;align-items:end;">
+                <input type="hidden" name="action" value="edit_brand_logo">
+                <input type="hidden" name="brand_to_edit" value="<?php echo htmlspecialchars($selectedBrandKey, ENT_QUOTES); ?>">
+                <div class="field" style="margin:0;min-width:0;">
+                    <label>Brand</label>
+                    <input type="text" value="<?php echo htmlspecialchars(andison_brand_display_label((string)$selectedBrand)); ?>" disabled>
+                </div>
+                <div class="field" style="margin:0;min-width:0;">
+                    <label for="editBrandLogo">New Brand Image *</label>
+                    <input id="editBrandLogo" name="edit_brand_logo" type="file" required accept="image/jpeg,image/png,image/webp,image/gif,image/avif">
+                </div>
+                <button class="btn btn-primary" type="submit" style="height:44px;padding:10px 16px;"><i class="bi bi-check2-circle"></i> Update Image</button>
+            </form>
+        </section>
+    <?php endif; ?>
+
+    <section class="card" id="addBrandPanel" style="grid-column:span 12;display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+            <h2 style="margin:0;font-size:16px;"><i class="bi bi-building-add"></i> Add New Brand</h2>
+            <button class="btn btn-outline" type="button" onclick="toggleAddBrandPanel()" style="font-size:12px;padding:6px 10px;"><i class="bi bi-x-lg"></i> Close</button>
+        </div>
+        <form method="post" action="products.php" enctype="multipart/form-data" style="display:grid;grid-template-columns:2fr 3fr 2.5fr auto;gap:10px;align-items:end;">
+            <input type="hidden" name="action" value="add_brand">
+            <div class="field" style="margin:0;min-width:0;">
+                <label for="newBrandName">Brand Name *</label>
+                <input id="newBrandName" name="new_brand_name" type="text" required placeholder="e.g., New Industrial Brand">
+            </div>
+            <div class="field" style="margin:0;min-width:0;">
+                <label for="newBrandDescription">Description (optional)</label>
+                <input id="newBrandDescription" name="new_brand_description" type="text" placeholder="Short brand description">
+            </div>
+            <div class="field" style="margin:0;min-width:0;">
+                <label for="newBrandLogo">Brand Image *</label>
+                <input id="newBrandLogo" name="new_brand_logo" type="file" required accept="image/jpeg,image/png,image/webp,image/gif,image/avif">
+            </div>
+            <button class="btn btn-primary" type="submit" style="height:44px;padding:10px 16px;"><i class="bi bi-check2-circle"></i> Save Brand</button>
+        </form>
     </section>
 
     <!-- Products Section -->
@@ -8059,6 +8303,36 @@ document.getElementById('importCsvForm').addEventListener('submit', function() {
     btn.disabled = true;
     btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Importing...';
 });
+
+function toggleAddBrandPanel() {
+    var panel = document.getElementById('addBrandPanel');
+    if (!panel) {
+        return;
+    }
+    var nextDisplay = panel.style.display === 'none' || panel.style.display === '' ? 'block' : 'none';
+    panel.style.display = nextDisplay;
+    if (nextDisplay === 'block') {
+        var input = document.getElementById('newBrandName');
+        if (input) {
+            setTimeout(function(){ input.focus(); }, 20);
+        }
+    }
+}
+
+function toggleEditBrandPanel() {
+    var panel = document.getElementById('editBrandPanel');
+    if (!panel) {
+        return;
+    }
+    var nextDisplay = panel.style.display === 'none' || panel.style.display === '' ? 'block' : 'none';
+    panel.style.display = nextDisplay;
+    if (nextDisplay === 'block') {
+        var input = document.getElementById('editBrandLogo');
+        if (input) {
+            setTimeout(function(){ input.focus(); }, 20);
+        }
+    }
+}
 </script>
 
 <?php
