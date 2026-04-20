@@ -2568,6 +2568,10 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
     function loadRelatedProducts(currentBrand, currentModel, contentMetric) {
         var grid = document.getElementById('relatedProductsGrid');
         var wrap = document.getElementById('relatedProductsWrap');
+        var MAX_RELATED_PRODUCTS = 4;
+
+        loadRelatedProducts._activeRequestId = (loadRelatedProducts._activeRequestId || 0) + 1;
+        var requestId = loadRelatedProducts._activeRequestId;
         grid.innerHTML = '';
 
         function normalizeRelatedBrand(value) {
@@ -2620,6 +2624,10 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         fetch(_jsonPath)
             .then(function(r) { return r.json(); })
             .then(function(data) {
+                if (requestId !== loadRelatedProducts._activeRequestId) {
+                    return;
+                }
+
                 var allProducts = [];
                 
                 // Check if data is an array (category JSON format) or object (brands_info format)
@@ -2671,17 +2679,43 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                     wrap.style.display = 'none';
                     return;
                 }
+
+                // Remove duplicate model entries before randomizing the shortlist.
+                var dedupedProducts = [];
+                var seenRelatedKeys = {};
+                for (var dedupeIdx = 0; dedupeIdx < allProducts.length; dedupeIdx++) {
+                    var candidate = allProducts[dedupeIdx];
+                    var modelKey = String((candidate && candidate.model) || '').trim().toLowerCase();
+                    if (!modelKey) {
+                        continue;
+                    }
+                    var brandKey = normalizeRelatedBrand((candidate && (candidate._brand || candidate.brand)) || currentBrand);
+                    var relatedKey = brandKey + '::' + modelKey;
+                    if (seenRelatedKeys[relatedKey]) {
+                        continue;
+                    }
+                    seenRelatedKeys[relatedKey] = true;
+                    dedupedProducts.push(candidate);
+                }
+
+                if (dedupedProducts.length === 0) {
+                    wrap.style.display = 'none';
+                    return;
+                }
                 
                 // Keep related products compact: show up to 4 items.
-                var maxItems = Math.min(allProducts.length, 4);
-                var relatedProducts = allProducts.sort(function() { return Math.random() - 0.5; }).slice(0, maxItems);
+                var maxItems = Math.min(dedupedProducts.length, MAX_RELATED_PRODUCTS);
+                var relatedProducts = dedupedProducts.sort(function() { return Math.random() - 0.5; }).slice(0, maxItems);
 
-                console.log('loadRelatedProducts: displaying', relatedProducts.length, 'items out of', allProducts.length, 'available');
+                console.log('loadRelatedProducts: displaying', relatedProducts.length, 'items out of', dedupedProducts.length, 'deduped products');
                 
                 if (relatedProducts.length === 0) {
                     wrap.style.display = 'none';
                     return;
                 }
+
+                // Clear again inside callback to avoid stale async responses appending old items.
+                grid.innerHTML = '';
                 
                 // Try to find matching cards on page (brand.php uses .brand-product-card)
                 var allPageCards = document.querySelectorAll('.product-card, .brand-product-card');
@@ -2695,7 +2729,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 }
                 
                 // Create items - dynamic count based on available related products.
-                for (var itemIdx = 0; itemIdx < relatedProducts.length; itemIdx++) {
+                for (var itemIdx = 0; itemIdx < relatedProducts.length && itemIdx < MAX_RELATED_PRODUCTS; itemIdx++) {
                     var product = relatedProducts[itemIdx];
                     (function(product) {
                         var item = document.createElement('div');
@@ -2810,6 +2844,9 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 wrap.style.display = 'block';
             })
             .catch(function(err){
+                if (requestId !== loadRelatedProducts._activeRequestId) {
+                    return;
+                }
                 console.log('Error loading related products:', err);
                 wrap.style.display = 'none';
             });
