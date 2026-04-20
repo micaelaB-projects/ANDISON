@@ -33,6 +33,37 @@ function andison_normalize_product_row(array $row): array
     return $row;
 }
 
+if (!function_exists('andison_canonical_brand_for_dedupe')) {
+    function andison_canonical_brand_for_dedupe(string $brand): string
+    {
+        $normalized = strtolower(trim($brand));
+        $normalized = preg_replace('/\s+/', ' ', $normalized) ?? $normalized;
+
+        static $aliases = [
+            'phoenix dry rod' => 'dryrod. ii',
+            'phoenix dryrod' => 'dryrod. ii',
+            'dryrod ii' => 'dryrod. ii',
+            'dryrod. ii' => 'dryrod. ii',
+            'sk' => 'sk and gal gage',
+            'gal gage' => 'sk and gal gage',
+            'sk and gal gage' => 'sk and gal gage',
+            'hard worker' => 'hardworker',
+            'hard workers' => 'hardworker',
+            'hardworker' => 'hardworker',
+            'rae' => 'rae systems',
+            'rac' => 'rae systems',
+            'rae systems' => 'rae systems',
+            'robot systems' => 'robot systems peripherals',
+            'robot system peripherals' => 'robot systems peripherals',
+            'robot systems peripherals' => 'robot systems peripherals',
+            'weller' => 'weiler',
+            'weiler' => 'weiler',
+        ];
+
+        return $aliases[$normalized] ?? $normalized;
+    }
+}
+
 function andison_get_products_for_subcategory(string $categoryId, string $subcategoryId, int $limit = 0): array
 {
     $rows = andison_sb_select(
@@ -181,7 +212,8 @@ function andison_get_products_for_category(string $categoryId, int $limit = 0): 
                 return preg_replace('/\s+/', ' ', $value) ?? $value;
             };
 
-            $brand = $normalize((string)($row['brand'] ?? ''));
+            $brandRaw = $normalize((string)($row['brand'] ?? ''));
+            $brand = andison_canonical_brand_for_dedupe($brandRaw);
             $model = $normalize((string)($row['model'] ?? ''));
             $name = $normalize((string)($row['product_name'] ?? ($row['name'] ?? '')));
             $type = $normalize((string)($row['type'] ?? ''));
