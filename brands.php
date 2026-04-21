@@ -39,9 +39,6 @@ if (!function_exists('andison_brands_logo_path')) {
     function andison_brands_logo_path(string $brandKey, string $displayName, array $logoMap, array $brandInfo = []): string
     {
         $brandLogo = trim((string)($brandInfo['logo'] ?? ''));
-        if ($brandLogo !== '') {
-            return $brandLogo;
-        }
 
         $candidates = [$brandKey, $displayName];
         $normalized = strtolower(trim($brandKey));
@@ -80,6 +77,11 @@ if (!function_exists('andison_brands_logo_path')) {
             if (strcasecmp((string)$mapName, $brandKey) === 0 || strcasecmp((string)$mapName, $displayName) === 0) {
                 return (string)$mapPath;
             }
+        }
+
+        // Fallback to Supabase-provided logo only when no canonical mapped logo exists.
+        if ($brandLogo !== '') {
+            return $brandLogo;
         }
 
         return '';
@@ -721,12 +723,12 @@ usort($brandCards, static function (array $a, array $b): int {
         nav li:nth-child(3) .nav-dropdown ul {
             display: grid !important;
             grid-template-columns: repeat(5, 1fr) !important;
-            gap: 10px 14px !important;
-            margin-top: 14px !important;
+            gap: 12px !important;
+            margin-top: 16px !important;
         }
 
         nav li:nth-child(3) .nav-dropdown ul li {
-            min-height: 58px;
+            min-height: 70px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -737,12 +739,12 @@ usort($brandCards, static function (array $a, array $b): int {
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            min-height: 50px !important;
+            min-height: 60px !important;
         }
 
         nav li:nth-child(3) .nav-dropdown ul a img {
-            max-width: 74px;
-            max-height: 37px;
+            max-width: 96px;
+            max-height: 52px;
             object-fit: contain;
             display: block;
             pointer-events: all;
@@ -753,14 +755,14 @@ usort($brandCards, static function (array $a, array $b): int {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-width: 74px;
-            min-height: 37px;
-            font-size: 11px;
+            min-width: 96px;
+            min-height: 52px;
+            font-size: 12px;
             font-weight: 800;
             color: #2B11DB;
             border: 1px dashed #cfd8ff;
             border-radius: 6px;
-            padding: 4px 8px;
+            padding: 6px 10px;
             text-align: center;
         }
 
