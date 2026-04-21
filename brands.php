@@ -39,6 +39,9 @@ if (!function_exists('andison_brands_logo_path')) {
     function andison_brands_logo_path(string $brandKey, string $displayName, array $logoMap, array $brandInfo = []): string
     {
         $brandLogo = trim((string)($brandInfo['logo'] ?? ''));
+        if ($brandLogo !== '') {
+            return $brandLogo;
+        }
 
         $candidates = [$brandKey, $displayName];
         $normalized = strtolower(trim($brandKey));
@@ -77,11 +80,6 @@ if (!function_exists('andison_brands_logo_path')) {
             if (strcasecmp((string)$mapName, $brandKey) === 0 || strcasecmp((string)$mapName, $displayName) === 0) {
                 return (string)$mapPath;
             }
-        }
-
-        // Fallback to Supabase-provided logo only when no canonical mapped logo exists.
-        if ($brandLogo !== '') {
-            return $brandLogo;
         }
 
         return '';
