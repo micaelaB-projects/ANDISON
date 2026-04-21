@@ -1055,7 +1055,7 @@ usort($brandCards, static function (array $a, array $b): int {
             background: #fff;
             border: 2px solid #00BCD4;
             border-radius: 16px;
-            padding: 20px;
+            padding: 16px;
             text-align: center;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
@@ -1069,13 +1069,13 @@ usort($brandCards, static function (array $a, array $b): int {
 
         .brand-logo {
             width: 100%;
-            height: 140px;
+            height: 170px;
             background: #fff;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 16px;
+            margin-bottom: 10px;
             overflow: hidden;
         }
 
@@ -1083,7 +1083,9 @@ usort($brandCards, static function (array $a, array $b): int {
             width: 100%;
             height: 100%;
             object-fit: contain;
-            padding: 12px;
+            padding: 4px;
+            transform: none;
+            transform-origin: center;
         }
 
         .brand-logo-fallback {
@@ -1098,16 +1100,6 @@ usort($brandCards, static function (array $a, array $b): int {
             align-items: center;
             justify-content: center;
             letter-spacing: 0.5px;
-        }
-
-        .brand-card h3 {
-            font-size: 14px;
-            font-weight: 800;
-            color: #1565C0;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            margin: 0;
-            line-height: 1.4;
         }
 
         @media (max-width: 1024px) {
@@ -1139,10 +1131,10 @@ usort($brandCards, static function (array $a, array $b): int {
                 padding: 16px;
             }
             .brand-logo {
-                height: 100px;
+                height: 130px;
             }
-            .brand-card h3 {
-                font-size: 12px;
+            .brand-logo img {
+                transform: none;
             }
         }
 
@@ -2230,7 +2222,6 @@ usort($brandCards, static function (array $a, array $b): int {
                             <span class="brand-logo-fallback"><?php echo htmlspecialchars(strtoupper(substr((string)$brandCard['display'], 0, 1)), ENT_QUOTES); ?></span>
                         <?php endif; ?>
                     </div>
-                    <h3><?php echo htmlspecialchars((string)$brandCard['display'], ENT_QUOTES); ?></h3>
                 </div>
             <?php endforeach; ?>
         </div>
