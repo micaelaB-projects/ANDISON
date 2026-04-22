@@ -1021,38 +1021,7 @@ if (!$current_category) {
                         <div class="nav-dropdown">
                             <h4>Featured Brands</h4>
                             <ul>
-                                <li><a href="../brand.php?name=Panasonic%20Connect"><img src="../assets/brands/PANASONIC.jpg" alt="Panasonic Connect" title="Panasonic Connect"></a></li>
-                                <li><a href="../brand.php?name=KOBELCO"><img src="../assets/brands/KOBELCO.jpg" alt="Kobelco" title="Kobelco"></a></li>
-                                <li><a href="../brand.php?name=METRODE"><img src="../assets/brands/METRODE.jpg" alt="Metrode" title="Metrode"></a></li>
-                                <li><a href="../brand.php?name=DRYROD"><img src="../assets/brands/DRYROD.jpg" alt="DryRod" title="DryRod"></a></li>
-                                <li><a href="../brand.php?name=WELDCRAFT"><img src="../assets/brands/WELDCRAFT.jpg" alt="Weldcraft" title="Weldcraft"></a></li>
-                                <li><a href="../brand.php?name=TRUWELD"><img src="../assets/brands/TRUWELD.jpg" alt="Truweld" title="Truweld"></a></li>
-                                <li><a href="../brand.php?name=ARCAIR"><img src="../assets/brands/ARCAIR.jpg" alt="Arcair" title="Arcair"></a></li>
-                                <li><a href="../brand.php?name=MAGNAFLUX"><img src="../assets/brands/MAGNAFLUX.jpg" alt="Magnaflux" title="Magnaflux"></a></li>
-                                <li><a href="../brand.php?name=TEMPILSTIK"><img src="../assets/brands/TEMPILSTIK.jpg" alt="Tempilstik" title="Tempilstik"></a></li>
-                                <li><a href="../brand.php?name=TANAKA"><img src="../assets/brands/TANAKA.jpg" alt="TANAKA" title="TANAKA"></a></li>
-                                <li><a href="../brand.php?name=CHIYODA"><img src="../assets/brands/CHIYODA.jpg" alt="CHIYODA" title="CHIYODA"></a></li>
-                                <li><a href="../brand.php?name=YUTAKA"><img src="../assets/brands/YUTAKA.jpg" alt="Yutaka" title="Yutaka"></a></li>
-                                <li><a href="../brand.php?name=HARDWORKER"><img src="../assets/brands/HARDWORKER.jpg" alt="HARDWORKER" title="HARDWORKER"></a></li>
-                                <li><a href="../brand.php?name=SOYER"><img src="../assets/brands/SOYER.jpg" alt="Soyer" title="Soyer"></a></li>
-                                <li><a href="../brand.php?name=AQUASOL"><img src="../assets/brands/AQUASOL.jpg" alt="Aquasol" title="Aquasol"></a></li>
-                                <li><a href="../brand.php?name=SK%20And%20GAL%20GAGE"><img src="../assets/brands/SK%20AND%20GAL%20GAGE.jpg" alt="SK And GAL GAGE" title="SK And GAL GAGE"></a></li>
-                                <li><a href="../brand.php?name=COPPUS"><img src="../assets/brands/COPPUS.jpg" alt="COPPUS" title="COPPUS"></a></li>
-                                <li><a href="../brand.php?name=BW%20Technologies"><img src="../assets/brands/BW%20TECHNOLOGIES.jpg" alt="BW Technologies" title="BW Technologies"></a></li>
-                                <li><a href="../brand.php?name=RAE%20SYSTEMS"><img src="../assets/brands/RAE%20SYSTEMS.jpg" alt="RAE SYSTEMS" title="RAE SYSTEMS"></a></li>
-                                <li><a href="../brand.php?name=WELDAS"><img src="../assets/brands/WELDAS.jpg" alt="WELDAS" title="WELDAS"></a></li>
-                                <li><a href="../brand.php?name=UVEX"><img src="../assets/brands/UVEX.jpg" alt="UVEX" title="UVEX"></a></li>
-                                <li><a href="../brand.php?name=ACES"><img src="../assets/brands/ACES.jpg" alt="ACES" title="ACES"></a></li>
-                                <li><a href="../brand.php?name=MICROGARD"><img src="../assets/brands/MICROGARD.jpg" alt="MICROGARD" title="MICROGARD"></a></li>
-                                <li><a href="../brand.php?name=ANSELL"><img src="../assets/brands/ANSELL.jpg" alt="ANSELL" title="ANSELL"></a></li>
-                                <li><a href="../brand.php?name=ALFRA"><img src="../assets/brands/ALFRA.jpg" alt="Alfra" title="Alfra"></a></li>
-                                <li><a href="../brand.php?name=BOSCH"><img src="../assets/brands/BOSCH.jpg" alt="Bosch" title="Bosch"></a></li>
-                                <li><a href="../brand.php?name=MAKITA"><img src="../assets/brands/MAKITA.jpg" alt="Makita" title="Makita"></a></li>
-                                <li><a href="../brand.php?name=WEILER"><img src="../assets/brands/WEILER.jpg" alt="WEILER" title="WEILER"></a></li>
-                                <li><a href="../brand.php?name=GARRYSON"><img src="../assets/brands/GARRYSON.jpg" alt="Garryson" title="Garryson"></a></li>
-                                <li><a href="../brand.php?name=SPILFYTER"><img src="../assets/brands/SPILFYTER.jpg" alt="Spilfyter" title="Spilfyter"></a></li>
-                                <li><a href="../brand.php?name=DALO"><img src="../assets/brands/DALO.jpg" alt="Dalo" title="Dalo"></a></li>
-                                <li><a href="../brand.php?name=MOTOLITE"><img src="../assets/brands/MOTOLITE.jpg" alt="MOTOLITE" title="MOTOLITE"></a></li>
+<?php $andisonNavBrandsPath = __DIR__ . '/includes/nav_brands_dropdown_items.php'; if (!is_file($andisonNavBrandsPath)) { $andisonNavBrandsPath = dirname(__DIR__) . '/includes/nav_brands_dropdown_items.php'; } if (!is_file($andisonNavBrandsPath)) { $andisonNavBrandsPath = dirname(dirname(__DIR__)) . '/includes/nav_brands_dropdown_items.php'; } if (is_file($andisonNavBrandsPath)) { include $andisonNavBrandsPath; } ?>
                             </ul>
                         </div>
                     </li>

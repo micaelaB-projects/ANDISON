@@ -2149,17 +2149,7 @@ usort($brandCards, static function (array $a, array $b): int {
                         <div class="nav-dropdown">
                             <h4>Featured Brands</h4>
                             <ul>
-                                <?php foreach ($brandCards as $brandCard): ?>
-                                    <li>
-                                        <a href="brand.php?name=<?php echo rawurlencode((string)$brandCard['display']); ?>" title="<?php echo htmlspecialchars((string)$brandCard['display'], ENT_QUOTES); ?>">
-                                            <?php if ((string)($brandCard['logo'] ?? '') !== ''): ?>
-                                                <img src="<?php echo htmlspecialchars((string)$brandCard['logo'], ENT_QUOTES); ?>" alt="<?php echo htmlspecialchars((string)$brandCard['display'], ENT_QUOTES); ?>">
-                                            <?php else: ?>
-                                                <span class="nav-brand-fallback"><?php echo htmlspecialchars((string)$brandCard['display'], ENT_QUOTES); ?></span>
-                                            <?php endif; ?>
-                                        </a>
-                                    </li>
-                                <?php endforeach; ?>
+<?php $andisonNavBrandsPath = __DIR__ . '/includes/nav_brands_dropdown_items.php'; if (!is_file($andisonNavBrandsPath)) { $andisonNavBrandsPath = dirname(__DIR__) . '/includes/nav_brands_dropdown_items.php'; } if (!is_file($andisonNavBrandsPath)) { $andisonNavBrandsPath = dirname(dirname(__DIR__)) . '/includes/nav_brands_dropdown_items.php'; } if (is_file($andisonNavBrandsPath)) { include $andisonNavBrandsPath; } ?>
                             </ul>
                         </div>
                     </li>

@@ -275,10 +275,140 @@ footer.footer-modernized .footer-scroll-top:hover {
     box-shadow: 0 14px 26px rgba(0, 0, 0, 0.28);
 }
 
+/* Normalize Featured Brands dropdown logo sizing site-wide. */
+nav li:nth-child(3) .nav-dropdown {
+    min-width: 1080px !important;
+    max-width: 1080px !important;
+    padding: 8px 10px !important;
+}
+
+nav li:nth-child(3) .nav-dropdown ul {
+    grid-template-columns: repeat(5, 208px) !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 0 2px !important;
+}
+
+nav li:nth-child(3) .nav-dropdown ul li {
+    width: 208px !important;
+    height: 86px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+nav li:nth-child(3) .nav-dropdown ul a {
+    min-height: 86px !important;
+    width: 208px !important;
+    height: 86px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 2px !important;
+    line-height: 1 !important;
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    box-shadow: none !important;
+    transform: none !important;
+    overflow: hidden !important;
+    transition: background 0.18s ease, border-color 0.18s ease !important;
+}
+
+nav li:nth-child(3) .nav-dropdown ul a:hover {
+    background: rgba(43, 17, 219, 0.04) !important;
+    border-color: rgba(43, 17, 219, 0.10) !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+nav li:nth-child(3) .nav-dropdown ul a img {
+    width: 208px !important;
+    height: 86px !important;
+    max-width: 208px !important;
+    max-height: 86px !important;
+    object-fit: contain !important;
+    display: block !important;
+    transform: scale(1.08) !important;
+    transform-origin: center center !important;
+}
+
+/* Some source logos have extra transparent canvas; nudge these to visually crop dead space. */
+nav li:nth-child(3) .nav-dropdown ul a img[alt="Kobelco"],
+nav li:nth-child(3) .nav-dropdown ul a img[alt="Metrode"] {
+    transform: translateX(-14px) scale(1.24) !important;
+}
+
+nav li:nth-child(3) .nav-dropdown ul a img[alt="MAGNAFLUX"],
+nav li:nth-child(3) .nav-dropdown ul a img[alt="Tempilstik"],
+nav li:nth-child(3) .nav-dropdown ul a img[alt="SK And GAL GAGE"],
+nav li:nth-child(3) .nav-dropdown ul a img[alt="RAC"],
+nav li:nth-child(3) .nav-dropdown ul a img[alt="Spilfyter"],
+nav li:nth-child(3) .nav-dropdown ul a img[alt="Technotex"] {
+    transform: scale(1.16) !important;
+}
+
+nav li:nth-child(3) .nav-dropdown ul a img[alt="Dalo"],
+nav li:nth-child(3) .nav-dropdown ul a img[alt="DALO"],
+nav li:nth-child(3) .nav-dropdown ul a img[alt="DryRod. II"],
+nav li:nth-child(3) .nav-dropdown ul a img[alt="BW"],
+nav li:nth-child(3) .nav-dropdown ul a img[alt="BW Technologies"] {
+    transform: scale(0.96) !important;
+}
+
 @media (max-width: 1180px) {
     footer.footer-modernized .footer-main-grid {
         grid-template-columns: repeat(3, minmax(180px, 1fr));
         gap: 24px 28px;
+    }
+
+    nav li:nth-child(3) .nav-dropdown {
+        min-width: 860px !important;
+        max-width: 860px !important;
+        padding: 7px 9px !important;
+    }
+
+    nav li:nth-child(3) .nav-dropdown ul {
+        grid-template-columns: repeat(5, 157px) !important;
+        justify-content: center !important;
+        gap: 0 2px !important;
+    }
+
+    nav li:nth-child(3) .nav-dropdown ul li,
+    nav li:nth-child(3) .nav-dropdown ul a {
+        width: 157px !important;
+        height: 65px !important;
+        min-height: 65px !important;
+    }
+
+    nav li:nth-child(3) .nav-dropdown ul a img {
+        width: 157px !important;
+        height: 65px !important;
+        max-width: 157px !important;
+        max-height: 65px !important;
+        transform: scale(1.08) !important;
+        transform-origin: center center !important;
+    }
+
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="Kobelco"],
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="Metrode"] {
+        transform: translateX(-10px) scale(1.2) !important;
+    }
+
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="MAGNAFLUX"],
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="Tempilstik"],
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="SK And GAL GAGE"],
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="RAC"],
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="Spilfyter"],
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="Technotex"] {
+        transform: scale(1.14) !important;
+    }
+
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="Dalo"],
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="DALO"],
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="DryRod. II"],
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="BW"],
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="BW Technologies"] {
+        transform: scale(0.95) !important;
     }
 
     footer.footer-modernized .footer-col-title { font-size: 15px; }
@@ -414,6 +544,50 @@ footer.footer-modernized .footer-scroll-top:hover {
         height: 38px;
         right: 12px;
         bottom: 12px;
+    }
+
+    nav li:nth-child(3) .nav-dropdown ul {
+        grid-template-columns: repeat(5, 79px) !important;
+        justify-content: center !important;
+        gap: 0 1px !important;
+    }
+
+    nav li:nth-child(3) .nav-dropdown ul li,
+    nav li:nth-child(3) .nav-dropdown ul a {
+        width: 79px !important;
+        height: 34px !important;
+        min-height: 34px !important;
+    }
+
+    nav li:nth-child(3) .nav-dropdown ul a img {
+        width: 79px !important;
+        height: 34px !important;
+        max-width: 79px !important;
+        max-height: 34px !important;
+        transform: scale(1.06) !important;
+        transform-origin: center center !important;
+    }
+
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="Kobelco"],
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="Metrode"] {
+        transform: translateX(-5px) scale(1.12) !important;
+    }
+
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="MAGNAFLUX"],
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="Tempilstik"],
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="SK And GAL GAGE"],
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="RAC"],
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="Spilfyter"],
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="Technotex"] {
+        transform: scale(1.1) !important;
+    }
+
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="Dalo"],
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="DALO"],
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="DryRod. II"],
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="BW"],
+    nav li:nth-child(3) .nav-dropdown ul a img[alt="BW Technologies"] {
+        transform: scale(0.94) !important;
     }
 }
 </style>

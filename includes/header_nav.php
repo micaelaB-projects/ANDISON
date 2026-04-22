@@ -695,43 +695,8 @@ if (!isset($base_path)) {
                     <a href="<?php echo $base_path; ?>brands.php" <?php if(isset($active_page) && $active_page === 'brands') echo 'class="active"'; ?>>Brands</a>
                     <div class="nav-dropdown">
                         <h4>Featured Brands</h4>
-                        <?php $b = $base_path; ?>
                         <ul>
-                            <li><a href="<?php echo $b; ?>brand.php?name=Panasonic%20Connect"><img src="<?php echo $b; ?>assets/brands/PANASONIC.jpg" alt="Panasonic Connect" title="Panasonic Connect"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=Robot%20Systems"><img src="<?php echo $b; ?>assets/brands/ROBOT SYSTEMS.png" alt="Robot Systems Peripherals" title="Robot Systems Peripherals"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=Kobelco"><img src="<?php echo $b; ?>assets/brands/KOBELCO.jpg" alt="Kobelco" title="Kobelco"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=Metrode"><img src="<?php echo $b; ?>assets/brands/METRODE.jpg" alt="Metrode" title="Metrode"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=DryRod.%20II"><img src="<?php echo $b; ?>assets/brands/DRYROD.jpg" alt="DryRod. II" title="DryRod. II"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=Weldcraft"><img src="<?php echo $b; ?>assets/brands/WELDCRAFT.png" alt="Weldcraft" title="Weldcraft"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=Truweld"><img src="<?php echo $b; ?>assets/brands/TRUWELD.jpg" alt="Truweld" title="Truweld"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=Arcair"><img src="<?php echo $b; ?>assets/brands/ARCAIR.jpg" alt="Arcair" title="Arcair"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=MAGNAFLUX"><img src="<?php echo $b; ?>assets/brands/MAGNAFLUX.jpg" alt="Magnaflux" title="Magnaflux"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=Tempilstik"><img src="<?php echo $b; ?>assets/brands/TEMPILSTIK.jpg" alt="Tempilstik" title="Tempilstik"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=TANAKA"><img src="<?php echo $b; ?>assets/brands/TANAKA.jpg" alt="Tanaka" title="Tanaka"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=CHIYODA"><img src="<?php echo $b; ?>assets/brands/CHIYODA.jpg" alt="Chiyoda" title="Chiyoda"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=Yutaka"><img src="<?php echo $b; ?>assets/brands/YUTAKA.jpg" alt="Yutaka" title="Yutaka"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=HARDWORKER"><img src="<?php echo $b; ?>assets/brands/HARDWORKER.jpg" alt="Hard Workers" title="Hard Workers"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=Soyer"><img src="<?php echo $b; ?>assets/brands/SOYER.jpg" alt="Soyer" title="Soyer"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=Aquasol"><img src="<?php echo $b; ?>assets/brands/AQUASOL.jpg" alt="Aquasol" title="Aquasol"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=SK%20And%20GAL%20GAGE"><img src="<?php echo $b; ?>assets/brands/SK%20AND%20GAL%20GAGE.jpg" alt="SK And GAL GAGE" title="SK And GAL GAGE"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=COPPUS"><img src="<?php echo $b; ?>assets/brands/COPPUS.jpg" alt="Coppus" title="Coppus"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=BW%20Technologies"><img src="<?php echo $b; ?>assets/brands/BW%20TECHNOLOGIES.jpg" alt="BW Technologies" title="BW Technologies"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=RAC"><img src="<?php echo $b; ?>assets/brands/RAE%20SYSTEMS.jpg" alt="RAE Systems" title="RAE Systems"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=WELDAS"><img src="<?php echo $b; ?>assets/brands/WELDAS.jpg" alt="Weldas" title="Weldas"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=UVEX"><img src="<?php echo $b; ?>assets/brands/UVEX.jpg" alt="Uvex" title="Uvex"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=ACES"><img src="<?php echo $b; ?>assets/brands/ACES.jpg" alt="Aces" title="Aces"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=MICROGARD"><img src="<?php echo $b; ?>assets/brands/MICROGARD.jpg" alt="Microgard" title="Microgard"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=ANSELL"><img src="<?php echo $b; ?>assets/brands/ANSELL.jpg" alt="Ansell" title="Ansell"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=Alfra"><img src="<?php echo $b; ?>assets/brands/ALFRA.jpg" alt="Alfra" title="Alfra"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=BOSCH"><img src="<?php echo $b; ?>assets/brands/BOSCH.jpg" alt="Bosch" title="Bosch"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=Makita"><img src="<?php echo $b; ?>assets/brands/MAKITA.jpg" alt="Makita" title="Makita"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=Weller"><img src="<?php echo $b; ?>assets/brands/WEILER.jpg" alt="Weller" title="Weller"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=Garryson"><img src="<?php echo $b; ?>assets/brands/GARRYSON.jpg" alt="Garryson" title="Garryson"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=REVOLT"><img src="<?php echo $b; ?>assets/brands/REVOLT.png" alt="REVOLT" title="REVOLT"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=Technotex"><img src="<?php echo $b; ?>assets/brands/TECHNOTEX.png" alt="Technotex" title="Technotex"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=Spilfyter"><img src="<?php echo $b; ?>assets/brands/SPILFYTER.jpg" alt="Spilfyter" title="Spilfyter"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=Dalo"><img src="<?php echo $b; ?>assets/brands/DALO.jpg" alt="Dalo" title="Dalo"></a></li>
-                            <li><a href="<?php echo $b; ?>brand.php?name=MOTOLITE"><img src="<?php echo $b; ?>assets/brands/MOTOLITE.jpg" alt="Motolite" title="Motolite"></a></li>
+                            <?php include __DIR__ . '/nav_brands_dropdown_items.php'; ?>
                         </ul>
                     </div>
                 </li>
