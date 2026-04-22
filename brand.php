@@ -872,9 +872,9 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         }
 
         nav li:nth-child(3) .nav-dropdown {
-            min-width: 650px;
-            max-width: 650px;
-            padding: 24px 28px;
+            min-width: 770px;
+            max-width: 770px;
+            padding: 18px 20px;
         }
 
         .nav-dropdown ul a {
@@ -891,12 +891,12 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         nav li:nth-child(3) .nav-dropdown ul {
             display: grid !important;
             grid-template-columns: repeat(5, 1fr) !important;
-            gap: 12px 20px !important;
-            margin-top: 16px !important;
+            gap: 2px 4px !important;
+            margin-top: 10px !important;
         }
 
         nav li:nth-child(3) .nav-dropdown ul li {
-            min-height: 70px;
+            min-height: 82px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -907,16 +907,23 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            min-height: 60px !important;
+            width: 140px !important;
+            height: 74px !important;
+            min-height: 74px !important;
+            overflow: hidden !important;
         }
 
         nav li:nth-child(3) .nav-dropdown ul a img {
-            max-width: 85px;
-            max-height: 45px;
-            object-fit: contain;
+            width: 100% !important;
+            height: 100% !important;
+            max-width: none !important;
+            max-height: none !important;
+            object-fit: contain !important;
             display: block;
             pointer-events: all;
             cursor: pointer;
+            transform: scale(1.65) !important;
+            transform-origin: center center !important;
         }
 
         nav li:nth-child(3) .nav-dropdown ul a {

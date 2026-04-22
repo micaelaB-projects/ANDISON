@@ -1,5 +1,59 @@
 <style>
 /* Shared modern footer for legacy pages */
+
+/* Global override: make Brands hover logos larger and cards tighter across pages. */
+nav li:nth-child(3) .nav-dropdown {
+    min-width: 700px !important;
+    max-width: 700px !important;
+    padding: 18px 20px !important;
+}
+
+nav li:nth-child(3) .nav-dropdown ul {
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 2px 4px !important;
+    margin-top: 10px !important;
+}
+
+nav li:nth-child(3) .nav-dropdown ul li {
+    min-height: 74px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+nav li:nth-child(3) .nav-dropdown ul a {
+    min-height: 68px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+nav li:nth-child(3) .nav-dropdown ul a img {
+    width: 124px !important;
+    height: 64px !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: contain !important;
+}
+
+@media (max-width: 768px) {
+    nav li:nth-child(3) .nav-dropdown {
+        min-width: min(94vw, 620px) !important;
+        max-width: min(94vw, 620px) !important;
+    }
+
+    nav li:nth-child(3) .nav-dropdown ul {
+        gap: 6px 8px !important;
+    }
+
+    nav li:nth-child(3) .nav-dropdown ul a img {
+        width: 92px !important;
+        height: 48px !important;
+    }
+}
+
 footer.footer-modernized {
     background: linear-gradient(135deg, #2209c9 0%, #2b11db 52%, #1b0893 100%) !important;
     color: #eef1ff !important;
@@ -366,12 +420,94 @@ footer.footer-modernized .footer-scroll-top:hover {
 
 <?php
 require_once __DIR__ . '/../Andison/includes/footer_settings.php';
+require_once __DIR__ . '/../Andison/includes/brands_info.php';
+
+if (!function_exists('andison_footer_normalize_brand_key')) {
+    function andison_footer_normalize_brand_key(string $brand): string
+    {
+        $normalized = strtolower(trim($brand));
+        $normalized = preg_replace('/\s+/', ' ', $normalized) ?? $normalized;
+
+        if ($normalized === 'dryrod ii' || $normalized === 'dryrod. ii' || $normalized === 'phoenix dryrod' || $normalized === 'phoenix dry rod') {
+            return 'dryrod. ii';
+        }
+        if ($normalized === 'bw technologies' || $normalized === 'bw') {
+            return 'bw';
+        }
+        if ($normalized === 'rae' || $normalized === 'rac' || $normalized === 'rae systems') {
+            return 'rae systems';
+        }
+        if ($normalized === 'robot systems' || $normalized === 'robot system peripherals' || $normalized === 'robot systems peripherals') {
+            return 'robot systems peripherals';
+        }
+        if ($normalized === 'hard worker' || $normalized === 'hard workers' || $normalized === 'hardworker') {
+            return 'hardworker';
+        }
+        if ($normalized === 'weller' || $normalized === 'weiler') {
+            return 'weiler';
+        }
+        if ($normalized === 'panasonic') {
+            return 'panasonic connect';
+        }
+
+        return $normalized;
+    }
+}
+
+$andisonFooterBrandLogoMap = [];
+try {
+    $andisonFooterBrands = andison_get_brands_info();
+    if (is_array($andisonFooterBrands)) {
+        foreach ($andisonFooterBrands as $brandName => $brandInfo) {
+            if (!is_array($brandInfo)) {
+                continue;
+            }
+
+            $logo = trim((string)($brandInfo['logo'] ?? ''));
+            if ($logo === '') {
+                continue;
+            }
+
+            $baseKey = andison_footer_normalize_brand_key((string)$brandName);
+            if ($baseKey === '') {
+                continue;
+            }
+
+            $aliases = [$baseKey];
+            if ($baseKey === 'dryrod. ii') {
+                $aliases = array_merge($aliases, ['dryrod ii', 'phoenix dryrod', 'phoenix dry rod']);
+            } elseif ($baseKey === 'bw') {
+                $aliases[] = 'bw technologies';
+            } elseif ($baseKey === 'rae systems') {
+                $aliases = array_merge($aliases, ['rae', 'rac']);
+            } elseif ($baseKey === 'robot systems peripherals') {
+                $aliases = array_merge($aliases, ['robot systems', 'robot system peripherals']);
+            } elseif ($baseKey === 'hardworker') {
+                $aliases = array_merge($aliases, ['hard worker', 'hard workers']);
+            } elseif ($baseKey === 'weiler') {
+                $aliases[] = 'weller';
+            } elseif ($baseKey === 'panasonic connect') {
+                $aliases[] = 'panasonic';
+            }
+
+            foreach (array_unique($aliases) as $alias) {
+                if (!isset($andisonFooterBrandLogoMap[$alias])) {
+                    $andisonFooterBrandLogoMap[$alias] = $logo;
+                }
+            }
+        }
+    }
+} catch (Throwable $e) {
+    $andisonFooterBrandLogoMap = [];
+}
+
 $andisonFooterSettings = andison_get_footer_settings();
 ?>
 
 <script>
 (function(){
     var footerSettings = <?php echo json_encode($andisonFooterSettings, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE); ?>;
+    var brandLogoMap = <?php echo json_encode($andisonFooterBrandLogoMap, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE); ?>;
 
     function escHtml(value) {
         return String(value || '')
@@ -419,16 +555,134 @@ $andisonFooterSettings = andison_get_footer_settings();
         return '<a class="footer-social-link" href="' + escHtml(safeHref) + '" target="_blank" rel="noopener noreferrer" aria-label="' + escHtml(label) + '" title="' + escHtml(label) + '"><i class="' + iconClass + '"></i></a>';
     }
 
+    function normalizeBrandKey(value) {
+        var normalized = String(value || '').trim().toLowerCase().replace(/\s+/g, ' ');
+        if (normalized === 'dryrod ii' || normalized === 'dryrod. ii' || normalized === 'phoenix dryrod' || normalized === 'phoenix dry rod') return 'dryrod. ii';
+        if (normalized === 'bw technologies' || normalized === 'bw') return 'bw';
+        if (normalized === 'rae' || normalized === 'rac' || normalized === 'rae systems') return 'rae systems';
+        if (normalized === 'robot systems' || normalized === 'robot system peripherals' || normalized === 'robot systems peripherals') return 'robot systems peripherals';
+        if (normalized === 'hard worker' || normalized === 'hard workers' || normalized === 'hardworker') return 'hardworker';
+        if (normalized === 'weller' || normalized === 'weiler') return 'weiler';
+        if (normalized === 'panasonic') return 'panasonic connect';
+        return normalized;
+    }
+
+    function extractBrandNameFromLink(link) {
+        if (!link) return '';
+
+        try {
+            var linkUrl = new URL(link.getAttribute('href') || '', window.location.href);
+            var fromQuery = linkUrl.searchParams.get('name');
+            if (fromQuery) {
+                return decodeURIComponent(fromQuery);
+            }
+        } catch (err) {}
+
+        var img = link.querySelector('img');
+        if (img) {
+            var title = String(img.getAttribute('title') || '').trim();
+            if (title) return title;
+            var alt = String(img.getAttribute('alt') || '').trim();
+            if (alt) return alt;
+        }
+
+        return String(link.textContent || '').trim();
+    }
+
+    function updateBrandsDropdownLogos() {
+        if (!brandLogoMap || Object.keys(brandLogoMap).length === 0) {
+            return;
+        }
+
+        var brandLinks = document.querySelectorAll('.nav-list > li:nth-child(3) .nav-dropdown ul li > a');
+        if (!brandLinks.length) {
+            return;
+        }
+
+        brandLinks.forEach(function(link) {
+            var brandName = extractBrandNameFromLink(link);
+            var key = normalizeBrandKey(brandName);
+            if (!key || !brandLogoMap[key]) {
+                return;
+            }
+
+            var logoUrl = String(brandLogoMap[key] || '').trim();
+            if (!logoUrl) {
+                return;
+            }
+
+            var img = link.querySelector('img');
+            if (!img) {
+                img = document.createElement('img');
+                link.textContent = '';
+                link.appendChild(img);
+            }
+
+            img.setAttribute('src', logoUrl);
+            if (!img.getAttribute('alt') && brandName) {
+                img.setAttribute('alt', brandName);
+            }
+            if (!img.getAttribute('title') && brandName) {
+                img.setAttribute('title', brandName);
+            }
+        });
+    }
+
+    function updateTrustedBrandsCarouselLogos() {
+        if (!brandLogoMap || Object.keys(brandLogoMap).length === 0) {
+            return;
+        }
+
+        var carouselLinks = document.querySelectorAll('.brands-carousel-track .brands-carousel-item');
+        if (!carouselLinks.length) {
+            return;
+        }
+
+        carouselLinks.forEach(function(link) {
+            var brandName = extractBrandNameFromLink(link);
+            var key = normalizeBrandKey(brandName);
+            if (!key || !brandLogoMap[key]) {
+                return;
+            }
+
+            var logoUrl = String(brandLogoMap[key] || '').trim();
+            if (!logoUrl) {
+                return;
+            }
+
+            var img = link.querySelector('img');
+            if (!img) {
+                img = document.createElement('img');
+                link.textContent = '';
+                link.appendChild(img);
+            }
+
+            img.setAttribute('src', logoUrl);
+            if (!img.getAttribute('alt') && brandName) {
+                img.setAttribute('alt', brandName);
+            }
+            if (!img.getAttribute('title') && brandName) {
+                img.setAttribute('title', brandName);
+            }
+        });
+    }
+
     function modernizeLegacyFooter() {
         var footer = document.querySelector('footer');
         if (!footer) return;
-        if (footer.classList.contains('footer-modernized')) return;
+        if (footer.getAttribute('data-andison-footer-rendered') === '1') return;
 
         var footerContent = footer.querySelector('.footer-content');
+        if (!footerContent) {
+            return;
+        }
+
         var legacyLinks = footer.querySelector('.footer-links');
         var legacyCopyright = footer.querySelector('.footer-copyright');
+        var hasStructuredGrid = !!footer.querySelector('.footer-main-grid');
 
-        if (!footerContent || !legacyLinks || !legacyCopyright || footer.querySelector('.footer-main-grid')) {
+        // Transform both legacy footer blocks and older structured footer variants.
+        if (!hasStructuredGrid && (!legacyLinks || !legacyCopyright)) {
             return;
         }
 
@@ -436,7 +690,7 @@ $andisonFooterSettings = andison_get_footer_settings();
 
         var copyrightText = String(footerSettings.copyright || '').trim();
         if (!copyrightText) {
-            copyrightText = (legacyCopyright.textContent || '').trim();
+            copyrightText = legacyCopyright ? String(legacyCopyright.textContent || '').trim() : '';
         }
         if (!copyrightText) {
             copyrightText = 'Copyright 2021 Andison Industrial Sales Inc.';
@@ -514,6 +768,8 @@ $andisonFooterSettings = andison_get_footer_settings();
             + '</div>'
         ).replace(/\/ANDISON(?=\/)/g, footerBase);
 
+        footer.setAttribute('data-andison-footer-rendered', '1');
+
         if (!footer.querySelector('.footer-scroll-top')) {
             var btn = document.createElement('button');
             btn.className = 'footer-scroll-top';
@@ -527,14 +783,49 @@ $andisonFooterSettings = andison_get_footer_settings();
         }
     }
 
+    function runSafely(fn) {
+        try {
+            fn();
+        } catch (err) {
+            // Keep footer/logo hydration resilient even if one updater fails.
+        }
+    }
+
+    function hydrateFooterAndBrandUIs() {
+        // Footer modernization must run first so layout/socials are always normalized.
+        runSafely(modernizeLegacyFooter);
+        runSafely(updateBrandsDropdownLogos);
+        runSafely(updateTrustedBrandsCarouselLogos);
+    }
+
+    function scheduleHydrationRetries() {
+        // Retry quickly for pages that finish rendering late.
+        setTimeout(hydrateFooterAndBrandUIs, 80);
+        setTimeout(hydrateFooterAndBrandUIs, 220);
+
+        var retries = 0;
+        var maxRetries = 10;
+        var retryTimer = setInterval(function() {
+            retries += 1;
+            hydrateFooterAndBrandUIs();
+
+            var footer = document.querySelector('footer');
+            if (!footer || footer.getAttribute('data-andison-footer-rendered') === '1' || retries >= maxRetries) {
+                clearInterval(retryTimer);
+            }
+        }, 350);
+    }
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function(){
-            modernizeLegacyFooter();
-            setTimeout(modernizeLegacyFooter, 80);
+            hydrateFooterAndBrandUIs();
+            scheduleHydrationRetries();
         });
+        window.addEventListener('load', hydrateFooterAndBrandUIs);
     } else {
-        modernizeLegacyFooter();
-        setTimeout(modernizeLegacyFooter, 80);
+        hydrateFooterAndBrandUIs();
+        scheduleHydrationRetries();
+        window.addEventListener('load', hydrateFooterAndBrandUIs);
     }
 })();
 </script>

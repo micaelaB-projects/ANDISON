@@ -2141,3 +2141,5 @@ if ($category_idx !== null) {
 
 <script src="<?php echo $_sidebar_base; ?>assets/js/scroll-fade.js"></script>
 <script src="<?php echo $_sidebar_base; ?>assets/js/email_admin_compose.js"></script>
+
+<?php require_once __DIR__ . '/footer_modernize.php'; ?>
