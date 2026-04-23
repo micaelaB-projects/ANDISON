@@ -101,6 +101,8 @@ if ($category_idx !== null) {
         --andison-brand-hover-lift: -4px;
         --andison-brand-hover-border: #00D7B3;
         --andison-brand-hover-shadow: 0 8px 24px rgba(0, 215, 179, 0.22);
+        --andison-sidebar-top: calc(14px + 50px + 14px + 12px + 52px);
+        --andison-sidebar-mobile-top: calc(14px + 36px + 14px + 40px);
     }
 
     /* Global readability fix for top nav dropdown links on pages using sidebar include. */
@@ -145,7 +147,7 @@ if ($category_idx !== null) {
     .sidebar-overlay {
         position: fixed;
         left: 0;
-        top: calc(14px + 50px + 14px + 12px + 52px);
+        top: var(--andison-sidebar-top);
         bottom: 0;
         width: 320px;
         max-width: 80%;
@@ -475,7 +477,7 @@ if ($category_idx !== null) {
     .mini-sidebar {
         position: fixed;
         left: 0;
-        top: calc(14px + 50px + 14px + 52px);
+        top: var(--andison-sidebar-top);
         bottom: 0;
         width: 92px;
         background: linear-gradient(180deg, #2B11DB 0%, #1a0a7f 100%);
@@ -825,12 +827,49 @@ if ($category_idx !== null) {
     @media (max-width: 768px) {
         body {
             padding-left: 0 !important;
+            /* Keep page content below fixed header/nav across all sidebar pages. */
+            padding-top: max(142px, calc(var(--andison-sidebar-mobile-top) + 10px)) !important;
         }
         body.sidebar-wide {
             padding-left: 0 !important;
         }
         .mini-sidebar { display: none !important; }
         .mini-sidebar.mobile-visible { display: flex !important; }
+
+        /* Generic anti-overlap rules for category/product pages that position titles absolutely. */
+        .category-content {
+            display: block !important;
+            padding-top: 22px !important;
+        }
+
+        .category-content > h1,
+        .category-content > h2 {
+            position: static !important;
+            top: auto !important;
+            left: auto !important;
+            width: auto !important;
+            margin: 0 0 10px !important;
+            line-height: 1.1 !important;
+            text-align: left !important;
+        }
+
+        .product-filters,
+        .main-product-area {
+            margin-top: 0 !important;
+        }
+
+        .results-info,
+        .products-count,
+        #resultsCount,
+        #productsCount {
+            position: static !important;
+            width: 100% !important;
+            display: block !important;
+            text-align: center !important;
+            margin: 0 0 8px !important;
+            line-height: 1.2 !important;
+            white-space: normal !important;
+        }
     }
 
     /* ── Sidebar overlay expanded state ── */
@@ -840,7 +879,7 @@ if ($category_idx !== null) {
     /* ── Responsive sidebar for 768px and below ── */
     @media (max-width: 768px) {
         .mini-sidebar {
-            top: calc(14px + 36px + 14px + 40px);
+            top: var(--andison-sidebar-mobile-top);
             width: 56px !important;
             transform: translateX(-100%);
             transition: transform 0.3s ease, width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
@@ -854,7 +893,7 @@ if ($category_idx !== null) {
 
         /* Sidebar list (mobile tweaks) */
         .sidebar-overlay {
-            top: calc(14px + 36px + 14px + 40px);
+            top: var(--andison-sidebar-mobile-top);
             width: 380px;
             max-width: 90%;
             padding: 12px 8px;
@@ -1385,6 +1424,49 @@ if ($category_idx !== null) {
      SIDEBAR JAVASCRIPT
      ============================================================ -->
 <script>
+    // Keep sidebar top offsets aligned with the actual fixed header/nav height.
+    (function(){
+        function computeHeaderBottom() {
+            var nodes = document.querySelectorAll('header, nav, .header-top');
+            var maxBottom = 0;
+            for (var i = 0; i < nodes.length; i++) {
+                var el = nodes[i];
+                if (!el) continue;
+                var style = window.getComputedStyle(el);
+                if (style.display === 'none' || style.visibility === 'hidden') continue;
+
+                var rect = el.getBoundingClientRect();
+                if (rect.height < 20) continue;
+                if (rect.bottom <= 0) continue;
+                if (rect.top > 24) continue;
+
+                if (rect.bottom > maxBottom) {
+                    maxBottom = rect.bottom;
+                }
+            }
+
+            if (maxBottom < 90) {
+                maxBottom = 130;
+            }
+
+            return Math.round(maxBottom);
+        }
+
+        function syncSidebarTopOffsets() {
+            var root = document.documentElement;
+            if (!root) return;
+
+            var headerBottom = computeHeaderBottom();
+            root.style.setProperty('--andison-sidebar-top', headerBottom + 'px');
+            root.style.setProperty('--andison-sidebar-mobile-top', headerBottom + 'px');
+        }
+
+        syncSidebarTopOffsets();
+        window.addEventListener('load', syncSidebarTopOffsets);
+        window.addEventListener('resize', syncSidebarTopOffsets);
+        window.addEventListener('orientationchange', syncSidebarTopOffsets);
+    })();
+
     // ── Sidebar open / close (browse-toggle & close button) ──
     (function(){
         var browseToggle = document.getElementById('browseToggle');
@@ -1907,10 +1989,13 @@ if ($category_idx !== null) {
         // ── Popover positioning ──
         function _applyPosition(finalHeight){
             var vh = window.innerHeight;
+            var rootStyles = window.getComputedStyle(document.documentElement);
+            var sidebarTop = parseInt(rootStyles.getPropertyValue('--andison-sidebar-top'), 10) || 130;
+            var sidebarMobileTop = parseInt(rootStyles.getPropertyValue('--andison-sidebar-mobile-top'), 10) || 110;
             var isMobile = window.innerWidth <= 768;
             if(isMobile){
                 var popLeft  = Math.round(lastIconRight);
-                var headerMin = 90, bottomPad = 8;
+                var headerMin = Math.max(76, sidebarMobileTop + 6), bottomPad = 8;
                 var popTop   = Math.round(lastIconTop);
                 var contentH = Math.min(finalHeight, vh - headerMin - bottomPad);
                 if(popTop + contentH > vh - bottomPad) popTop = vh - contentH - bottomPad;
@@ -1922,7 +2007,7 @@ if ($category_idx !== null) {
                 miniPopover.style.height = contentH + 'px';
                 miniPopover.style.setProperty('--arrow-offset', '-9999px');
             } else {
-                var headerBottom = 140;
+                var headerBottom = Math.max(100, sidebarTop + 4);
                 var top = Math.round(lastIconCenterY - finalHeight / 2);
                 if(top < headerBottom) top = headerBottom;
                 if(top + finalHeight > vh - 8) top = vh - finalHeight - 8;

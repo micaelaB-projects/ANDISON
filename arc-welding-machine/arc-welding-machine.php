@@ -1146,12 +1146,28 @@ if (!$current_category) {
             width: 100%;
         }
 
+        .category-results-top {
+            position: absolute;
+            top: 106px;
+            left: 20px;
+            width: calc(100% - 40px);
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            line-height: 1.2;
+        }
+
+        .category-results-top span {
+            color: inherit;
+            font-weight: 600;
+        }
+
         /* Products Filters Panel */
         .product-filters {
             width: 240px;
             min-width: 180px;
             flex-shrink: 1;
-            margin-top: 120px;
+            margin-top: 160px;
         }
 
         .filter-section {
@@ -1225,7 +1241,7 @@ if (!$current_category) {
         /* Main Product Area */
         .main-product-area {
             flex: 1;
-            margin-top: 120px;
+            margin-top: 160px;
         }
 
         .product-controls {
@@ -2548,6 +2564,14 @@ if (!$current_category) {
                 gap: 20px;
             }
 
+            .category-results-top {
+                position: static;
+                width: 100%;
+                margin: 2px 0 10px;
+                text-align: center;
+                font-size: 14px;
+            }
+
             .product-filters {
                 width: 100%;
                 margin-top: 0;
@@ -2618,6 +2642,11 @@ if (!$current_category) {
             .category-content > h2 {
                 font-size: 32px;
                 top: 20px;
+            }
+
+            .category-results-top {
+                font-size: 13px;
+                margin-bottom: 8px;
             }
 
             .product-filters {
@@ -2757,6 +2786,45 @@ if (!$current_category) {
                 margin-bottom: 12px;
             }
 
+
+        /* Final mobile safety overrides: keep heading and results in normal flow */
+        @media (max-width: 768px) {
+            .category-content {
+                display: block;
+                padding-top: 22px !important;
+            }
+
+            .category-content > h2 {
+                position: static !important;
+                top: auto !important;
+                left: auto !important;
+                width: auto !important;
+                margin: 0 0 10px !important;
+                line-height: 1.08 !important;
+            }
+
+            .category-results-top {
+                position: static !important;
+                left: auto !important;
+                top: auto !important;
+                width: 100% !important;
+                margin: 0 0 10px !important;
+                text-align: center !important;
+            }
+
+            .product-filters,
+            .main-product-area {
+                margin-top: 0 !important;
+            }
+
+            .results-info {
+                order: 0 !important;
+                width: 100%;
+                text-align: center;
+                margin: 0 0 8px;
+                line-height: 1.2;
+            }
+        }
             .add-to-inquiry {
                 padding: 10px 14px;
                 font-size: 11px;
@@ -3191,8 +3259,16 @@ if (!$current_category) {
         </nav>
     </header>
 
+        <?php
+        $all_products = andison_get_products_for_category($category_id);
+        $total_products = count($all_products ?? []);
+        ?>
+
         <div class="category-content">
             <h2>Arc Welding Machine</h2>
+            <div class="category-results-top">
+                <span id="resultsCount">Showing <span><?php echo min(9, $total_products); ?></span> of <span><?php echo $total_products; ?></span> products</span>
+            </div>
             
             <!-- Left Filters Panel -->
             <div class="product-filters">
@@ -3275,17 +3351,11 @@ if (!$current_category) {
                             <i class="bi bi-list-ul"></i>
                         </button>
                     </div>
-                    <div class="results-info">
-                        <span id="resultsCount">Showing <?php echo count($all_products ?? []); ?> products</span>
-                    </div>
                 </div>
 
                 <!-- Product Grid -->
                 <div class="product-grid grid-view">
                 <?php 
-                // Fetch all products under the arc-welding-machine category
-                $all_products = andison_get_products_for_category($category_id);
-                
                 // Display products
                 if (!empty($all_products)) {
                     foreach ($all_products as $product) {

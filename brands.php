@@ -988,18 +988,18 @@ usort($brandCards, static function (array $a, array $b): int {
 
         .brands-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 24px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
             max-width: 1500px;
-            margin: 50px auto;
-            padding: 0 20px 60px;
+            margin: 28px auto;
+            padding: 0 20px 36px;
         }
 
         .brand-card {
             background: #fff;
             border: 1px solid #efefef;
             border-radius: 16px;
-            padding: 20px 18px 18px;
+            padding: 18px 14px;
             text-align: center;
             transition: border-color 0.24s ease, box-shadow 0.24s ease, transform 0.24s ease;
             cursor: pointer;
@@ -1013,21 +1013,21 @@ usort($brandCards, static function (array $a, array $b): int {
 
         .brand-logo {
             width: 100%;
-            height: 205px;
+            height: 180px;
             background: #fff;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             overflow: hidden;
         }
 
         .brand-logo img {
             width: auto;
             height: auto;
-            max-width: 88%;
-            max-height: 76%;
+            max-width: 94%;
+            max-height: 86%;
             object-fit: contain;
             padding: 0;
             transform: scale(1);
@@ -1057,15 +1057,19 @@ usort($brandCards, static function (array $a, array $b): int {
 
         @media (max-width: 1024px) {
             .brands-grid {
-                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-                gap: 20px;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 12px;
+            }
+
+            .brand-logo {
+                height: 160px;
             }
         }
 
         @media (max-width: 768px) {
             .brands-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 16px;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
             }
             .brands-hero {
                 padding: 40px 16px 30px;
@@ -1073,18 +1077,22 @@ usort($brandCards, static function (array $a, array $b): int {
             .brands-hero h2 {
                 font-size: 32px;
             }
+
+            .brand-logo {
+                height: 136px;
+            }
         }
 
         @media (max-width: 480px) {
             .brands-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
+                gap: 8px;
             }
             .brand-card {
-                padding: 16px;
+                padding: 10px;
             }
             .brand-logo {
-                height: 130px;
+                height: 102px;
             }
             .brand-logo img {
                 width: 100%;

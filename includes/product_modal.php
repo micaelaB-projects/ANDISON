@@ -607,22 +607,35 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 }
 
 @media(max-width:768px){
-    #prodDetailModal{border-radius:24px 24px 0 0!important;max-height:92vh!important;width:100%!important;max-width:100%!important;height:auto!important;}
+        #prodDetailModal{border-radius:24px 24px 0 0!important;max-height:92vh!important;width:100%!important;max-width:100%!important;height:92vh!important;}
   #prodDetailModal > div {
     flex-wrap: wrap !important;
+        height: 100% !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
   }
         #prodDetailModal > div > div:first-child { order: 2; flex: 0 0 100% !important; border-radius: 0 !important; padding: 18px 24px !important; margin-bottom: 0; margin-top: 10px; }
-        #prodDetailModal > div > div:last-child { order: 1; flex: 0 0 100% !important; padding: 18px 24px !important; }
+                #prodDetailModal > div > div:last-child { order: 1; flex: 0 0 100% !important; padding: 18px 24px !important; min-height: 0 !important; height: 100% !important; }
         #prodDetailModal > div > div:nth-child(2) { display: none !important; }
+    #prodDetailContentScroll { min-height: 0 !important; height: 100% !important; max-height: 100% !important; overflow-y: auto !important; -webkit-overflow-scrolling: touch !important; touch-action: pan-y; }
   #prodImageGallery{height:300px!important}
   #prodMainImg{max-height:300px!important;padding:24px!important}
   #prodDetailName{font-size:32px!important}
   #prodThumbnails img { width:54px !important; height:54px !important; }
     #relatedProductsGrid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
-    #prodFooterActions { flex-direction: column !important; gap: 10px !important; }
+    #prodFooterActions { flex-direction: row !important; gap: 8px !important; }
     #prodFooterActions #prodDatasheetWrap,
-    #prodFooterActions #prodDetailInquiry { flex: 1 1 auto !important; width: 100% !important; }
-    #prodFooterActions #prodDatasheetBtn { min-width: 0 !important; width: 100% !important; }
+    #prodFooterActions #prodDetailInquiry { flex: 1 1 0 !important; width: calc(50% - 4px) !important; min-width: 0 !important; }
+    #prodFooterActions #prodDatasheetBtn,
+    #prodFooterActions #prodDetailInquiry {
+        min-width: 0 !important;
+        width: 100% !important;
+        padding: 13px 10px !important;
+        font-size: 14px !important;
+        letter-spacing: 0.9px !important;
+        white-space: nowrap;
+    }
+    #prodFooterActions #prodDatasheetBtn i { font-size: 15px !important; }
     #prodOverviewMediaWrap { width: 100% !important; max-width: 100% !important; margin-left: auto !important; margin-right: auto !important; }
     #prodOverviewMediaImg { height: clamp(180px, 45vw, 260px) !important; background:transparent !important; box-shadow:none !important; border:none !important; }
 }

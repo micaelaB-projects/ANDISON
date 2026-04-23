@@ -1828,22 +1828,96 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         }
 
         @media (max-width: 768px) {
+            footer {
+                padding-top: 24px;
+            }
+
+            .footer-content {
+                padding: 0 14px 8px;
+                gap: 12px;
+            }
+
             .footer-main-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px;
+            }
+
+            .footer-brand-col {
+                grid-column: 1 / -1;
+            }
+
+            .footer-main-grid > .footer-col:last-child {
+                grid-column: 1 / -1;
+            }
+
+            .footer-brand-logo {
+                margin-bottom: 6px;
+            }
+
+            .footer-brand-logo img {
+                width: 170px;
+            }
+
+            .footer-brand-blurb {
+                font-size: 10px;
+                line-height: 1.35;
+                max-width: none;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .footer-col {
+                background: rgba(255, 255, 255, 0.06);
+                border: 1px solid rgba(255, 255, 255, 0.12);
+                border-radius: 12px;
+                padding: 10px 9px;
+            }
+
+            .footer-contact-list {
+                gap: 6px;
+            }
+
+            .footer-contact-item {
+                gap: 6px;
+                font-size: 10px;
+                line-height: 1.35;
+            }
+
+            .footer-contact-item i {
+                font-size: 10px;
+                margin-top: 3px;
             }
 
             .footer-col-title {
                 font-size: 10px;
+                margin: 0 0 8px;
+            }
+
+            .footer-nav-links {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 6px;
             }
 
             .footer-nav-links a {
                 font-size: 10px;
+                font-weight: 700;
+                width: 100%;
+                padding: 5px 7px;
+                border-radius: 8px;
+                background: rgba(255, 255, 255, 0.08) !important;
+                line-height: 1.25;
+            }
+
+            .footer-nav-links a::after {
+                display: none;
             }
 
             .footer-bottom {
-                flex-direction: column;
                 align-items: center;
-                padding-bottom: 80px;
+                padding: 10px 0 52px;
                 padding-right: 0;
                 padding-left: 0;
             }
@@ -1853,15 +1927,33 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             }
 
             .footer-scroll-top {
-                width: 46px;
-                height: 46px;
-                right: 20px;
-                bottom: 18px;
+                width: 36px;
+                height: 36px;
+                right: 12px;
+                bottom: 10px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .footer-main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-main-grid > .footer-col:last-child {
+                grid-column: auto;
             }
         }
 
         /* Responsive */
         @media (max-width: 768px) {
+            body {
+                padding-top: 176px;
+            }
+
+            #brand-page {
+                padding-top: 34px !important;
+            }
+
             /* Single row: logo | search | inquiry | contact */
             .header-top {
                 display: flex;
@@ -1949,8 +2041,9 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             }
 
             nav ul {
-                flex-wrap: nowrap;
+                flex-wrap: wrap;
                 gap: 0;
+                width: 100%;
             }
 
             nav li {
@@ -1962,10 +2055,11 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                 padding-right: 0;
                 gap: 0;
                 min-height: auto;
-                overflow-x: hidden;
-                overflow-y: visible;
+                overflow: hidden;
                 justify-content: center;
                 flex-wrap: wrap;
+                width: 100%;
+                overscroll-behavior-x: contain;
             }
 
             .nav-inner::-webkit-scrollbar { display: none; }
@@ -1975,6 +2069,8 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                 flex-wrap: wrap;
                 flex-shrink: 1;
                 justify-content: center;
+                width: 100%;
+                overflow: hidden;
             }
 
             .nav-list > li > a {
@@ -2009,6 +2105,14 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                 display: flex;
                 align-items: center;
                 justify-content: center;
+            }
+
+            .brand-products-title {
+                margin-top: 6px;
+            }
+
+            .products-toolbar {
+                margin-top: 8px;
             }
 
             .hero-slide {
@@ -2390,10 +2494,30 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                 padding: 0 12px;
             }
 
-            .nav-inner { padding-left: 50px; padding-right: 6px; min-height: 40px; overflow-x: auto; overflow-y: visible; justify-content: flex-start; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-            .nav-inner::-webkit-scrollbar { display: none; }
-            .nav-list { position: static; transform: none; left: auto; flex-wrap: nowrap; flex-shrink: 0; gap: 0; }
-            .browse-toggle { position: static; transform: none; left: auto; top: auto; padding: 6px 10px; }
+            html, body { overflow-x: hidden; overflow-y: auto; }
+            header { position: fixed; top: 0; left: 0; right: 0; width: 100%; }
+            .nav-inner {
+                padding-left: 0;
+                padding-right: 0;
+                min-height: 40px;
+                overflow: hidden;
+                justify-content: center;
+                flex-wrap: wrap;
+                width: 100%;
+                overscroll-behavior-x: contain;
+            }
+            .nav-list {
+                position: static;
+                transform: none;
+                left: auto;
+                width: 100%;
+                flex-wrap: wrap;
+                flex-shrink: 1;
+                justify-content: center;
+                gap: 0;
+                overflow: hidden;
+            }
+            .browse-toggle { display: none; }
         }
 
         /* Global animation utilities (shared) */
@@ -2505,6 +2629,12 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             font-weight: 700;
             color: #2B11DB;
             margin-bottom: 8px;
+        }
+        .brand-header-products-count {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 13px;
+            color: #6b7280;
         }
         .brand-header-desc {
             font-size: 14px;
@@ -2956,6 +3086,10 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         <div class="container">
 
             <!-- Brand Header -->
+            <?php
+            $total_products = count($brand_products);
+            ?>
+
             <div class="brand-header-card">
                 <div class="brand-logo-wrap">
                     <img src="<?php echo htmlspecialchars($brand_logo_src, ENT_QUOTES); ?>"
@@ -2968,6 +3102,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                     <div class="brand-header-tagline"><?php echo htmlspecialchars($brand_info['tagline']); ?></div>
                     <?php endif; ?>
                     <div class="brand-header-name"><?php echo $brand_name; ?></div>
+                    <span class="products-count brand-header-products-count" id="productsCount">Showing <?php echo min(9, $total_products); ?> of <?php echo $total_products; ?> products</span>
                     <div class="brand-header-desc"><?php echo andison_render_brand_description($brand_info['description'] ?? ''); ?></div>
                 </div>
             </div>
@@ -2989,10 +3124,6 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             <!-- Our Products -->
             <div class="brand-products-section">
                 <h2 class="brand-products-title">Our Products</h2>
-
-                <?php
-                $total_products = count($brand_products);
-                ?>
 
                 <div class="brand-products-layout">
 
@@ -3016,7 +3147,6 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                                 <button class="view-btn active" id="gridViewBtn" title="Grid view"><i class="bi bi-grid-fill"></i></button>
                                 <button class="view-btn" id="listViewBtn" title="List view"><i class="bi bi-list-ul"></i></button>
                             </div>
-                            <span class="products-count" id="productsCount">Showing <?php echo $total_products; ?> products</span>
                         </div>
 
                         <!-- Product Grid -->
@@ -3247,6 +3377,7 @@ var BRAND_LOGO = '<?php echo htmlspecialchars($brand_logo_src, ENT_QUOTES); ?>';
             if (currentPage > totalPages) currentPage = totalPages;
             var start = (currentPage - 1) * ITEMS_PER_PAGE;
             var end   = start + ITEMS_PER_PAGE;
+            var shownOnPage = Math.max(0, Math.min(end, visible.length) - start);
 
             // Show/hide cards
             allCards.forEach(function(c){ c.style.display = 'none'; });
@@ -3257,7 +3388,7 @@ var BRAND_LOGO = '<?php echo htmlspecialchars($brand_logo_src, ENT_QUOTES); ?>';
             });
 
             // Count
-            if (countEl) countEl.textContent = 'Showing ' + visible.length + ' product' + (visible.length !== 1 ? 's' : '');
+            if (countEl) countEl.textContent = 'Showing ' + shownOnPage + ' of ' + visible.length + ' product' + (visible.length !== 1 ? 's' : '');
 
             // Ensure badges remain visible even if any external script modifies card internals.
             ensureCardBadges(allCards);

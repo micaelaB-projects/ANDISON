@@ -1698,6 +1698,7 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
             }
             .about-hero {
                 padding: 40px 20px 36px;
+                margin-top: 84px;
             }
             .about-hero h1 {
                 font-size: 26px;
@@ -2066,9 +2067,14 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
             background: linear-gradient(135deg, #2B11DB 0%, #1a0da3 100%);
             color: white;
             text-align: center;
-            padding: 80px 20px 70px;
+            padding: 40px 20px;
+            margin-top: 110px;
             position: relative;
-            overflow: hidden;
+            overflow: visible;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .about-hero::before {
             content: '';
@@ -2079,12 +2085,16 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
         }
 
         .about-hero h1 {
-            font-size: 46px;
+            font-size: 60px;
             font-weight: 800;
-            margin-bottom: 14px;
+            margin: 0;
             letter-spacing: -0.5px;
             position: relative;
-            z-index: 1;
+            z-index: 100;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            width: 100%;
+            text-align: center;
+            color: white;
         }
         .about-hero p {
             font-size: 17px;
@@ -2166,13 +2176,16 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
 
         .about-mvv-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 32px;
             margin-top: 40px;
+            max-width: 1300px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .about-mvv-card {
-            padding: 36px 28px;
+            padding: 48px 36px;
             background: white;
             border-radius: 12px;
             box-shadow: 0 4px 16px rgba(0,0,0,0.08);
@@ -2219,6 +2232,7 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
             color: white;
             text-align: center;
             padding: 80px 20px 70px;
+            margin-top: 110px;
             position: relative;
             overflow: hidden;
         }
@@ -2395,6 +2409,7 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
         }
         .about-mvv-img-overlay {
             position: relative;
+            margin-bottom: 28px;
         }
         .about-mvv-img-overlay::after {
             content: '';
@@ -2703,9 +2718,9 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
             text-decoration: none;
         }
         .brands-carousel-item:hover {
-            box-shadow: 0 8px 24px rgba(0, 215, 179, 0.22);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             transform: translateY(-4px);
-            border-color: #00D7B3;
+            border-color: #efefef;
         }
         .brands-carousel-item img {
             display: block;
