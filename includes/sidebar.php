@@ -103,6 +103,29 @@ if ($category_idx !== null) {
         --andison-brand-hover-shadow: 0 8px 24px rgba(0, 215, 179, 0.22);
     }
 
+    /* Global readability fix for top nav dropdown links on pages using sidebar include. */
+    nav .nav-dropdown ul a:not(.andison-nav-brand-link):link,
+    nav .nav-dropdown ul a:not(.andison-nav-brand-link):visited {
+        color: #374151 !important;
+        -webkit-text-fill-color: #374151 !important;
+        opacity: 1 !important;
+        text-shadow: none !important;
+        font-weight: 600 !important;
+    }
+
+    nav .nav-dropdown ul a:not(.andison-nav-brand-link):hover,
+    nav .nav-dropdown ul a:not(.andison-nav-brand-link):focus-visible,
+    nav .nav-dropdown ul a:not(.andison-nav-brand-link):active,
+    nav .nav-dropdown ul li.active > a:not(.andison-nav-brand-link),
+    nav .nav-dropdown ul a[aria-current="page"]:not(.andison-nav-brand-link) {
+        background: #e2e7f5 !important;
+        color: #1f2fa9 !important;
+        -webkit-text-fill-color: #1f2fa9 !important;
+        opacity: 1 !important;
+        text-shadow: none !important;
+        outline: none !important;
+    }
+
     /* Overlay Backdrop */
     .overlay-backdrop {
         position: fixed;
@@ -1250,7 +1273,6 @@ if ($category_idx !== null) {
             <ul id="sub-gas-detectors" class="sidebar-sublist collapsed">
                 <li><a href="<?php echo $_sidebar_base; ?>gas-detectors/single-gas-detector.php"><i class="bi bi-search"></i>Single Gas Detector</a></li>
                 <li><a href="<?php echo $_sidebar_base; ?>gas-detectors/multi-gas-detector.php"><i class="bi bi-grid"></i>Multi Gas Detector</a></li>
-                <li><a href="<?php echo $_sidebar_base; ?>gas-detectors/portable-gas-detectors.php"><i class="bi bi-bag"></i>Portable Gas Detectors</a></li>
                 <li><a href="<?php echo $_sidebar_base; ?>gas-detectors/docking-data-management.php"><i class="bi bi-hdd-network"></i>Docking and Data Management</a></li>
                 <li><a href="<?php echo $_sidebar_base; ?>gas-detectors/calibration-gas-regulators.php"><i class="bi bi-sliders"></i>Calibration Gas and Regulators</a></li>
             </ul>
@@ -1775,7 +1797,6 @@ if ($category_idx !== null) {
                 'gas-detectors': [
                     { label:'Single Gas Detector',          href: base+'/gas-detectors/single-gas-detector.php' },
                     { label:'Multi Gas Detector',           href: base+'/gas-detectors/multi-gas-detector.php' },
-                    { label:'Portable Gas Detectors',       href: base+'/gas-detectors/portable-gas-detectors.php' },
                     { label:'Docking and Data Management',  href: base+'/gas-detectors/docking-data-management.php' },
                     { label:'Calibration Gas and Regulators', href: base+'/gas-detectors/calibration-gas-regulators.php' }
                 ],

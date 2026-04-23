@@ -1,6 +1,28 @@
 <style>
 /* Shared modern footer for legacy pages */
 
+/* Global nav dropdown readability fix for all pages.
+   Exclude logo-only brand links so image tiles keep their custom styling. */
+nav .nav-dropdown ul a:not(.andison-nav-brand-link) {
+    color: #374151 !important;
+    -webkit-text-fill-color: #374151 !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+
+nav .nav-dropdown ul a:not(.andison-nav-brand-link):hover,
+nav .nav-dropdown ul a:not(.andison-nav-brand-link):focus-visible,
+nav .nav-dropdown ul li.active > a:not(.andison-nav-brand-link),
+nav .nav-dropdown ul a[aria-current="page"]:not(.andison-nav-brand-link) {
+    background: #e2e7f5 !important;
+    color: #1f2fa9 !important;
+    -webkit-text-fill-color: #1f2fa9 !important;
+    outline: none !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+
 /* Global override: make Brands hover logos larger and cards tighter across pages. */
 nav li:nth-child(3) .nav-dropdown {
     min-width: 700px !important;

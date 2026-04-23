@@ -854,17 +854,20 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         }
 
         .nav-dropdown ul a {
-            color: #333;
+            color: #374151;
             font-size: 14px;
+            font-weight: 500;
             padding: 8px 12px;
             display: block;
-            border-radius: 4px;
-            transition: background 0.2s ease, color 0.2s ease;
+            border-radius: 7px;
+            transition: background 0.16s ease, color 0.16s ease;
         }
 
-        .nav-dropdown ul a:hover {
-            background: #f0f5ff;
+        .nav-dropdown ul a:hover,
+        .nav-dropdown ul a:focus-visible {
+            background: #e7ebf7;
             color: #2B11DB;
+            outline: none;
         }
 
         .nav-dropdown p {
@@ -882,13 +885,15 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
 
         .nav-dropdown ul a {
             display: block;
-            border-radius: 4px;
-            transition: background 0.2s ease, color 0.2s ease;
+            border-radius: 7px;
+            transition: background 0.16s ease, color 0.16s ease;
         }
 
-        .nav-dropdown ul a:hover {
-            background: #f0f5ff;
+        .nav-dropdown ul a:hover,
+        .nav-dropdown ul a:focus-visible {
+            background: #e7ebf7;
             color: #2B11DB;
+            outline: none;
         }
 
         nav li:nth-child(3) .nav-dropdown ul {
@@ -931,6 +936,40 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
 
         nav li:nth-child(3) .nav-dropdown ul a {
             cursor: pointer;
+        }
+
+        /* Ensure Industries dropdown item text stays readable on hover/focus. */
+        nav li:nth-child(4) .nav-dropdown ul a {
+            color: #374151 !important;
+            font-weight: 600;
+        }
+
+        nav li:nth-child(4) .nav-dropdown ul a:hover,
+        nav li:nth-child(4) .nav-dropdown ul a:focus-visible {
+            background: #e2e7f5 !important;
+            color: #1f2fa9 !important;
+            outline: none;
+        }
+
+        /* Global dropdown readability (brand page does not load footer_modernize). */
+        nav .nav-dropdown ul a:not(.andison-nav-brand-link) {
+            color: #374151 !important;
+            -webkit-text-fill-color: #374151 !important;
+            font-weight: 600 !important;
+            opacity: 1 !important;
+            text-shadow: none !important;
+        }
+
+        nav .nav-dropdown ul a:not(.andison-nav-brand-link):hover,
+        nav .nav-dropdown ul a:not(.andison-nav-brand-link):focus-visible,
+        nav .nav-dropdown ul li.active > a:not(.andison-nav-brand-link),
+        nav .nav-dropdown ul a[aria-current="page"]:not(.andison-nav-brand-link) {
+            background: #e2e7f5 !important;
+            color: #1f2fa9 !important;
+            -webkit-text-fill-color: #1f2fa9 !important;
+            outline: none !important;
+            opacity: 1 !important;
+            text-shadow: none !important;
         }
 
         /* Hero Section */

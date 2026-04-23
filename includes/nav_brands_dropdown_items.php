@@ -10,29 +10,29 @@ if (!defined('ANDISON_NAV_BRANDS_DROPDOWN_STYLE_PRINTED')) {
     ?>
     <style>
         nav li:nth-child(3) .nav-dropdown {
-            min-width: 770px !important;
-            max-width: 770px !important;
-            padding: 18px 20px !important;
+            min-width: 860px !important;
+            max-width: 860px !important;
+            padding: 18px 22px !important;
         }
 
         nav li:nth-child(3) .nav-dropdown ul {
             display: grid !important;
             grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
-            gap: 6px 10px !important;
+            gap: 7px 12px !important;
             margin-top: 12px !important;
         }
 
         nav li:nth-child(3) .nav-dropdown ul li {
-            min-height: 82px !important;
+            min-height: 84px !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
         }
 
         nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link {
-            width: 140px !important;
-            height: 74px !important;
-            min-height: 74px !important;
+            width: 152px !important;
+            height: 76px !important;
+            min-height: 76px !important;
             padding: 0 !important;
             display: flex !important;
             align-items: center !important;
@@ -48,34 +48,77 @@ if (!defined('ANDISON_NAV_BRANDS_DROPDOWN_STYLE_PRINTED')) {
         }
 
         nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link img.andison-nav-brand-logo {
+            --nav-logo-scale: 1.55;
+            --nav-logo-scale-hover: 1.7;
             width: 100% !important;
             height: 100% !important;
             max-width: none !important;
             max-height: none !important;
             object-fit: contain !important;
-            transform: scale(1.55) !important;
+            transform: scale(var(--nav-logo-scale)) !important;
             transform-origin: center center !important;
             transition: transform 180ms ease !important;
         }
 
         nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link:hover img.andison-nav-brand-logo {
-            transform: scale(1.7) !important;
+            transform: scale(var(--nav-logo-scale-hover)) !important;
+        }
+
+        /* Reduce only the logos that appear too large visually. */
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-robotsystemsperipherals img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-dryrodii img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-soyer img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-bw img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-alfra img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-skandgalgage img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-aquasol img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-magnaflux img.andison-nav-brand-logo {
+            --nav-logo-scale: 1.2;
+            --nav-logo-scale-hover: 1.3;
+        }
+
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-dryrodii img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-bw img.andison-nav-brand-logo {
+            --nav-logo-scale: 1.03;
+            --nav-logo-scale-hover: 1.12;
         }
 
         @media (max-width: 1200px) {
+            nav li:nth-child(3) .nav-dropdown {
+                min-width: 760px !important;
+                max-width: 760px !important;
+            }
+
+            nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link {
+                width: 132px !important;
+                height: 68px !important;
+                min-height: 68px !important;
+            }
+        }
+
+        @media (max-width: 980px) {
             nav li:nth-child(3) .nav-dropdown {
                 min-width: 640px !important;
                 max-width: 640px !important;
             }
 
             nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link {
-                width: 116px !important;
+                width: 114px !important;
                 height: 62px !important;
                 min-height: 62px !important;
             }
         }
     </style>
     <?php
+}
+
+if (!function_exists('andison_nav_brand_css_key')) {
+    function andison_nav_brand_css_key(string $brandName): string
+    {
+        $key = strtolower(trim($brandName));
+        $key = preg_replace('/[^a-z0-9]+/', '', $key) ?? $key;
+        return $key;
+    }
 }
 
 if (!function_exists('andison_nav_dropdown_resolve_logo')) {
@@ -201,9 +244,10 @@ if (is_array($andisonBrandsInfo) && !empty($andisonBrandsInfo)) {
         }
 
         $brandUrl = $andisonNavBasePath . 'brand.php?name=' . rawurlencode($displayName);
+        $brandCssKey = andison_nav_brand_css_key($displayName);
         ?>
         <li>
-            <a class="andison-nav-brand-link" href="<?php echo htmlspecialchars($brandUrl, ENT_QUOTES); ?>">
+            <a class="andison-nav-brand-link brand-key-<?php echo htmlspecialchars($brandCssKey, ENT_QUOTES); ?>" href="<?php echo htmlspecialchars($brandUrl, ENT_QUOTES); ?>">
                 <img
                     class="andison-nav-brand-logo"
                     src="<?php echo htmlspecialchars($logoPath, ENT_QUOTES); ?>"
@@ -223,9 +267,10 @@ if (is_array($andisonBrandsInfo) && !empty($andisonBrandsInfo)) {
             continue;
         }
         $brandUrl = $andisonNavBasePath . 'brand.php?name=' . rawurlencode($displayName);
+        $brandCssKey = andison_nav_brand_css_key($displayName);
         ?>
         <li>
-            <a class="andison-nav-brand-link" href="<?php echo htmlspecialchars($brandUrl, ENT_QUOTES); ?>">
+            <a class="andison-nav-brand-link brand-key-<?php echo htmlspecialchars($brandCssKey, ENT_QUOTES); ?>" href="<?php echo htmlspecialchars($brandUrl, ENT_QUOTES); ?>">
                 <img
                     class="andison-nav-brand-logo"
                     src="<?php echo htmlspecialchars($resolvedLogoPath, ENT_QUOTES); ?>"

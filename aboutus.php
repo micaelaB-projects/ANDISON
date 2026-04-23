@@ -4,10 +4,173 @@ andison_track_visit('services');
 require_once __DIR__ . '/Andison/includes/home_featured.php';
 require_once __DIR__ . '/Andison/includes/home_slider.php';
 require_once __DIR__ . '/Andison/includes/youtube_links.php';
+require_once __DIR__ . '/Andison/includes/brands_info.php';
+require_once __DIR__ . '/Andison/includes/brand_order.php';
+require_once __DIR__ . '/includes/brand_logo_map.php';
 
 $featured = andison_get_home_featured();
 $slides = andison_get_home_slider();
 $ytLinks = andison_get_youtube_links();
+$brandsData = andison_get_brands_info(true);
+
+if (!function_exists('andison_about_display_label')) {
+    function andison_about_display_label(string $brand): string
+    {
+        $normalized = strtolower(trim($brand));
+        if ($normalized === 'robot systems' || $normalized === 'robot system peripherals' || $normalized === 'robot systems peripherals') {
+            return 'Robot Systems Peripherals';
+        }
+        if ($normalized === 'hard worker' || $normalized === 'hard workers' || $normalized === 'hardworker') {
+            return 'HARDWORKER';
+        }
+        if ($normalized === 'dryrod. ii' || $normalized === 'dryrod ii' || $normalized === 'phoenix dryrod' || $normalized === 'phoenix dry rod') {
+            return 'DryRod. II';
+        }
+        if ($normalized === 'ansell') {
+            return 'ANSELL';
+        }
+        if ($normalized === 'panasonic' || $normalized === 'panasonic connect') {
+            return 'Panasonic Connect';
+        }
+        if ($normalized === 'rae' || $normalized === 'rac' || $normalized === 'rae systems') {
+            return 'RAE SYSTEMS';
+        }
+        return $normalized === 'weller' ? 'WEILER' : $brand;
+    }
+}
+
+if (!function_exists('andison_about_logo_path')) {
+    function andison_about_logo_path(string $brandKey, string $displayName, array $logoMap, array $brandInfo = []): string
+    {
+        $brandLogo = trim((string)($brandInfo['logo'] ?? ''));
+        if ($brandLogo !== '') {
+            return $brandLogo;
+        }
+
+        $candidates = [$brandKey, $displayName];
+        $normalized = strtolower(trim($brandKey));
+
+        if ($normalized === 'robot systems peripherals') {
+            $candidates[] = 'Robot Systems';
+        } elseif ($normalized === 'rae systems' || $normalized === 'rae' || $normalized === 'rac') {
+            $candidates[] = 'RAC';
+        } elseif ($normalized === 'magnaflux') {
+            $candidates[] = 'MAGNAFLUX';
+        } elseif ($normalized === 'weldas') {
+            $candidates[] = 'WELDAS';
+        } elseif ($normalized === 'uvex') {
+            $candidates[] = 'UVEX';
+        } elseif ($normalized === 'microgard') {
+            $candidates[] = 'MICROGARD';
+        } elseif ($normalized === 'ansell') {
+            $candidates[] = 'ANSELL';
+        } elseif ($normalized === 'bosch') {
+            $candidates[] = 'BOSCH';
+        } elseif ($normalized === 'revolt') {
+            $candidates[] = 'REVOLT';
+        } elseif ($normalized === 'motolite') {
+            $candidates[] = 'MOTOLITE';
+        } elseif ($normalized === 'sk and gal gage') {
+            $candidates[] = 'SK And GAL GAGE';
+        }
+
+        foreach ($candidates as $candidate) {
+            if (isset($logoMap[$candidate])) {
+                return (string)$logoMap[$candidate];
+            }
+        }
+
+        foreach ($logoMap as $mapName => $mapPath) {
+            if (strcasecmp((string)$mapName, $brandKey) === 0 || strcasecmp((string)$mapName, $displayName) === 0) {
+                return (string)$mapPath;
+            }
+        }
+
+        return '';
+    }
+}
+
+if (!function_exists('andison_about_order_rank')) {
+    function andison_about_order_rank(string $brand): int
+    {
+        return andison_brand_order_rank(andison_about_display_label($brand));
+    }
+}
+
+if (!function_exists('andison_about_logo_src')) {
+    function andison_about_logo_src(string $path): string
+    {
+        $raw = trim($path);
+        if ($raw === '') {
+            return '';
+        }
+        if (preg_match('~^(https?:)?//~i', $raw) === 1 || str_starts_with($raw, 'data:') || str_starts_with($raw, 'blob:')) {
+            return $raw;
+        }
+        return str_replace(' ', '%20', $raw);
+    }
+}
+
+$aboutBrandDisplayToKey = [];
+$aboutHiddenBrandDisplayKeys = [
+    'aer service' => true,
+    'wire wizard' => true,
+    'tokin arc' => true,
+    'alphatec' => true,
+    'bw technologies' => true,
+    'hard worker' => true,
+    'phoenix dryrod' => true,
+    'phoenix dry rod' => true,
+    'sk' => true,
+    'gal gage' => true,
+];
+
+foreach (array_keys($brandsData) as $brandKey) {
+    $display = andison_about_display_label((string)$brandKey);
+    $displayKey = strtolower(trim($display));
+    if ($displayKey === '' || isset($aboutHiddenBrandDisplayKeys[$displayKey])) {
+        continue;
+    }
+
+    if (!isset($aboutBrandDisplayToKey[$displayKey])) {
+        $aboutBrandDisplayToKey[$displayKey] = (string)$brandKey;
+        continue;
+    }
+
+    $currentKey = $aboutBrandDisplayToKey[$displayKey];
+    $currentCount = count($brandsData[$currentKey]['products'] ?? []);
+    $newCount = count($brandsData[$brandKey]['products'] ?? []);
+    if ($newCount > $currentCount) {
+        $aboutBrandDisplayToKey[$displayKey] = (string)$brandKey;
+    }
+}
+
+$aboutBrandCards = [];
+foreach ($aboutBrandDisplayToKey as $brandKey) {
+    $displayName = andison_about_display_label($brandKey);
+    $brandInfo = isset($brandsData[$brandKey]) && is_array($brandsData[$brandKey]) ? $brandsData[$brandKey] : [];
+    $logoPath = andison_about_logo_path($brandKey, $displayName, isset($brand_logo_map) && is_array($brand_logo_map) ? $brand_logo_map : [], $brandInfo);
+    $logoSrc = andison_about_logo_src($logoPath);
+    if ($logoSrc === '') {
+        continue;
+    }
+    $aboutBrandCards[] = [
+        'display' => $displayName,
+        'logo' => $logoSrc,
+        'slug' => strtolower((string)preg_replace('/[^a-z0-9]+/i', '-', $displayName)),
+    ];
+}
+
+usort($aboutBrandCards, static function (array $a, array $b): int {
+    $rankA = andison_about_order_rank((string)$a['display']);
+    $rankB = andison_about_order_rank((string)$b['display']);
+
+    if ($rankA !== $rankB) {
+        return $rankA <=> $rankB;
+    }
+
+    return strcasecmp((string)$a['display'], (string)$b['display']);
+});
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -2478,41 +2641,11 @@ $ytLinks = andison_get_youtube_links();
             </button>
             <div class="brands-carousel-viewport" id="brandsViewport">
                 <div class="brands-carousel-track" id="brandsTrack">
-                    <a href="brand.php?name=Panasonic%20Connect" class="brands-carousel-item"><img src="assets/brands/PANASONIC.jpg" alt="Panasonic Connect"></a>
-                    <a href="brand.php?name=Robot%20Systems" class="brands-carousel-item"><img src="assets/brands/ROBOT SYSTEMS.png" alt="Robot Systems"></a>
-                    <a href="brand.php?name=Kobelco" class="brands-carousel-item"><img src="assets/brands/KOBELCO.jpg" alt="Kobelco"></a>
-                    <a href="brand.php?name=Metrode" class="brands-carousel-item"><img src="assets/brands/METRODE.jpg" alt="Metrode"></a>
-                    <a href="brand.php?name=DryRod.%20II" class="brands-carousel-item"><img src="assets/brands/DRYROD.jpg" alt="DryRod. II"></a>
-                    <a href="brand.php?name=Weldcraft" class="brands-carousel-item"><img src="assets/brands/WELDCRAFT.png" alt="Weldcraft"></a>
-                    <a href="brand.php?name=Truweld" class="brands-carousel-item"><img src="assets/brands/TRUWELD.jpg" alt="Truweld"></a>
-                    <a href="brand.php?name=Arcair" class="brands-carousel-item"><img src="assets/brands/ARCAIR.jpg" alt="Arcair"></a>
-                    <a href="brand.php?name=MAGNAFLUX" class="brands-carousel-item"><img src="assets/brands/MAGNAFLUX.jpg" alt="Magnaflux"></a>
-                    <a href="brand.php?name=Tempilstik" class="brands-carousel-item"><img src="assets/brands/TEMPILSTIK.jpg" alt="Tempilstik"></a>
-                    <a href="brand.php?name=TANAKA" class="brands-carousel-item"><img src="assets/brands/TANAKA.jpg" alt="Tanaka"></a>
-                    <a href="brand.php?name=CHIYODA" class="brands-carousel-item"><img src="assets/brands/CHIYODA.jpg" alt="Chiyoda"></a>
-                    <a href="brand.php?name=Yutaka" class="brands-carousel-item"><img src="assets/brands/YUTAKA.jpg" alt="Yutaka"></a>
-                    <a href="brand.php?name=HARDWORKER" class="brands-carousel-item"><img src="assets/brands/HARDWORKER.jpg" alt="Hard Workers"></a>
-                    <a href="brand.php?name=Soyer" class="brands-carousel-item"><img src="assets/brands/SOYER.jpg" alt="Soyer"></a>
-                    <a href="brand.php?name=Aquasol" class="brands-carousel-item"><img src="assets/brands/AQUASOL.jpg" alt="Aquasol"></a>
-                    <a href="brand.php?name=SK%20And%20GAL%20GAGE" class="brands-carousel-item"><img src="assets/brands/SK%20AND%20GAL%20GAGE.jpg" alt="SK And GAL GAGE"></a>
-                    <a href="brand.php?name=COPPUS" class="brands-carousel-item"><img src="assets/brands/COPPUS.jpg" alt="Coppus"></a>
-                    <a href="brand.php?name=BW%20Technologies" class="brands-carousel-item"><img src="assets/brands/BW%20TECHNOLOGIES.jpg" alt="BW Technologies"></a>
-                    <a href="brand.php?name=RAE" class="brands-carousel-item"><img src="assets/brands/RAE%20SYSTEMS.jpg" alt="RAE Systems"></a>
-                    <a href="brand.php?name=WELDAS" class="brands-carousel-item"><img src="assets/brands/WELDAS.jpg" alt="Weldas"></a>
-                    <a href="brand.php?name=UVEX" class="brands-carousel-item"><img src="assets/brands/UVEX.jpg" alt="Uvex"></a>
-                    <a href="brand.php?name=ACES" class="brands-carousel-item"><img src="assets/brands/ACES.jpg" alt="Aces"></a>
-                    <a href="brand.php?name=MICROGARD" class="brands-carousel-item"><img src="assets/brands/MICROGARD.jpg" alt="Microgard"></a>
-                    <a href="brand.php?name=ANSELL" class="brands-carousel-item"><img src="assets/brands/ANSELL.jpg" alt="Ansell"></a>
-                    <a href="brand.php?name=Alfra" class="brands-carousel-item"><img src="assets/brands/ALFRA.jpg" alt="Alfra"></a>
-                    <a href="brand.php?name=BOSCH" class="brands-carousel-item"><img src="assets/brands/BOSCH.jpg" alt="Bosch"></a>
-                    <a href="brand.php?name=Makita" class="brands-carousel-item"><img src="assets/brands/MAKITA.jpg" alt="Makita"></a>
-                    <a href="brand.php?name=WEILER" class="brands-carousel-item"><img src="assets/brands/WEILER.jpg" alt="WEILER"></a>
-                    <a href="brand.php?name=Garryson" class="brands-carousel-item"><img src="assets/brands/GARRYSON.jpg" alt="Garryson"></a>
-                    <a href="brand.php?name=REVOLT" class="brands-carousel-item"><img src="assets/brands/REVOLT.png" alt="REVOLT"></a>
-                    <a href="brand.php?name=Technotex" class="brands-carousel-item"><img src="assets/brands/TECHNOTEX.png" alt="Technotex"></a>
-                    <a href="brand.php?name=Spilfyter" class="brands-carousel-item"><img src="assets/brands/SPILFYTER.jpg" alt="Spilfyter"></a>
-                    <a href="brand.php?name=Dalo" class="brands-carousel-item"><img src="assets/brands/DALO.jpg" alt="Dalo"></a>
-                    <a href="brand.php?name=MOTOLITE" class="brands-carousel-item"><img src="assets/brands/MOTOLITE.jpg" alt="Motolite"></a>
+                    <?php foreach ($aboutBrandCards as $brandCard): ?>
+                    <a href="brand.php?name=<?php echo rawurlencode((string)$brandCard['display']); ?>" class="brands-carousel-item brand-item-<?php echo htmlspecialchars(trim((string)$brandCard['slug'], '-'), ENT_QUOTES); ?>">
+                        <img src="<?php echo htmlspecialchars((string)$brandCard['logo'], ENT_QUOTES); ?>" alt="<?php echo htmlspecialchars((string)$brandCard['display'], ENT_QUOTES); ?>">
+                    </a>
+                    <?php endforeach; ?>
                 </div>
             </div>
             <button class="brands-carousel-btn brands-carousel-next" id="brandsNext" aria-label="Next">
@@ -2541,7 +2674,7 @@ $ytLinks = andison_get_youtube_links();
             align-items: center;
             gap: 12px;
             padding: 0 16px;
-            max-width: 1200px;
+            max-width: 1500px;
             margin: 0 auto;
         }
         .brands-carousel-viewport {
@@ -2557,7 +2690,7 @@ $ytLinks = andison_get_youtube_links();
         }
         .brands-carousel-item {
             flex-shrink: 0;
-            height: 176px;
+            height: 188px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -2584,8 +2717,11 @@ $ytLinks = andison_get_youtube_links();
             filter: grayscale(25%);
             transition: filter 0.25s ease;
             pointer-events: none;
-            transform: scale(1.28);
+            transform: scale(1.44);
             transform-origin: center center;
+        }
+        .brands-carousel-item.brand-item-dryrod-ii img {
+            transform: scale(0.9);
         }
         .brands-carousel-item:hover img {
             filter: grayscale(0%);
@@ -2667,6 +2803,7 @@ $ytLinks = andison_get_youtube_links();
         @media (max-width: 600px) {
             .brands-carousel-item { width: 138px; height: 98px; padding: 10px 12px; }
             .brands-carousel-item img { transform: scale(1.16); }
+            .brands-carousel-item.brand-item-dryrod-ii img { transform: scale(0.78); }
             .brands-carousel-track { gap: 10px; }
             .brands-carousel-outer { gap: 6px; padding: 0 4px; }
         }
@@ -2687,8 +2824,9 @@ $ytLinks = andison_get_youtube_links();
 
         function getVisible() {
             var w = viewport.offsetWidth;
-            if(w >= 1100) return 3;
-            if(w >= 800)  return 2;
+            if(w >= 1280) return 5;
+            if(w >= 1024) return 4;
+            if(w >= 768)  return 3;
             if(w >= 600)  return 2;
             return 1;
         }

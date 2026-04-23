@@ -135,10 +135,16 @@ $brandCards = [];
 foreach ($brandDisplayToKey as $displayKey => $brandKey) {
     $displayName = andison_brands_display_label($brandKey);
     $brandInfo = isset($brandsData[$brandKey]) && is_array($brandsData[$brandKey]) ? $brandsData[$brandKey] : [];
+    $displayLower = strtolower(trim($displayName));
+    $logoMaxScale = 1.28;
+    if (str_contains($displayLower, 'bw technologies') || str_contains($displayLower, 'bw ') || $displayLower === 'alfra') {
+        $logoMaxScale = 1.02;
+    }
     $brandCards[] = [
         'key' => $brandKey,
         'display' => $displayName,
         'logo' => andison_brands_logo_path($brandKey, $displayName, isset($brand_logo_map) && is_array($brand_logo_map) ? $brand_logo_map : [], $brandInfo),
+        'logo_max_scale' => $logoMaxScale,
     ];
 }
 
@@ -1018,11 +1024,13 @@ usort($brandCards, static function (array $a, array $b): int {
         }
 
         .brand-logo img {
-            width: 100%;
-            height: 100%;
+            width: auto;
+            height: auto;
+            max-width: 88%;
+            max-height: 76%;
             object-fit: contain;
             padding: 0;
-            transform: scale(1.18);
+            transform: scale(1);
             transform-origin: center;
             filter: grayscale(25%);
             transition: filter 0.24s ease, transform 0.24s ease;
@@ -1030,7 +1038,7 @@ usort($brandCards, static function (array $a, array $b): int {
 
         .brand-card:hover .brand-logo img {
             filter: grayscale(0%);
-            transform: scale(1.22);
+            transform: scale(1.04);
         }
 
         .brand-logo-fallback {
@@ -2148,7 +2156,7 @@ usort($brandCards, static function (array $a, array $b): int {
 
         <div class="brands-grid">
             <?php foreach ($brandCards as $brandCard): ?>
-                <div class="brand-card" data-brand="<?php echo htmlspecialchars((string)$brandCard['key'], ENT_QUOTES); ?>">
+                <div class="brand-card" data-brand="<?php echo htmlspecialchars((string)$brandCard['key'], ENT_QUOTES); ?>" data-logo-max-scale="<?php echo htmlspecialchars((string)$brandCard['logo_max_scale'], ENT_QUOTES); ?>">
                     <div class="brand-logo">
                         <?php if ((string)($brandCard['logo'] ?? '') !== ''): ?>
                             <img src="<?php echo htmlspecialchars((string)$brandCard['logo'], ENT_QUOTES); ?>" alt="<?php echo htmlspecialchars((string)$brandCard['display'], ENT_QUOTES); ?>">
@@ -2247,10 +2255,19 @@ usort($brandCards, static function (array $a, array $b): int {
             function initLogoAutoFit() {
                 var cardLogos = document.querySelectorAll('.brand-logo img');
                 cardLogos.forEach(function(img){
+                    var card = img.closest('.brand-card');
+                    var maxScale = 1.28;
+                    if (card) {
+                        var parsed = parseFloat(card.getAttribute('data-logo-max-scale') || '');
+                        if (Number.isFinite(parsed)) {
+                            maxScale = parsed;
+                        }
+                    }
+
                     if (img.complete) {
-                        applyAutoFit(img, 1.55);
+                        applyAutoFit(img, maxScale);
                     } else {
-                        img.addEventListener('load', function(){ applyAutoFit(img, 1.55); }, { once: true });
+                        img.addEventListener('load', function(){ applyAutoFit(img, maxScale); }, { once: true });
                     }
                 });
 

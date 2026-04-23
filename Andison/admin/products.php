@@ -219,8 +219,8 @@ function andison_is_allowed_image_upload(array $file, array $allowedExt, array $
         return true;
     }
 
-    // Some servers return octet-stream/empty MIME for AVIF despite valid file contents.
-    if ($ext === 'avif' && ($mime === '' || $mime === 'application/octet-stream' || $mime === 'image/octet-stream')) {
+    // Some servers return octet-stream/empty MIME for AVIF/JFIF despite valid file contents.
+    if (($ext === 'avif' || $ext === 'jfif') && ($mime === '' || $mime === 'application/octet-stream' || $mime === 'image/octet-stream')) {
         return true;
     }
 
@@ -382,8 +382,8 @@ function andison_handle_multi_image_upload(): array
     if (!is_array($existing)) $existing = [];
     while (count($existing) < $maxProductImages) $existing[] = '';
 
-    $allowed_ext  = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'];
-    $allowed_mime = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
+    $allowed_ext  = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif', 'jfif'];
+    $allowed_mime = ['image/jpeg', 'image/pjpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif', 'image/jfif'];
     $result  = [];
 
     for ($i = 0; $i < $maxProductImages; $i++) {
@@ -447,8 +447,8 @@ function andison_handle_spec_side_image_upload(): string
 
     if (!empty($_FILES['spec_image_file']) && $_FILES['spec_image_file']['error'] === UPLOAD_ERR_OK) {
         $f = $_FILES['spec_image_file'];
-        $allowedExt = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'];
-        $allowedMime = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
+        $allowedExt = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif', 'jfif'];
+        $allowedMime = ['image/jpeg', 'image/pjpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif', 'image/jfif'];
 
         if (andison_is_allowed_image_upload($f, $allowedExt, $allowedMime)) {
             $ext = strtolower(pathinfo((string)($f['name'] ?? ''), PATHINFO_EXTENSION));
@@ -552,10 +552,10 @@ function andison_handle_brand_description_image_upload(): string
     }
 
     $f = $_FILES['description_image_file'];
-    $allowedExt = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'];
-    $allowedMime = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
+    $allowedExt = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif', 'jfif'];
+    $allowedMime = ['image/jpeg', 'image/pjpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif', 'image/jfif'];
     if (!andison_is_allowed_image_upload($f, $allowedExt, $allowedMime)) {
-        throw new RuntimeException('Invalid image type. Use JPG, PNG, WEBP, GIF, or AVIF.');
+        throw new RuntimeException('Invalid image type. Use JPG, JFIF, PNG, WEBP, GIF, or AVIF.');
     }
 
     $ext = strtolower(pathinfo((string)($f['name'] ?? ''), PATHINFO_EXTENSION));
@@ -595,10 +595,10 @@ function andison_handle_brand_logo_upload(string $brandName, string $fileField =
     }
 
     $f = $_FILES[$fileField];
-    $allowedExt = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'];
-    $allowedMime = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
+    $allowedExt = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif', 'jfif'];
+    $allowedMime = ['image/jpeg', 'image/pjpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif', 'image/jfif'];
     if (!andison_is_allowed_image_upload($f, $allowedExt, $allowedMime)) {
-        throw new RuntimeException('Invalid brand image type. Use JPG, PNG, WEBP, GIF, or AVIF.');
+        throw new RuntimeException('Invalid brand image type. Use JPG, JFIF, PNG, WEBP, GIF, or AVIF.');
     }
 
     $ext = strtolower(pathinfo((string)($f['name'] ?? ''), PATHINFO_EXTENSION));
@@ -1381,7 +1381,7 @@ andison_admin_header('Products', 'products');
                 </div>
                 <div class="field" style="margin:0;min-width:0;">
                     <label for="editBrandLogo">New Brand Image (optional)</label>
-                    <input id="editBrandLogo" name="edit_brand_logo" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif">
+                    <input id="editBrandLogo" name="edit_brand_logo" type="file" accept="image/jpeg,image/pjpeg,image/png,image/webp,image/gif,image/avif,image/jfif,.jpg,.jpeg,.jfif,.png,.webp,.gif,.avif">
                 </div>
                 <button class="btn btn-primary" type="submit" style="height:44px;padding:10px 16px;"><i class="bi bi-check2-circle"></i> Save Brand</button>
                 <div class="field" style="margin:0;min-width:0;grid-column:1 / 4;">
@@ -1422,7 +1422,7 @@ andison_admin_header('Products', 'products');
             </div>
             <div class="field" style="margin:0;min-width:0;">
                 <label for="newBrandLogo">Brand Image *</label>
-                <input id="newBrandLogo" name="new_brand_logo" type="file" required accept="image/jpeg,image/png,image/webp,image/gif,image/avif">
+                <input id="newBrandLogo" name="new_brand_logo" type="file" required accept="image/jpeg,image/pjpeg,image/png,image/webp,image/gif,image/avif,image/jfif,.jpg,.jpeg,.jfif,.png,.webp,.gif,.avif">
             </div>
             <button class="btn btn-primary" type="submit" style="height:44px;padding:10px 16px;"><i class="bi bi-check2-circle"></i> Save Brand</button>
             <div class="field" style="margin:0;min-width:0;grid-column:1 / 5;">
@@ -1434,7 +1434,7 @@ andison_admin_header('Products', 'products');
                     </div>
                     <div style="font-size:11px;color:#6b7280;line-height:1.5;">
                         Choose an image file to preview how the logo will look.<br>
-                        Supports JPG, PNG, WEBP, GIF, and AVIF.
+                        Supports JPG, JFIF, PNG, WEBP, GIF, and AVIF.
                     </div>
                 </div>
             </div>
@@ -1958,12 +1958,12 @@ andison_admin_header('Products', 'products');
                     <div style="font-size:10px;color:#9ca3af;margin-bottom:6px;">Tip: choose multiple files once, and they will auto-fill the <?php echo (int)$maxProductImages; ?> slots in order.</div>
 
                     <!-- Bulk selector for efficient multi-upload -->
-                    <input type="file" id="bulkImageFiles" accept="image/jpeg,image/png,image/webp,image/gif,image/avif,.jpg,.jpeg,.png,.webp,.gif,.avif" multiple style="display:none;" onchange="handleBulkImageSelect(this)">
+                    <input type="file" id="bulkImageFiles" accept="image/jpeg,image/pjpeg,image/png,image/webp,image/gif,image/avif,image/jfif,.jpg,.jpeg,.jfif,.png,.webp,.gif,.avif" multiple style="display:none;" onchange="handleBulkImageSelect(this)">
 
                     <!-- Hidden file inputs, one per slot -->
                     <div style="display:none;">
                         <?php for ($s = 0; $s < $maxProductImages; $s++): ?>
-                        <input type="file" id="imageFile_<?php echo $s; ?>" name="image_file_<?php echo $s; ?>" accept="image/jpeg,image/png,image/webp,image/gif,image/avif,.jpg,.jpeg,.png,.webp,.gif,.avif" onchange="previewImageSlot(this, <?php echo $s; ?>)">
+                        <input type="file" id="imageFile_<?php echo $s; ?>" name="image_file_<?php echo $s; ?>" accept="image/jpeg,image/pjpeg,image/png,image/webp,image/gif,image/avif,image/jfif,.jpg,.jpeg,.jfif,.png,.webp,.gif,.avif" onchange="previewImageSlot(this, <?php echo $s; ?>)">
                         <?php endfor; ?>
                     </div>
                 </div>
@@ -6545,8 +6545,8 @@ function setSpecificationsEditor(rawSpecifications) {
 var MAX_PRODUCT_IMAGES = <?php echo (int)$maxProductImages; ?>;
 var _existingUrls = Array(MAX_PRODUCT_IMAGES).fill('');
 var _previewUrls  = Array(MAX_PRODUCT_IMAGES).fill(null);
-var _allowedImageExts = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'];
-var _allowedImageMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
+var _allowedImageExts = ['jpg', 'jpeg', 'jfif', 'png', 'webp', 'gif', 'avif'];
+var _allowedImageMimes = ['image/jpeg', 'image/pjpeg', 'image/jfif', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
 
 function _esc(str) {
     var d = document.createElement('div');

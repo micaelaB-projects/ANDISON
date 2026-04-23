@@ -26,6 +26,12 @@ function andison_get_categories(): array
     // Index subcategories by category_id
     $subIndex = [];
     foreach ($subs as $sub) {
+        $subName = trim((string)($sub['name'] ?? ''));
+        $subNameKey = strtolower(preg_replace('/\s+/', ' ', $subName) ?? $subName);
+        if ($subNameKey === 'portable gas detectors' || $subNameKey === 'portable gas detector') {
+            continue;
+        }
+
         $catId = $sub['category_id'] ?? '';
         if ($catId !== '') {
             $subIndex[$catId][] = [

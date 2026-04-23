@@ -300,7 +300,7 @@ function andison_admin_is_product_image_upload(array $f): bool
 function andison_admin_store_product_image(array $f, string $categoryId, string $subcategoryId): ?string
 {
     $ext = strtolower(pathinfo((string)($f['name'] ?? ''), PATHINFO_EXTENSION));
-    $allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'];
+    $allowed = ['jpg', 'jpeg', 'jfif', 'png', 'webp', 'gif', 'avif'];
     if (!in_array($ext, $allowed, true)) {
         return null;
     }
