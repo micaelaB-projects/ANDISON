@@ -2039,12 +2039,64 @@ if ($category_idx !== null) {
         }, true);
 
         // ── Mini icon navigation ──
+        function cleanupUiBeforeNavigate() {
+            if (mainSidebar) {
+                mainSidebar.classList.remove('active');
+                mainSidebar.setAttribute('aria-hidden', 'true');
+            }
+            if (backdrop) {
+                backdrop.classList.remove('active');
+            }
+            if (miniPopover) {
+                miniPopover.classList.remove('show');
+                miniPopover.setAttribute('aria-hidden', 'true');
+            }
+
+            // Close product modal overlays if present.
+            if (typeof window.closeProductModal === 'function') {
+                try { window.closeProductModal(); } catch (e) {}
+            }
+            var prodOverlay = document.getElementById('prodDetailOverlay');
+            if (prodOverlay) {
+                prodOverlay.style.display = 'none';
+            }
+            var zoomOverlay = document.getElementById('prodImageZoomOverlay');
+            if (zoomOverlay) {
+                zoomOverlay.style.display = 'none';
+            }
+        }
+
         miniIcons.forEach(function(icon){
             icon.addEventListener('click', function(e){
                 if(e.target.closest('.sub-indicator')){ e.stopPropagation(); return; }
                 var target = this.getAttribute('data-target');
-                if(target) window.location.href = target;
+                if(target) {
+                    cleanupUiBeforeNavigate();
+                    window.location.href = target;
+                }
             }, true);
+        });
+
+        // Close overlays before normal anchor navigation (sidebar list + popovers).
+        document.addEventListener('click', function(e){
+            var link = e.target.closest('#sidebar a, .mini-popover a');
+            if (!link) return;
+            var href = String(link.getAttribute('href') || '').trim();
+            if (!href || href.charAt(0) === '#') return;
+            cleanupUiBeforeNavigate();
+        }, true);
+
+        // Safety net: always reset sidebar/modal overlays during page unload transitions.
+        window.addEventListener('beforeunload', function(){
+            cleanupUiBeforeNavigate();
+        });
+
+        // Some browsers keep page state via bfcache; ensure overlays are reset on hide/show too.
+        window.addEventListener('pagehide', function(){
+            cleanupUiBeforeNavigate();
+        });
+        window.addEventListener('pageshow', function(){
+            cleanupUiBeforeNavigate();
         });
 
         // ── Backdrop & close button ──

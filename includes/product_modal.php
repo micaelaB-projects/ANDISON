@@ -885,6 +885,8 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
     }
 
     var _modalBase = resolveBasePath();
+    var _brandsInfoCache = null;
+    var _brandsInfoPromise = null;
 
     function resolveModalPath(path) {
         var raw = String(path || '').trim();
@@ -910,6 +912,10 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 
     var modalBrandLogoMap = <?php echo $modal_brand_logo_map_json; ?>;
 
+    function normalizeBrandKey(value) {
+        return normalizeModalText(String(value || '')).toLowerCase().replace(/[^a-z0-9]+/g, '');
+    }
+
     function normalizeModalBrandName(brandName) {
         var cleanBrand = String(brandName || '').trim();
         if (!cleanBrand) return '';
@@ -930,6 +936,13 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         var cleanBrand = normalizeModalBrandName(brandName);
         if (!cleanBrand) return '';
 
+        // Prefer page-provided brand logo (DB/admin source) when available.
+        var pageBrand = (typeof BRAND_NAME !== 'undefined') ? normalizeModalBrandName(BRAND_NAME) : '';
+        var pageLogo = (typeof BRAND_LOGO !== 'undefined') ? String(BRAND_LOGO || '').trim() : '';
+        if (pageLogo !== '' && pageBrand !== '' && normalizeBrandKey(pageBrand) === normalizeBrandKey(cleanBrand)) {
+            return resolveModalPath(pageLogo);
+        }
+
         if (modalBrandLogoMap && Object.prototype.hasOwnProperty.call(modalBrandLogoMap, cleanBrand)) {
             return resolveModalPath(modalBrandLogoMap[cleanBrand]);
         }
@@ -943,6 +956,183 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         }
 
         return '';
+    }
+
+    function fetchBrandsInfoFromUrls(urls) {
+        if (!Array.isArray(urls) || urls.length === 0) {
+            return Promise.resolve({});
+        }
+
+        var index = 0;
+        function next() {
+            if (index >= urls.length) {
+                return Promise.resolve({});
+            }
+
+            var url = urls[index++];
+            return fetch(url, { cache: 'no-store' })
+                .then(function(r) {
+                    if (!r || !r.ok) {
+                        throw new Error('HTTP ' + (r ? r.status : 0));
+                    }
+                    return r.json();
+                })
+                .then(function(data) {
+                    if (data && typeof data === 'object') {
+                        return data;
+                    }
+                    throw new Error('Invalid JSON payload');
+                })
+                .catch(function() {
+                    return next();
+                });
+        }
+
+        return next();
+    }
+
+    function loadBrandsInfoOnce() {
+        if (_brandsInfoCache && typeof _brandsInfoCache === 'object') {
+            return Promise.resolve(_brandsInfoCache);
+        }
+        if (_brandsInfoPromise) {
+            return _brandsInfoPromise;
+        }
+
+        var stamp = Date.now();
+        var candidateUrls = [
+            _jsonPath,
+            resolveModalPath('Andison/data/brands_info_api.php'),
+            resolveModalPath('data/brands_info_api.php')
+        ];
+        for (var ci = 0; ci < candidateUrls.length; ci++) {
+            var hasQuery = candidateUrls[ci].indexOf('?') !== -1;
+            candidateUrls[ci] = candidateUrls[ci] + (hasQuery ? '&' : '?') + 'fresh=1&t=' + stamp;
+        }
+
+        _brandsInfoPromise = fetchBrandsInfoFromUrls(candidateUrls)
+            .then(function(data) {
+                if (data && typeof data === 'object') {
+                    _brandsInfoCache = data;
+                } else {
+                    _brandsInfoCache = {};
+                }
+                return _brandsInfoCache;
+            })
+            .catch(function() {
+                _brandsInfoCache = {};
+                return _brandsInfoCache;
+            })
+            .finally(function() {
+                _brandsInfoPromise = null;
+            });
+
+        return _brandsInfoPromise;
+    }
+
+    function getBrandLogoFromData(data, brandName, modelName) {
+        if (!data || typeof data !== 'object') return '';
+        var target = normalizeModalBrandName(brandName);
+        var targetKey = normalizeModalKey(target);
+        var modelKey = normalizeModalKey(modelName || '');
+
+        if (targetKey) {
+            var direct = data[target];
+            if (direct && typeof direct === 'object' && String(direct.logo || '').trim() !== '') {
+                return resolveModalPath(String(direct.logo || '').trim());
+            }
+
+            for (var key in data) {
+                if (!Object.prototype.hasOwnProperty.call(data, key)) continue;
+                if (normalizeModalKey(key) !== targetKey) continue;
+                var row = data[key];
+                if (row && typeof row === 'object' && String(row.logo || '').trim() !== '') {
+                    return resolveModalPath(String(row.logo || '').trim());
+                }
+            }
+        }
+
+        // Brand text can be unreliable in sidebar-origin cards; infer brand via current model.
+        if (modelKey) {
+            for (var bk in data) {
+                if (!Object.prototype.hasOwnProperty.call(data, bk)) continue;
+                var brandRow = data[bk];
+                var products = brandRow && Array.isArray(brandRow.products) ? brandRow.products : [];
+                for (var pi = 0; pi < products.length; pi++) {
+                    var p = products[pi] || {};
+                    var m = String(p.model || p.product_name || p.name || '').trim();
+                    if (!m || normalizeModalKey(m) !== modelKey) continue;
+                    var inferredLogo = String(brandRow.logo || '').trim();
+                    if (inferredLogo !== '') {
+                        return resolveModalPath(inferredLogo);
+                    }
+                    break;
+                }
+            }
+        }
+
+        return '';
+    }
+
+    function clampModalLogoScale(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+    }
+
+    function estimateModalLogoScale(img, maxScale) {
+        var w = img && img.naturalWidth ? img.naturalWidth : 0;
+        var h = img && img.naturalHeight ? img.naturalHeight : 0;
+        if (w < 8 || h < 8) return 1;
+
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d', { willReadFrequently: true });
+        if (!ctx) return 1;
+
+        var targetW = Math.min(280, w);
+        var targetH = Math.max(1, Math.round((targetW / w) * h));
+        canvas.width = targetW;
+        canvas.height = targetH;
+
+        try {
+            ctx.drawImage(img, 0, 0, targetW, targetH);
+            var data = ctx.getImageData(0, 0, targetW, targetH).data;
+            var minX = targetW, minY = targetH, maxX = -1, maxY = -1;
+
+            for (var y = 0; y < targetH; y++) {
+                for (var x = 0; x < targetW; x++) {
+                    var idx = (y * targetW + x) * 4;
+                    var a = data[idx + 3];
+                    if (a < 16) continue;
+                    if (x < minX) minX = x;
+                    if (y < minY) minY = y;
+                    if (x > maxX) maxX = x;
+                    if (y > maxY) maxY = y;
+                }
+            }
+
+            if (maxX < minX || maxY < minY) return 1;
+
+            var boxW = maxX - minX + 1;
+            var boxH = maxY - minY + 1;
+            var fillRatio = (boxW * boxH) / (targetW * targetH);
+            if (fillRatio >= 0.62) return 1;
+
+            var desired = 1 + ((0.62 - fillRatio) * 2.3);
+            return clampModalLogoScale(desired, 1, maxScale);
+        } catch (err) {
+            return 1;
+        }
+    }
+
+    function autoFitModalBrandLogo(img) {
+        if (!img) return;
+        var scale = estimateModalLogoScale(img, 2.4);
+        if (scale > 1.02) {
+            img.style.transform = 'scale(' + scale.toFixed(2) + ')';
+            img.style.transformOrigin = 'left center';
+        } else {
+            img.style.transform = '';
+            img.style.transformOrigin = '';
+        }
     }
 
     function escapeHtml(value) {
@@ -2569,6 +2759,8 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         var grid = document.getElementById('relatedProductsGrid');
         var wrap = document.getElementById('relatedProductsWrap');
         var MAX_RELATED_PRODUCTS = 4;
+        var currentModelKey = normalizeModalKey(currentModel);
+        var currentBrandKeyNormalized = normalizeRelatedBrand(currentBrand);
 
         loadRelatedProducts._activeRequestId = (loadRelatedProducts._activeRequestId || 0) + 1;
         var requestId = loadRelatedProducts._activeRequestId;
@@ -2634,15 +2826,33 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 if (Array.isArray(data)) {
                     // Category JSON format: [ { model, brand, ... } ]
                     // Collect products from same brand only
-                    var currentBrandKey = normalizeRelatedBrand(currentBrand);
+                    var currentBrandKey = currentBrandKeyNormalized;
+                    var pageBrandKey = normalizeRelatedBrand((typeof BRAND_NAME !== 'undefined') ? BRAND_NAME : '');
                     for (var i = 0; i < data.length; i++) {
                         var product = data[i];
-                        if (product.model && product.model !== currentModel) {
-                            // Match by canonicalized brand key to handle aliases (e.g. BW vs BW Technologies).
-                            if (product.brand && normalizeRelatedBrand(product.brand) === currentBrandKey) {
-                                product._brand = currentBrand;
-                                allProducts.push(product);
-                            }
+                        var productModel = String((product && (product.model || product.product_name || product.name)) || '').trim();
+                        if (!productModel) {
+                            continue;
+                        }
+
+                        if (normalizeModalKey(productModel) === currentModelKey) {
+                            continue;
+                        }
+
+                        // Match by canonicalized brand key. If row has no brand, fall back to page brand.
+                        var rowBrandKey = normalizeRelatedBrand(product && product.brand ? product.brand : '');
+                        var hasMatchingBrand = false;
+                        if (currentBrandKey !== '') {
+                            hasMatchingBrand = (rowBrandKey !== '' && rowBrandKey === currentBrandKey)
+                                || (rowBrandKey === '' && pageBrandKey !== '' && pageBrandKey === currentBrandKey);
+                        } else {
+                            // If brand context is missing (common in sidebar-open flows), allow any model except current.
+                            hasMatchingBrand = true;
+                        }
+
+                        if (hasMatchingBrand) {
+                            product._brand = currentBrand;
+                            allProducts.push(product);
                         }
                     }
                     console.log('loadRelatedProducts: found', allProducts.length, 'related products in category format');
@@ -2658,18 +2868,54 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                         for (var k2 in data) {
                             if (normalizeRelatedBrand(k2) === targetBrandKey) {
                                 brandData = data[k2];
+                                currentBrand = k2;
                                 break;
                             }
                         }
                     }
-                    if (!brandData || !brandData.products) { wrap.style.display = 'none'; return; }
 
-                    // Collect products from same brand only
-                    for (var i = 0; i < brandData.products.length; i++) {
-                        var product = brandData.products[i];
-                        if (product.model && product.model !== currentModel) {
-                            product._brand = currentBrand;
-                            allProducts.push(product);
+                    // If brand still unresolved, infer from current product model.
+                    if (!brandData) {
+                        for (var kb in data) {
+                            if (!Object.prototype.hasOwnProperty.call(data, kb)) continue;
+                            var bd = data[kb];
+                            var plist = bd && Array.isArray(bd.products) ? bd.products : [];
+                            for (var pi = 0; pi < plist.length; pi++) {
+                                var pm = String((plist[pi] && (plist[pi].model || plist[pi].product_name || plist[pi].name)) || '').trim();
+                                if (pm && normalizeModalKey(pm) === currentModelKey) {
+                                    brandData = bd;
+                                    currentBrand = kb;
+                                    break;
+                                }
+                            }
+                            if (brandData) break;
+                        }
+                    }
+
+                    if (!brandData || !brandData.products) {
+                        // Last fallback: collect from all brands instead of hiding panel.
+                        for (var kAll in data) {
+                            if (!Object.prototype.hasOwnProperty.call(data, kAll)) continue;
+                            var bAll = data[kAll];
+                            var pAll = bAll && Array.isArray(bAll.products) ? bAll.products : [];
+                            for (var ai = 0; ai < pAll.length; ai++) {
+                                var ap = pAll[ai];
+                                var am = String((ap && (ap.model || ap.product_name || ap.name)) || '').trim();
+                                if (!am || normalizeModalKey(am) === currentModelKey) continue;
+                                ap._brand = String(ap.brand || kAll || currentBrand || '').trim();
+                                allProducts.push(ap);
+                            }
+                        }
+                    } else {
+
+                        // Collect products from same brand only
+                        for (var i = 0; i < brandData.products.length; i++) {
+                            var product = brandData.products[i];
+                            var productModel = String((product && (product.model || product.product_name || product.name)) || '').trim();
+                            if (productModel && normalizeModalKey(productModel) !== currentModelKey) {
+                                product._brand = String(product.brand || currentBrand || '').trim();
+                                allProducts.push(product);
+                            }
                         }
                     }
                     console.log('loadRelatedProducts: found', allProducts.length, 'related products in brands_info format');
@@ -2935,9 +3181,9 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 brandEl.style.display = 'inline-flex';
                 brandEl.style.alignItems = 'center';
                 brandEl.style.justifyContent = 'flex-start';
-                brandEl.style.width = 'clamp(140px, 22vw, 260px)';
-                brandEl.style.height = '48px';
-                brandEl.style.minHeight = '48px';
+                brandEl.style.width = 'clamp(170px, 26vw, 360px)';
+                brandEl.style.height = '62px';
+                brandEl.style.minHeight = '62px';
                 brandEl.style.padding = '6px 10px';
                 brandEl.style.boxSizing = 'border-box';
                 brandEl.style.background = 'transparent';
@@ -2947,6 +3193,14 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 
                 var logoImg = brandEl.querySelector('img');
                 if (logoImg) {
+                    if (logoImg.complete) {
+                        autoFitModalBrandLogo(logoImg);
+                    } else {
+                        logoImg.onload = function() {
+                            autoFitModalBrandLogo(logoImg);
+                        };
+                    }
+
                     logoImg.onerror = function() {
                         brandEl.textContent = brand || 'Product';
                         brandEl.style.display = brand ? 'block' : 'none';
@@ -2977,6 +3231,42 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 brandEl.style.borderLeft = '3px solid #2B11DB';
                 brandEl.style.border = '';
                 brandEl.style.borderRadius = '8px';
+
+                // Async fallback: load brand logo from API (for sidebar-open pages with incomplete static map context).
+                loadBrandsInfoOnce().then(function(data) {
+                    var fallbackLogo = getBrandLogoFromData(data, brand, model);
+                    if (!fallbackLogo) return;
+                    // Keep current modal brand consistent before replacing.
+                    var currentBrandText = normalizeModalText(brandEl.textContent || '');
+                    if (normalizeModalKey(currentBrandText) !== normalizeModalKey(brand || '')) {
+                        return;
+                    }
+
+                    brandEl.innerHTML = '<img src="' + fallbackLogo + '" alt="' + escapeHtml(brand || 'Brand') + '" style="display:block;width:100%;height:100%;object-fit:contain;object-position:left center;filter:drop-shadow(0 3px 8px rgba(20, 24, 68, 0.28));">';
+                    brandEl.style.display = 'inline-flex';
+                    brandEl.style.alignItems = 'center';
+                    brandEl.style.justifyContent = 'flex-start';
+                    brandEl.style.width = 'clamp(170px, 26vw, 360px)';
+                    brandEl.style.height = '62px';
+                    brandEl.style.minHeight = '62px';
+                    brandEl.style.padding = '6px 10px';
+                    brandEl.style.boxSizing = 'border-box';
+                    brandEl.style.background = 'transparent';
+                    brandEl.style.borderLeft = 'none';
+                    brandEl.style.border = 'none';
+                    brandEl.style.borderRadius = '0';
+
+                    var logoImgAsync = brandEl.querySelector('img');
+                    if (logoImgAsync) {
+                        if (logoImgAsync.complete) {
+                            autoFitModalBrandLogo(logoImgAsync);
+                        } else {
+                            logoImgAsync.onload = function() {
+                                autoFitModalBrandLogo(logoImgAsync);
+                            };
+                        }
+                    }
+                });
             }
             console.log('Set brand to:', brand, '| logo:', brandLogoPath ? 'yes' : 'no');
         } else {

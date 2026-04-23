@@ -2557,7 +2557,7 @@ $ytLinks = andison_get_youtube_links();
         }
         .brands-carousel-item {
             flex-shrink: 0;
-            height: 80px;
+            height: 176px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -2565,7 +2565,7 @@ $ytLinks = andison_get_youtube_links();
             border: 1px solid #efefef;
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            padding: 10px 14px;
+            padding: 20px 24px;
             transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
             text-decoration: none;
         }
@@ -2575,12 +2575,17 @@ $ytLinks = andison_get_youtube_links();
             border-color: #00D7B3;
         }
         .brands-carousel-item img {
-            max-width: 100%;
-            max-height: 100%;
+            display: block;
+            width: 100%;
+            height: 100%;
+            max-width: none;
+            max-height: none;
             object-fit: contain;
             filter: grayscale(25%);
             transition: filter 0.25s ease;
             pointer-events: none;
+            transform: scale(1.28);
+            transform-origin: center center;
         }
         .brands-carousel-item:hover img {
             filter: grayscale(0%);
@@ -2660,7 +2665,8 @@ $ytLinks = andison_get_youtube_links();
             }
         }
         @media (max-width: 600px) {
-            .brands-carousel-item { width: 90px; height: 60px; padding: 8px 10px; }
+            .brands-carousel-item { width: 138px; height: 98px; padding: 10px 12px; }
+            .brands-carousel-item img { transform: scale(1.16); }
             .brands-carousel-track { gap: 10px; }
             .brands-carousel-outer { gap: 6px; padding: 0 4px; }
         }
@@ -2681,10 +2687,10 @@ $ytLinks = andison_get_youtube_links();
 
         function getVisible() {
             var w = viewport.offsetWidth;
-            if(w >= 800)  return 5;
-            if(w >= 600)  return 4;
-            if(w >= 420)  return 3;
-            return 2;
+            if(w >= 1100) return 3;
+            if(w >= 800)  return 2;
+            if(w >= 600)  return 2;
+            return 1;
         }
 
         function itemWidth() {

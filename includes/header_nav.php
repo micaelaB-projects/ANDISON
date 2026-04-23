@@ -453,23 +453,24 @@
 
     /* Brands dropdown — wide grid */
     nav li:nth-child(3) .nav-dropdown {
-        min-width: 650px;
-        max-width: 650px;
-        padding: 24px 28px;
+        min-width: 660px;
+        max-width: 660px;
+        padding: 22px 26px;
     }
 
     nav li:nth-child(3) .nav-dropdown ul {
         display: grid !important;
         grid-template-columns: repeat(5, 1fr) !important;
-        gap: 12px 20px !important;
-        margin-top: 16px !important;
+        gap: 12px 16px !important;
+        margin-top: 14px !important;
     }
 
     nav li:nth-child(3) .nav-dropdown ul li {
-        min-height: 70px;
+        min-height: 74px;
         display: flex;
         align-items: center;
         justify-content: center;
+        overflow: visible;
     }
 
     nav li:nth-child(3) .nav-dropdown ul a {
@@ -477,17 +478,29 @@
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        min-height: 60px !important;
+        min-height: 64px !important;
         cursor: pointer;
+        overflow: visible;
+    }
+
+    nav li:nth-child(3) .nav-dropdown ul a:hover {
+        background: #fff !important;
+        color: inherit !important;
     }
 
     nav li:nth-child(3) .nav-dropdown ul a img {
-        max-width: 85px;
-        max-height: 45px;
+        max-width: 90px;
+        max-height: 48px;
         object-fit: contain;
         display: block;
         pointer-events: all;
         cursor: pointer;
+        transition: transform 0.22s ease, filter 0.22s ease;
+        transform-origin: center center;
+    }
+
+    nav li:nth-child(3) .nav-dropdown ul a:hover img {
+        transform: scale(1.18);
     }
 
     /* Responsive — header & nav */

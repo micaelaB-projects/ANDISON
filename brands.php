@@ -5,17 +5,21 @@ require_once __DIR__ . '/Andison/includes/home_featured.php';
 require_once __DIR__ . '/Andison/includes/home_slider.php';
 require_once __DIR__ . '/Andison/includes/youtube_links.php';
 require_once __DIR__ . '/Andison/includes/brands_info.php';
+require_once __DIR__ . '/Andison/includes/brand_order.php';
 require_once __DIR__ . '/includes/brand_logo_map.php';
 
 $featured = andison_get_home_featured();
 $slides = andison_get_home_slider();
 $ytLinks = andison_get_youtube_links();
-$brandsData = andison_get_brands_info();
+$brandsData = andison_get_brands_info(true);
 
 if (!function_exists('andison_brands_display_label')) {
     function andison_brands_display_label(string $brand): string
     {
         $normalized = strtolower(trim($brand));
+        if ($normalized === 'robot systems' || $normalized === 'robot system peripherals' || $normalized === 'robot systems peripherals') {
+            return 'Robot Systems Peripherals';
+        }
         if ($normalized === 'hard worker' || $normalized === 'hard workers' || $normalized === 'hardworker') {
             return 'HARDWORKER';
         }
@@ -89,73 +93,7 @@ if (!function_exists('andison_brands_logo_path')) {
 if (!function_exists('andison_brands_order_rank')) {
     function andison_brands_order_rank(string $brand): int
     {
-        static $rankMap = null;
-
-        if (!is_array($rankMap)) {
-            $ordered = [
-                'panasonic connect',
-                'robot systems peripherals',
-                'kobelco',
-                'metrode',
-                'dryrod. ii',
-                'weldcraft',
-                'truweld',
-                'arcair',
-                'magnaflux',
-                'tempilstik',
-                'tanaka',
-                'chiyoda',
-                'yutaka',
-                'hardworker',
-                'soyer',
-                'aquasol',
-                'sk and gal gage',
-                'coppus',
-                'bw technologies',
-                'rae systems',
-                'weldas',
-                'uvex',
-                'aces',
-                'microgard',
-                'ansell',
-                'alfra',
-                'bosch',
-                'makita',
-                'weiler',
-                'garryson',
-                'revolt',
-                'technotex',
-                'spillfyter',
-                'dalo',
-                'motolite',
-            ];
-
-            $rankMap = [];
-            foreach ($ordered as $idx => $name) {
-                $rankMap[$name] = $idx;
-            }
-        }
-
-        $normalized = strtolower(trim($brand));
-        $normalized = preg_replace('/\s+/', ' ', $normalized) ?? $normalized;
-
-        if ($normalized === 'robot systems' || $normalized === 'robot system peripherals') {
-            $normalized = 'robot systems peripherals';
-        } elseif ($normalized === 'dryrod ii' || $normalized === 'phoenix dryrod' || $normalized === 'phoenix dry rod') {
-            $normalized = 'dryrod. ii';
-        } elseif ($normalized === 'hard worker' || $normalized === 'hard workers' || $normalized === 'hardworker') {
-            $normalized = 'hardworker';
-        } elseif ($normalized === 'bw') {
-            $normalized = 'bw technologies';
-        } elseif ($normalized === 'rac' || $normalized === 'rae') {
-            $normalized = 'rae systems';
-        } elseif ($normalized === 'weller') {
-            $normalized = 'weiler';
-        } elseif ($normalized === 'spilfyter') {
-            $normalized = 'spillfyter';
-        }
-
-        return $rankMap[$normalized] ?? 10000;
+        return andison_brand_order_rank(andison_brands_display_label($brand));
     }
 }
 
@@ -1046,7 +984,7 @@ usort($brandCards, static function (array $a, array $b): int {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 24px;
-            max-width: 1200px;
+            max-width: 1500px;
             margin: 50px auto;
             padding: 0 20px 60px;
         }
@@ -1055,7 +993,7 @@ usort($brandCards, static function (array $a, array $b): int {
             background: #fff;
             border: 2px solid #00BCD4;
             border-radius: 16px;
-            padding: 16px;
+            padding: 20px 18px 18px;
             text-align: center;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
@@ -1069,13 +1007,13 @@ usort($brandCards, static function (array $a, array $b): int {
 
         .brand-logo {
             width: 100%;
-            height: 170px;
+            height: 205px;
             background: #fff;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             overflow: hidden;
         }
 
@@ -1083,7 +1021,7 @@ usort($brandCards, static function (array $a, array $b): int {
             width: 100%;
             height: 100%;
             object-fit: contain;
-            padding: 4px;
+            padding: 0;
             transform: none;
             transform-origin: center;
         }
@@ -1134,22 +1072,21 @@ usort($brandCards, static function (array $a, array $b): int {
                 height: 130px;
             }
             .brand-logo img {
-                transform: none;
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
             }
         }
 
         /* Product Highlights */
         .highlights-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-            gap: 40px;
-            margin-bottom: 50px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin: 34px auto 50px;
             width: 100%;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
-            box-sizing: border-box;
-            padding: 0 20px;
+            max-width: 1500px;
+            padding: 14px 12px 12px;
         }
 
         .product-card {
@@ -2233,6 +2170,101 @@ usort($brandCards, static function (array $a, array $b): int {
         </div>
     </footer>
     <?php require_once __DIR__ . '/includes/footer_modernize.php'; ?>
+    <script>
+        // Auto-fit logos with large internal padding (generic, no brand hardcoding).
+        (function(){
+            function clamp(value, min, max) {
+                return Math.max(min, Math.min(max, value));
+            }
+
+            function estimateLogoScale(img, maxScale) {
+                var w = img.naturalWidth || 0;
+                var h = img.naturalHeight || 0;
+                if (w < 8 || h < 8) return 1;
+
+                var canvas = document.createElement('canvas');
+                var ctx = canvas.getContext('2d', { willReadFrequently: true });
+                if (!ctx) return 1;
+
+                var targetW = Math.min(220, w);
+                var targetH = Math.max(1, Math.round((targetW / w) * h));
+                canvas.width = targetW;
+                canvas.height = targetH;
+
+                try {
+                    ctx.drawImage(img, 0, 0, targetW, targetH);
+                    var data = ctx.getImageData(0, 0, targetW, targetH).data;
+
+                    var minX = targetW, minY = targetH, maxX = -1, maxY = -1;
+                    for (var y = 0; y < targetH; y++) {
+                        for (var x = 0; x < targetW; x++) {
+                            var idx = (y * targetW + x) * 4;
+                            var a = data[idx + 3];
+                            if (a < 20) continue;
+
+                            var r = data[idx], g = data[idx + 1], b = data[idx + 2];
+                            var isNearlyWhite = (r > 245 && g > 245 && b > 245);
+                            if (isNearlyWhite) continue;
+
+                            if (x < minX) minX = x;
+                            if (y < minY) minY = y;
+                            if (x > maxX) maxX = x;
+                            if (y > maxY) maxY = y;
+                        }
+                    }
+
+                    if (maxX < minX || maxY < minY) return 1;
+
+                    var boxW = maxX - minX + 1;
+                    var boxH = maxY - minY + 1;
+                    var fillRatio = (boxW * boxH) / (targetW * targetH);
+
+                    if (fillRatio >= 0.7) return 1;
+
+                    var desired = 1 + ((0.7 - fillRatio) * 1.4);
+                    return clamp(desired, 1, maxScale);
+                } catch (err) {
+                    return 1;
+                }
+            }
+
+            function applyAutoFit(img, maxScale) {
+                if (!img) return;
+                var scale = estimateLogoScale(img, maxScale);
+                if (scale > 1.02) {
+                    img.style.transform = 'scale(' + scale.toFixed(2) + ')';
+                    img.style.transformOrigin = 'center';
+                }
+            }
+
+            function initLogoAutoFit() {
+                var cardLogos = document.querySelectorAll('.brand-logo img');
+                cardLogos.forEach(function(img){
+                    if (img.complete) {
+                        applyAutoFit(img, 1.55);
+                    } else {
+                        img.addEventListener('load', function(){ applyAutoFit(img, 1.55); }, { once: true });
+                    }
+                });
+
+                var navLogos = document.querySelectorAll('nav li:nth-child(3) .nav-dropdown ul a img');
+                navLogos.forEach(function(img){
+                    if (img.complete) {
+                        applyAutoFit(img, 1.9);
+                    } else {
+                        img.addEventListener('load', function(){ applyAutoFit(img, 1.9); }, { once: true });
+                    }
+                });
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initLogoAutoFit);
+            } else {
+                initLogoAutoFit();
+            }
+        })();
+    </script>
+
     <script>
         // Manage aria states for contact dropdown (improves accessibility)
         (function(){

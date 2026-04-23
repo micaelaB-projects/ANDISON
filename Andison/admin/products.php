@@ -7,6 +7,7 @@ andison_require_admin();
 require_once __DIR__ . '/_layout.php';
 
 require_once __DIR__ . '/../includes/brands_info.php';
+require_once __DIR__ . '/../includes/brand_order.php';
 require_once __DIR__ . '/../includes/categories_info.php';
 
 $brands = andison_get_brands_info(true);
@@ -16,6 +17,9 @@ $selectedBrandDisplay = isset($_GET['brand']) ? (string)$_GET['brand'] : ($brand
 function andison_brand_display_label(string $brand): string
 {
     $normalized = strtolower(trim($brand));
+    if ($normalized === 'robot systems' || $normalized === 'robot system peripherals' || $normalized === 'robot systems peripherals') {
+        return 'Robot Systems Peripherals';
+    }
     if ($normalized === 'hard worker' || $normalized === 'hard workers' || $normalized === 'hardworker') {
         return 'HARDWORKER';
     }
@@ -37,6 +41,9 @@ function andison_brand_display_label(string $brand): string
 function andison_brand_data_candidates(string $brand): array
 {
     $normalized = strtolower(trim($brand));
+    if ($normalized === 'robot systems' || $normalized === 'robot system peripherals' || $normalized === 'robot systems peripherals') {
+        return ['Robot Systems Peripherals', 'Robot Systems', 'Robot System Peripherals'];
+    }
     if ($normalized === 'hard worker' || $normalized === 'hard workers' || $normalized === 'hardworker') {
         return ['HARDWORKER', 'Hard Worker', 'Hard Workers', 'HARD WORKER', 'HARD WORKERS'];
     }
@@ -58,75 +65,11 @@ function andison_brand_data_candidates(string $brand): array
     return [$brand];
 }
 
-function andison_brand_order_rank(string $brand): int
-{
-    static $rankMap = null;
-
-    if (!is_array($rankMap)) {
-        $ordered = [
-            'panasonic connect',
-            'robot systems peripherals',
-            'kobelco',
-            'metrode',
-            'dryrod. ii',
-            'weldcraft',
-            'truweld',
-            'arcair',
-            'magnaflux',
-            'tempilstik',
-            'tanaka',
-            'chiyoda',
-            'yutaka',
-            'hardworker',
-            'soyer',
-            'aquasol',
-            'sk and gal gage',
-            'coppus',
-            'bw technologies',
-            'rae systems',
-            'weldas',
-            'uvex',
-            'aces',
-            'microgard',
-            'ansell',
-            'alfra',
-            'bosch',
-            'makita',
-            'weiler',
-            'garryson',
-            'revolt',
-            'technotex',
-            'spillfyter',
-            'dalo',
-            'motolite',
-        ];
-
-        $rankMap = [];
-        foreach ($ordered as $idx => $name) {
-            $rankMap[$name] = $idx;
-        }
+if (!function_exists('andison_brand_order_rank')) {
+    function andison_brand_order_rank(string $brand): int
+    {
+        return 10000;
     }
-
-    $normalized = strtolower(trim($brand));
-    $normalized = preg_replace('/\s+/', ' ', $normalized) ?? $normalized;
-
-    if ($normalized === 'robot systems' || $normalized === 'robot system peripherals') {
-        $normalized = 'robot systems peripherals';
-    } elseif ($normalized === 'dryrod ii' || $normalized === 'phoenix dryrod' || $normalized === 'phoenix dry rod') {
-        $normalized = 'dryrod. ii';
-    } elseif ($normalized === 'hard worker' || $normalized === 'hard workers' || $normalized === 'hardworker') {
-        $normalized = 'hardworker';
-    } elseif ($normalized === 'bw') {
-        $normalized = 'bw technologies';
-    } elseif ($normalized === 'rac' || $normalized === 'rae') {
-        $normalized = 'rae systems';
-    } elseif ($normalized === 'weller') {
-        $normalized = 'weiler';
-    } elseif ($normalized === 'spilfyter') {
-        $normalized = 'spillfyter';
-    }
-
-    return $rankMap[$normalized] ?? 10000;
 }
 
 function andison_pick_brand_bucket(array $brands, array $candidates): string
@@ -197,6 +140,10 @@ usort($brandNames, static function (string $a, string $b): int {
     return strcasecmp(andison_brand_display_label($a), andison_brand_display_label($b));
 });
 
+$brandOrderLabels = array_map(static function (string $brandKey): string {
+    return andison_brand_display_label((string)$brandKey);
+}, $brandNames);
+
 if ($selectedBrandDisplay === '') {
     $selectedBrandDisplay = $brandNames[0] ?? '';
 } else {
@@ -244,6 +191,47 @@ function andison_safe_filename(string $name): string
     $name = preg_replace('~[^a-z0-9._-]+~', '_', $name) ?? $name;
     $name = trim($name, '._-');
     return $name !== '' ? $name : 'file';
+}
+
+function andison_is_allowed_image_upload(array $file, array $allowedExt, array $allowedMime): bool
+{
+    $ext = strtolower(pathinfo((string)($file['name'] ?? ''), PATHINFO_EXTENSION));
+    if (!in_array($ext, $allowedExt, true)) {
+        return false;
+    }
+
+    $tmpName = (string)($file['tmp_name'] ?? '');
+    if ($tmpName === '' || !is_file($tmpName)) {
+        return false;
+    }
+
+    $mime = '';
+    $fi = finfo_open(FILEINFO_MIME_TYPE);
+    if ($fi !== false) {
+        $detected = finfo_file($fi, $tmpName);
+        finfo_close($fi);
+        if (is_string($detected)) {
+            $mime = strtolower(trim($detected));
+        }
+    }
+
+    if ($mime !== '' && in_array($mime, $allowedMime, true)) {
+        return true;
+    }
+
+    // Some servers return octet-stream/empty MIME for AVIF despite valid file contents.
+    if ($ext === 'avif' && ($mime === '' || $mime === 'application/octet-stream' || $mime === 'image/octet-stream')) {
+        return true;
+    }
+
+    if (function_exists('exif_imagetype')) {
+        $type = @exif_imagetype($tmpName);
+        if ($type !== false) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 function andison_normalize_category_assignment(array $allCategories, string $categoryId, string $subcategoryId, string $subSubcategoryId): array
@@ -403,12 +391,9 @@ function andison_handle_multi_image_upload(): array
         $existingUrl = trim((string)($existing[$i] ?? ''));
 
         if (!empty($_FILES[$fieldName]) && $_FILES[$fieldName]['error'] === UPLOAD_ERR_OK) {
-            $f   = $_FILES[$fieldName];
-            $ext = strtolower(pathinfo((string)($f['name'] ?? ''), PATHINFO_EXTENSION));
-            $fi   = finfo_open(FILEINFO_MIME_TYPE);
-            $mime = (string)finfo_file($fi, $f['tmp_name']);
-            finfo_close($fi);
-            if (in_array($ext, $allowed_ext, true) && in_array($mime, $allowed_mime, true)) {
+            $f = $_FILES[$fieldName];
+            if (andison_is_allowed_image_upload($f, $allowed_ext, $allowed_mime)) {
+                $ext = strtolower(pathinfo((string)($f['name'] ?? ''), PATHINFO_EXTENSION));
                 $base     = andison_safe_filename(pathinfo((string)($f['name'] ?? ''), PATHINFO_FILENAME));
                 $destName = $base . '_' . date('Ymd_His') . '_' . $i . '.' . $ext;
                 $url      = andison_sb_storage_upload_tmp($f, 'product-images', $destName);
@@ -462,15 +447,11 @@ function andison_handle_spec_side_image_upload(): string
 
     if (!empty($_FILES['spec_image_file']) && $_FILES['spec_image_file']['error'] === UPLOAD_ERR_OK) {
         $f = $_FILES['spec_image_file'];
-        $ext = strtolower(pathinfo((string)($f['name'] ?? ''), PATHINFO_EXTENSION));
         $allowedExt = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'];
         $allowedMime = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
 
-        $fi = finfo_open(FILEINFO_MIME_TYPE);
-        $mime = (string)finfo_file($fi, $f['tmp_name']);
-        finfo_close($fi);
-
-        if (in_array($ext, $allowedExt, true) && in_array($mime, $allowedMime, true)) {
+        if (andison_is_allowed_image_upload($f, $allowedExt, $allowedMime)) {
+            $ext = strtolower(pathinfo((string)($f['name'] ?? ''), PATHINFO_EXTENSION));
             $base = andison_safe_filename(pathinfo((string)($f['name'] ?? ''), PATHINFO_FILENAME));
             $destName = 'spec-side/' . $base . '_' . date('Ymd_His') . '.'.$ext;
             // Reuse the known-working product-images bucket to avoid missing-bucket upload failures.
@@ -573,12 +554,11 @@ function andison_handle_brand_description_image_upload(): string
     $f = $_FILES['description_image_file'];
     $allowedExt = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'];
     $allowedMime = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
-    $ext = strtolower(pathinfo((string)($f['name'] ?? ''), PATHINFO_EXTENSION));
-    $mime = mime_content_type($f['tmp_name']);
-
-    if (!in_array($ext, $allowedExt, true) || !in_array($mime, $allowedMime, true)) {
+    if (!andison_is_allowed_image_upload($f, $allowedExt, $allowedMime)) {
         throw new RuntimeException('Invalid image type. Use JPG, PNG, WEBP, GIF, or AVIF.');
     }
+
+    $ext = strtolower(pathinfo((string)($f['name'] ?? ''), PATHINFO_EXTENSION));
 
     if (($f['size'] ?? 0) > 8 * 1024 * 1024) {
         throw new RuntimeException('Image too large (max 8 MB).');
@@ -594,21 +574,34 @@ function andison_handle_brand_description_image_upload(): string
     return $url;
 }
 
-function andison_handle_brand_logo_upload(string $brandName, string $fileField = 'new_brand_logo'): string
+function andison_handle_brand_logo_upload(string $brandName, string $fileField = 'new_brand_logo', bool $required = true): string
 {
-    if (empty($_FILES[$fileField]) || ($_FILES[$fileField]['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
-        throw new RuntimeException('Brand image is required.');
+    if (empty($_FILES[$fileField])) {
+        if ($required) {
+            throw new RuntimeException('Brand image is required.');
+        }
+        return '';
+    }
+
+    $uploadError = (int)($_FILES[$fileField]['error'] ?? UPLOAD_ERR_NO_FILE);
+    if ($uploadError === UPLOAD_ERR_NO_FILE) {
+        if ($required) {
+            throw new RuntimeException('Brand image is required.');
+        }
+        return '';
+    }
+    if ($uploadError !== UPLOAD_ERR_OK) {
+        throw new RuntimeException('Brand image upload failed.');
     }
 
     $f = $_FILES[$fileField];
     $allowedExt = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'];
     $allowedMime = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
-    $ext = strtolower(pathinfo((string)($f['name'] ?? ''), PATHINFO_EXTENSION));
-    $mime = mime_content_type($f['tmp_name']);
-
-    if (!in_array($ext, $allowedExt, true) || !in_array($mime, $allowedMime, true)) {
+    if (!andison_is_allowed_image_upload($f, $allowedExt, $allowedMime)) {
         throw new RuntimeException('Invalid brand image type. Use JPG, PNG, WEBP, GIF, or AVIF.');
     }
+
+    $ext = strtolower(pathinfo((string)($f['name'] ?? ''), PATHINFO_EXTENSION));
 
     if (($f['size'] ?? 0) > 8 * 1024 * 1024) {
         throw new RuntimeException('Brand image too large (max 8 MB).');
@@ -689,35 +682,142 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    if ($action === 'reorder_brands') {
+        $brandOrder = json_decode((string)($_POST['brand_order'] ?? '[]'), true);
+        if (!is_array($brandOrder) || empty($brandOrder)) {
+            andison_set_flash('error', 'No brand order received.');
+            header('Location: products.php');
+            exit;
+        }
+
+        if (andison_save_brand_order($brandOrder)) {
+            andison_set_flash('success', 'Brand order updated.');
+        } else {
+            andison_set_flash('error', 'Failed to save brand order.');
+        }
+
+        header('Location: products.php');
+        exit;
+    }
+
+    if ($action === 'reorder_products') {
+        $brandToReorder = trim((string)($_POST['brand'] ?? $brand));
+        $brandToReorder = andison_pick_brand_bucket($brands, andison_brand_data_candidates($brandToReorder));
+
+        if ($brandToReorder === '' || !isset($brands[$brandToReorder])) {
+            andison_set_flash('error', 'Please choose a brand to reorder.');
+            header('Location: products.php');
+            exit;
+        }
+
+        $orderPayload = json_decode((string)($_POST['product_order'] ?? '[]'), true);
+        if (!is_array($orderPayload) || empty($orderPayload)) {
+            andison_set_flash('error', 'No product order received.');
+            header('Location: products.php?brand=' . urlencode($brandToReorder));
+            exit;
+        }
+
+        $currentProducts = isset($brands[$brandToReorder]['products']) && is_array($brands[$brandToReorder]['products'])
+            ? array_values($brands[$brandToReorder]['products'])
+            : [];
+        if (empty($currentProducts)) {
+            andison_set_flash('warning', 'No products to reorder.');
+            header('Location: products.php?brand=' . urlencode($brandToReorder));
+            exit;
+        }
+
+        $productMap = [];
+        foreach ($currentProducts as $idx => $productRow) {
+            if (!is_array($productRow)) {
+                continue;
+            }
+
+            $token = isset($productRow['id']) ? ('id:' . (int)$productRow['id']) : ('idx:' . (int)$idx);
+            $productMap[$token] = $productRow;
+        }
+
+        $reorderedProducts = [];
+        foreach ($orderPayload as $token) {
+            $token = trim((string)$token);
+            if ($token === '' || !isset($productMap[$token])) {
+                continue;
+            }
+
+            $reorderedProducts[] = $productMap[$token];
+            unset($productMap[$token]);
+        }
+
+        foreach ($productMap as $leftoverProduct) {
+            $reorderedProducts[] = $leftoverProduct;
+        }
+
+        if (empty($reorderedProducts)) {
+            andison_set_flash('error', 'Failed to reorder products.');
+            header('Location: products.php?brand=' . urlencode($brandToReorder));
+            exit;
+        }
+
+        $brands[$brandToReorder]['products'] = array_values($reorderedProducts);
+        if (andison_save_single_brand($brandToReorder, $brands[$brandToReorder], ['allowProductCountDecrease' => true])) {
+            andison_set_flash('success', 'Product order updated.');
+        } else {
+            andison_set_flash('error', 'Failed to save product order.');
+        }
+
+        header('Location: products.php?brand=' . urlencode($brandToReorder));
+        exit;
+    }
+
     if ($action === 'edit_brand_logo') {
-        $brandToEdit = trim((string)($_POST['brand_to_edit'] ?? $brand));
-        if ($brandToEdit === '') {
+        $originalBrand = trim((string)($_POST['brand_original'] ?? $brand));
+        $brandToEditInput = trim((string)($_POST['brand_to_edit'] ?? $originalBrand));
+        if ($brandToEditInput === '') {
             andison_set_flash('error', 'Please choose a brand to edit.');
             header('Location: products.php');
             exit;
         }
 
-        $brandToEdit = andison_pick_brand_bucket($brands, andison_brand_data_candidates($brandToEdit));
-        if ($brandToEdit === '') {
-            $brandToEdit = andison_canonical_brand_name(trim((string)($_POST['brand_to_edit'] ?? $brand)));
+        $sourceBrand = andison_pick_brand_bucket($brands, andison_brand_data_candidates($originalBrand));
+        if ($sourceBrand === '') {
+            $sourceBrand = andison_canonical_brand_name($originalBrand);
+        }
+
+        $targetBrand = andison_canonical_brand_name($brandToEditInput);
+        if ($targetBrand === '') {
+            $targetBrand = $sourceBrand;
         }
 
         try {
-            $updatedLogoUrl = andison_handle_brand_logo_upload($brandToEdit, 'edit_brand_logo');
+            $updatedLogoUrl = andison_handle_brand_logo_upload($targetBrand, 'edit_brand_logo', false);
         } catch (Throwable $e) {
             andison_set_flash('error', $e->getMessage());
-            header('Location: products.php?brand=' . urlencode($brandToEdit));
+            header('Location: products.php?brand=' . urlencode($sourceBrand));
             exit;
         }
 
-        if (andison_create_brand($brandToEdit, '', $updatedLogoUrl)) {
-            andison_set_flash('success', 'Brand image updated.');
-            header('Location: products.php?brand=' . urlencode($brandToEdit));
+        $sourceMeta = isset($brands[$sourceBrand]) && is_array($brands[$sourceBrand]) ? $brands[$sourceBrand] : [];
+        $descriptionToSave = isset($_POST['brand_description'])
+            ? andison_sanitize_brand_description_html((string)$_POST['brand_description'])
+            : trim((string)($sourceMeta['description'] ?? ''));
+        $logoToSave = $updatedLogoUrl !== '' ? $updatedLogoUrl : trim((string)($sourceMeta['logo'] ?? ''));
+
+        $saved = andison_create_brand($targetBrand, $descriptionToSave, $logoToSave);
+        if ($saved) {
+            $sourceKey = strtolower(trim($sourceBrand));
+            $targetKey = strtolower(trim($targetBrand));
+
+            if ($sourceKey !== '' && $targetKey !== '' && $sourceKey !== $targetKey) {
+                andison_sb_update('products', ['brand' => $targetBrand], 'brand=ilike.' . rawurlencode($sourceBrand));
+                andison_sb_delete('brands', 'name=eq.' . rawurlencode($sourceBrand));
+            }
+
+            andison_set_flash('success', $updatedLogoUrl !== '' ? 'Brand updated.' : 'Brand saved.');
+            header('Location: products.php?brand=' . urlencode($targetBrand));
             exit;
         }
 
-        andison_set_flash('error', 'Failed to update brand image. Please try again.');
-        header('Location: products.php?brand=' . urlencode($brandToEdit));
+        andison_set_flash('error', 'Failed to update brand. Please try again.');
+        header('Location: products.php?brand=' . urlencode($sourceBrand));
         exit;
     }
 
@@ -1165,6 +1265,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $editIndex = isset($_GET['edit']) ? (int)$_GET['edit'] : -1;
 $brandInfo = $selectedBrandKey !== '' ? ($brands[$selectedBrandKey] ?? ($brands[$selectedBrand] ?? [])) : [];
+$selectedBrandDescription = trim((string)($brandInfo['description'] ?? ''));
+$selectedBrandLogo = trim((string)($brandInfo['logo'] ?? ''));
 $products = isset($brandInfo['products']) && is_array($brandInfo['products']) ? $brandInfo['products'] : [];
 
 // Keep presets intentionally minimal: Optional only.
@@ -1219,6 +1321,14 @@ andison_admin_header('Products', 'products');
 .prod-search-wrap input:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(43,17,219,0.08); }
 .prod-desc-textarea { width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;min-height:80px;transition:border-color 0.2s; }
 .prod-desc-textarea:focus { outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(43,17,219,0.08); }
+.brand-reorder-item.is-dragging { opacity: 0.45; }
+.brand-reorder-item.drag-over { outline: 2px dashed rgba(43,17,219,0.35); outline-offset: -2px; }
+.brand-reorder-item:hover .brand-reorder-handle { color:#2b11db; background:#eef2ff; }
+.product-row.is-dragging { opacity: 0.45; }
+.product-row.drag-over { outline: 2px dashed rgba(43,17,219,0.35); outline-offset: -2px; }
+.product-drag-handle { cursor: grab; transition: color 0.15s, background 0.15s; }
+.product-drag-handle:active { cursor: grabbing; }
+.product-row:hover .product-drag-handle { color: #2b11db; background: #eef2ff; border-radius: 6px; }
 </style>
 
 <div class="grid">
@@ -1233,6 +1343,7 @@ andison_admin_header('Products', 'products');
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
             <?php if ($selectedBrand !== ''): ?>
                 <span class="prod-stat-pill"><i class="bi bi-box-seam"></i> <?php echo count($products); ?> product<?php echo count($products) !== 1 ? 's' : ''; ?></span>
+                    <button class="btn btn-outline" type="button" onclick="toggleReorderBrandPanel()" style="font-size:12px;padding:8px 14px;"><i class="bi bi-grid-3x3-gap"></i> Reorder Brands</button>
             <?php endif; ?>
             <form method="get" action="products.php" style="display:flex;gap:8px;align-items:center;">
                 <select name="brand" class="prod-brand-select" onchange="this.form.submit()">
@@ -1258,21 +1369,38 @@ andison_admin_header('Products', 'products');
     <?php if ($selectedBrand !== ''): ?>
         <section class="card" id="editBrandPanel" style="grid-column:span 12;display:none;">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
-                <h2 style="margin:0;font-size:16px;"><i class="bi bi-pencil-square"></i> Edit Brand Image</h2>
+                <h2 style="margin:0;font-size:16px;"><i class="bi bi-pencil-square"></i> Edit Brand</h2>
                 <button class="btn btn-outline" type="button" onclick="toggleEditBrandPanel()" style="font-size:12px;padding:6px 10px;"><i class="bi bi-x-lg"></i> Close</button>
             </div>
             <form method="post" action="products.php?brand=<?php echo urlencode($selectedBrandKey); ?>" enctype="multipart/form-data" style="display:grid;grid-template-columns:2fr 2.5fr auto;gap:10px;align-items:end;">
                 <input type="hidden" name="action" value="edit_brand_logo">
-                <input type="hidden" name="brand_to_edit" value="<?php echo htmlspecialchars($selectedBrandKey, ENT_QUOTES); ?>">
+                <input type="hidden" name="brand_original" value="<?php echo htmlspecialchars($selectedBrandKey, ENT_QUOTES); ?>">
                 <div class="field" style="margin:0;min-width:0;">
                     <label>Brand</label>
-                    <input type="text" value="<?php echo htmlspecialchars(andison_brand_display_label((string)$selectedBrand)); ?>" disabled>
+                    <input type="text" name="brand_to_edit" value="<?php echo htmlspecialchars(andison_brand_display_label((string)$selectedBrand), ENT_QUOTES); ?>" required>
                 </div>
                 <div class="field" style="margin:0;min-width:0;">
-                    <label for="editBrandLogo">New Brand Image *</label>
-                    <input id="editBrandLogo" name="edit_brand_logo" type="file" required accept="image/jpeg,image/png,image/webp,image/gif,image/avif">
+                    <label for="editBrandLogo">New Brand Image (optional)</label>
+                    <input id="editBrandLogo" name="edit_brand_logo" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif">
                 </div>
-                <button class="btn btn-primary" type="submit" style="height:44px;padding:10px 16px;"><i class="bi bi-check2-circle"></i> Update Image</button>
+                <button class="btn btn-primary" type="submit" style="height:44px;padding:10px 16px;"><i class="bi bi-check2-circle"></i> Save Brand</button>
+                <div class="field" style="margin:0;min-width:0;grid-column:1 / 4;">
+                    <label for="editBrandDescription">Brand Description (shown on public brand page)</label>
+                    <textarea id="editBrandDescription" name="brand_description" rows="4" class="prod-desc-textarea" placeholder="Write brand description here..."><?php echo htmlspecialchars($selectedBrandDescription, ENT_QUOTES); ?></textarea>
+                </div>
+                <div class="field" style="margin:0;min-width:0;grid-column:1 / 4;">
+                    <label>Brand Image Preview</label>
+                    <div id="editBrandLogoPreviewWrap" style="display:flex;align-items:center;gap:12px;padding:10px 12px;border:1.5px dashed #d1d5db;border-radius:10px;background:#f9fafb;">
+                        <div style="width:180px;height:72px;border-radius:10px;background:#ffffff;border:1px solid #e5e7eb;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                            <img id="editBrandLogoPreview" src="<?php echo htmlspecialchars($selectedBrandLogo, ENT_QUOTES); ?>" alt="Brand logo preview" style="max-width:100%;max-height:100%;object-fit:contain;<?php echo $selectedBrandLogo === '' ? 'display:none;' : ''; ?>">
+                            <span id="editBrandLogoPreviewEmpty" style="font-size:11px;color:#9ca3af;<?php echo $selectedBrandLogo !== '' ? 'display:none;' : ''; ?>">No logo yet</span>
+                        </div>
+                        <div style="font-size:11px;color:#6b7280;line-height:1.5;">
+                            Current brand logo from admin data appears here.<br>
+                            Selecting a new file will preview it before save.
+                        </div>
+                    </div>
+                </div>
             </form>
         </section>
     <?php endif; ?>
@@ -1297,7 +1425,45 @@ andison_admin_header('Products', 'products');
                 <input id="newBrandLogo" name="new_brand_logo" type="file" required accept="image/jpeg,image/png,image/webp,image/gif,image/avif">
             </div>
             <button class="btn btn-primary" type="submit" style="height:44px;padding:10px 16px;"><i class="bi bi-check2-circle"></i> Save Brand</button>
+            <div class="field" style="margin:0;min-width:0;grid-column:1 / 5;">
+                <label>New Brand Image Preview</label>
+                <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border:1.5px dashed #d1d5db;border-radius:10px;background:#f9fafb;">
+                    <div style="width:180px;height:72px;border-radius:10px;background:#ffffff;border:1px solid #e5e7eb;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                        <img id="newBrandLogoPreview" src="" alt="New brand logo preview" style="max-width:100%;max-height:100%;object-fit:contain;display:none;">
+                        <span id="newBrandLogoPreviewEmpty" style="font-size:11px;color:#9ca3af;">No file selected</span>
+                    </div>
+                    <div style="font-size:11px;color:#6b7280;line-height:1.5;">
+                        Choose an image file to preview how the logo will look.<br>
+                        Supports JPG, PNG, WEBP, GIF, and AVIF.
+                    </div>
+                </div>
+            </div>
         </form>
+    </section>
+
+    <section class="card" id="reorderBrandPanel" style="grid-column:span 12;display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+            <h2 style="margin:0;font-size:16px;"><i class="bi bi-grid-3x3-gap"></i> Reorder Brands</h2>
+            <button class="btn btn-outline" type="button" onclick="toggleReorderBrandPanel()" style="font-size:12px;padding:6px 10px;"><i class="bi bi-x-lg"></i> Close</button>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+            <span style="font-size:12px;color:#6b7280;font-weight:500;"><i class="bi bi-arrows-move"></i> Drag brands to change the public order</span>
+            <form id="reorderBrandsForm" method="post" action="products.php" style="margin:0;display:inline-flex;align-items:center;gap:8px;">
+                <input type="hidden" name="action" value="reorder_brands">
+                <input type="hidden" name="brand_order" id="brandOrderInput" value="[]">
+                <button class="btn btn-primary" type="submit" style="padding:8px 14px;font-size:12px;display:flex;align-items:center;gap:6px;"><i class="bi bi-save"></i> Save Brand Order</button>
+            </form>
+        </div>
+        <div style="border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;background:#fff;">
+            <div id="brandReorderList" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:12px;max-height:420px;overflow:auto;">
+                <?php foreach ($brandOrderLabels as $brandLabel): ?>
+                    <div class="brand-reorder-item" draggable="true" data-brand-label="<?php echo htmlspecialchars($brandLabel, ENT_QUOTES); ?>" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:10px;background:linear-gradient(180deg,#fff 0%,#f8fafc 100%);cursor:grab;user-select:none;">
+                        <span class="brand-reorder-handle" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:6px;color:#94a3b8;"><i class="bi bi-grip-vertical"></i></span>
+                        <span style="font-size:13px;font-weight:700;color:#111827;letter-spacing:0.01em;"><?php echo htmlspecialchars($brandLabel, ENT_QUOTES); ?></span>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
     </section>
 
     <!-- Products Section -->
@@ -1316,6 +1482,7 @@ andison_admin_header('Products', 'products');
                 <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                     <button class="btn btn-primary" type="button" onclick="openAddProductModal();" style="font-size:12px;padding:8px 16px;"><i class="bi bi-plus-lg"></i> Add Product</button>
                     <button class="btn btn-secondary" type="button" onclick="openImportCsvModal();" style="font-size:12px;padding:8px 16px;background:#6b7280;border-color:#6b7280;color:white;border-radius:8px;"><i class="bi bi-upload"></i> Import CSV</button>
+                    <button class="btn btn-outline" type="button" onclick="toggleReorderBrandPanel()" style="font-size:12px;padding:8px 14px;"><i class="bi bi-grid-3x3-gap"></i> Reorder Brands</button>
                     <?php if (!$allowProductDelete): ?>
                         <span style="font-size:10px;font-weight:700;background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:999px;padding:4px 10px;"><i class="bi bi-shield-lock"></i> Delete Disabled</span>
                     <?php endif; ?>
@@ -1335,6 +1502,15 @@ andison_admin_header('Products', 'products');
                         <input type="hidden" name="brand" value="<?php echo htmlspecialchars($selectedBrandKey); ?>">
                         <div id="selectedProductsContainer"></div>
                         <button type="submit" class="btn" style="background:#dc2626;border-color:#dc2626;color:white;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer;"><i class="bi bi-trash"></i> Delete Selected</button>
+                    </form>
+                </div>
+                <div id="reorderActionsBar" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end;">
+                    <span style="font-size:12px;color:#6b7280;font-weight:500;"><i class="bi bi-arrows-move"></i> Drag rows by the handle to change public order</span>
+                    <form id="reorderProductsForm" method="POST" action="products.php?brand=<?php echo urlencode($selectedBrandKey); ?>" style="margin:0;display:inline-flex;align-items:center;gap:8px;">
+                        <input type="hidden" name="action" value="reorder_products">
+                        <input type="hidden" name="brand" value="<?php echo htmlspecialchars($selectedBrandKey, ENT_QUOTES); ?>">
+                        <input type="hidden" name="product_order" id="productOrderInput" value="[]">
+                        <button type="submit" class="btn btn-primary" style="padding:6px 14px;font-size:12px;border-radius:6px;font-weight:600;display:flex;align-items:center;gap:6px;"><i class="bi bi-save"></i> Save Order</button>
                     </form>
                 </div>
             </div>
@@ -1367,6 +1543,7 @@ andison_admin_header('Products', 'products');
                             <?php foreach ($products as $i => $prod): ?>
                                 <?php if (!is_array($prod)) { continue; } ?>
                                 <?php
+                                    $productToken = isset($prod['id']) ? ('id:' . (int)$prod['id']) : ('idx:' . (int)$i);
                                     $badge = (string)($prod['badge'] ?? '');
                                     $badgeClass = 'prod-badge-default';
                                     if ($badge === 'Available') $badgeClass = 'prod-badge-available';
@@ -1377,11 +1554,16 @@ andison_admin_header('Products', 'products');
                                     elseif ($badge === 'Limited Stock') $badgeClass = 'prod-badge-limited';
                                 ?>
                                 <tr class="product-row" 
+                                    data-order-token="<?php echo htmlspecialchars($productToken, ENT_QUOTES); ?>"
                                     data-model="<?php echo htmlspecialchars(strtolower((string)($prod['model'] ?? '')), ENT_QUOTES); ?>" 
                                     data-type="<?php echo htmlspecialchars(strtolower((string)($prod['type'] ?? '')), ENT_QUOTES); ?>" 
                                     data-badge="<?php echo htmlspecialchars(strtolower((string)($prod['badge'] ?? '')), ENT_QUOTES); ?>">
-                                    <?php $productToken = isset($prod['id']) ? ('id:' . (int)$prod['id']) : ('idx:' . (int)$i); ?>
-                                    <td style="text-align:center;"><input type="checkbox" class="product-checkbox" value="<?php echo htmlspecialchars($productToken, ENT_QUOTES); ?>" style="cursor:pointer;"></td>
+                                    <td style="text-align:center;">
+                                        <div style="display:flex;align-items:center;justify-content:center;gap:8px;">
+                                            <span class="product-drag-handle" title="Drag to reorder" aria-label="Drag to reorder" draggable="true" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:6px;color:#94a3b8;cursor:grab;flex-shrink:0;"><i class="bi bi-grip-vertical"></i></span>
+                                            <input type="checkbox" class="product-checkbox" value="<?php echo htmlspecialchars($productToken, ENT_QUOTES); ?>" style="cursor:pointer;">
+                                        </div>
+                                    </td>
                                     <td><span class="prod-num"><?php echo (int)$i + 1; ?></span></td>
                                     <td>
                                         <div style="font-weight:600;font-size:13px;color:#111827;"><?php echo htmlspecialchars((string)($prod['model'] ?? '')); ?></div>
@@ -1776,12 +1958,12 @@ andison_admin_header('Products', 'products');
                     <div style="font-size:10px;color:#9ca3af;margin-bottom:6px;">Tip: choose multiple files once, and they will auto-fill the <?php echo (int)$maxProductImages; ?> slots in order.</div>
 
                     <!-- Bulk selector for efficient multi-upload -->
-                    <input type="file" id="bulkImageFiles" accept="image/*" multiple style="display:none;" onchange="handleBulkImageSelect(this)">
+                    <input type="file" id="bulkImageFiles" accept="image/jpeg,image/png,image/webp,image/gif,image/avif,.jpg,.jpeg,.png,.webp,.gif,.avif" multiple style="display:none;" onchange="handleBulkImageSelect(this)">
 
                     <!-- Hidden file inputs, one per slot -->
                     <div style="display:none;">
                         <?php for ($s = 0; $s < $maxProductImages; $s++): ?>
-                        <input type="file" id="imageFile_<?php echo $s; ?>" name="image_file_<?php echo $s; ?>" accept="image/*" onchange="previewImageSlot(this, <?php echo $s; ?>)">
+                        <input type="file" id="imageFile_<?php echo $s; ?>" name="image_file_<?php echo $s; ?>" accept="image/jpeg,image/png,image/webp,image/gif,image/avif,.jpg,.jpeg,.png,.webp,.gif,.avif" onchange="previewImageSlot(this, <?php echo $s; ?>)">
                         <?php endfor; ?>
                     </div>
                 </div>
@@ -6363,11 +6545,31 @@ function setSpecificationsEditor(rawSpecifications) {
 var MAX_PRODUCT_IMAGES = <?php echo (int)$maxProductImages; ?>;
 var _existingUrls = Array(MAX_PRODUCT_IMAGES).fill('');
 var _previewUrls  = Array(MAX_PRODUCT_IMAGES).fill(null);
+var _allowedImageExts = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'];
+var _allowedImageMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif'];
 
 function _esc(str) {
     var d = document.createElement('div');
     d.appendChild(document.createTextNode(str));
     return d.innerHTML;
+}
+
+function isAllowedImageFile(file) {
+    if (!file) return false;
+
+    var name = String(file.name || '').toLowerCase();
+    var ext = '';
+    if (name.indexOf('.') !== -1) {
+        ext = name.split('.').pop();
+    }
+
+    var mime = String(file.type || '').toLowerCase();
+    if (mime && _allowedImageMimes.indexOf(mime) !== -1) {
+        return true;
+    }
+
+    // Fallback by extension for browsers/files where MIME can be empty.
+    return _allowedImageExts.indexOf(ext) !== -1;
 }
 
 function renderImageSlots() {
@@ -6430,7 +6632,7 @@ function removeImageSlot(idx) {
 function previewImageSlot(input, idx) {
     if (!input.files || !input.files.length) return;
     var file = input.files[0];
-    if (!file.type.startsWith('image/')) {
+    if (!isAllowedImageFile(file)) {
         customAlert('Please select a valid image file.'); input.value = ''; return;
     }
     if (file.size > 100 * 1024 * 1024) {
@@ -6463,7 +6665,7 @@ function handleBulkImageSelect(input) {
 
     for (var i = 0; i < files.length; i++) {
         var file = files[i];
-        if (!file.type || !file.type.startsWith('image/')) continue;
+        if (!isAllowedImageFile(file)) continue;
         if (file.size > 100 * 1024 * 1024) continue;
         validFiles.push(file);
     }
@@ -8319,6 +8521,202 @@ function toggleAddBrandPanel() {
     }
 }
 
+function toggleReorderBrandPanel() {
+    var panel = document.getElementById('reorderBrandPanel');
+    if (!panel) {
+        return;
+    }
+    var nextDisplay = panel.style.display === 'none' || panel.style.display === '' ? 'block' : 'none';
+    panel.style.display = nextDisplay;
+}
+
+(function(){
+    var brandList = document.getElementById('brandReorderList');
+    var reorderForm = document.getElementById('reorderBrandsForm');
+    var brandOrderInput = document.getElementById('brandOrderInput');
+
+    if (!brandList || !reorderForm || !brandOrderInput) {
+        return;
+    }
+
+    var draggedItem = null;
+
+    function collectBrandOrder() {
+        return Array.from(brandList.querySelectorAll('.brand-reorder-item')).map(function(item) {
+            return item.getAttribute('data-brand-label') || '';
+        }).filter(function(label) {
+            return label !== '';
+        });
+    }
+
+    function syncBrandOrderInput() {
+        brandOrderInput.value = JSON.stringify(collectBrandOrder());
+    }
+
+    function clearStates() {
+        brandList.querySelectorAll('.brand-reorder-item').forEach(function(item) {
+            item.classList.remove('drag-over');
+            item.classList.remove('is-dragging');
+        });
+    }
+
+    function getInsertBeforeItem(container, clientY) {
+        var items = Array.from(container.querySelectorAll('.brand-reorder-item:not(.is-dragging)'));
+        return items.reduce(function(closest, item) {
+            var box = item.getBoundingClientRect();
+            var offset = clientY - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: item };
+            }
+            return closest;
+        }, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
+    }
+
+    brandList.querySelectorAll('.brand-reorder-item').forEach(function(item) {
+        item.addEventListener('dragstart', function(event) {
+            draggedItem = item;
+            item.classList.add('is-dragging');
+            if (event.dataTransfer) {
+                event.dataTransfer.effectAllowed = 'move';
+                event.dataTransfer.setData('text/plain', item.getAttribute('data-brand-label') || '');
+            }
+        });
+
+        item.addEventListener('dragend', function() {
+            draggedItem = null;
+            clearStates();
+            syncBrandOrderInput();
+        });
+
+        item.addEventListener('dragover', function(event) {
+            if (!draggedItem || draggedItem === item) {
+                return;
+            }
+            event.preventDefault();
+            var insertBeforeItem = getInsertBeforeItem(brandList, event.clientY);
+            clearStates();
+            item.classList.add('drag-over');
+            if (insertBeforeItem == null) {
+                brandList.appendChild(draggedItem);
+            } else {
+                brandList.insertBefore(draggedItem, insertBeforeItem);
+            }
+            syncBrandOrderInput();
+        });
+
+        item.addEventListener('drop', function(event) {
+            event.preventDefault();
+            syncBrandOrderInput();
+        });
+    });
+
+    reorderForm.addEventListener('submit', function() {
+        syncBrandOrderInput();
+    });
+
+    syncBrandOrderInput();
+})();
+
+// ── Product Reordering (Drag & Drop) ──
+(function(){
+    var productTable = document.querySelector('.prod-table tbody');
+    if (!productTable) return;
+
+    var draggedRow = null;
+
+    function syncProductOrderInput() {
+        var input = document.getElementById('productOrderInput');
+        if (!input) return;
+
+        var rows = productTable.querySelectorAll('.product-row');
+        var orderTokens = [];
+        rows.forEach(function(row) {
+            var token = row.getAttribute('data-order-token');
+            if (token) {
+                orderTokens.push(token);
+            }
+        });
+
+        input.value = JSON.stringify(orderTokens);
+    }
+
+    function clearStates() {
+        productTable.querySelectorAll('.product-row').forEach(function(item) {
+            item.classList.remove('drag-over');
+        });
+    }
+
+    function getInsertBeforeItem(container, clientY) {
+        var items = container.querySelectorAll('.product-row');
+        var closest = { offset: Number.NEGATIVE_INFINITY, element: null };
+
+        items.forEach(function(item) {
+            var box = item.getBoundingClientRect();
+            var offset = clientY - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                closest = { offset: offset, element: item };
+            }
+        });
+
+        return closest.element;
+    }
+
+    productTable.querySelectorAll('.product-drag-handle').forEach(function(handle) {
+        handle.addEventListener('dragstart', function(event) {
+            draggedRow = handle.closest('.product-row');
+            if (draggedRow) {
+                draggedRow.classList.add('is-dragging');
+                if (event.dataTransfer) {
+                    event.dataTransfer.effectAllowed = 'move';
+                    var model = draggedRow.getAttribute('data-model') || 'Product';
+                    event.dataTransfer.setData('text/plain', model);
+                }
+            }
+        });
+
+        handle.addEventListener('dragend', function() {
+            if (draggedRow) {
+                draggedRow.classList.remove('is-dragging');
+                draggedRow = null;
+            }
+            clearStates();
+            syncProductOrderInput();
+        });
+    });
+
+    productTable.querySelectorAll('.product-row').forEach(function(row) {
+        row.addEventListener('dragover', function(event) {
+            if (!draggedRow || draggedRow === row) {
+                return;
+            }
+            event.preventDefault();
+            var insertBeforeRow = getInsertBeforeItem(productTable, event.clientY);
+            clearStates();
+            row.classList.add('drag-over');
+            if (insertBeforeRow == null) {
+                productTable.appendChild(draggedRow);
+            } else {
+                productTable.insertBefore(draggedRow, insertBeforeRow);
+            }
+            syncProductOrderInput();
+        });
+
+        row.addEventListener('drop', function(event) {
+            event.preventDefault();
+            syncProductOrderInput();
+        });
+    });
+
+    var reorderProductsForm = document.querySelector('form[action*="products.php"]');
+    if (reorderProductsForm) {
+        reorderProductsForm.addEventListener('submit', function() {
+            syncProductOrderInput();
+        });
+    }
+
+    syncProductOrderInput();
+})();
+
 function toggleEditBrandPanel() {
     var panel = document.getElementById('editBrandPanel');
     if (!panel) {
@@ -8333,6 +8731,63 @@ function toggleEditBrandPanel() {
         }
     }
 }
+
+function previewBrandLogoFile(input, previewImgId, emptyLabelId, fallbackSrc) {
+    var img = document.getElementById(previewImgId);
+    var empty = document.getElementById(emptyLabelId);
+    if (!img || !empty) return;
+
+    var file = input && input.files && input.files[0] ? input.files[0] : null;
+    if (!file) {
+        if (fallbackSrc) {
+            img.src = fallbackSrc;
+            img.style.display = 'block';
+            empty.style.display = 'none';
+        } else {
+            img.src = '';
+            img.style.display = 'none';
+            empty.style.display = 'inline';
+        }
+        return;
+    }
+
+    if (!file.type || file.type.indexOf('image/') !== 0) {
+        img.src = '';
+        img.style.display = 'none';
+        empty.style.display = 'inline';
+        empty.textContent = 'Invalid image file';
+        return;
+    }
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        img.src = String((e && e.target && e.target.result) || '');
+        img.style.display = 'block';
+        empty.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+}
+
+(function(){
+    var editInput = document.getElementById('editBrandLogo');
+    var editPreview = document.getElementById('editBrandLogoPreview');
+    var editFallbackSrc = editPreview ? (editPreview.getAttribute('src') || '') : '';
+
+    if (editInput) {
+        editInput.addEventListener('change', function(){
+            previewBrandLogoFile(editInput, 'editBrandLogoPreview', 'editBrandLogoPreviewEmpty', editFallbackSrc);
+        });
+    }
+
+    var newInput = document.getElementById('newBrandLogo');
+    if (newInput) {
+        newInput.addEventListener('change', function(){
+            var empty = document.getElementById('newBrandLogoPreviewEmpty');
+            if (empty) empty.textContent = 'No file selected';
+            previewBrandLogoFile(newInput, 'newBrandLogoPreview', 'newBrandLogoPreviewEmpty', '');
+        });
+    }
+})();
 </script>
 
 <?php

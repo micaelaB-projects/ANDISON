@@ -108,7 +108,7 @@ if (!function_exists('andison_brand_display_label_public')) {
             return 'WEILER';
         }
         if ($normalized === 'robot systems peripherals' || $normalized === 'robot systems' || $normalized === 'robot system peripherals') {
-            return 'Robot Systems';
+            return 'Robot Systems Peripherals';
         }
         return $brand;
     }
@@ -332,6 +332,9 @@ if ($resolvedBrandKey !== '' && isset($brands_info_data[$resolvedBrandKey])) {
     ];
 }
 $brand_products = $brand_info['products'] ?? [];
+
+// Show the normalized/resolved brand label on page so admin edits are reflected on public view.
+$brand_name = htmlspecialchars(andison_brand_display_label_public($resolvedBrandKey !== '' ? $resolvedBrandKey : $brand_name));
 
 $brand_logo_src = trim((string)($brand_info['logo'] ?? ''));
 if ($brand_logo_src === '') {
@@ -3065,7 +3068,10 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                         <!-- Pagination -->
                         <div class="brand-pagination" id="brandPagination"></div>
 
-<script>var BRAND_NAME = '<?php echo htmlspecialchars($brand_name, ENT_QUOTES); ?>';</script>
+<script>
+var BRAND_NAME = '<?php echo htmlspecialchars($brand_name, ENT_QUOTES); ?>';
+var BRAND_LOGO = '<?php echo htmlspecialchars($brand_logo_src, ENT_QUOTES); ?>';
+</script>
                     </div>
                 </div>
             </div>

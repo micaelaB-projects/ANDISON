@@ -79,16 +79,17 @@ footer.footer-modernized .footer-content {
     padding: 0 18px 20px;
     display: flex;
     flex-direction: column;
-    gap: 34px;
+    gap: 22px;
     position: relative;
     z-index: 1;
 }
 
 footer.footer-modernized .footer-main-grid {
     display: grid;
-    grid-template-columns: minmax(240px, 1.25fr) minmax(220px, 1fr) minmax(220px, 1fr) minmax(200px, 1fr) minmax(150px, 0.8fr);
-    gap: 56px;
+    grid-template-columns: minmax(250px, 1.35fr) minmax(210px, 1.05fr) minmax(210px, 1.05fr) minmax(180px, 0.95fr) minmax(120px, 0.72fr) !important;
+    gap: 34px !important;
     align-items: start;
+    grid-auto-flow: row;
 }
 
 footer.footer-modernized .footer-brand-col,
@@ -189,6 +190,15 @@ footer.footer-modernized .footer-nav-links a:hover::after {
 
 footer.footer-modernized .footer-socials {
     margin-top: 0;
+}
+
+footer.footer-modernized .footer-social-col {
+    justify-self: start;
+    align-self: start;
+}
+
+footer.footer-modernized .footer-main-grid > .footer-col:last-child {
+    grid-column: auto !important;
 }
 
 footer.footer-modernized .footer-socials-title {
@@ -315,8 +325,8 @@ nav li:nth-child(3) .nav-dropdown ul a {
 }
 
 nav li:nth-child(3) .nav-dropdown ul a:hover {
-    background: rgba(43, 17, 219, 0.04) !important;
-    border-color: rgba(43, 17, 219, 0.10) !important;
+    background: #ffffff !important;
+    border-color: #e5e7eb !important;
     box-shadow: none !important;
     transform: none !important;
 }
@@ -327,38 +337,16 @@ nav li:nth-child(3) .nav-dropdown ul a img {
     max-width: 208px !important;
     max-height: 86px !important;
     object-fit: contain !important;
+    object-position: center center !important;
     display: block !important;
-    transform: scale(1.08) !important;
+    transform: translate(var(--brand-shift-x, 0px), var(--brand-shift-y, 0px)) scale(var(--brand-auto-scale, 1.08)) !important;
     transform-origin: center center !important;
-}
-
-/* Some source logos have extra transparent canvas; nudge these to visually crop dead space. */
-nav li:nth-child(3) .nav-dropdown ul a img[alt="Kobelco"],
-nav li:nth-child(3) .nav-dropdown ul a img[alt="Metrode"] {
-    transform: translateX(-14px) scale(1.24) !important;
-}
-
-nav li:nth-child(3) .nav-dropdown ul a img[alt="MAGNAFLUX"],
-nav li:nth-child(3) .nav-dropdown ul a img[alt="Tempilstik"],
-nav li:nth-child(3) .nav-dropdown ul a img[alt="SK And GAL GAGE"],
-nav li:nth-child(3) .nav-dropdown ul a img[alt="RAC"],
-nav li:nth-child(3) .nav-dropdown ul a img[alt="Spilfyter"],
-nav li:nth-child(3) .nav-dropdown ul a img[alt="Technotex"] {
-    transform: scale(1.16) !important;
-}
-
-nav li:nth-child(3) .nav-dropdown ul a img[alt="Dalo"],
-nav li:nth-child(3) .nav-dropdown ul a img[alt="DALO"],
-nav li:nth-child(3) .nav-dropdown ul a img[alt="DryRod. II"],
-nav li:nth-child(3) .nav-dropdown ul a img[alt="BW"],
-nav li:nth-child(3) .nav-dropdown ul a img[alt="BW Technologies"] {
-    transform: scale(0.96) !important;
 }
 
 @media (max-width: 1180px) {
     footer.footer-modernized .footer-main-grid {
-        grid-template-columns: repeat(3, minmax(180px, 1fr));
-        gap: 24px 28px;
+        grid-template-columns: repeat(2, minmax(220px, 1fr));
+        gap: 18px 20px;
     }
 
     nav li:nth-child(3) .nav-dropdown {
@@ -414,6 +402,11 @@ nav li:nth-child(3) .nav-dropdown ul a img[alt="BW Technologies"] {
     footer.footer-modernized .footer-col-title { font-size: 15px; }
     footer.footer-modernized .footer-nav-links a { font-size: 15px; }
     footer.footer-modernized .footer-copyright { font-size: 15px; }
+
+    footer.footer-modernized .footer-social-col {
+        grid-column: 2;
+        justify-self: end;
+    }
 }
 
 @media (max-width: 768px) {
@@ -841,6 +834,106 @@ $andisonFooterSettings = andison_get_footer_settings();
         });
     }
 
+    function fitBrandLogoImage(img) {
+        if (!img || !img.naturalWidth || !img.naturalHeight) {
+            return;
+        }
+
+        var brandLabel = String(img.getAttribute('alt') || img.getAttribute('title') || '').trim();
+        var brandKey = normalizeBrandKey(brandLabel);
+
+        var sourceW = img.naturalWidth;
+        var sourceH = img.naturalHeight;
+        var sampleW = Math.max(1, Math.min(320, sourceW));
+        var sampleH = Math.max(1, Math.round(sourceH * (sampleW / sourceW)));
+
+        var canvas = document.createElement('canvas');
+        canvas.width = sampleW;
+        canvas.height = sampleH;
+        var ctx = canvas.getContext('2d', { willReadFrequently: true });
+        if (!ctx) {
+            return;
+        }
+
+        try {
+            ctx.clearRect(0, 0, sampleW, sampleH);
+            ctx.drawImage(img, 0, 0, sampleW, sampleH);
+            var pixels = ctx.getImageData(0, 0, sampleW, sampleH).data;
+
+            var minX = sampleW;
+            var minY = sampleH;
+            var maxX = -1;
+            var maxY = -1;
+
+            for (var y = 0; y < sampleH; y++) {
+                for (var x = 0; x < sampleW; x++) {
+                    var alpha = pixels[(y * sampleW + x) * 4 + 3];
+                    if (alpha > 10) {
+                        if (x < minX) minX = x;
+                        if (y < minY) minY = y;
+                        if (x > maxX) maxX = x;
+                        if (y > maxY) maxY = y;
+                    }
+                }
+            }
+
+            if (maxX < minX || maxY < minY) {
+                return;
+            }
+
+            var boxW = Math.max(1, maxX - minX + 1);
+            var boxH = Math.max(1, maxY - minY + 1);
+            var fillX = boxW / sampleW;
+            var fillY = boxH / sampleH;
+
+            var targetFillX = 0.82;
+            var targetFillY = 0.80;
+            var scaleX = targetFillX / Math.max(0.01, fillX);
+            var scaleY = targetFillY / Math.max(0.01, fillY);
+            var autoScale = Math.min(scaleX, scaleY);
+            autoScale = Math.max(0.92, Math.min(1.65, autoScale));
+
+            if (brandKey === 'bw') {
+                autoScale *= 0.86;
+            } else if (brandKey === 'dryrod. ii') {
+                autoScale *= 0.88;
+            }
+
+            var centerX = minX + boxW / 2;
+            var centerY = minY + boxH / 2;
+            var xBias = ((sampleW / 2) - centerX) / sampleW;
+            var yBias = ((sampleH / 2) - centerY) / sampleH;
+
+            var shiftX = Math.max(-10, Math.min(10, xBias * 208));
+            var shiftY = Math.max(-6, Math.min(6, yBias * 86));
+
+            img.style.setProperty('--brand-auto-scale', autoScale.toFixed(3));
+            img.style.setProperty('--brand-shift-x', shiftX.toFixed(2) + 'px');
+            img.style.setProperty('--brand-shift-y', shiftY.toFixed(2) + 'px');
+        } catch (err) {
+            // Ignore per-image failures to keep the dropdown usable.
+        }
+    }
+
+    function autoSizeDropdownBrandLogos() {
+        var dropdownImages = document.querySelectorAll('.nav-list > li:nth-child(3) .nav-dropdown ul li > a img');
+        if (!dropdownImages.length) {
+            return;
+        }
+
+        dropdownImages.forEach(function(img) {
+            if (img.complete && img.naturalWidth > 0) {
+                fitBrandLogoImage(img);
+                return;
+            }
+
+            img.addEventListener('load', function onLoad() {
+                img.removeEventListener('load', onLoad);
+                fitBrandLogoImage(img);
+            });
+        });
+    }
+
     function modernizeLegacyFooter() {
         var footer = document.querySelector('footer');
         if (!footer) return;
@@ -934,7 +1027,7 @@ $andisonFooterSettings = andison_get_footer_settings();
                     + '</div>'
 
                 + (footerSocialLinksHtml
-                    ? '<div class="footer-col"><div class="footer-socials"><h5 class="footer-socials-title">Socials</h5><div class="footer-social-links">' + footerSocialLinksHtml + '</div></div></div>'
+                    ? '<div class="footer-col footer-social-col"><div class="footer-socials"><h5 class="footer-socials-title">Socials</h5><div class="footer-social-links">' + footerSocialLinksHtml + '</div></div></div>'
                     : '')
             + '</div>'
             + '<div class="footer-bottom">'
@@ -969,6 +1062,7 @@ $andisonFooterSettings = andison_get_footer_settings();
         // Footer modernization must run first so layout/socials are always normalized.
         runSafely(modernizeLegacyFooter);
         runSafely(updateBrandsDropdownLogos);
+        runSafely(autoSizeDropdownBrandLogos);
         runSafely(updateTrustedBrandsCarouselLogos);
     }
 

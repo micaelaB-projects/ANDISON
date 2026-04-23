@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/brands_info.php';
+require_once __DIR__ . '/brand_order.php';
 include_once __DIR__ . '/brand_logo_map.php';
 
 if (!function_exists('andison_nav_dropdown_resolve_logo')) {
@@ -61,51 +62,20 @@ if (isset($base_path) && is_string($base_path)) {
 $andisonBrandMap = (isset($brand_logo_map) && is_array($brand_logo_map)) ? $brand_logo_map : [];
 $andisonBrandsInfo = function_exists('andison_get_brands_info') ? andison_get_brands_info() : [];
 
-$andisonPreferredOrder = [
-    'Panasonic Connect',
-    'Robot Systems',
-    'Kobelco',
-    'Metrode',
-    'DryRod. II',
-    'Weldcraft',
-    'Truweld',
-    'Arcair',
-    'MAGNAFLUX',
-    'Tempilstik',
-    'TANAKA',
-    'CHIYODA',
-    'Yutaka',
-    'HARDWORKER',
-    'Soyer',
-    'Aquasol',
-    'SK And GAL GAGE',
-    'COPPUS',
-    'BW',
-    'RAC',
-    'WELDAS',
-    'UVEX',
-    'ACES',
-    'MICROGARD',
-    'ANSELL',
-    'Alfra',
-    'BOSCH',
-    'Makita',
-    'Weller',
-    'Garryson',
-    'REVOLT',
-    'Technotex',
-    'Spilfyter',
-    'Dalo',
-    'MOTOLITE',
-];
+$andisonPreferredOrder = andison_load_brand_order();
 
 $andisonBrandAliases = [
-    'robot system peripherals' => 'Robot Systems',
+    'robot systems peripherals' => 'Robot Systems Peripherals',
+    'robot system peripherals' => 'Robot Systems Peripherals',
     'hard worker' => 'HARDWORKER',
     'hard workers' => 'HARDWORKER',
     'bw technologies' => 'BW',
-    'rae systems' => 'RAC',
-    'rae' => 'RAC',
+    'bw' => 'BW',
+    'rae systems' => 'RAE SYSTEMS',
+    'rae' => 'RAE SYSTEMS',
+    'are' => 'RAE SYSTEMS',
+    'weller' => 'Weiler',
+    'weiler' => 'Weiler',
     'sk and gal gage' => 'SK And GAL GAGE',
     'sk/gal gage' => 'SK And GAL GAGE',
     'dryrod ii' => 'DryRod. II',
@@ -113,13 +83,13 @@ $andisonBrandAliases = [
 
 $andisonOrderIndex = [];
 foreach ($andisonPreferredOrder as $andisonOrderPos => $andisonOrderName) {
-    $andisonOrderIndex[strtolower($andisonOrderName)] = $andisonOrderPos;
+    $andisonOrderIndex[strtolower(andison_brand_order_label((string)$andisonOrderName))] = $andisonOrderPos;
 }
 
 $andisonCanonicalName = static function (string $name) use ($andisonBrandAliases): string {
     $trimmed = trim($name);
     $lower = strtolower($trimmed);
-    return $andisonBrandAliases[$lower] ?? $trimmed;
+    return $andisonBrandAliases[$lower] ?? andison_brand_order_label($trimmed);
 };
 
 $andisonSortBrands = static function (array &$brands) use ($andisonOrderIndex, $andisonCanonicalName): void {

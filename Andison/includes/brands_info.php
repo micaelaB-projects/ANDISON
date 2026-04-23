@@ -562,14 +562,12 @@ if (!function_exists('andison_create_brand')) {
 
         $existing = andison_sb_select('brands', 'select=id,name,description&name=eq.' . rawurlencode($name) . '&limit=1');
         if (!empty($existing[0])) {
-            if ($description !== '' || $logoUrl !== '') {
-                $existingMeta = andison_brand_row_unpack((array)$existing[0]);
-                $packedDescription = andison_brand_row_pack(
-                    $description !== '' ? $description : (string)($existingMeta['description'] ?? ''),
-                    $logoUrl !== '' ? $logoUrl : (string)($existingMeta['logo'] ?? '')
-                );
-                andison_sb_update('brands', ['description' => $packedDescription], 'name=eq.' . rawurlencode($name));
-            }
+            $existingMeta = andison_brand_row_unpack((array)$existing[0]);
+            $packedDescription = andison_brand_row_pack(
+                $description,
+                $logoUrl !== '' ? $logoUrl : (string)($existingMeta['logo'] ?? '')
+            );
+            andison_sb_update('brands', ['description' => $packedDescription], 'name=eq.' . rawurlencode($name));
             @unlink(dirname(__DIR__) . '/data/_cache/brands_full.cache');
             return true;
         }
