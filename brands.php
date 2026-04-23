@@ -991,18 +991,18 @@ usort($brandCards, static function (array $a, array $b): int {
 
         .brand-card {
             background: #fff;
-            border: 2px solid #00BCD4;
+            border: 1px solid #efefef;
             border-radius: 16px;
             padding: 20px 18px 18px;
             text-align: center;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: border-color 0.24s ease, box-shadow 0.24s ease, transform 0.24s ease;
             cursor: pointer;
         }
 
         .brand-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 32px rgba(0, 188, 212, 0.25);
-            border-color: #1976D2;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 215, 179, 0.22);
+            border-color: #00D7B3;
         }
 
         .brand-logo {
@@ -1022,8 +1022,15 @@ usort($brandCards, static function (array $a, array $b): int {
             height: 100%;
             object-fit: contain;
             padding: 0;
-            transform: none;
+            transform: scale(1.18);
             transform-origin: center;
+            filter: grayscale(25%);
+            transition: filter 0.24s ease, transform 0.24s ease;
+        }
+
+        .brand-card:hover .brand-logo img {
+            filter: grayscale(0%);
+            transform: scale(1.22);
         }
 
         .brand-logo-fallback {

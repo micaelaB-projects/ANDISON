@@ -65,8 +65,8 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
           <div id="prodDescSection" style="display:none;margin-bottom:22px;padding:18px 20px;background:linear-gradient(135deg, rgba(43,17,219,0.06) 0%, rgba(43,17,219,0.03) 100%);border-radius:14px;border-left:4px solid #2B11DB;">
             <div style="font-size:17px;font-weight:950;color:#2B11DB;letter-spacing:1px;margin-bottom:10px;text-transform:uppercase;display:flex;align-items:center;gap:6px;"><i class="bi bi-file-text"></i> OVERVIEW</div>
                         <div id="prodDetailDesc" style="font-size:16px;color:#444;line-height:1.8;margin:0;font-weight:500;"></div>
-                        <div id="prodOverviewMediaWrap" style="display:none;margin:12px auto 0;width:72%;max-width:520px;">
-                            <img id="prodOverviewMediaImg" src="" alt="Overview image" style="display:block;width:100%;height:140px;object-fit:contain;border-radius:12px;border:none;background:transparent;box-shadow:none;padding:0;">
+                        <div id="prodOverviewMediaWrap" style="display:none;margin:12px auto 0;width:100%;max-width:760px;">
+                            <img id="prodOverviewMediaImg" src="" alt="Overview image" style="display:block;width:100%;height:clamp(220px,32vw,360px);object-fit:contain;border-radius:12px;border:none;background:transparent;box-shadow:none;padding:0;">
                         </div>
           </div>
           
@@ -577,8 +577,8 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 }
 
 #prodOverviewMediaWrap {
-    width: 72%;
-    max-width: 520px;
+    width: 100%;
+    max-width: 760px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -586,7 +586,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 #prodOverviewMediaImg {
     display: block;
     width: 100%;
-    height: 140px;
+    height: clamp(220px, 32vw, 360px);
     object-fit: contain;
     border: none;
     background: transparent;
@@ -602,8 +602,8 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
     #prodMainImg { max-height: 100% !important; padding: 18px !important; }
   #prodThumbnails img { width: 60px !important; height: 60px !important; }
     #relatedProductsGrid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
-    #prodOverviewMediaWrap { width: 78%; max-width: 460px; }
-    #prodOverviewMediaImg { height: 125px; background:transparent; box-shadow:none; border:none; }
+    #prodOverviewMediaWrap { width: 100%; max-width: 700px; }
+    #prodOverviewMediaImg { height: clamp(200px, 30vw, 300px); background:transparent; box-shadow:none; border:none; }
 }
 
 @media(max-width:768px){
@@ -623,8 +623,8 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
     #prodFooterActions #prodDatasheetWrap,
     #prodFooterActions #prodDetailInquiry { flex: 1 1 auto !important; width: 100% !important; }
     #prodFooterActions #prodDatasheetBtn { min-width: 0 !important; width: 100% !important; }
-    #prodOverviewMediaWrap { width: 86% !important; max-width: 360px !important; margin-left: auto !important; margin-right: auto !important; }
-    #prodOverviewMediaImg { height: 110px !important; background:transparent !important; box-shadow:none !important; border:none !important; }
+    #prodOverviewMediaWrap { width: 100% !important; max-width: 100% !important; margin-left: auto !important; margin-right: auto !important; }
+    #prodOverviewMediaImg { height: clamp(180px, 45vw, 260px) !important; background:transparent !important; box-shadow:none !important; border:none !important; }
 }
 
 @media(max-width:640px){

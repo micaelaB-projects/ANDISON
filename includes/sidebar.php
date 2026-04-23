@@ -98,6 +98,9 @@ if ($category_idx !== null) {
         --sidebar-ease: cubic-bezier(0.22, 1, 0.36, 1);
         --sidebar-speed: 420ms;
         --sidebar-speed-fast: 240ms;
+        --andison-brand-hover-lift: -4px;
+        --andison-brand-hover-border: #00D7B3;
+        --andison-brand-hover-shadow: 0 8px 24px rgba(0, 215, 179, 0.22);
     }
 
     /* Overlay Backdrop */
@@ -147,8 +150,8 @@ if ($category_idx !== null) {
 
     /* ── Sidebar List ── */
     .sidebar-list { list-style: none; padding: 0; margin: 0; }
-    .sidebar-list li { border-bottom: 1px solid #e5e7eb; }
-    .sidebar-list li:last-child { border-bottom: none; }
+    .sidebar-list li { border-bottom: none; margin-bottom: 8px; }
+    .sidebar-list li:last-child { margin-bottom: 0; }
     .sidebar-list a {
         display: flex;
         gap: 12px;
@@ -157,14 +160,19 @@ if ($category_idx !== null) {
         text-decoration: none;
         align-items: center;
         justify-content: space-between;
-        transition: all 0.2s ease;
+        transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
         font-size: 15px;
         min-height: 48px;
+        border: 1px solid #efefef;
+        border-radius: 10px;
+        background: #ffffff;
     }
-    .sidebar-list a:hover {
-        background: #f3f4f6;
+    .sidebar-list > li > a:hover {
+        background: #ffffff;
         color: #2B11DB;
-        padding-left: 16px;
+        border-color: var(--andison-brand-hover-border);
+        box-shadow: var(--andison-brand-hover-shadow);
+        transform: translateY(var(--andison-brand-hover-lift));
     }
     .sidebar-list a:active {
         background: rgba(43, 17, 219, 0.08);
@@ -254,10 +262,10 @@ if ($category_idx !== null) {
     /* ── Sub-list ── */
     .sidebar-sublist {
         list-style: none;
-        margin: 2px 0;
-        padding: 4px 0 4px 12px;
-        background: #f8f9fa;
-        border-left: 3px solid #2B11DB;
+        margin: 2px 0 6px;
+        padding: 4px 0 4px 8px;
+        background: transparent;
+        border-left: none;
         max-height: 500px;
         overflow: hidden;
         transition: max-height 0.3s ease, opacity 0.3s ease;
@@ -279,12 +287,18 @@ if ($category_idx !== null) {
         gap: 8px;
         text-decoration: none;
         min-height: 38px;
-        transition: all 0.2s ease;
+        transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+        border: 1px solid #efefef;
+        border-radius: 10px;
+        background: #ffffff;
+        margin-bottom: 6px;
     }
     .sidebar-sublist a:hover {
         color: #2B11DB;
-        background: rgba(43, 17, 219, 0.08);
-        padding-left: 16px;
+        background: #ffffff;
+        border-color: var(--andison-brand-hover-border);
+        box-shadow: var(--andison-brand-hover-shadow);
+        transform: translateY(var(--andison-brand-hover-lift));
     }
 
     /* ── Nested Sub-list ── */
@@ -312,14 +326,14 @@ if ($category_idx !== null) {
 
     .sidebar-nested-sublist {
         list-style: none;
-        margin: 2px 0;
-        padding: 4px 0 4px 12px;
+        margin: 2px 0 4px;
+        padding: 4px 0 4px 8px;
         max-height: 500px;
         overflow: hidden;
         transition: max-height 0.3s ease, opacity 0.3s ease;
         opacity: 1;
-        background: rgba(43, 17, 219, 0.05);
-        border-left: 2px solid rgba(43, 17, 219, 0.3);
+        background: transparent;
+        border-left: none;
     }
     .sidebar-nested-sublist.collapsed {
         max-height: 0;
@@ -335,16 +349,20 @@ if ($category_idx !== null) {
         align-items: center;
         gap: 6px;
         text-decoration: none;
-        transition: all 0.25s ease;
-        border-radius: 4px;
+        transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+        border-radius: 10px;
         margin: 0;
         min-height: 28px;
+        border: 1px solid #efefef;
+        background: #ffffff;
+        margin-bottom: 6px;
     }
     .sidebar-nested-sublist a:hover {
         color: #2B11DB;
-        background: rgba(43, 17, 219, 0.12);
-        padding-left: 12px;
-        transform: none;
+        background: #ffffff;
+        border-color: var(--andison-brand-hover-border);
+        box-shadow: var(--andison-brand-hover-shadow);
+        transform: translateY(var(--andison-brand-hover-lift));
     }
 
     /* ── Sub-toggle button ── */
@@ -436,11 +454,11 @@ if ($category_idx !== null) {
         left: 0;
         top: calc(14px + 50px + 14px + 52px);
         bottom: 0;
-        width: 80px;
+        width: 92px;
         background: linear-gradient(180deg, #2B11DB 0%, #1a0a7f 100%);
         box-shadow: 2px 0 16px rgba(0,0,0,0.2);
         z-index: 65;
-        padding: 24px 12px;
+        padding: 24px 14px;
         overflow-y: auto;
         overflow-x: hidden;
         transition: width var(--sidebar-speed) var(--sidebar-ease),
@@ -463,7 +481,7 @@ if ($category_idx !== null) {
     .mini-sidebar.expanded {
         width: 360px;
         overflow-y: auto;
-        padding: 24px 16px;
+        padding: 24px 18px;
         scrollbar-width: thin;
         scrollbar-color: rgba(0,0,0,0.1) transparent;
         align-items: stretch;
@@ -489,8 +507,8 @@ if ($category_idx !== null) {
 
     /* ── Mini Sidebar Icon ── */
     .mini-sidebar-icon {
-        width: 56px;
-        height: 56px;
+        width: 68px;
+        height: 68px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -498,18 +516,20 @@ if ($category_idx !== null) {
         font-size: 24px;
         cursor: pointer;
         position: relative;
-        border-radius: 8px;
+        border-radius: 12px;
         margin-bottom: 16px;
         transition: width var(--sidebar-speed) var(--sidebar-ease),
                 justify-content var(--sidebar-speed) var(--sidebar-ease),
                 padding var(--sidebar-speed) var(--sidebar-ease),
                 background var(--sidebar-speed-fast) ease,
                 transform var(--sidebar-speed-fast) ease,
-                border-color var(--sidebar-speed-fast) ease;
+            border-color var(--sidebar-speed-fast) ease,
+            box-shadow var(--sidebar-speed-fast) ease;
         gap: 12px;
         padding: 0;
         flex-shrink: 0;
-        min-width: 56px;
+        min-width: 68px;
+        border: 1px solid rgba(0, 215, 179, 0.2);
     }
     .mini-sidebar-icon .label {
         display: block;
@@ -529,17 +549,19 @@ if ($category_idx !== null) {
     .mini-sidebar.expanded .mini-sidebar-icon {
         width: 100%;
         justify-content: flex-start;
-        padding: 14px;
+        padding: 16px 18px;
         min-width: auto;
-        margin-bottom: 12px;
-        border-radius: 8px;
+        margin-bottom: 14px;
+        border-radius: 12px;
+        min-height: 72px;
         background: rgba(255,255,255,0.12);
         border: 1px solid rgba(0, 215, 179, 0.3);
     }
     .mini-sidebar.expanded .mini-sidebar-icon:hover {
         background: rgba(255,255,255,0.22);
-        border-color: rgba(0, 215, 179, 0.6);
-        transform: translateX(4px);
+        border-color: var(--andison-brand-hover-border);
+        box-shadow: var(--andison-brand-hover-shadow);
+        transform: translateY(var(--andison-brand-hover-lift));
     }
     .mini-sidebar.expanded .mini-sidebar-icon .label {
         max-width: none;
@@ -554,19 +576,21 @@ if ($category_idx !== null) {
         line-height: 1.2;
     }
     .mini-sidebar-icon:hover {
-        background: rgba(0, 215, 179, 0.2);
-        transform: scale(1.08);
+        background: rgba(255, 255, 255, 0.22);
+        border-color: var(--andison-brand-hover-border);
+        box-shadow: var(--andison-brand-hover-shadow);
+        transform: translateY(var(--andison-brand-hover-lift));
     }
     .mini-sidebar-img {
-        width: 55px;
-        height: 55px;
+        width: 62px;
+        height: 62px;
         object-fit: contain;
         display: inline-block;
         flex-shrink: 0;
     }
     .mini-sidebar.expanded .mini-sidebar-icon:hover {
-        transform: translateX(6px);
-        background: rgba(0, 215, 179, 0.2);
+        transform: translateY(var(--andison-brand-hover-lift));
+        background: rgba(255, 255, 255, 0.22);
     }
     .mini-sidebar-icon.active-icon {
         background: rgba(0, 0, 0, 0.28);
@@ -818,13 +842,13 @@ if ($category_idx !== null) {
             font-size: 13px;
             min-height: 36px;
         }
-        .sidebar-list a:hover { padding-left: 16px; }
+        .sidebar-list a:hover { padding-left: 10px; }
         .sidebar-sublist a {
             font-size: 12px;
             padding: 8px 8px 8px 8px;
             min-height: 32px;
         }
-        .sidebar-sublist a:hover { padding-left: 12px; }
+        .sidebar-sublist a:hover { padding-left: 8px; }
         .sub-toggle { top: 8px; }
 
         .sidebar-nested-sublist a:active {
@@ -1125,6 +1149,23 @@ if ($category_idx !== null) {
             overflow: hidden !important;
             text-overflow: ellipsis !important;
         }
+    }
+
+    /* Hide legacy page-level filters (Categories/Product Type/Tags). */
+    .product-filters,
+    .filter-section,
+    .clear-filters-btn {
+        display: none !important;
+    }
+
+    /* Ensure product content uses full width when filters are hidden. */
+    .category-content {
+        grid-template-columns: 1fr !important;
+    }
+
+    .main-product-area {
+        width: 100% !important;
+        max-width: 100% !important;
     }
 </style>
 
@@ -2193,5 +2234,3 @@ if ($category_idx !== null) {
 
 <script src="<?php echo $_sidebar_base; ?>assets/js/scroll-fade.js"></script>
 <script src="<?php echo $_sidebar_base; ?>assets/js/email_admin_compose.js"></script>
-
-<?php require_once __DIR__ . '/footer_modernize.php'; ?>

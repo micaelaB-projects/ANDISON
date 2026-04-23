@@ -364,7 +364,7 @@ $ytLinks = andison_get_youtube_links();
             display: block;
         }
 
-        .nav-list a:hover { color: rgba(255,255,255,0.8); }
+        .nav-list > li > a:hover { color: rgba(255,255,255,0.8); }
 
         /* Glowing underline + dark active background for top-level nav links */
         .nav-list > li > a {
@@ -2817,7 +2817,7 @@ $ytLinks = andison_get_youtube_links();
             });
 
             // Enhance navigation link hover effects
-            var navLinks = document.querySelectorAll('.nav-list a');
+            var navLinks = document.querySelectorAll('.nav-list > li > a');
             navLinks.forEach(function(link){
                 link.addEventListener('mouseenter', function(){
                     this.style.color = '#ffffff';

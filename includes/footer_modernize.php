@@ -318,17 +318,18 @@ nav li:nth-child(3) .nav-dropdown ul a {
     line-height: 1 !important;
     background: transparent !important;
     border: 1px solid transparent !important;
+    border-radius: 12px !important;
     box-shadow: none !important;
     transform: none !important;
     overflow: hidden !important;
-    transition: background 0.18s ease, border-color 0.18s ease !important;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease !important;
 }
 
 nav li:nth-child(3) .nav-dropdown ul a:hover {
     background: #ffffff !important;
-    border-color: #e5e7eb !important;
-    box-shadow: none !important;
-    transform: none !important;
+    border-color: #00D7B3 !important;
+    box-shadow: 0 8px 24px rgba(0, 215, 179, 0.22) !important;
+    transform: translateY(-4px) !important;
 }
 
 nav li:nth-child(3) .nav-dropdown ul a img {
@@ -339,8 +340,14 @@ nav li:nth-child(3) .nav-dropdown ul a img {
     object-fit: contain !important;
     object-position: center center !important;
     display: block !important;
-    transform: translate(var(--brand-shift-x, 0px), var(--brand-shift-y, 0px)) scale(var(--brand-auto-scale, 1.08)) !important;
+    transform: translate(var(--brand-shift-x, 0px), var(--brand-shift-y, 0px)) scale(var(--brand-auto-scale, 1.22)) !important;
     transform-origin: center center !important;
+    filter: grayscale(25%) !important;
+    transition: filter 0.2s ease, transform 0.2s ease !important;
+}
+
+nav li:nth-child(3) .nav-dropdown ul a:hover img {
+    filter: grayscale(0%) !important;
 }
 
 @media (max-width: 1180px) {
@@ -886,17 +893,17 @@ $andisonFooterSettings = andison_get_footer_settings();
             var fillX = boxW / sampleW;
             var fillY = boxH / sampleH;
 
-            var targetFillX = 0.82;
-            var targetFillY = 0.80;
+            var targetFillX = 0.90;
+            var targetFillY = 0.88;
             var scaleX = targetFillX / Math.max(0.01, fillX);
             var scaleY = targetFillY / Math.max(0.01, fillY);
             var autoScale = Math.min(scaleX, scaleY);
-            autoScale = Math.max(0.92, Math.min(1.65, autoScale));
+            autoScale = Math.max(1.08, Math.min(1.75, autoScale));
 
             if (brandKey === 'bw') {
-                autoScale *= 0.86;
+                autoScale *= 0.92;
             } else if (brandKey === 'dryrod. ii') {
-                autoScale *= 0.88;
+                autoScale *= 0.94;
             }
 
             var centerX = minX + boxW / 2;
