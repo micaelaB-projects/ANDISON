@@ -2268,9 +2268,6 @@ usort($brandCards, static function (array $a, array $b): int {
                             <span class="brand-logo-fallback"><?php echo htmlspecialchars(strtoupper(substr((string)$brandCard['display'], 0, 1)), ENT_QUOTES); ?></span>
                         <?php endif; ?>
                     </div>
-                    <div class="brand-card-meta">
-                        <div class="brand-card-name"><?php echo htmlspecialchars((string)$brandCard['display'], ENT_QUOTES); ?></div>
-                    </div>
                 </div>
             <?php endforeach; ?>
         </div>
