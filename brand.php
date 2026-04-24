@@ -54,6 +54,11 @@ if (!function_exists('andison_brand_lookup_candidates')) {
             $candidates[] = 'MICROGARD';
         }
 
+        if ($normalized === 'alphatec') {
+            $candidates[] = 'AlphaTec';
+            $candidates[] = 'MICROGARD';
+        }
+
         if ($normalized === 'rae' || $normalized === 'rac' || $normalized === 'rae systems') {
             $candidates[] = 'RAE SYSTEMS';
             $candidates[] = 'RAC';
@@ -104,6 +109,9 @@ if (!function_exists('andison_brand_display_label_public')) {
             return 'ANSELL';
         }
         if ($normalized === 'microgard') {
+            return 'AlphaTec';
+        }
+        if ($normalized === 'alphatec') {
             return 'AlphaTec';
         }
         if ($normalized === 'panasonic' || $normalized === 'panasonic connect') {
@@ -164,6 +172,75 @@ if (!function_exists('andison_pick_brand_info_bucket')) {
         }
 
         return '';
+    }
+}
+
+if (!function_exists('andison_brand_preferred_key')) {
+    function andison_brand_preferred_key(string $displayName, string $fallbackKey, array $allBrands): string
+    {
+        $displayKey = strtolower(trim($displayName));
+        if ($displayKey === '') {
+            return $fallbackKey;
+        }
+
+        $bestKey = $fallbackKey;
+        $bestScore = -1;
+
+        foreach ($allBrands as $candidateKey => $candidateInfo) {
+            if (!is_array($candidateInfo)) {
+                continue;
+            }
+
+            $candidateDisplay = strtolower(trim(andison_brand_display_label_public((string)$candidateKey)));
+            if ($candidateDisplay !== $displayKey) {
+                continue;
+            }
+
+            $candidateLogo = trim((string)($candidateInfo['logo'] ?? ''));
+            $candidateDescription = trim((string)($candidateInfo['description'] ?? ''));
+            $candidateProducts = count($candidateInfo['products'] ?? []);
+            $candidateKeyLower = strtolower(trim((string)$candidateKey));
+
+            $score = 0;
+            if ($candidateLogo !== '') {
+                $score += 100000;
+            }
+            if ($candidateDescription !== '') {
+                $score += 5000;
+            }
+            if ($candidateKeyLower === $displayKey) {
+                $score += 1000;
+            }
+            if ($displayKey === 'alphatec' && $candidateKeyLower === 'alphatec') {
+                $score += 200000;
+            }
+            $score += min(999, $candidateProducts);
+
+            if ($score > $bestScore) {
+                $bestScore = $score;
+                $bestKey = (string)$candidateKey;
+            }
+        }
+
+        return $bestKey;
+    }
+}
+
+if (!function_exists('andison_brand_logo_fallback_file')) {
+    function andison_brand_logo_fallback_file(string $brandName, array $logoMap): string
+    {
+        if (isset($logoMap[$brandName])) {
+            return (string)$logoMap[$brandName];
+        }
+
+        $needle = strtolower(trim($brandName));
+        foreach ($logoMap as $mapName => $mapFile) {
+            if (strtolower(trim((string)$mapName)) === $needle) {
+                return (string)$mapFile;
+            }
+        }
+
+        return strtoupper($brandName);
     }
 }
 
@@ -288,7 +365,7 @@ $brand_name_map = [
 // Resolve brand_name to canonical name
 $canonical_brand_name = isset($brand_name_map[$brand_name]) ? $brand_name_map[$brand_name] : $brand_name;
 
-$logo_file = isset($logo_map[$canonical_brand_name]) ? $logo_map[$canonical_brand_name] : strtoupper($canonical_brand_name);
+$logo_file = andison_brand_logo_fallback_file($canonical_brand_name, $logo_map);
 
 // Brands that use .png instead of .jpg
 $png_brands = ['ROBOT SYSTEMS', 'WELDCRAFT', 'REVOLT', 'TECHNOTEX'];
@@ -336,14 +413,28 @@ if (isset($brandDisplayToKey[$requestedDisplayKey])) {
     $resolvedBrandKey = (string)$brandDisplayToKey[$requestedDisplayKey];
 }
 
+$resolvedBrandKey = andison_brand_preferred_key(
+    andison_brand_display_label_public($resolvedBrandKey !== '' ? $resolvedBrandKey : $brand_name),
+    $resolvedBrandKey !== '' ? $resolvedBrandKey : $canonical_brand_name,
+    $brands_info_data
+);
+
 $lookupCandidates = andison_brand_lookup_candidates($brand_name);
 if ($canonical_brand_name !== $brand_name) {
     $lookupCandidates = array_merge($lookupCandidates, andison_brand_lookup_candidates($canonical_brand_name));
 }
 
+$productSourceKey = andison_pick_brand_info_bucket($brands_info_data, $lookupCandidates);
+
 if ($resolvedBrandKey === '') {
-    $resolvedBrandKey = andison_pick_brand_info_bucket($brands_info_data, $lookupCandidates);
+    $resolvedBrandKey = $productSourceKey;
 }
+
+$resolvedBrandKey = andison_brand_preferred_key(
+    andison_brand_display_label_public($resolvedBrandKey !== '' ? $resolvedBrandKey : $brand_name),
+    $resolvedBrandKey !== '' ? $resolvedBrandKey : $canonical_brand_name,
+    $brands_info_data
+);
 
 if ($resolvedBrandKey !== '' && isset($brands_info_data[$resolvedBrandKey])) {
     $brand_info = $brands_info_data[$resolvedBrandKey];
@@ -354,6 +445,19 @@ if ($resolvedBrandKey !== '' && isset($brands_info_data[$resolvedBrandKey])) {
         'products'    => [],
     ];
 }
+
+if (
+    empty($brand_info['products'])
+    && $productSourceKey !== ''
+    && isset($brands_info_data[$productSourceKey])
+    && is_array($brands_info_data[$productSourceKey])
+) {
+    $fallbackProducts = $brands_info_data[$productSourceKey]['products'] ?? [];
+    if (!empty($fallbackProducts)) {
+        $brand_info['products'] = $fallbackProducts;
+    }
+}
+
 $brand_products = $brand_info['products'] ?? [];
 
 // Show the normalized/resolved brand label on page so admin edits are reflected on public view.
@@ -420,6 +524,23 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+        }
+
+        .page-content {
+            opacity: 1;
+            transform: none;
+            animation: brandContentEnter 220ms ease;
+            transition: opacity 160ms ease, transform 160ms ease;
+        }
+        @keyframes brandContentEnter {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: none;
+            }
         }
 
         /* Header */
@@ -1978,7 +2099,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             }
 
             #brand-page {
-                padding-top: 34px !important;
+                padding-top: 18px !important;
             }
 
             /* Single row: logo | search | inquiry | contact */
@@ -2615,25 +2736,28 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             box-shadow: 0 2px 10px rgba(0,0,0,0.07);
             padding: 32px 36px;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
-            gap: 18px;
+            gap: 28px;
             margin: 0 0 28px;
-            text-align: center;
+            text-align: left;
         }
         .brand-logo-wrap {
             display: flex;
             align-items: center;
             justify-content: center;
+            flex: 0 0 320px;
+            min-height: 180px;
         }
         .brand-logo-wrap img {
-            max-width: 200px;
-            max-height: 140px;
+            max-width: 82%;
+            max-height: 100%;
+            width: auto;
             object-fit: contain;
         }
         .brand-logo-placeholder {
-            width: 160px;
-            height: 100px;
+            width: 100%;
+            height: 100%;
             background: #f0f0f0;
             border-radius: 8px;
             display: flex;
@@ -2643,29 +2767,35 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             font-weight: 700;
             color: #aaa;
         }
-        .brand-header-info {
-            text-align: center;
+        .brand-header-content {
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            text-align: left;
+            min-width: 0;
+            justify-content: center;
         }
         .brand-header-tagline {
             font-size: 14px;
             color: #888;
             margin-bottom: 6px;
         }
-        .brand-header-name {
-            font-size: 22px;
-            font-weight: 700;
-            color: #2B11DB;
-            margin-bottom: 8px;
-        }
-        .brand-header-products-count {
+        .brand-description-card {
+            background: #f8fafc;
+            border: 1px solid #dbe3ea;
+            border-radius: 14px;
+            padding: 22px 24px;
+            box-shadow: 0 1px 4px rgba(15,23,42,0.05);
             display: block;
-            margin-bottom: 10px;
-            font-size: 13px;
-            color: #6b7280;
+            width: 100%;
+            align-self: center;
+            height: auto;
         }
         .brand-header-desc {
-            font-size: 14px;
-            color: #666;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #222;
         }
         .brand-header-desc table {
             width: 100%;
@@ -2993,12 +3123,43 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         }
 
         @media (max-width: 900px) {
+            .brand-header-card { flex-direction: column; text-align: left; gap: 20px; padding: 24px 20px; }
+            .brand-logo-wrap { flex-basis: auto; min-height: 0; align-self: center; }
+            .brand-header-content { text-align: left; }
+            .brand-header-tagline { text-align: left; }
+            .brand-description-card { align-items: flex-start; justify-content: flex-start; }
+            .brand-header-desc { text-align: left; }
+            .brand-header-desc { font-size: 14px; }
             .brand-products-layout { flex-direction: column; }
             .brand-filter-sidebar { width: 100%; }
             .brand-product-grid { grid-template-columns: repeat(2, 1fr); }
         }
         @media (max-width: 600px) {
-            .brand-header-card { flex-direction: column; text-align: center; gap: 20px; }
+            .brand-product-grid.list-view .brand-product-card {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: left;
+                gap: 12px;
+            }
+            .brand-product-grid.list-view .brand-product-img {
+                width: 100%;
+                height: 150px;
+                margin-bottom: 0;
+            }
+            .brand-product-grid.list-view .brand-product-info {
+                width: 100%;
+            }
+            .brand-product-grid.list-view .brand-product-name {
+                font-size: 12px;
+                line-height: 1.35;
+            }
+            .brand-product-grid.list-view .brand-product-type {
+                font-size: 11px;
+                line-height: 1.3;
+            }
+            .brand-product-grid.list-view .brand-add-inquiry {
+                width: 100%;
+            }
             .brand-product-grid { grid-template-columns: 1fr; }
         }
     </style>
@@ -3113,10 +3274,6 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         <div class="container">
 
             <!-- Brand Header -->
-            <?php
-            $total_products = count($brand_products);
-            ?>
-
             <div class="brand-header-card">
                 <div class="brand-logo-wrap">
                     <img src="<?php echo htmlspecialchars($brand_logo_src, ENT_QUOTES); ?>"
@@ -3124,13 +3281,15 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                     <div class="brand-logo-placeholder" style="display:none;"><?php echo $brand_name; ?></div>
                 </div>
-                <div class="brand-header-info">
+                <div class="brand-header-content">
                     <?php if (!empty($brand_info['tagline'])): ?>
                     <div class="brand-header-tagline"><?php echo htmlspecialchars($brand_info['tagline']); ?></div>
                     <?php endif; ?>
-                    <div class="brand-header-name"><?php echo $brand_name; ?></div>
-                    <span class="products-count brand-header-products-count" id="productsCount">Showing <?php echo min(9, $total_products); ?> of <?php echo $total_products; ?> products</span>
-                    <div class="brand-header-desc"><?php echo andison_render_brand_description($brand_info['description'] ?? ''); ?></div>
+                    <?php if (trim((string)($brand_info['description'] ?? '')) !== ''): ?>
+                    <div class="brand-description-card">
+                        <div class="brand-header-desc"><?php echo andison_render_brand_description($brand_info['description'] ?? ''); ?></div>
+                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -3141,8 +3300,6 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                     <a href="home.php">Home</a>
                     <span class="sep">/</span>
                     <a href="brands.php">Brands</a>
-                    <span class="sep">/</span>
-                    <span id="bc-brand-name" class="current"><?php echo $brand_name; ?></span>
                     <span id="bc-sep-product" class="sep" style="display:none;">/</span>
                     <span id="bc-product-name" class="current" style="display:none;"></span>
                 </nav>
@@ -3566,8 +3723,12 @@ var BRAND_LOGO = '<?php echo htmlspecialchars($brand_logo_src, ENT_QUOTES); ?>';
         // Hero slider functionality
         (function(){
             var slider = document.getElementById('heroSlider');
+            if (!slider) return;
+
             var slides = slider.querySelectorAll('.hero-slide');
             var dots = slider.querySelectorAll('.hero-dot');
+            if (!slides.length || !dots.length) return;
+
             var currentSlide = 0;
             var autoplayInterval;
 
@@ -3675,37 +3836,10 @@ var BRAND_LOGO = '<?php echo htmlspecialchars($brand_logo_src, ENT_QUOTES); ?>';
 
     <script>
         // ============================================
-        // PAGE TRANSITION EFFECTS
+        // PAGE ENTRY EFFECTS
         // ============================================
         (function(){
-            // Smooth page transitions on link clicks
-            document.addEventListener('click', function(e){
-                var link = e.target.closest('a[href*=".php"], a[href^="#"]');
-                if(!link) return;
-                
-                var href = link.getAttribute('href');
-                
-                // Skip if it's an anchor link or javascript link
-                if(href.startsWith('#') || href.startsWith('javascript:')) return;
-                
-                // Check if it's an internal PHP file
-                if(!href.includes('.php')) return;
-                
-                // Prevent default and add exit animation
-                e.preventDefault();
-                
-                var body = document.body;
-                body.style.animation = 'none';
-
-                setTimeout(function(){
-                    window.location.href = href;
-                }, 0);
-            });
-
-            // Add page entry animation on load
-            window.addEventListener('load', function(){
-                document.body.style.animation = 'none';
-            });
+            // Intentionally no click interception here: keep native navigation behavior reliable.
         })();
     </script>
 

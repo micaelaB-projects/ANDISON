@@ -128,6 +128,14 @@ if ($category_idx !== null) {
         outline: none !important;
     }
 
+    /* Keep top chrome stable: header/nav should never fade out during page startup/transitions. */
+    header,
+    nav,
+    .header-top {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
     /* Overlay Backdrop */
     .overlay-backdrop {
         position: fixed;
@@ -828,7 +836,7 @@ if ($category_idx !== null) {
         body {
             padding-left: 0 !important;
             /* Keep page content below fixed header/nav across all sidebar pages. */
-            padding-top: max(142px, calc(var(--andison-sidebar-mobile-top) + 10px)) !important;
+            padding-top: var(--andison-sidebar-mobile-top) !important;
         }
         body.sidebar-wide {
             padding-left: 0 !important;
@@ -1426,6 +1434,15 @@ if ($category_idx !== null) {
 <script>
     // Keep sidebar top offsets aligned with the actual fixed header/nav height.
     (function(){
+        function enforceHeaderVisibility() {
+            var nodes = document.querySelectorAll('header, nav, .header-top');
+            nodes.forEach(function(el){
+                if (!el) return;
+                el.style.opacity = '1';
+                el.style.visibility = 'visible';
+            });
+        }
+
         function computeHeaderBottom() {
             var nodes = document.querySelectorAll('header, nav, .header-top');
             var maxBottom = 0;
@@ -1461,8 +1478,24 @@ if ($category_idx !== null) {
             root.style.setProperty('--andison-sidebar-mobile-top', headerBottom + 'px');
         }
 
-        syncSidebarTopOffsets();
+        function initSidebarOffsetsAndReady() {
+            syncSidebarTopOffsets();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initSidebarOffsetsAndReady, { once: true });
+            document.addEventListener('DOMContentLoaded', enforceHeaderVisibility, { once: true });
+        } else {
+            initSidebarOffsetsAndReady();
+            enforceHeaderVisibility();
+        }
+
         window.addEventListener('load', syncSidebarTopOffsets);
+        window.addEventListener('load', initSidebarOffsetsAndReady);
+        window.addEventListener('load', enforceHeaderVisibility);
+        window.addEventListener('pageshow', enforceHeaderVisibility);
+        setTimeout(enforceHeaderVisibility, 120);
+        setTimeout(enforceHeaderVisibility, 420);
         window.addEventListener('resize', syncSidebarTopOffsets);
         window.addEventListener('orientationchange', syncSidebarTopOffsets);
     })();

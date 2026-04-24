@@ -1,0 +1,279 @@
+<!-- ADMIN BRAND ISSUES - FIX GUIDE -->
+<?php
+
+/**
+ * ========== BW BRAND ISSUES - ROOT CAUSE & FIXES ==========
+ * 
+ * PROBLEM 1: Brand image preview shows "No logo yet" in admin
+ *            BUT logo displays correctly on public website
+ * 
+ * PROBLEM 2: Brand descriptions not saving/reflecting on public site
+ *
+ * ========== ROOT CAUSE ANALYSIS ==========
+ * 
+ * The public site uses hardcoded fallback logos in:
+ *   /assets/brands/BW%20TECHNOLOGIES.jpg
+ * 
+ * But the admin page tries to show logo from database ONLY,
+ * not the fallback. This caused:
+ *   - Admin preview: "No logo yet" ❌
+ *   - Public site: Logo visible via fallback ✓
+ *   - Database: Logo field might be empty
+ * 
+ * Additionally, there was a bug where logos could be lost:
+ *   When updating brand description without uploading new logo,
+ *   the code would lose the existing logo if it wasn't properly
+ *   stored in the packed JSON format.
+ *
+ * ========== FIXES APPLIED ==========
+ * 
+ * ✓ FIX 1: Logo Preservation (brands_info.php)
+ *   - Modified andison_create_brand() to preserve existing logo
+ *   - Now checks for logo in multiple places before clearing it
+ * 
+ * ✓ FIX 2: Fallback Logo Display (products.php)
+ *   - Admin now shows fallback logo if no custom logo in database
+ *   - Added indicator: "⚠ Fallback logo" or "✓ Custom logo"
+ *   - User can now see exactly what's displaying on public site
+ * 
+ * ✓ FIX 3: Better User Feedback
+ *   - Clear messaging about logo source
+ *   - Users understand they can upload custom logo to override
+ *
+ * ========== HOW TO USE ==========
+ * 
+ * 1. VERIFY THE FIX:
+ *    - Go to admin: /ANDISON/Andison/admin/products.php?brand=BW
+ *    - You should now see the BW logo in the preview
+ *    - It should show "⚠ Fallback logo - Using default image"
+ *    - This means it's using assets/brands/BW%20TECHNOLOGIES.jpg
+ * 
+ * 2. TEST DESCRIPTION SAVE:
+ *    - Edit the brand description in the textarea
+ *    - Click "Save Brand"
+ *    - Refresh the admin page
+ *    - Description should still be there
+ *    - Check public site: /brand.php?name=BW
+ *    - Description should appear under the brand logo
+ * 
+ * 3. UPLOAD CUSTOM LOGO (optional):
+ *    - Click "Choose File" under "New Brand Image"
+ *    - Select a custom logo file
+ *    - The preview should update
+ *    - Click "Save Brand"
+ *    - Now it shows "✓ Custom logo" from admin data
+ * 
+ * ========== IF ISSUES PERSIST ==========
+ * 
+ * Run diagnostic:
+ *   /ANDISON/_diagnose_bw_brand.php
+ * 
+ * This script will check:
+ *   - BW record in Supabase database
+ *   - Whether description is packed correctly
+ *   - Fallback logo file exists
+ *   - Cache status
+ *
+ * ========== FILE CHANGES ==========
+ * 
+ * Modified:
+ *   - /Andison/includes/brands_info.php
+ *     Line 564: Changed select to include all fields
+ *     Lines 566-576: Added better logo preservation logic
+ * 
+ *   - /Andison/admin/products.php
+ *     Lines 1312-1341: Added fallback logo display
+ *     Lines 1468-1478: Added indicator messages
+ *
+ */
+
+?>
+
+<style>
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f5f5f5;
+}
+.header {
+    background: linear-gradient(135deg, #2b11db 0%, #4f35e8 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+.header h1 {
+    margin: 0 0 10px 0;
+    font-size: 28px;
+}
+.section {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 4px solid #2b11db;
+}
+.section h2 {
+    margin: 0 0 15px 0;
+    color: #2b11db;
+    font-size: 18px;
+}
+.section ul {
+    padding-left: 20px;
+    margin: 10px 0;
+}
+.section li {
+    margin-bottom: 8px;
+}
+.check { color: #16a34a; font-weight: bold; }
+.warning { color: #ea8634; font-weight: bold; }
+.error { color: #dc2626; font-weight: bold; }
+code {
+    background: #f0f0f0;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+}
+.step {
+    background: #f9fafb;
+    padding: 15px;
+    border-radius: 6px;
+    margin: 10px 0;
+    border-left: 3px solid #2b11db;
+}
+.step strong { display: block; margin-bottom: 8px; color: #2b11db; }
+.diagnostic-link {
+    display: inline-block;
+    margin: 10px 0;
+    padding: 10px 16px;
+    background: #2b11db;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 14px;
+}
+.diagnostic-link:hover {
+    background: #1f0ca5;
+}
+</style>
+
+<div class="header">
+    <h1>🔧 BW Brand Issues - Diagnostic & Fixes</h1>
+    <p>Complete guide for resolving logo preview and description saving issues</p>
+</div>
+
+<div class="section">
+    <h2>📋 What Was Wrong</h2>
+    <ul>
+        <li><span class="warning">Logo preview shows "No logo yet"</span> in admin even though logo displays on public site</li>
+        <li><span class="warning">Descriptions not saving</span> to admin field or not showing on public site</li>
+        <li><span class="error">Logo could be lost</span> when updating brand description without uploading new image</li>
+    </ul>
+</div>
+
+<div class="section">
+    <h2>✅ Fixes Applied</h2>
+    <ul>
+        <li><strong>Logo Preservation:</strong> Database now preserves existing logo better when updating descriptions</li>
+        <li><strong>Fallback Display:</strong> Admin now shows fallback logo from <code>assets/brands/</code> if no custom logo</li>
+        <li><strong>User Feedback:</strong> Admin shows whether logo is from fallback or custom upload</li>
+    </ul>
+</div>
+
+<div class="section">
+    <h2>🧪 Testing the Fix</h2>
+    
+    <div class="step">
+        <strong>Step 1: Check Admin Preview</strong>
+        Navigate to: <code>/ANDISON/Andison/admin/products.php?brand=BW</code>
+        <ul>
+            <li>Click "Edit Brand" button</li>
+            <li>Look at "Brand Image Preview" section</li>
+            <li>You should now see the BW logo ✓</li>
+            <li>It should show: "<span class="warning">⚠ Fallback logo</span> - Using default image"</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <strong>Step 2: Test Description Save</strong>
+        <ul>
+            <li>In the admin edit form, edit the brand description</li>
+            <li>Add a test sentence like: "Updated on [today's date]"</li>
+            <li>Click "Save Brand"</li>
+            <li>Refresh the page (F5)</li>
+            <li>Check if your text is still there</li>
+            <li>Go to public site: <code>/brand.php?name=BW</code></li>
+            <li>Scroll down to find the brand description</li>
+            <li>It should show your updated text</li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <strong>Step 3: Upload Custom Logo (Optional)</strong>
+        <ul>
+            <li>In admin edit form, click "Choose File" under "New Brand Image"</li>
+            <li>Select a custom BW logo file</li>
+            <li>Preview should update with your image</li>
+            <li>Click "Save Brand"</li>
+            <li>After save, it should show: "<span class="check">✓ Custom logo</span> from admin data"</li>
+        </ul>
+    </div>
+</div>
+
+<div class="section">
+    <h2>🔍 Run Diagnostic (if issues persist)</h2>
+    <p>Use this diagnostic script to check the current state:</p>
+    <a href="/_diagnose_bw_brand.php" class="diagnostic-link">Run BW Brand Diagnostic</a>
+    <p style="font-size: 13px; color: #666; margin-top: 10px;">
+        The diagnostic will check:
+        <ul style="margin: 5px 0; padding-left: 20px; font-size: 13px;">
+            <li>What's stored in the database</li>
+            <li>How the description is packed</li>
+            <li>Whether fallback logo file exists</li>
+            <li>Cache file status</li>
+        </ul>
+    </p>
+</div>
+
+<div class="section">
+    <h2>📁 Files Modified</h2>
+    <ul>
+        <li><code>/Andison/includes/brands_info.php</code>
+            <ul>
+                <li>Line 564: Query now includes all fields (<code>select=*</code>)</li>
+                <li>Lines 566-576: Better logo preservation logic</li>
+            </ul>
+        </li>
+        <li><code>/Andison/admin/products.php</code>
+            <ul>
+                <li>Lines 1312-1341: Fallback logo display logic</li>
+                <li>Lines 1468-1478: Logo source indicator messages</li>
+            </ul>
+        </li>
+    </ul>
+</div>
+
+<div class="section" style="border-left-color: #16a34a; background: #f0fdf4;">
+    <h2 style="color: #16a34a;">💡 How It Works Now</h2>
+    <p><strong>Admin Preview Logic:</strong></p>
+    <ol>
+        <li>Check if BW has custom logo in database → Show it with ✓ indicator</li>
+        <li>If no custom logo, check for fallback file → Show it with ⚠ indicator</li>
+        <li>If both missing → Show "No logo yet"</li>
+    </ol>
+    <p><strong>Public Site Logic:</strong></p>
+    <ol>
+        <li>Check if BW has custom logo in database → Use it</li>
+        <li>If not, use fallback from assets/brands/ → Show public logo</li>
+    </ol>
+    <p style="margin-top: 15px; padding: 10px; background: white; border-radius: 4px;">
+        <strong>Result:</strong> Admin and public site now show the same logo!
+    </p>
+</div>
+

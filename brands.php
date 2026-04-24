@@ -119,6 +119,57 @@ if (!function_exists('andison_brands_order_rank')) {
     }
 }
 
+if (!function_exists('andison_brands_preferred_key')) {
+    function andison_brands_preferred_key(string $displayName, string $fallbackKey, array $brandsData): string
+    {
+        $displayKey = strtolower(trim($displayName));
+        if ($displayKey === '') {
+            return $fallbackKey;
+        }
+
+        $bestKey = $fallbackKey;
+        $bestScore = -1;
+
+        foreach ($brandsData as $candidateKey => $candidateInfo) {
+            if (!is_array($candidateInfo)) {
+                continue;
+            }
+
+            $candidateDisplay = strtolower(trim(andison_brands_display_label((string)$candidateKey)));
+            if ($candidateDisplay !== $displayKey) {
+                continue;
+            }
+
+            $candidateLogo = trim((string)($candidateInfo['logo'] ?? ''));
+            $candidateDescription = trim((string)($candidateInfo['description'] ?? ''));
+            $candidateProducts = count($candidateInfo['products'] ?? []);
+            $candidateKeyLower = strtolower(trim((string)$candidateKey));
+
+            $score = 0;
+            if ($candidateLogo !== '') {
+                $score += 100000;
+            }
+            if ($candidateDescription !== '') {
+                $score += 5000;
+            }
+            if ($candidateKeyLower === $displayKey) {
+                $score += 1000;
+            }
+            if ($displayKey === 'alphatec' && $candidateKeyLower === 'alphatec') {
+                $score += 200000;
+            }
+            $score += min(999, $candidateProducts);
+
+            if ($score > $bestScore) {
+                $bestScore = $score;
+                $bestKey = (string)$candidateKey;
+            }
+        }
+
+        return $bestKey;
+    }
+}
+
 $brandDisplayToKey = [];
 $hiddenBrandDisplayKeys = [
     'aer service' => true,
@@ -155,17 +206,20 @@ foreach (array_keys($brandsData) as $brandKey) {
 $brandCards = [];
 foreach ($brandDisplayToKey as $displayKey => $brandKey) {
     $displayName = andison_brands_display_label($brandKey);
-    $brandInfo = isset($brandsData[$brandKey]) && is_array($brandsData[$brandKey]) ? $brandsData[$brandKey] : [];
+    $resolvedBrandKey = andison_brands_preferred_key($displayName, (string)$brandKey, $brandsData);
+    $brandInfo = isset($brandsData[$resolvedBrandKey]) && is_array($brandsData[$resolvedBrandKey]) ? $brandsData[$resolvedBrandKey] : [];
     $displayLower = strtolower(trim($displayName));
     $logoMaxScale = 1.28;
     if (str_contains($displayLower, 'bw technologies') || str_contains($displayLower, 'bw ') || $displayLower === 'alfra') {
         $logoMaxScale = 1.02;
     }
+    $compactHover = str_contains($displayLower, 'alphatec') || str_contains($displayLower, 'revogard');
     $brandCards[] = [
-        'key' => $brandKey,
+        'key' => $resolvedBrandKey,
         'display' => $displayName,
-        'logo' => andison_brands_logo_path($brandKey, $displayName, isset($brand_logo_map) && is_array($brand_logo_map) ? $brand_logo_map : [], $brandInfo),
+        'logo' => andison_brands_logo_path($resolvedBrandKey, $displayName, isset($brand_logo_map) && is_array($brand_logo_map) ? $brand_logo_map : [], $brandInfo),
         'logo_max_scale' => $logoMaxScale,
+        'compact_hover' => $compactHover,
     ];
 }
 
@@ -1076,6 +1130,15 @@ usort($brandCards, static function (array $a, array $b): int {
         .brand-card:hover .brand-logo img {
             filter: grayscale(0%);
             transform: scale(1.04);
+        }
+
+        .brand-card.brand-card--compact-hover .brand-logo img {
+            max-width: 78%;
+            max-height: 74%;
+        }
+
+        .brand-card.brand-card--compact-hover:hover .brand-logo img {
+            transform: scale(0.82) !important;
         }
 
         .brand-logo-fallback {
@@ -2197,7 +2260,7 @@ usort($brandCards, static function (array $a, array $b): int {
 
         <div class="brands-grid">
             <?php foreach ($brandCards as $brandCard): ?>
-                <div class="brand-card" data-brand="<?php echo htmlspecialchars((string)$brandCard['key'], ENT_QUOTES); ?>" data-logo-max-scale="<?php echo htmlspecialchars((string)$brandCard['logo_max_scale'], ENT_QUOTES); ?>">
+                <div class="brand-card<?php echo !empty($brandCard['compact_hover']) ? ' brand-card--compact-hover' : ''; ?>" data-brand="<?php echo htmlspecialchars((string)$brandCard['key'], ENT_QUOTES); ?>" data-logo-max-scale="<?php echo htmlspecialchars((string)$brandCard['logo_max_scale'], ENT_QUOTES); ?>">
                     <div class="brand-logo">
                         <?php if ((string)($brandCard['logo'] ?? '') !== ''): ?>
                             <img src="<?php echo htmlspecialchars((string)$brandCard['logo'], ENT_QUOTES); ?>" alt="<?php echo htmlspecialchars((string)$brandCard['display'], ENT_QUOTES); ?>">

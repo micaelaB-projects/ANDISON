@@ -29,6 +29,9 @@ function andison_brand_display_label(string $brand): string
     if ($normalized === 'ansell') {
         return 'ANSELL';
     }
+    if ($normalized === 'microgard') {
+        return 'AlphaTec';
+    }
     if ($normalized === 'alphatec') {
         return 'AlphaTec';
     }
@@ -55,6 +58,9 @@ function andison_brand_data_candidates(string $brand): array
     }
     if ($normalized === 'ansell') {
         return ['ANSELL', 'Ansell'];
+    }
+    if ($normalized === 'alphatec' || $normalized === 'microgard') {
+        return ['AlphaTec', 'ALPHATEC', 'MICROGARD', 'Microgard'];
     }
     if ($normalized === 'panasonic connect' || $normalized === 'panasonic') {
         return ['Panasonic Connect', 'PANASONIC'];
@@ -1305,6 +1311,40 @@ $selectedBrandLogo = trim((string)($brandInfo['logo'] ?? ''));
 $products = isset($brandInfo['products']) && is_array($brandInfo['products']) ? $brandInfo['products'] : [];
 
 // Keep presets intentionally minimal: Optional only.
+
+// Fallback logo map for admin preview (mirrors public site logic)
+$adminLogoMap = [
+    'Panasonic Connect'      => 'PANASONIC',
+    'BW'                     => 'BW TECHNOLOGIES',
+    'BW Technologies'        => 'BW TECHNOLOGIES',
+    'Weldcraft'              => 'WELDCRAFT',
+    'Soyer'                  => 'SOYER',
+    'Alfra'                  => 'ALFRA',
+    'ACES'                   => 'ACES',
+    'UVEX'                   => 'UVEX',
+    'ANSELL'                 => 'ANSELL',
+    'MICROGARD'              => 'MICROGARD',
+    'AlphaTec'               => 'MICROGARD',
+    'WELDAS'                 => 'WELDAS',
+    'HARDWORKER'             => 'HARDWORKER',
+];
+$pngBrands = ['ROBOT SYSTEMS', 'WELDCRAFT', 'REVOLT', 'TECHNOTEX'];
+
+// If no database logo, show fallback from assets/brands/
+if ($selectedBrandLogo === '' && $selectedBrandKey !== '') {
+    $fallbackKey = $selectedBrandKey;
+    if (isset($adminLogoMap[$selectedBrandKey])) {
+        $fallbackKey = $adminLogoMap[$selectedBrandKey];
+    } elseif (isset($adminLogoMap[$selectedBrand])) {
+        $fallbackKey = $adminLogoMap[$selectedBrand];
+    }
+    $logoExt = in_array($fallbackKey, $pngBrands) ? 'png' : 'jpg';
+    $fallbackLogo = './assets/brands/' . rawurlencode($fallbackKey) . '.' . $logoExt;
+    if (file_exists(__DIR__ . '/../assets/brands/' . rawurlencode($fallbackKey) . '.' . $logoExt)) {
+        $selectedBrandLogo = $fallbackLogo;
+    }
+}
+
 $_typeOptions = ['optional' => 'Optional'];
 
 // Build flat ID→name lookup for display in the product table
@@ -1407,23 +1447,19 @@ andison_admin_header('Products', 'products');
                 <h2 style="margin:0;font-size:16px;"><i class="bi bi-pencil-square"></i> Edit Brand</h2>
                 <button class="btn btn-outline" type="button" onclick="toggleEditBrandPanel()" style="font-size:12px;padding:6px 10px;"><i class="bi bi-x-lg"></i> Close</button>
             </div>
-            <form method="post" action="products.php?brand=<?php echo urlencode($selectedBrandKey); ?>" enctype="multipart/form-data" style="display:grid;grid-template-columns:2fr 2.5fr auto;gap:10px;align-items:end;">
+            <form method="post" action="products.php?brand=<?php echo urlencode($selectedBrandKey); ?>" enctype="multipart/form-data" style="display:grid;grid-template-columns:1fr;gap:10px;align-items:stretch;">
                 <input type="hidden" name="action" value="edit_brand_logo">
                 <input type="hidden" name="brand_original" value="<?php echo htmlspecialchars($selectedBrandKey, ENT_QUOTES); ?>">
+                <input type="hidden" name="brand_to_edit" value="<?php echo htmlspecialchars($selectedBrandKey, ENT_QUOTES); ?>">
                 <div class="field" style="margin:0;min-width:0;">
-                    <label>Brand</label>
-                    <input type="text" name="brand_to_edit" value="<?php echo htmlspecialchars(andison_brand_display_label((string)$selectedBrand), ENT_QUOTES); ?>" required>
+                    <label for="editBrandDescription">Brand Description (shown on public brand page)</label>
+                    <textarea id="editBrandDescription" name="brand_description" rows="4" class="prod-desc-textarea" placeholder="Write brand description here..."><?php echo htmlspecialchars($selectedBrandDescription, ENT_QUOTES); ?></textarea>
                 </div>
                 <div class="field" style="margin:0;min-width:0;">
                     <label for="editBrandLogo">New Brand Image (optional)</label>
                     <input id="editBrandLogo" name="edit_brand_logo" type="file" accept="image/jpeg,image/pjpeg,image/png,image/webp,image/gif,image/avif,image/jfif,.jpg,.jpeg,.jfif,.png,.webp,.gif,.avif">
                 </div>
-                <button class="btn btn-primary" type="submit" style="height:44px;padding:10px 16px;"><i class="bi bi-check2-circle"></i> Save Brand</button>
-                <div class="field" style="margin:0;min-width:0;grid-column:1 / 4;">
-                    <label for="editBrandDescription">Brand Description (shown on public brand page)</label>
-                    <textarea id="editBrandDescription" name="brand_description" rows="4" class="prod-desc-textarea" placeholder="Write brand description here..."><?php echo htmlspecialchars($selectedBrandDescription, ENT_QUOTES); ?></textarea>
-                </div>
-                <div class="field" style="margin:0;min-width:0;grid-column:1 / 4;">
+                <div class="field" style="margin:0;min-width:0;">
                     <label>Brand Image Preview</label>
                     <div id="editBrandLogoPreviewWrap" style="display:flex;align-items:center;gap:12px;padding:10px 12px;border:1.5px dashed #d1d5db;border-radius:10px;background:#f9fafb;">
                         <div style="width:180px;height:72px;border-radius:10px;background:#ffffff;border:1px solid #e5e7eb;display:flex;align-items:center;justify-content:center;overflow:hidden;">
@@ -1431,11 +1467,19 @@ andison_admin_header('Products', 'products');
                             <span id="editBrandLogoPreviewEmpty" style="font-size:11px;color:#9ca3af;<?php echo $selectedBrandLogo !== '' ? 'display:none;' : ''; ?>">No logo yet</span>
                         </div>
                         <div style="font-size:11px;color:#6b7280;line-height:1.5;">
-                            Current brand logo from admin data appears here.<br>
+                            <?php 
+                            if ($selectedBrandLogo !== '' && strpos($selectedBrandLogo, './assets/brands/') === 0) {
+                                echo '<span style="color:#ea8634;"><strong>⚠ Fallback logo</strong></span> - Using default image.<br>';
+                                echo 'To customize, upload a new image below.<br>';
+                            } elseif ($selectedBrandLogo !== '') {
+                                echo '<strong>✓ Custom logo</strong> from admin data.<br>';
+                            }
+                            ?>
                             Selecting a new file will preview it before save.
                         </div>
                     </div>
                 </div>
+                <button class="btn btn-primary" type="submit" style="height:44px;padding:10px 16px;"><i class="bi bi-check2-circle"></i> Save Brand</button>
             </form>
         </section>
     <?php endif; ?>

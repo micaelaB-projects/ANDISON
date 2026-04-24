@@ -89,6 +89,68 @@ if (!function_exists('andison_canonical_brand_name')) {
     }
 }
 
+if (!function_exists('andison_brand_name_variants')) {
+    function andison_brand_name_variants(string $brand): array
+    {
+        $raw = trim($brand);
+        if ($raw === '') {
+            return [];
+        }
+
+        $normalized = strtolower($raw);
+        $variants = [$raw, andison_canonical_brand_name($raw)];
+
+        if ($normalized === 'bw' || $normalized === 'bw technologies') {
+            $variants[] = 'BW';
+            $variants[] = 'BW Technologies';
+            $variants[] = 'BW TECHNOLOGIES';
+        }
+
+        if ($normalized === 'dryrod. ii' || $normalized === 'dryrod ii' || $normalized === 'phoenix dryrod' || $normalized === 'phoenix dry rod') {
+            $variants[] = 'DryRod. II';
+            $variants[] = 'DryRod II';
+            $variants[] = 'Phoenix Dry Rod';
+            $variants[] = 'Phoenix DryRod';
+            $variants[] = 'PHOENIX DRY ROD';
+            $variants[] = 'PHOENIX DRYROD';
+        }
+
+        if ($normalized === 'hard worker' || $normalized === 'hard workers' || $normalized === 'hardworker') {
+            $variants[] = 'HARDWORKER';
+            $variants[] = 'Hard Worker';
+            $variants[] = 'Hard Workers';
+            $variants[] = 'HARD WORKER';
+            $variants[] = 'HARD WORKERS';
+        }
+
+        if ($normalized === 'microgard' || $normalized === 'alphatec') {
+            $variants[] = 'AlphaTec';
+            $variants[] = 'ALPHATEC';
+            $variants[] = 'MICROGARD';
+            $variants[] = 'Microgard';
+        }
+
+        if ($normalized === 'panasonic' || $normalized === 'panasonic connect') {
+            $variants[] = 'Panasonic Connect';
+            $variants[] = 'PANASONIC';
+        }
+
+        if ($normalized === 'rae' || $normalized === 'rac' || $normalized === 'rae systems') {
+            $variants[] = 'RAE SYSTEMS';
+            $variants[] = 'RAC';
+        }
+
+        if ($normalized === 'weller' || $normalized === 'weiler') {
+            $variants[] = 'WEILER';
+            $variants[] = 'Weller';
+        }
+
+        return array_values(array_unique(array_filter(array_map('trim', $variants), static function (string $value): bool {
+            return $value !== '';
+        })));
+    }
+}
+
 if (!function_exists('andison_brand_row_unpack')) {
     function andison_brand_row_unpack(array $brandRow): array
     {
@@ -441,7 +503,13 @@ if (!function_exists('andison_save_single_brand')) {
 
         try {
             // ── 1. Save brand row (update if exists, insert if new) ──────────────
-            $existing = andison_sb_select('brands', 'select=id,name,description&name=eq.' . rawurlencode($name) . '&limit=1');
+            $existing = [];
+            foreach (andison_brand_name_variants($name) as $variantName) {
+                $rows = andison_sb_select('brands', 'select=id,name,description&name=eq.' . rawurlencode($variantName) . '&limit=1');
+                if (!empty($rows[0]) && is_array($rows[0])) {
+                    $existing[] = (array)$rows[0];
+                }
+            }
             $incomingLogo = trim((string)($data['logo'] ?? ''));
             if (!empty($existing)) {
                 $existingMeta = andison_brand_row_unpack((array)$existing[0]);
@@ -449,7 +517,9 @@ if (!function_exists('andison_save_single_brand')) {
                     (string)($data['description'] ?? ''),
                     $incomingLogo !== '' ? $incomingLogo : (string)($existingMeta['logo'] ?? '')
                 );
-                andison_sb_update('brands', ['description' => $packedDescription], 'name=eq.' . rawurlencode($name));
+                foreach (andison_brand_name_variants($name) as $variantName) {
+                    andison_sb_update('brands', ['description' => $packedDescription], 'name=eq.' . rawurlencode($variantName));
+                }
             } else {
                 $packedDescription = andison_brand_row_pack(
                     (string)($data['description'] ?? ''),
@@ -560,14 +630,29 @@ if (!function_exists('andison_create_brand')) {
             return false;
         }
 
-        $existing = andison_sb_select('brands', 'select=id,name,description&name=eq.' . rawurlencode($name) . '&limit=1');
-        if (!empty($existing[0])) {
-            $existingMeta = andison_brand_row_unpack((array)$existing[0]);
-            $packedDescription = andison_brand_row_pack(
-                $description,
-                $logoUrl !== '' ? $logoUrl : (string)($existingMeta['logo'] ?? '')
-            );
-            andison_sb_update('brands', ['description' => $packedDescription], 'name=eq.' . rawurlencode($name));
+            $existingRows = [];
+            foreach (andison_brand_name_variants($name) as $variantName) {
+                $rows = andison_sb_select('brands', 'select=*&name=eq.' . rawurlencode($variantName) . '&limit=1');
+                if (!empty($rows[0]) && is_array($rows[0])) {
+                    $existingRows[] = (array)$rows[0];
+                }
+            }
+
+            if (!empty($existingRows)) {
+                $existingMeta = andison_brand_row_unpack((array)$existingRows[0]);
+                // Preserve existing logo: first try unpacked data, then try direct access to logo column if it exists
+                $existingLogo = (string)($existingMeta['logo'] ?? '');
+                if ($existingLogo === '' && isset($existingRows[0]['logo']) && is_string($existingRows[0]['logo'])) {
+                    $existingLogo = trim((string)$existingRows[0]['logo']);
+                }
+                $finalLogoUrl = $logoUrl !== '' ? $logoUrl : $existingLogo;
+                $packedDescription = andison_brand_row_pack(
+                    $description,
+                    $finalLogoUrl
+                );
+                foreach (andison_brand_name_variants($name) as $variantName) {
+                    andison_sb_update('brands', ['description' => $packedDescription], 'name=eq.' . rawurlencode($variantName));
+                }
             @unlink(dirname(__DIR__) . '/data/_cache/brands_full.cache');
             return true;
         }
