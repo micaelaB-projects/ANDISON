@@ -82,6 +82,11 @@ footer.footer-modernized {
     padding: 56px 0 0 !important;
     border-top: 1px solid rgba(255, 255, 255, 0.14) !important;
     position: relative;
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
     overflow: hidden;
 }
 
@@ -128,6 +133,7 @@ footer.footer-modernized .footer-brand-logo img {
     width: 228px;
     max-width: 100%;
     height: auto;
+    display: block;
     filter: brightness(0) invert(1);
 }
 
@@ -374,8 +380,8 @@ nav li:nth-child(3) .nav-dropdown ul a:hover img {
 
 @media (max-width: 1180px) {
     footer.footer-modernized .footer-main-grid {
-        grid-template-columns: repeat(2, minmax(220px, 1fr));
-        gap: 18px 20px;
+        grid-template-columns: repeat(2, minmax(220px, 1fr)) !important;
+        gap: 16px 20px;
     }
 
     nav li:nth-child(3) .nav-dropdown {
@@ -428,13 +434,13 @@ nav li:nth-child(3) .nav-dropdown ul a:hover img {
         transform: scale(0.95) !important;
     }
 
-    footer.footer-modernized .footer-col-title { font-size: 15px; }
-    footer.footer-modernized .footer-nav-links a { font-size: 15px; }
-    footer.footer-modernized .footer-copyright { font-size: 15px; }
+    footer.footer-modernized .footer-col-title { font-size: 12px; }
+    footer.footer-modernized .footer-nav-links a { font-size: 12px; }
+    footer.footer-modernized .footer-copyright { font-size: 12px; }
 
     footer.footer-modernized .footer-social-col {
-        grid-column: 2;
-        justify-self: end;
+        grid-column: auto;
+        justify-self: start;
     }
 }
 
@@ -449,7 +455,7 @@ nav li:nth-child(3) .nav-dropdown ul a:hover img {
     }
 
     footer.footer-modernized .footer-main-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: 1fr !important;
         gap: 8px;
         align-items: stretch;
     }
@@ -483,7 +489,10 @@ nav li:nth-child(3) .nav-dropdown ul a:hover img {
     }
 
     footer.footer-modernized .footer-brand-logo img {
-        width: 148px;
+        width: min(170px, 62vw);
+        max-height: 56px;
+        object-fit: contain;
+        object-position: left center;
     }
 
     footer.footer-modernized .footer-brand-blurb {
@@ -543,6 +552,7 @@ nav li:nth-child(3) .nav-dropdown ul a:hover img {
     footer.footer-modernized .footer-nav-links a:nth-child(6) { order: 6; }
     footer.footer-modernized .footer-contact-list { gap: 5px; }
     footer.footer-modernized .footer-contact-item { font-size: 11px; gap: 7px; line-height: 1.3; color: rgba(248, 250, 255, 0.92); }
+    footer.footer-modernized .footer-contact-item span { overflow-wrap: anywhere; word-break: break-word; }
     footer.footer-modernized .footer-contact-item i { font-size: 12px; margin-top: 2px; color: rgba(230,236,255,0.95); }
     footer.footer-modernized .footer-socials { margin-top: 10px; }
     footer.footer-modernized .footer-socials-title { font-size: 11px; margin-bottom: 7px; }
@@ -1063,6 +1073,32 @@ $andisonFooterSettings = andison_get_footer_settings();
                 + '<p class="footer-copyright">' + copyrightText + '</p>'
             + '</div>'
         ).replace(/\/ANDISON(?=\/)/g, footerBase);
+
+        var footerLogoImg = footerContent.querySelector('.footer-brand-logo img');
+        if (footerLogoImg) {
+            var logoCandidates = [
+                (footerBase ? footerBase : '') + '/assets/HOME/image-removebg-preview.png',
+                '/ANDISON/assets/HOME/image-removebg-preview.png',
+                '/assets/HOME/image-removebg-preview.png',
+                'assets/HOME/image-removebg-preview.png',
+                '../assets/HOME/image-removebg-preview.png'
+            ];
+            var logoIndex = 0;
+
+            footerLogoImg.addEventListener('error', function onLogoError() {
+                logoIndex += 1;
+                while (logoIndex < logoCandidates.length && logoCandidates[logoIndex] === footerLogoImg.getAttribute('src')) {
+                    logoIndex += 1;
+                }
+
+                if (logoIndex >= logoCandidates.length) {
+                    footerLogoImg.removeEventListener('error', onLogoError);
+                    return;
+                }
+
+                footerLogoImg.setAttribute('src', logoCandidates[logoIndex]);
+            });
+        }
 
         footer.setAttribute('data-andison-footer-rendered', '1');
 

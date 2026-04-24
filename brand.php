@@ -1629,12 +1629,8 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             color: #eef1ff;
             padding: 56px 0 0;
             margin-top: auto;
-            width: 100vw;
+            width: 100%;
             position: relative;
-            left: 0;
-            right: 0;
-            margin-left: 0;
-            margin-right: 0;
             border-top: 1px solid rgba(255, 255, 255, 0.14);
             overflow: hidden;
         }
@@ -1810,8 +1806,8 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
 
         @media (max-width: 1180px) {
             .footer-main-grid {
-                grid-template-columns: repeat(2, minmax(220px, 1fr));
-                gap: 24px 28px;
+                grid-template-columns: 1fr;
+                gap: 10px;
             }
 
             .footer-col-title {
@@ -1838,7 +1834,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             }
 
             .footer-main-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
+                grid-template-columns: 1fr;
                 gap: 10px;
             }
 
@@ -1855,7 +1851,10 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             }
 
             .footer-brand-logo img {
-                width: 170px;
+                width: min(170px, 62vw);
+                max-height: 56px;
+                object-fit: contain;
+                object-position: left center;
             }
 
             .footer-brand-blurb {
@@ -1883,6 +1882,11 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
                 gap: 6px;
                 font-size: 10px;
                 line-height: 1.35;
+            }
+
+            .footer-contact-item span {
+                overflow-wrap: anywhere;
+                word-break: break-word;
             }
 
             .footer-contact-item i {
@@ -3254,54 +3258,18 @@ var BRAND_LOGO = '<?php echo htmlspecialchars($brand_logo_src, ENT_QUOTES); ?>';
     <!-- Footer -->
     <footer>
         <div class="footer-content">
-            <div class="footer-main-grid">
-                <div class="footer-brand-col">
-                    <a href="home.php" class="footer-brand-logo" aria-label="Andison Industrial Home">
-                        <img src="assets/HOME/image-removebg-preview.png" alt="Andison Industrial">
-                    </a>
-                    <p class="footer-brand-blurb">Andison Industrial Sales Inc., is a leading local industrial supply company, delivering high quality solutions, representing various world-class brands since 1994.</p>
-                </div>
-
-                <div class="footer-col">
-                    <h4 class="footer-col-title">Manila</h4>
-                    <ul class="footer-contact-list">
-                        <li class="footer-contact-item"><i class="bi bi-geo-alt-fill"></i><span>Andison Bldg., Ground Flr. 917-919 Luzon St., Sta. Cruz, Manila, 1003 Philippines</span></li>
-                        <li class="footer-contact-item"><i class="bi bi-telephone-fill"></i><span>Phone: (+632) 8584-4958</span></li>
-                        <li class="footer-contact-item"><i class="bi bi-telephone-fill"></i><span>(+632) 8243-2873</span></li>
-                        <li class="footer-contact-item"><i class="bi bi-printer-fill"></i><span>Fax: (+632) 8252-9224</span></li>
-                    </ul>
-                </div>
-
-                <div class="footer-col">
-                    <h4 class="footer-col-title">Calabarzon</h4>
-                    <ul class="footer-contact-list">
-                        <li class="footer-contact-item"><i class="bi bi-geo-alt-fill"></i><span>29B P. Zamora Street, Batangas City, 4200 Philippines</span></li>
-                        <li class="footer-contact-item"><i class="bi bi-telephone-fill"></i><span>Phone: (+6343) 425 4126</span></li>
-                        <li class="footer-contact-item"><i class="bi bi-printer-fill"></i><span>Fax: (+6343) 723-3108</span></li>
-                    </ul>
-                </div>
-
-                <div class="footer-col">
-                    <h4 class="footer-col-title">Navigation</h4>
-                    <nav class="footer-nav-links" aria-label="Footer navigation">
-                        <a href="home.php">Home</a>
-                        <a href="industries.php">Industries and Services</a>
-                        <a href="aboutus.php">Our Company</a>
-                        <a href="brands.php">Products</a>
-                        <a href="contact.php">Contact Us</a>
-                    </nav>
-                </div>
+            <div class="footer-links">
+                <a href="#privacy">Privacy Policy</a>
+                <a href="#terms">Terms of Service</a>
+                <a href="#sitemap">Sitemap</a>
+                <a href="contact.php">Contact Us</a>
             </div>
-
-            <div class="footer-bottom">
-                <p class="footer-copyright">Copyright 2021 <strong>Andison Industrial Sales Inc.</strong></p>
+            <div class="footer-copyright">
+                <p>&copy; 2026 Andison Industrial Sales Inc. All rights reserved.</p>
             </div>
         </div>
-
-        <button class="footer-scroll-top" type="button" id="footerScrollTop" aria-label="Scroll to top">
-            <i class="bi bi-chevron-up"></i>
-        </button>
     </footer>
+    <?php require_once __DIR__ . '/includes/footer_modernize.php'; ?>
 
     <script>
     // ===== BRAND PAGE: PRODUCTS LOGIC =====

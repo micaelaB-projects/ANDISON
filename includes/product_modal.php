@@ -3619,6 +3619,11 @@ footer.footer-modernized {
     padding: 56px 0 0 !important;
     border-top: 1px solid rgba(255, 255, 255, 0.14) !important;
     position: relative;
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
     overflow: hidden;
 }
 
@@ -3659,6 +3664,7 @@ footer.footer-modernized .footer-brand-logo img {
     width: 228px;
     max-width: 100%;
     height: auto;
+    display: block;
     filter: brightness(0) invert(1);
 }
 
@@ -3791,8 +3797,8 @@ footer.footer-modernized .footer-scroll-top:hover {
 
 @media (max-width: 1180px) {
     footer.footer-modernized .footer-main-grid {
-        grid-template-columns: repeat(2, minmax(220px, 1fr));
-        gap: 24px 28px;
+        grid-template-columns: 1fr;
+        gap: 10px;
     }
 
     footer.footer-modernized .footer-col-title { font-size: 10px; }
@@ -3804,6 +3810,13 @@ footer.footer-modernized .footer-scroll-top:hover {
     footer.footer-modernized .footer-main-grid { grid-template-columns: 1fr; }
     footer.footer-modernized .footer-col-title { font-size: 10px; }
     footer.footer-modernized .footer-nav-links a { font-size: 10px; }
+    footer.footer-modernized .footer-brand-logo img {
+        width: min(170px, 62vw);
+        max-height: 56px;
+        object-fit: contain;
+        object-position: left center;
+    }
+    footer.footer-modernized .footer-contact-item span { overflow-wrap: anywhere; word-break: break-word; }
 
     footer.footer-modernized .footer-bottom {
         flex-direction: column;
@@ -3906,6 +3919,32 @@ footer.footer-modernized .footer-scroll-top:hover {
             + '</div>'
         ).replace(/\/ANDISON(?=\/)/g, footerBase);
 
+        var footerLogoImg = footerContent.querySelector('.footer-brand-logo img');
+        if (footerLogoImg) {
+            var logoCandidates = [
+                (footerBase ? footerBase : '') + '/assets/HOME/image-removebg-preview.png',
+                '/ANDISON/assets/HOME/image-removebg-preview.png',
+                '/assets/HOME/image-removebg-preview.png',
+                'assets/HOME/image-removebg-preview.png',
+                '../assets/HOME/image-removebg-preview.png'
+            ];
+            var logoIndex = 0;
+
+            footerLogoImg.addEventListener('error', function onLogoError() {
+                logoIndex += 1;
+                while (logoIndex < logoCandidates.length && logoCandidates[logoIndex] === footerLogoImg.getAttribute('src')) {
+                    logoIndex += 1;
+                }
+
+                if (logoIndex >= logoCandidates.length) {
+                    footerLogoImg.removeEventListener('error', onLogoError);
+                    return;
+                }
+
+                footerLogoImg.setAttribute('src', logoCandidates[logoIndex]);
+            });
+        }
+
         if (!footer.querySelector('.footer-scroll-top')) {
             var btn = document.createElement('button');
             btn.className = 'footer-scroll-top';
@@ -3930,6 +3969,8 @@ footer.footer-modernized .footer-scroll-top:hover {
     }
 })();
 </script>
+
+<?php require_once __DIR__ . '/footer_modernize.php'; ?>
 
 <script>
 /* Limit category pagination to 4 page numbers plus prev/next arrows */

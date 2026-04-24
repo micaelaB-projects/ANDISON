@@ -2738,6 +2738,16 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
         .brands-carousel-item.brand-item-dryrod-ii img {
             transform: scale(0.9);
         }
+        .brands-carousel-item.brand-item-bw img,
+        .brands-carousel-item.brand-item-bw-technologies img {
+            transform: scale(1.00);
+        }
+        .brands-carousel-item.brand-item-alfra img {
+            transform: scale(0.93);
+        }
+        .brands-carousel-item.brand-item-aquasol img {
+            transform: scale(0.95);
+        }
         .brands-carousel-item:hover img {
             filter: grayscale(0%);
         }
@@ -2819,6 +2829,10 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
             .brands-carousel-item { width: 138px; height: 98px; padding: 10px 12px; }
             .brands-carousel-item img { transform: scale(1.16); }
             .brands-carousel-item.brand-item-dryrod-ii img { transform: scale(0.78); }
+            .brands-carousel-item.brand-item-bw img,
+            .brands-carousel-item.brand-item-bw-technologies img { transform: scale(0.90); }
+            .brands-carousel-item.brand-item-alfra img { transform: scale(0.86); }
+            .brands-carousel-item.brand-item-aquasol img { transform: scale(0.88); }
             .brands-carousel-track { gap: 10px; }
             .brands-carousel-outer { gap: 6px; padding: 0 4px; }
         }

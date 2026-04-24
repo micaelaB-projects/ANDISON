@@ -1416,12 +1416,8 @@ usort($brandCards, static function (array $a, array $b): int {
             padding: 60px 0 40px;
             text-align: center;
             margin-top: auto;
-            width: 100vw;
+            width: 100%;
             position: relative;
-            left: 0;
-            right: 0;
-            margin-left: 0;
-            margin-right: 0;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
