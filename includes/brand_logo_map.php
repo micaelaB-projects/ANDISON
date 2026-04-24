@@ -26,6 +26,7 @@ $brand_logo_map = [
     'UVEX' => 'assets/brands/UVEX.jpg',
     'ACES' => 'assets/brands/ACES.jpg',
     'MICROGARD' => 'assets/brands/MICROGARD.jpg',
+    'AlphaTec' => 'assets/brands/MICROGARD.jpg',
     'ANSELL' => 'assets/brands/ANSELL.jpg',
     'Alfra' => 'assets/brands/ALFRA.jpg',
     'BOSCH' => 'assets/brands/BOSCH.jpg',

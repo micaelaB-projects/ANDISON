@@ -49,6 +49,11 @@ if (!function_exists('andison_brand_lookup_candidates')) {
             $candidates[] = 'BW TECHNOLOGIES';
         }
 
+        if ($normalized === 'microgard') {
+            $candidates[] = 'AlphaTec';
+            $candidates[] = 'MICROGARD';
+        }
+
         if ($normalized === 'rae' || $normalized === 'rac' || $normalized === 'rae systems') {
             $candidates[] = 'RAE SYSTEMS';
             $candidates[] = 'RAC';
@@ -97,6 +102,9 @@ if (!function_exists('andison_brand_display_label_public')) {
         }
         if ($normalized === 'ansell') {
             return 'ANSELL';
+        }
+        if ($normalized === 'microgard') {
+            return 'AlphaTec';
         }
         if ($normalized === 'panasonic' || $normalized === 'panasonic connect') {
             return 'Panasonic Connect';
@@ -237,6 +245,7 @@ $logo_map = [
     'UVEX'                   => 'UVEX',
     'ANSELL'                 => 'ANSELL',
     'MICROGARD'              => 'MICROGARD',
+    'AlphaTec'               => 'MICROGARD',
     'WELDAS'                 => 'WELDAS',
     'TANAKA'                 => 'TANAKA',
     'CHIYODA'                => 'CHIYODA',
@@ -286,6 +295,20 @@ $png_brands = ['ROBOT SYSTEMS', 'WELDCRAFT', 'REVOLT', 'TECHNOTEX'];
 $logo_ext = in_array($logo_file, $png_brands) ? 'png' : 'jpg';
 
 $brands_info_data = andison_get_brands_info(true);
+
+// ── Clean up orphaned brand aliases (e.g., old MICROGARD after rename to AlphaTec) ────
+if (function_exists('andison_sb_delete') && function_exists('andison_sb_select')) {
+    $orphanedAliases = ['MICROGARD', 'Microgard', 'Hard Worker', 'Hard Workers'];
+    foreach ($orphanedAliases as $oldName) {
+        $canonical = strtolower(trim($oldName));
+        if ($canonical === 'microgard' && isset($brands_info_data['AlphaTec'])) {
+            // MICROGARD was renamed to AlphaTec; delete any stray MICROGARD record
+            @andison_sb_delete('brands', 'name=eq.' . rawurlencode($oldName));
+            @unlink(__DIR__ . '/Andison/data/_cache/brands_full.cache');
+        }
+    }
+}
+
 $brandDisplayToKey = [];
 foreach (array_keys($brands_info_data) as $brandKey) {
     $display = andison_brand_display_label_public((string)$brandKey);

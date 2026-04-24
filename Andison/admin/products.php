@@ -29,6 +29,9 @@ function andison_brand_display_label(string $brand): string
     if ($normalized === 'ansell') {
         return 'ANSELL';
     }
+    if ($normalized === 'alphatec') {
+        return 'AlphaTec';
+    }
     if ($normalized === 'panasonic' || $normalized === 'panasonic connect') {
         return 'Panasonic Connect';
     }
@@ -86,6 +89,32 @@ function andison_pick_brand_bucket(array $brands, array $candidates): string
         }
     }
 
+    foreach ($candidates as $candidate) {
+        $needle = strtolower(trim((string)$candidate));
+        if ($needle === '') {
+            continue;
+        }
+
+        foreach ($brands as $brandKey => $brandInfo) {
+            if (strtolower(trim((string)$brandKey)) === $needle && !empty($brandInfo['products'])) {
+                return (string)$brandKey;
+            }
+        }
+    }
+
+    foreach ($candidates as $candidate) {
+        $needle = strtolower(trim((string)$candidate));
+        if ($needle === '') {
+            continue;
+        }
+
+        foreach ($brands as $brandKey => $_brandInfo) {
+            if (strtolower(trim((string)$brandKey)) === $needle) {
+                return (string)$brandKey;
+            }
+        }
+    }
+
     return (string)($candidates[0] ?? '');
 }
 
@@ -96,7 +125,6 @@ $hiddenBrandDisplayKeys = [
     'aer service' => true,
     'wire wizard' => true,
     'tokin arc' => true,
-    'alphatec' => true,
     'bw technologies' => true,
     'hard worker' => true,
     'phoenix dryrod' => true,
@@ -782,6 +810,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $sourceBrand = andison_canonical_brand_name($originalBrand);
         }
 
+        $sourceMeta = isset($brands[$sourceBrand]) && is_array($brands[$sourceBrand]) ? $brands[$sourceBrand] : [];
+        if (empty($sourceMeta)) {
+            $sourceRow = andison_sb_select('brands', 'select=name,description&name=eq.' . rawurlencode($sourceBrand) . '&limit=1');
+            if (!empty($sourceRow[0]) && is_array($sourceRow[0])) {
+                $sourceMeta = andison_brand_row_unpack((array)$sourceRow[0]);
+            }
+        }
+
         $targetBrand = andison_canonical_brand_name($brandToEditInput);
         if ($targetBrand === '') {
             $targetBrand = $sourceBrand;
@@ -795,7 +831,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        $sourceMeta = isset($brands[$sourceBrand]) && is_array($brands[$sourceBrand]) ? $brands[$sourceBrand] : [];
         $descriptionToSave = isset($_POST['brand_description'])
             ? andison_sanitize_brand_description_html((string)$_POST['brand_description'])
             : trim((string)($sourceMeta['description'] ?? ''));

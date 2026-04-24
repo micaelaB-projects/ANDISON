@@ -8,10 +8,26 @@ require_once __DIR__ . '/Andison/includes/brands_info.php';
 require_once __DIR__ . '/Andison/includes/brand_order.php';
 require_once __DIR__ . '/includes/brand_logo_map.php';
 
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+
 $featured = andison_get_home_featured();
 $slides = andison_get_home_slider();
 $ytLinks = andison_get_youtube_links();
 $brandsData = andison_get_brands_info(true);
+
+// ── Clean up orphaned brand aliases (e.g., old MICROGARD after rename to AlphaTec) ────
+if (function_exists('andison_sb_delete') && function_exists('andison_sb_select')) {
+    $orphanedAliases = ['MICROGARD', 'Microgard', 'Hard Worker', 'Hard Workers'];
+    foreach ($orphanedAliases as $oldName) {
+        $canonical = strtolower(trim($oldName));
+        if ($canonical === 'microgard' && isset($brandsData['AlphaTec'])) {
+            // MICROGARD was renamed to AlphaTec; delete any stray MICROGARD record
+            @andison_sb_delete('brands', 'name=eq.' . rawurlencode($oldName));
+            @unlink(__DIR__ . '/Andison/data/_cache/brands_full.cache');
+        }
+    }
+}
 
 if (!function_exists('andison_brands_display_label')) {
     function andison_brands_display_label(string $brand): string
@@ -28,6 +44,12 @@ if (!function_exists('andison_brands_display_label')) {
         }
         if ($normalized === 'ansell') {
             return 'ANSELL';
+        }
+        if ($normalized === 'microgard') {
+            return 'AlphaTec';
+        }
+        if ($normalized === 'alphatec') {
+            return 'AlphaTec';
         }
         if ($normalized === 'panasonic' || $normalized === 'panasonic connect') {
             return 'Panasonic Connect';
@@ -102,7 +124,6 @@ $hiddenBrandDisplayKeys = [
     'aer service' => true,
     'wire wizard' => true,
     'tokin arc' => true,
-    'alphatec' => true,
     'bw technologies' => true,
     'hard worker' => true,
     'phoenix dryrod' => true,
@@ -1003,6 +1024,22 @@ usort($brandCards, static function (array $a, array $b): int {
             text-align: center;
             transition: border-color 0.24s ease, box-shadow 0.24s ease, transform 0.24s ease;
             cursor: pointer;
+        }
+
+        .brand-card-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+            margin-top: 10px;
+            min-height: 22px;
+        }
+
+        .brand-card-name {
+            font-size: 15px;
+            font-weight: 800;
+            color: #1f2937;
+            line-height: 1.25;
         }
 
         .brand-card:hover {
@@ -2167,6 +2204,9 @@ usort($brandCards, static function (array $a, array $b): int {
                         <?php else: ?>
                             <span class="brand-logo-fallback"><?php echo htmlspecialchars(strtoupper(substr((string)$brandCard['display'], 0, 1)), ENT_QUOTES); ?></span>
                         <?php endif; ?>
+                    </div>
+                    <div class="brand-card-meta">
+                        <div class="brand-card-name"><?php echo htmlspecialchars((string)$brandCard['display'], ENT_QUOTES); ?></div>
                     </div>
                 </div>
             <?php endforeach; ?>

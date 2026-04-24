@@ -8,6 +8,9 @@ require_once __DIR__ . '/Andison/includes/brands_info.php';
 require_once __DIR__ . '/Andison/includes/brand_order.php';
 require_once __DIR__ . '/includes/brand_logo_map.php';
 
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+
 $featured = andison_get_home_featured();
 $slides = andison_get_home_slider();
 $ytLinks = andison_get_youtube_links();
@@ -28,6 +31,9 @@ if (!function_exists('andison_about_display_label')) {
         }
         if ($normalized === 'ansell') {
             return 'ANSELL';
+        }
+        if ($normalized === 'alphatec') {
+            return 'AlphaTec';
         }
         if ($normalized === 'panasonic' || $normalized === 'panasonic connect') {
             return 'Panasonic Connect';
@@ -116,7 +122,6 @@ $aboutHiddenBrandDisplayKeys = [
     'aer service' => true,
     'wire wizard' => true,
     'tokin arc' => true,
-    'alphatec' => true,
     'bw technologies' => true,
     'hard worker' => true,
     'phoenix dryrod' => true,
@@ -2570,7 +2575,6 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
     <!-- Hero Banner -->
     <div class="about-hero">
         <h1>About Andison Industrial</h1>
-       
     </div>
 
     <!-- Building Photo -->
@@ -3046,8 +3050,14 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
         // Hero slider functionality
         (function(){
             var slider = document.getElementById('heroSlider');
+            if (!slider) {
+                return;
+            }
             var slides = slider.querySelectorAll('.hero-slide');
             var dots = slider.querySelectorAll('.hero-dot');
+            if (!slides.length || !dots.length) {
+                return;
+            }
             var currentSlide = 0;
             var autoplayInterval;
 

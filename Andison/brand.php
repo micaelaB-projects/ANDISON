@@ -107,6 +107,7 @@ $logo_filename = function($brand) {
         'UVEX' => 'UVEX',
         'ANSELL' => 'ANSELL',
         'MICROGARD' => 'MICROGARD',
+        'AlphaTec' => 'MICROGARD',
         'WELDAS' => 'WELDAS',
         'TANAKA' => 'TANAKA',
         'CHIYODA' => 'CHIYODA',

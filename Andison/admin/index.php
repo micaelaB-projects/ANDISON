@@ -38,6 +38,9 @@ function andison_dashboard_brand_display_label(string $brand): string
     if ($normalized === 'ansell') {
         return 'ANSELL';
     }
+    if ($normalized === 'alphatec') {
+        return 'AlphaTec';
+    }
     if ($normalized === 'panasonic' || $normalized === 'panasonic connect') {
         return 'Panasonic Connect';
     }
@@ -55,7 +58,6 @@ $dashboardHiddenBrandDisplayKeys = [
     'aer service' => true,
     'wire wizard' => true,
     'tokin arc' => true,
-    'alphatec' => true,
     'bw technologies' => true,
     'hard worker' => true,
     'phoenix dryrod' => true,

@@ -176,7 +176,7 @@ if (isset($base_path) && is_string($base_path)) {
 }
 
 $andisonBrandMap = (isset($brand_logo_map) && is_array($brand_logo_map)) ? $brand_logo_map : [];
-$andisonBrandsInfo = function_exists('andison_get_brands_info') ? andison_get_brands_info() : [];
+$andisonBrandsInfo = function_exists('andison_get_brands_info') ? andison_get_brands_info(true) : [];
 
 $andisonPreferredOrder = andison_load_brand_order();
 
@@ -185,6 +185,8 @@ $andisonBrandAliases = [
     'robot system peripherals' => 'Robot Systems Peripherals',
     'hard worker' => 'HARDWORKER',
     'hard workers' => 'HARDWORKER',
+    'microgard' => 'AlphaTec',
+    'alphatec' => 'AlphaTec',
     'bw technologies' => 'BW',
     'bw' => 'BW',
     'rae systems' => 'RAE SYSTEMS',
@@ -226,11 +228,19 @@ $andisonSortBrands = static function (array &$brands) use ($andisonOrderIndex, $
 
 if (is_array($andisonBrandsInfo) && !empty($andisonBrandsInfo)) {
     $andisonSortBrands($andisonBrandsInfo);
+    $andisonRenderedCanonical = [];
     foreach ($andisonBrandsInfo as $brandName => $brandInfo) {
         $displayName = $andisonCanonicalName((string)$brandName);
         if ($displayName === '') {
             continue;
         }
+
+        // Deduplicate: skip if this canonical name already rendered
+        $lowerDisplayName = strtolower($displayName);
+        if (isset($andisonRenderedCanonical[$lowerDisplayName])) {
+            continue;
+        }
+        $andisonRenderedCanonical[$lowerDisplayName] = true;
 
         $logoPath = andison_nav_dropdown_resolve_logo(
             $displayName,
@@ -260,8 +270,17 @@ if (is_array($andisonBrandsInfo) && !empty($andisonBrandsInfo)) {
     }
 } else {
     $andisonSortBrands($andisonBrandMap);
+    $andisonRenderedCanonical = [];
     foreach ($andisonBrandMap as $brandName => $logoPath) {
         $displayName = $andisonCanonicalName((string)$brandName);
+        
+        // Deduplicate: skip if this canonical name already rendered
+        $lowerDisplayName = strtolower($displayName);
+        if (isset($andisonRenderedCanonical[$lowerDisplayName])) {
+            continue;
+        }
+        $andisonRenderedCanonical[$lowerDisplayName] = true;
+        
         $resolvedLogoPath = andison_nav_dropdown_resolve_logo($displayName, [], $andisonBrandMap, $andisonNavBasePath);
         if ($displayName === '' || $resolvedLogoPath === '') {
             continue;
