@@ -157,7 +157,7 @@ if (!function_exists('andison_brand_row_unpack')) {
         $raw = (string)($brandRow['description'] ?? '');
         $raw = trim($raw);
         if ($raw === '') {
-            return ['description' => '', 'logo' => ''];
+            return ['description' => '', 'logo' => '', 'short_label' => ''];
         }
 
         $decoded = json_decode($raw, true);
@@ -168,20 +168,22 @@ if (!function_exists('andison_brand_row_unpack')) {
             return [
                 'description' => trim((string)($decoded['description'] ?? '')),
                 'logo' => trim((string)($decoded['logo'] ?? '')),
+                'short_label' => trim((string)($decoded['short_label'] ?? '')),
             ];
         }
 
-        return ['description' => $raw, 'logo' => ''];
+        return ['description' => $raw, 'logo' => '', 'short_label' => ''];
     }
 }
 
 if (!function_exists('andison_brand_row_pack')) {
-    function andison_brand_row_pack(string $description, string $logoUrl = ''): string
+    function andison_brand_row_pack(string $description, string $logoUrl = '', string $shortLabel = ''): string
     {
         $description = trim($description);
         $logoUrl = trim($logoUrl);
+        $shortLabel = trim($shortLabel);
 
-        if ($logoUrl === '') {
+        if ($logoUrl === '' && $shortLabel === '') {
             return $description;
         }
 
@@ -189,6 +191,7 @@ if (!function_exists('andison_brand_row_pack')) {
             'format' => 'andison_brand_v1',
             'description' => $description,
             'logo' => $logoUrl,
+            'short_label' => $shortLabel,
         ];
 
         $encoded = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -337,6 +340,7 @@ if (!function_exists('andison_get_brands_info')) {
             $result[$name] = [
                 'description' => $brandMeta['description'] ?? '',
                 'logo' => $brandMeta['logo'] ?? '',
+                'short_label' => $brandMeta['short_label'] ?? '',
                 'products'    => $dedupeProducts($sbByLower[$lk] ?? []),
             ];
         }
@@ -345,7 +349,7 @@ if (!function_exists('andison_get_brands_info')) {
         foreach ($sbByLower as $lk => $prods) {
             if (isset($processed[$lk])) continue;
             $nm = $sbOrigCase[$lk];
-            $result[$nm] = ['description' => '', 'logo' => '', 'products' => $dedupeProducts($prods)];
+            $result[$nm] = ['description' => '', 'logo' => '', 'short_label' => '', 'products' => $dedupeProducts($prods)];
         }
 
         // ── Write cache ───────────────────────────────────────────────────
@@ -621,11 +625,12 @@ if (!function_exists('andison_save_brands_info')) {
 }
 
 if (!function_exists('andison_create_brand')) {
-    function andison_create_brand(string $name, string $description = '', string $logoUrl = ''): bool
+    function andison_create_brand(string $name, string $description = '', string $logoUrl = '', string $shortLabel = ''): bool
     {
         $name = trim(andison_canonical_brand_name($name));
         $description = trim($description);
         $logoUrl = trim($logoUrl);
+        $shortLabel = trim($shortLabel);
         if ($name === '') {
             return false;
         }
@@ -646,9 +651,11 @@ if (!function_exists('andison_create_brand')) {
                     $existingLogo = trim((string)$existingRows[0]['logo']);
                 }
                 $finalLogoUrl = $logoUrl !== '' ? $logoUrl : $existingLogo;
+                $finalShortLabel = $shortLabel !== '' ? $shortLabel : (string)($existingMeta['short_label'] ?? '');
                 $packedDescription = andison_brand_row_pack(
                     $description,
-                    $finalLogoUrl
+                    $finalLogoUrl,
+                    $finalShortLabel
                 );
                 foreach (andison_brand_name_variants($name) as $variantName) {
                     andison_sb_update('brands', ['description' => $packedDescription], 'name=eq.' . rawurlencode($variantName));
@@ -657,7 +664,7 @@ if (!function_exists('andison_create_brand')) {
             return true;
         }
 
-        $packedDescription = andison_brand_row_pack($description, $logoUrl);
+        $packedDescription = andison_brand_row_pack($description, $logoUrl, $shortLabel);
 
         $ok = andison_sb_insert('brands', [[
             'name' => $name,

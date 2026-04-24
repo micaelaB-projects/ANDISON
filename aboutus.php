@@ -163,6 +163,7 @@ foreach ($aboutBrandDisplayToKey as $brandKey) {
         'display' => $displayName,
         'logo' => $logoSrc,
         'slug' => strtolower((string)preg_replace('/[^a-z0-9]+/i', '-', $displayName)),
+        'short_label' => trim((string)($brandInfo['short_label'] ?? '')),
     ];
 }
 
@@ -2661,9 +2662,16 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
             <div class="brands-carousel-viewport" id="brandsViewport">
                 <div class="brands-carousel-track" id="brandsTrack">
                     <?php foreach ($aboutBrandCards as $brandCard): ?>
-                    <a href="brand.php?name=<?php echo rawurlencode((string)$brandCard['display']); ?>" class="brands-carousel-item brand-item-<?php echo htmlspecialchars(trim((string)$brandCard['slug'], '-'), ENT_QUOTES); ?>">
-                        <img src="<?php echo htmlspecialchars((string)$brandCard['logo'], ENT_QUOTES); ?>" alt="<?php echo htmlspecialchars((string)$brandCard['display'], ENT_QUOTES); ?>">
-                    </a>
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                        <a href="brand.php?name=<?php echo rawurlencode((string)$brandCard['display']); ?>" class="brands-carousel-item brand-item-<?php echo htmlspecialchars(trim((string)$brandCard['slug'], '-'), ENT_QUOTES); ?>">
+                            <img src="<?php echo htmlspecialchars((string)$brandCard['logo'], ENT_QUOTES); ?>" alt="<?php echo htmlspecialchars((string)$brandCard['display'], ENT_QUOTES); ?>">
+                        </a>
+                        <?php if (!empty($brandCard['short_label'])): ?>
+                        <span style="font-size:10px;color:#666;text-align:center;font-weight:500;max-width:140px;word-break:break-word;">
+                            <?php echo htmlspecialchars((string)$brandCard['short_label'], ENT_QUOTES); ?>
+                        </span>
+                        <?php endif; ?>
+                    </div>
                     <?php endforeach; ?>
                 </div>
             </div>
@@ -2710,9 +2718,29 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
             transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: transform;
         }
+        
+        .brands-carousel-track > div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            flex-shrink: 0;
+        }
+        
+        .brands-carousel-track > div > span {
+            font-size: 11px;
+            color: #333;
+            text-align: center;
+            font-weight: 600;
+            max-width: 145px;
+            word-break: break-word;
+            line-height: 1.4;
+        }
+        
         .brands-carousel-item {
             flex-shrink: 0;
             height: 188px;
+            width: 220px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -2724,11 +2752,13 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
             transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
             text-decoration: none;
         }
+        
         .brands-carousel-item:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            transform: translateY(-4px);
-            border-color: #efefef;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+            border-color: #ddd;
         }
+        
         .brands-carousel-item img {
             display: block;
             width: 100%;
@@ -2742,27 +2772,39 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
             transform: scale(1.44);
             transform-origin: center center;
         }
-        .brands-carousel-item.brand-item-dryrod-ii img {
-            transform: scale(0.9);
+        
+        .brands-carousel-track a img {
+            filter: grayscale(25%);
+            transition: filter 0.25s ease;
         }
-        .brands-carousel-item.brand-item-bw img,
-        .brands-carousel-item.brand-item-bw-technologies img {
-            transform: scale(1.00);
-        }
-        .brands-carousel-item.brand-item-alfra img {
-            transform: scale(0.93);
-        }
-        .brands-carousel-item.brand-item-aquasol img {
-            transform: scale(0.95);
-        }
-        .brands-carousel-item.brand-item-revogard img {
-            transform: scale(0.95);
-        }
-        .brands-carousel-item.brand-item-alphatec img {
-            transform: scale(0.95);
-        }
-        .brands-carousel-item:hover img {
+        
+        .brands-carousel-track a:hover img {
             filter: grayscale(0%);
+        }
+        
+        .brands-carousel-track .brand-item-dryrod-ii img {
+            transform: scale(0.9) !important;
+        }
+        
+        .brands-carousel-track .brand-item-bw img,
+        .brands-carousel-track .brand-item-bw-technologies img {
+            transform: scale(1.00) !important;
+        }
+        
+        .brands-carousel-track .brand-item-alfra img {
+            transform: scale(0.93) !important;
+        }
+        
+        .brands-carousel-track .brand-item-aquasol img {
+            transform: scale(0.95) !important;
+        }
+        
+        .brands-carousel-track .brand-item-revogard img {
+            transform: scale(0.95) !important;
+        }
+        
+        .brands-carousel-track .brand-item-alphatec img {
+            transform: scale(0.95) !important;
         }
         .brands-carousel-btn {
             flex-shrink: 0;
@@ -2839,7 +2881,6 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
             }
         }
         @media (max-width: 600px) {
-            .brands-carousel-item { width: 138px; height: 98px; padding: 10px 12px; }
             .brands-carousel-item img { transform: scale(1.16); }
             .brands-carousel-item.brand-item-dryrod-ii img { transform: scale(0.78); }
             .brands-carousel-item.brand-item-bw img,

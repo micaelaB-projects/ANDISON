@@ -841,8 +841,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ? andison_sanitize_brand_description_html((string)$_POST['brand_description'])
             : trim((string)($sourceMeta['description'] ?? ''));
         $logoToSave = $updatedLogoUrl !== '' ? $updatedLogoUrl : trim((string)($sourceMeta['logo'] ?? ''));
+        $shortLabelToSave = isset($_POST['brand_short_label'])
+            ? trim((string)$_POST['brand_short_label'])
+            : trim((string)($sourceMeta['short_label'] ?? ''));
 
-        $saved = andison_create_brand($targetBrand, $descriptionToSave, $logoToSave);
+        $saved = andison_create_brand($targetBrand, $descriptionToSave, $logoToSave, $shortLabelToSave);
         if ($saved) {
             $sourceKey = strtolower(trim($sourceBrand));
             $targetKey = strtolower(trim($targetBrand));
@@ -1308,6 +1311,7 @@ $editIndex = isset($_GET['edit']) ? (int)$_GET['edit'] : -1;
 $brandInfo = $selectedBrandKey !== '' ? ($brands[$selectedBrandKey] ?? ($brands[$selectedBrand] ?? [])) : [];
 $selectedBrandDescription = trim((string)($brandInfo['description'] ?? ''));
 $selectedBrandLogo = trim((string)($brandInfo['logo'] ?? ''));
+$selectedBrandShortLabel = trim((string)($brandInfo['short_label'] ?? ''));
 $products = isset($brandInfo['products']) && is_array($brandInfo['products']) ? $brandInfo['products'] : [];
 
 // Keep presets intentionally minimal: Optional only.
@@ -1454,6 +1458,10 @@ andison_admin_header('Products', 'products');
                 <div class="field" style="margin:0;min-width:0;">
                     <label for="editBrandDescription">Brand Description (shown on public brand page)</label>
                     <textarea id="editBrandDescription" name="brand_description" rows="4" class="prod-desc-textarea" placeholder="Write brand description here..."><?php echo htmlspecialchars($selectedBrandDescription, ENT_QUOTES); ?></textarea>
+                </div>
+                <div class="field" style="margin:0;min-width:0;">
+                    <label for="editBrandShortLabel">Brand Label (shown on brand grid cards - max 100 chars)</label>
+                    <input id="editBrandShortLabel" name="brand_short_label" type="text" maxlength="100" placeholder="e.g., Welding Robot & Machine" value="<?php echo htmlspecialchars($selectedBrandShortLabel, ENT_QUOTES); ?>" style="padding:8px;border:1px solid #d1d5db;border-radius:8px;">
                 </div>
                 <div class="field" style="margin:0;min-width:0;">
                     <label for="editBrandLogo">New Brand Image (optional)</label>

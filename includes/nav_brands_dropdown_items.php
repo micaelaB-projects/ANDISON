@@ -23,10 +23,12 @@ if (!defined('ANDISON_NAV_BRANDS_DROPDOWN_STYLE_PRINTED')) {
         }
 
         nav li:nth-child(3) .nav-dropdown ul li {
-            min-height: 84px !important;
+            min-height: auto !important;
             display: flex !important;
+            flex-direction: column !important;
             align-items: center !important;
             justify-content: center !important;
+            gap: 4px !important;
         }
 
         nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link {
@@ -82,6 +84,16 @@ if (!defined('ANDISON_NAV_BRANDS_DROPDOWN_STYLE_PRINTED')) {
         nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-alfra img.andison-nav-brand-logo {
             --nav-logo-scale: 1.03;
             --nav-logo-scale-hover: 1.12;
+        }
+
+        nav li:nth-child(3) .nav-dropdown ul li > span {
+            font-size: 9px !important;
+            color: #333 !important;
+            text-align: center !important;
+            font-weight: 600 !important;
+            max-width: 140px !important;
+            word-break: break-word !important;
+            line-height: 1.3 !important;
         }
 
         @media (max-width: 1200px) {
@@ -256,8 +268,9 @@ if (is_array($andisonBrandsInfo) && !empty($andisonBrandsInfo)) {
 
         $brandUrl = $andisonNavBasePath . 'brand.php?name=' . rawurlencode($displayName);
         $brandCssKey = andison_nav_brand_css_key($displayName);
+        $brandShortLabel = trim((string)($brandInfo['short_label'] ?? ''));
         ?>
-        <li>
+        <li style="display:flex;flex-direction:column;align-items:center;gap:4px;">
             <a class="andison-nav-brand-link brand-key-<?php echo htmlspecialchars($brandCssKey, ENT_QUOTES); ?>" href="<?php echo htmlspecialchars($brandUrl, ENT_QUOTES); ?>">
                 <img
                     class="andison-nav-brand-logo"
@@ -266,6 +279,9 @@ if (is_array($andisonBrandsInfo) && !empty($andisonBrandsInfo)) {
                     title="<?php echo htmlspecialchars($displayName, ENT_QUOTES); ?>"
                 >
             </a>
+            <?php if ($brandShortLabel !== ''): ?>
+            <span><?php echo htmlspecialchars($brandShortLabel, ENT_QUOTES); ?></span>
+            <?php endif; ?>
         </li>
         <?php
     }

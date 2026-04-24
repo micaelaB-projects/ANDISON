@@ -220,6 +220,7 @@ foreach ($brandDisplayToKey as $displayKey => $brandKey) {
         'logo' => andison_brands_logo_path($resolvedBrandKey, $displayName, isset($brand_logo_map) && is_array($brand_logo_map) ? $brand_logo_map : [], $brandInfo),
         'logo_max_scale' => $logoMaxScale,
         'compact_hover' => $compactHover,
+        'short_label' => trim((string)($brandInfo['short_label'] ?? '')),
     ];
 }
 
@@ -2268,6 +2269,11 @@ usort($brandCards, static function (array $a, array $b): int {
                             <span class="brand-logo-fallback"><?php echo htmlspecialchars(strtoupper(substr((string)$brandCard['display'], 0, 1)), ENT_QUOTES); ?></span>
                         <?php endif; ?>
                     </div>
+                    <?php if (!empty($brandCard['short_label'])): ?>
+                    <div class="brand-label" style="padding:8px;text-align:center;font-size:13px;color:#333;font-weight:600;line-height:1.2;margin-top:8px;">
+                        <?php echo htmlspecialchars((string)$brandCard['short_label'], ENT_QUOTES); ?>
+                    </div>
+                    <?php endif; ?>
                 </div>
             <?php endforeach; ?>
         </div>
