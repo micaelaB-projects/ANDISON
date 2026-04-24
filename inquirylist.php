@@ -2694,6 +2694,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .inq-table { 
             width: 100%; 
             border-collapse: collapse;
+            table-layout: fixed;
         }
         .inq-table thead tr {
             background: linear-gradient(90deg, #f8f9fd 0%, #f0f5ff 100%);
@@ -2730,12 +2731,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             display: block;
             line-height: 1.3;
         }
+        .inq-product-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+        .inq-product-thumb {
+            width: 52px;
+            height: 52px;
+            border-radius: 8px;
+            border: 1px solid #e6e9f6;
+            background: #ffffff;
+            object-fit: contain;
+            flex-shrink: 0;
+            padding: 4px;
+        }
+        .inq-product-meta {
+            min-width: 0;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
         .inq-product-brand {
             font-size: 11px;
             color: #2B11DB;
             font-weight: 600;
             display: block;
             margin-top: 2px;
+        }
+        .inq-product-model,
+        .inq-product-desc {
+            display: block;
+            font-size: 11px;
+            color: #666;
+            margin-top: 2px;
+            line-height: 1.3;
         }
         .inq-qty-wrap {
             display: flex;
@@ -2789,6 +2819,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             display: inline-flex;
             align-items: center;
             gap: 6px;
+        }
+        .inq-remove-inline-mobile {
+            display: none;
         }
         .inq-remove-btn:hover { 
             background: linear-gradient(135deg, #e53935 0%, #d32f2f 100%);
@@ -3024,7 +3057,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         .btn-submit:active { transform: translateY(-1px); }
 
-        @media (max-width: 700px) {
+        @media (max-width: 1024px) {
             .inq-banner { padding: 36px 20px 32px; margin-left: 0; }
             .inq-banner-steps { gap: 0; }
             .inq-step-label { font-size: 9px; }
@@ -3034,8 +3067,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             .form-cols { grid-template-columns: 1fr; }
             .form-btns { flex-direction: column; }
             .btn-submit, .btn-clear { justify-content: center; }
-            .inq-table thead th:nth-child(2),
-            .inq-table tbody td:nth-child(2) { display: none; }
+            .inq-table thead th:nth-child(1),
+            .inq-table tbody td:nth-child(1) { display: none; }
+            .inq-table thead th:nth-child(2) { width: 100%; }
+            .inq-table thead th:nth-child(3),
+            .inq-table tbody td:nth-child(3) {
+                width: 116px;
+                white-space: nowrap;
+            }
+            .inq-table thead th:nth-child(4),
+            .inq-table tbody td:nth-child(4) {
+                display: none;
+            }
+            .inq-qty-wrap {
+                gap: 4px;
+                justify-content: flex-end;
+            }
+            .inq-qty-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 14px;
+            }
+            .inq-qty-input {
+                width: 44px;
+                padding: 6px 5px;
+                font-size: 12px;
+            }
+            .inq-remove-inline-mobile {
+                display: inline-flex;
+                padding: 6px 8px;
+                min-width: 28px;
+                justify-content: center;
+            }
+            .inq-product-thumb {
+                width: 46px;
+                height: 46px;
+            }
+            .inq-product-cell {
+                gap: 8px;
+                align-items: flex-start;
+            }
+            .inq-table tbody td {
+                padding: 12px 10px;
+            }
             .radio-card-group { flex-direction: column; }
             .form-actions-wrap { padding: 16px 18px; }
         }
@@ -3801,11 +3875,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 table.style.display = 'table';
                 emptyMsg.style.display = 'none';
                 items.forEach(function(item, idx) {
+                    var productHtml =
+                        '<div class="inq-product-cell">' +
+                            (item.image ? '<img class="inq-product-thumb" src="' + escHtml(item.image) + '" alt="' + escHtml(item.name || item.model || 'Product') + '">' : '') +
+                            '<div class="inq-product-meta">' +
+                                '<span class="inq-product-name">' + escHtml(item.name || item.model || '') + '</span>' +
+                                (item.brand ? '<span class="inq-product-brand">' + escHtml(item.brand) + '</span>' : '') +
+                                (item.model && item.model !== item.name ? '<span class="inq-product-model">Model: ' + escHtml(item.model) + '</span>' : '') +
+                                (item.description ? '<span class="inq-product-desc">' + escHtml(item.description) + '</span>' : '') +
+                            '</div>' +
+                        '</div>';
+
                     var tr = document.createElement('tr');
                     tr.innerHTML =
                         '<td style="color:#888;font-size:13px;font-weight:600;">' + (idx + 1) + '</td>' +
-                        '<td><span class="inq-product-name">' + escHtml(item.name || '') + '</span>' + (item.brand ? '<br><span class="inq-product-brand">' + escHtml(item.brand) + '</span>' : '') + '</td>' +
-                        '<td><div class="inq-qty-wrap"><button class="inq-qty-btn inq-qty-dec" data-idx="' + idx + '" type="button">−</button><input class="inq-qty-input" type="number" min="1" value="' + (item.qty || 1) + '" data-idx="' + idx + '"><button class="inq-qty-btn inq-qty-inc" data-idx="' + idx + '" type="button">+</button></div></td>' +
+                        '<td>' + productHtml + '</td>' +
+                        '<td><div class="inq-qty-wrap"><button class="inq-qty-btn inq-qty-dec" data-idx="' + idx + '" type="button">−</button><input class="inq-qty-input" type="number" min="1" value="' + (item.qty || 1) + '" data-idx="' + idx + '"><button class="inq-qty-btn inq-qty-inc" data-idx="' + idx + '" type="button">+</button><button class="inq-remove-btn inq-remove-inline-mobile" data-idx="' + idx + '" type="button"><i class="bi bi-trash"></i></button></div></td>' +
                         '<td><button class="inq-remove-btn" data-idx="' + idx + '" type="button"><i class="bi bi-trash"></i></button></td>';
                     tbody.appendChild(tr);
                 });
@@ -3819,7 +3904,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         function escHtml(str) {
-            return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+            return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
         }
 
         // Event delegation for remove, qty input, and qty +/- buttons
