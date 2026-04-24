@@ -2755,6 +2755,12 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
         .brands-carousel-item.brand-item-aquasol img {
             transform: scale(0.95);
         }
+        .brands-carousel-item.brand-item-revogard img {
+            transform: scale(0.95);
+        }
+        .brands-carousel-item.brand-item-alphatec img {
+            transform: scale(0.95);
+        }
         .brands-carousel-item:hover img {
             filter: grayscale(0%);
         }
@@ -2840,6 +2846,8 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
             .brands-carousel-item.brand-item-bw-technologies img { transform: scale(0.90); }
             .brands-carousel-item.brand-item-alfra img { transform: scale(0.86); }
             .brands-carousel-item.brand-item-aquasol img { transform: scale(0.88); }
+            .brands-carousel-item.brand-item-revogard img { transform: scale(0.88); }
+            .brands-carousel-item.brand-item-alphatec img { transform: scale(0.88); }
             .brands-carousel-track { gap: 10px; }
             .brands-carousel-outer { gap: 6px; padding: 0 4px; }
         }

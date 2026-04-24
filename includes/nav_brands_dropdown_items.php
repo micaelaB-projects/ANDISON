@@ -65,13 +65,8 @@ if (!defined('ANDISON_NAV_BRANDS_DROPDOWN_STYLE_PRINTED')) {
         }
 
         /* Reduce only the logos that appear too large visually. */
-        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-robotsystemsperipherals img.andison-nav-brand-logo,
-        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-dryrodii img.andison-nav-brand-logo,
         nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-soyer img.andison-nav-brand-logo,
-        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-bw img.andison-nav-brand-logo,
-        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-alfra img.andison-nav-brand-logo,
         nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-skandgalgage img.andison-nav-brand-logo,
-        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-aquasol img.andison-nav-brand-logo,
         nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-magnaflux img.andison-nav-brand-logo {
             --nav-logo-scale: 1.2;
             --nav-logo-scale-hover: 1.3;
@@ -80,7 +75,11 @@ if (!defined('ANDISON_NAV_BRANDS_DROPDOWN_STYLE_PRINTED')) {
         nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-dryrodii img.andison-nav-brand-logo,
         nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-bw img.andison-nav-brand-logo,
         nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-alphatec img.andison-nav-brand-logo,
-        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-revogard img.andison-nav-brand-logo {
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-revogard img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-robotsystemsperipherals img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-weldas img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-aquasol img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-alfra img.andison-nav-brand-logo {
             --nav-logo-scale: 1.03;
             --nav-logo-scale-hover: 1.12;
         }
