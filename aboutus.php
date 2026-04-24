@@ -2646,7 +2646,7 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
             </div>
         </div>
     </div>
-
+ 
     <!-- Brands Carousel Slider -->
     <section class="brands-carousel-section">
         <div class="brands-carousel-heading">Our Trusted Brands</div>
@@ -2674,6 +2674,7 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
             background: #f9f9f9;
             padding: 40px 0 36px;
             border-top: 1px solid #e8e8e8;
+            overflow-x: clip;
         }
         .brands-carousel-heading {
             text-align: center;
@@ -2689,7 +2690,9 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
             align-items: center;
             gap: 12px;
             padding: 0 16px;
-            max-width: 1500px;
+            width: 100%;
+            max-width: 1200px;
+            box-sizing: border-box;
             margin: 0 auto;
         }
         .brands-carousel-viewport {
@@ -2753,13 +2756,13 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
         }
         .brands-carousel-btn {
             flex-shrink: 0;
-            width: 40px;
-            height: 40px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
             border: 2px solid #ddd;
             background: #fff;
             color: #444;
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -2806,9 +2809,9 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
             .brands-carousel-section { padding: 28px 0 24px; }
             .brands-carousel-heading { font-size: 13px; margin-bottom: 16px; letter-spacing: 1.5px; }
             .brands-carousel-btn {
-                width: 30px;
-                height: 30px;
-                font-size: 13px;
+                width: 28px;
+                height: 28px;
+                font-size: 12px;
             }
             .brands-carousel-outer { gap: 6px; padding: 0 6px; }
             .brands-carousel-dots { margin-top: 16px; gap: 6px; }
