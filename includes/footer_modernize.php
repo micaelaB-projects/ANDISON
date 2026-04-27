@@ -1162,3 +1162,109 @@ $andisonFooterSettings = andison_get_footer_settings();
     }
 })();
 </script>
+
+<script>
+(function() {
+    var loader = document.getElementById('globalPageLoader');
+    if (!loader) return;
+
+    // Start with overflow hidden to prevent scrolling while loader is visible on initial load
+    document.documentElement.classList.add('gpl-loading');
+
+    // Determine the base path for the logo (same logic as footer)
+    var footerBase = (function() {
+        var parts = window.location.pathname.split('/').filter(function(part) {
+            return part !== '';
+        });
+        for (var i = 0; i < parts.length; i++) {
+            var lower = parts[i].toLowerCase();
+            if (lower === 'andison' || lower === 'andison-1') {
+                return '/' + parts.slice(0, i + 1).join('/');
+            }
+        }
+        return '';
+    })();
+    
+    var logoImg = document.getElementById('gplLogoImg');
+    if (logoImg) {
+        logoImg.src = (footerBase ? footerBase : '') + '/assets/HOME/image-removebg-preview.png';
+        // Fallback if image fails to load
+        logoImg.addEventListener('error', function() {
+            if (!this.src.includes('ANDISON')) {
+                this.src = '/ANDISON/assets/HOME/image-removebg-preview.png';
+            }
+        });
+    }
+
+    function hideLoader() {
+        if (loader.classList.contains('is-hidden')) return;
+        loader.classList.add('is-hidden');
+        loader.setAttribute('aria-hidden', 'true');
+        document.documentElement.classList.remove('gpl-loading');
+    }
+
+    // Hide loader when the page finishes loading
+    if (document.readyState === 'complete') {
+        setTimeout(hideLoader, 300);
+    } else {
+        window.addEventListener('load', function() {
+            setTimeout(hideLoader, 300);
+        });
+    }
+
+    // Fallback: forcefully hide after 4.5 seconds in case of stalled assets
+    setTimeout(hideLoader, 4500);
+
+    // Show loader on navigation clicks (nav bar, sidebar, and general internal links)
+    document.addEventListener('click', function(e) {
+        // Find closest anchor tag
+        var target = e.target.closest('a');
+        if (!target) return;
+
+        var href = target.getAttribute('href');
+        if (!href) return;
+
+        // Skip specific links
+        if (
+            href.startsWith('javascript:') ||
+            href.startsWith('#') ||
+            target.getAttribute('target') === '_blank' ||
+            href.startsWith('tel:') ||
+            href.startsWith('mailto:') ||
+            e.ctrlKey || e.shiftKey || e.metaKey || e.button !== 0 // open in new tab
+        ) {
+            return;
+        }
+
+        // Only intercept internal links (same origin)
+        var isInternal = false;
+        try {
+            var url = new URL(target.href, window.location.href);
+            if (url.origin === window.location.origin) {
+                isInternal = true;
+            }
+        } catch (err) {}
+
+        if (isInternal) {
+            // Check if it's just a hash change on the same page
+            var currentUrl = new URL(window.location.href);
+            var targetUrl = new URL(target.href);
+            if (currentUrl.pathname === targetUrl.pathname && currentUrl.search === targetUrl.search && targetUrl.hash) {
+                return; // just an anchor jump on same page
+            }
+
+            // Show loader
+            loader.classList.remove('is-hidden');
+            loader.setAttribute('aria-hidden', 'false');
+            document.documentElement.classList.add('gpl-loading');
+        }
+    });
+
+    // Handle browser back/forward buttons (pages can be restored from bfcache)
+    window.addEventListener('pageshow', function(e) {
+        if (e.persisted) {
+            hideLoader();
+        }
+    });
+})();
+</script>
