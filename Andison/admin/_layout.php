@@ -23,17 +23,13 @@ function andison_admin_header(string $title, string $active = 'dashboard'): void
         .dark-theme .sidebar{background:linear-gradient(135deg,var(--accent) 0%, #0f1940 100%);color:var(--text)}
         .dark-theme .card{background:var(--card);box-shadow:0 14px 40px rgba(2,6,23,0.6)}
         /* Dark-mode tweaks for sidebar options and layout */
-        .dark-theme .options-header{color:rgba(255,255,255,0.85)}
-        .dark-theme .options-bottom{border-top-color:rgba(255,255,255,0.08)}
-        .dark-theme .options-bottom .nav.option{color:rgba(255,255,255,0.90);background:transparent}
-        .dark-theme .options-bottom .nav.option::before{background:rgba(255,255,255,0.06)}
-        .dark-theme .options-bottom .nav.option i{color:rgba(255,255,255,0.95)}
-        .dark-theme .options-bottom .nav.option span{color:rgba(255,255,255,0.90);font-weight:700}
-        .dark-theme .options-bottom .nav.option:hover{color:rgba(255,255,255,0.98)}
-        .dark-theme .options-bottom .nav.option:hover::before{opacity:1}
+.dark-theme .topbar-options a{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.9)}
+        .dark-theme .topbar-options a:hover{background:rgba(255,255,255,0.14);color:rgba(255,255,255,0.98)}
+        .dark-theme .topbar-options a#logoutTopbar{color:#ff6b6b;background:rgba(255,107,107,0.08)}
+        .dark-theme .topbar-options a#logoutTopbar:hover{background:rgba(255,107,107,0.16)}
         .dark-theme .nav a{background:rgba(255,255,255,0.02);color:rgba(255,255,255,0.9)}
         .dark-theme .nav a.active{background:rgba(0,215,179,0.14);outline:1px solid rgba(0,215,179,0.20);color:var(--text)}
-        .dark-theme .sidebar .bottom{padding-bottom:18px}
+
         *{box-sizing:border-box}
         body{margin:0;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,#f5f7fb 0%,#eff2ff 100%);color:var(--text)}
         a{color:inherit}
@@ -44,7 +40,11 @@ function andison_admin_header(string $title, string $active = 'dashboard'): void
         .brand .mark{width:48px;height:48px;border-radius:10px;background:rgba(255,255,255,0.16);display:grid;place-items:center;font-weight:900;font-size:20px}
         .brand .name{font-weight:900;letter-spacing:0.4px;line-height:1.1;font-size:16px}
         .brand .sub{font-size:12px;opacity:0.85}
-        .nav{display:flex;flex-direction:column;gap:8px;margin-top:10px;width:100%;min-width:0}
+        .nav{display:flex;flex-direction:column;gap:8px;margin-top:10px;width:100%;min-width:0;flex:1;overflow-y:auto;padding-right:6px}
+        .nav::-webkit-scrollbar{width:6px}
+        .nav::-webkit-scrollbar-track{background:rgba(255,255,255,0.08);border-radius:3px}
+        .nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.25);border-radius:3px}
+        .nav::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.35)}
         .nav a{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;text-decoration:none;font-weight:500;letter-spacing:0.2px;background:rgba(255,255,255,0.08);transition:all 0.2s ease;min-width:0;width:100%;box-sizing:border-box}
         .nav a i{flex-shrink:0}
         .nav a > span:not(.badge-inline){min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block}
@@ -53,15 +53,7 @@ function andison_admin_header(string $title, string $active = 'dashboard'): void
         .nav.option{background:transparent;border-radius:10px;padding:8px 12px;margin:6px 8px;color:rgba(255,255,255,0.95);display:flex;align-items:center;gap:8px;text-decoration:none}
         .nav.option i{font-size:16px}
         .nav.option:hover{background:rgba(255,255,255,0.06);transform:translateX(4px)}
-        .sidebar .bottom{position:relative;margin-top:auto;display:flex;flex-direction:column;align-items:center;gap:18px;padding-bottom:6px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.12)}
-        .options-bottom{width:100%;display:flex;flex-direction:column;align-items:center;border-top:1px solid rgba(255,255,255,0.12);padding-top:16px;gap:12px}
-        .options-header{font-size:11px;font-weight:900;color:rgba(255,255,255,0.85);letter-spacing:1.2px;text-transform:uppercase;padding:0 8px;margin-bottom:16px;text-align:center;letter-spacing:0.9px}
-        .options-bottom .nav.option{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 16px;margin:6px 0;color:rgba(255,255,255,0.90);gap:10px;text-decoration:none;border-radius:12px;transition:all 0.2s ease;position:relative}
-        .options-bottom .nav.option::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,0.04);border-radius:12px;opacity:0;transition:opacity 0.2s ease;z-index:-1}
-        .options-bottom .nav.option:hover{color:rgba(255,255,255,0.98);transform:translateY(-2px)}
-        .options-bottom .nav.option:hover::before{opacity:1}
-        .options-bottom .nav.option i{font-size:28px;line-height:1;display:flex;align-items:center;justify-content:center}
-        .options-bottom .nav.option span{display:block;font-size:12px;font-weight:700;letter-spacing:0.3px}
+.sidebar .bottom{display:none}
         .pill{display:none}
         .close-btn{position:absolute;top:14px;right:14px;width:32px;height:32px;background:rgba(255,255,255,0.15);border:none;border-radius:8px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all 0.2s ease}
         .close-btn:hover{background:rgba(255,255,255,0.25);transform:scale(1.1)}
@@ -73,8 +65,13 @@ function andison_admin_header(string $title, string $active = 'dashboard'): void
         .hamburger.active span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
         .main{flex:1;padding:28px 28px 50px;margin-left:0;padding-left:74px;transition:all 0.3s ease}
         body.menu-open .main{margin-left:260px;padding-left:28px}
-        .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid rgba(43,17,219,0.08)}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid rgba(43,17,219,0.08)}
         .topbar h1{margin:0;font-size:28px;letter-spacing:-0.5px;font-weight:800;background:linear-gradient(135deg,var(--accent) 0%,#1a0a8f 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .topbar-options{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+        .topbar-options a{display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:12px;text-decoration:none;font-weight:600;font-size:13px;background:rgba(43,17,219,0.08);color:var(--accent);transition:all 0.2s ease}
+        .topbar-options a:hover{background:rgba(43,17,219,0.14);transform:translateY(-1px)}
+        .topbar-options a#logoutTopbar{color:#ef4444;background:rgba(239,68,68,0.08)}
+        .topbar-options a#logoutTopbar:hover{background:rgba(239,68,68,0.14)}
         .hint{color:var(--muted);font-size:13px;max-width:820px}
         .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
         .card{grid-column:span 12;background:var(--card);border:1px solid rgba(43,17,219,0.08);border-radius:20px;box-shadow:0 12px 48px rgba(43,17,219,0.09);padding:24px;transition:all 0.3s ease}
@@ -207,19 +204,15 @@ function andison_admin_header(string $title, string $active = 'dashboard'): void
                     $unreadBadge = $unreadCount > 99 ? '99+' : (string)$unreadCount;
                     ?> <span class="badge-inline"><?php echo $unreadBadge; ?></span><?php endif; ?></a>
         </nav>
-
-        <div class="bottom">
-            <div class="options-bottom" style="width:100%;">
-                <div class="options-header">Options</div>
-                <a class="nav option <?php echo $active === 'profile' ? 'active' : ''; ?>" href="profile.php"><i class="bi bi-person"></i><span>Account</span></a>
-                <a class="nav option" href="logout.php" id="logoutLink" style="color:rgba(255,100,100,0.90);"><i class="bi bi-box-arrow-right"></i><span>Logout</span></a>
-            </div>
-        </div>
     </aside>
 
     <main class="main">
         <div class="topbar">
             <h1><?php echo htmlspecialchars($title); ?></h1>
+            <div class="topbar-options">
+                <a href="profile.php" class="<?php echo $active === 'profile' ? 'active' : ''; ?>"><i class="bi bi-person-circle"></i> Account</a>
+                <a href="logout.php" id="logoutTopbar"><i class="bi bi-box-arrow-right"></i> Logout</a>
+            </div>
         </div>
 
         <?php if ($flash): ?>
@@ -386,7 +379,7 @@ function andison_admin_footer(): void
     }
 
     // Use the custom modal for logout confirmation instead of browser-native confirm.
-    var logoutLink = document.getElementById('logoutLink');
+    var logoutLink = document.getElementById('logoutTopbar');
     if (logoutLink) {
         logoutLink.addEventListener('click', function(e){
             e.preventDefault();

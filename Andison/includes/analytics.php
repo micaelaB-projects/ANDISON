@@ -269,3 +269,43 @@ function andison_track_category_visit(string $category): void
 {
     _andison_track_entity('categories', trim($category));
 }
+
+/**
+ * Track a link click or product open from the main website.
+ * Call this when users click on product links, brand links, or category links.
+ * @param string $clickType Type of click: 'product', 'brand', 'category', 'link', etc.
+ * @param string $target The target (product name, brand name, URL, etc.)
+ * @param string $category Optional category context
+ */
+function andison_track_click(string $clickType = 'link', string $target = '', string $category = ''): void
+{
+    if (empty($target)) return;
+
+    if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
+        session_start();
+    }
+
+    // Deduplicate high-frequency clicks from same session
+    // Allow multiple clicks but not in same second (prevents accidental double-clicks)
+    $clickKey = 'ac_' . $clickType . '_' . md5($target);
+
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        $lastClick = $_SESSION[$clickKey] ?? 0;
+        if (time() - $lastClick < 1) {
+            return; // Ignore duplicate clicks within 1 second
+        }
+        $_SESSION[$clickKey] = time();
+    }
+
+    // Write to Supabase (async — does not block page load)
+    $clickSessionKey = (session_id() ?: uniqid('ac_', true)) . '_' . substr(md5($target), 0, 8);
+    andison_sb_insert_async('analytics', [
+        'session_key' => $clickSessionKey,
+        'page' => 'click',
+        'click_type' => $clickType,
+        'target' => $target,
+        'category' => $category ?: '',
+        'visited_at' => date('c'),
+        'date_key' => date('Y-m-d'),
+    ]);
+}

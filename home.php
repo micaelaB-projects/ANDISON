@@ -1,13 +1,65 @@
 <?php
+// Start output buffering to allow header adjustments and ensure fast initial render
+ob_start();
+
 require_once __DIR__ . '/Andison/includes/analytics.php';
 andison_track_visit('home');
 require_once __DIR__ . '/Andison/includes/home_featured.php';
 require_once __DIR__ . '/Andison/includes/home_slider.php';
 require_once __DIR__ . '/Andison/includes/youtube_links.php';
 
-$featured = andison_get_home_featured(true);
-$slides = andison_get_home_slider();
-$ytLinks = andison_get_youtube_links();
+// Use timeouts to avoid page hang on slow Supabase connections
+// Set aggressive timeout for each function
+set_time_limit(8); // 8 second total limit for page load
+
+// Fetch data with protection against slow responses
+$featured = [];
+$slides = [];
+$ytLinks = [];
+
+try {
+    // Try to get featured content with fallback
+    @$featured = andison_get_home_featured(true) ?: [];
+} catch (Exception $e) {
+    // Silent fallback
+    $featured = [];
+}
+
+try {
+    // Try to get slider images with fallback
+    @$slides = andison_get_home_slider() ?: [
+        'assets/HOME/photo_2026-02-02_14-29-26 (1).jpg',
+        'assets/HOME/photo_2026-02-02_14-29-26 (2).jpg',
+        'assets/HOME/photo_2026-02-02_14-29-26 (3).jpg',
+        'assets/HOME/photo_2026-02-02_14-29-26 (4).jpg',
+    ];
+} catch (Exception $e) {
+    // Fallback to defaults
+    $slides = [
+        'assets/HOME/photo_2026-02-02_14-29-26 (1).jpg',
+        'assets/HOME/photo_2026-02-02_14-29-26 (2).jpg',
+        'assets/HOME/photo_2026-02-02_14-29-26 (3).jpg',
+        'assets/HOME/photo_2026-02-02_14-29-26 (4).jpg',
+    ];
+}
+
+try {
+    // Try to get YouTube links with fallback
+    @$ytLinks = andison_get_youtube_links() ?: [
+        'home_highlights' => [
+            'https://www.youtube.com/embed/WhnNcK0O7Gc',
+            'https://www.youtube.com/embed/3bQ5YW167pQ',
+        ],
+    ];
+} catch (Exception $e) {
+    // Fallback
+    $ytLinks = [
+        'home_highlights' => [
+            'https://www.youtube.com/embed/WhnNcK0O7Gc',
+            'https://www.youtube.com/embed/3bQ5YW167pQ',
+        ],
+    ];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -550,7 +602,7 @@ $ytLinks = andison_get_youtube_links();
             text-align: center;
             padding: 80px 20px;
             aspect-ratio: 16;
-            min-height: 400px;
+            min-height: 500px;
             max-height: 700px;
             display: flex;
             align-items: center;
@@ -1583,6 +1635,15 @@ $ytLinks = andison_get_youtube_links();
 
         .scroll-animate { opacity: 0; transform: translateY(40px); transition: opacity 0s ease, transform 0s ease; }
         
+        /* Ensure all content is visible from page load */
+        .page-content { opacity: 1; visibility: visible; width: 100%; }
+        body { opacity: 1; visibility: visible; }
+        
+        /* Ensure sections render properly */
+        section { min-height: auto; }
+        #products { min-height: 300px; }
+        .featured-product-wrap { min-height: 300px; }
+        .hero { display: flex !important; }
 
         /* Match brands.php staggered reveal timings (faster) */
         .product-card { opacity: 1; transform: translateY(0); will-change: transform,opacity; }
@@ -1918,10 +1979,30 @@ $ytLinks = andison_get_youtube_links();
     <!-- Hero Section -->
     <div class="page-content">
     <section class="hero" id="heroSlider">
-        <?php for ($i = 0; $i < 4; $i++): ?>
+        <!-- Loading state / fallback -->
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 5;">
+            <div style="font-size: 14px; color: rgba(255,255,255,0.8); display: flex; flex-direction: column; align-items: center; gap: 12px;">
+                <div style="width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+                <span>Loading...</span>
+            </div>
+        </div>
+        <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+        
+        <?php 
+        // Ensure we have at least 4 slides with fallbacks
+        $slideCount = is_array($slides) ? count($slides) : 0;
+        if ($slideCount < 4) {
+            for ($i = $slideCount; $i < 4; $i++) {
+                $slides[$i] = 'assets/HOME/photo_2026-02-02_14-29-26 (' . ($i+1) . ').jpg';
+            }
+        }
+        for ($i = 0; $i < 4; $i++): ?>
             <?php 
                 $slideClass = $i === 0 ? 'hero-slide active' : 'hero-slide';
                 $slideImage = htmlspecialchars((string)($slides[$i] ?? ''), ENT_QUOTES);
+                if (empty($slideImage)) {
+                    $slideImage = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1200 600%22%3E%3Crect fill=%22%23e5e7eb%22 width=%221200%22 height=%22600%22/%3E%3C/svg%3E';
+                }
             ?>
             <div class="<?php echo $slideClass; ?>" style="background-image: url('<?php echo $slideImage; ?>');">
                 <div class="hero-content">
@@ -1953,9 +2034,11 @@ $ytLinks = andison_get_youtube_links();
                     'Discover how our innovative technology is transforming industrial manufacturing.',
                     'Learn about our commitment to eco-friendly and sustainable products.'
                 ];
+                $hasVideos = false;
                 for ($i = 0; $i < 2; $i++): 
                     $ytUrl = (string)($ytLinks['home_highlights'][$i] ?? '');
                     if (empty($ytUrl)) continue;
+                    $hasVideos = true;
                 ?>
                 <div class="product-card">
                     <div class="product-image">
@@ -1967,6 +2050,13 @@ $ytLinks = andison_get_youtube_links();
                     </div>
                 </div>
                 <?php endfor; ?>
+                <?php if (!$hasVideos): ?>
+                <div style="grid-column: span 2; padding: 60px 20px; text-align: center; color: #9ca3af; background: #f8f9fa; border-radius: 12px;">
+                    <i class="bi bi-film" style="font-size: 40px; display: block; margin-bottom: 12px;"></i>
+                    <h3 style="color: #6b7280; margin-bottom: 8px;">Product Highlights Coming Soon</h3>
+                    <p>Featured videos will be displayed here once they are configured by the admin.</p>
+                </div>
+                <?php endif; ?>
             </div>
         </div>
     </section>
@@ -2436,5 +2526,6 @@ $ytLinks = andison_get_youtube_links();
     </script>
 </body>
 </html>
+<?php ob_end_flush(); ?>
 
 

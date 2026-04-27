@@ -280,13 +280,14 @@ $flash = andison_get_flash();
 
                 <div class="row" style="margin-top:12px">
                     <div class="field form-group">
-                        <label style="display:flex;align-items:center;gap:6px"><i class="bi bi-envelope"></i>Email Address</label>
+                        <label style="display:flex;align-items:center;gap:6px"><i class="bi bi-envelope"></i>Email Address <span style="color:#dc2626;margin-left:2px">*</span></label>
                         <div style="position:relative;display:flex;align-items:center">
                             <input type="email" id="emailInput" name="email" value="<?php echo $emailVal; ?>" placeholder="Enter your email" required style="padding:14px 48px 14px 16px;font-size:14px;width:100%;border-radius:14px;border:2px solid var(--border);background:#fff;transition:all 0.2s ease">
                             <button type="button" id="copyEmailBtn" title="Copy email" style="position:absolute;right:12px;background:transparent;border:none;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;transition:all 0.2s ease;padding:0">
                                 <i class="bi bi-clipboard" style="font-size:16px"></i>
                             </button>
                         </div>
+                        <div style="font-size:11px;color:#6b7280;margin-top:6px;display:flex;align-items:center;gap:4px"><i class="bi bi-info-circle"></i> Used for login • All your content remains safe when changed</div>
                         <div class="error-message"><i class="bi bi-exclamation-circle"></i><span>Please enter a valid email address</span></div>
                     </div>
                     <div class="field form-group">

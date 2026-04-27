@@ -56,12 +56,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_locked) {
         $password = isset($_POST['password']) ? (string)$_POST['password'] : '';
         
         if ($username !== '' && $password !== '') {
+            // Check if input is email or username
+            $configUsername = (string)($cfg['username'] ?? '');
+            $configEmail = (string)($cfg['email'] ?? '');
+            $isEmailInput = strpos($username, '@') !== false;
+            
+            // Match input against username OR email
+            $usernameMatches = hash_equals($configUsername, $username);
+            $emailMatches = $isEmailInput && hash_equals($configEmail, $username);
+            
             if (
-                hash_equals((string)($cfg['username'] ?? ''), $username)
+                ($usernameMatches || $emailMatches)
                 && andison_admin_verify_password($cfg, $password)
             ) {
                 $_SESSION['andison_admin'] = true;
-                $_SESSION['andison_admin_user'] = $username;
+                $_SESSION['andison_admin_user'] = $configUsername;
                 $_SESSION['login_attempts'] = 0;
                 $_SESSION['last_attempt_time'] = 0;
                 // Record last login timestamp
@@ -73,13 +82,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_locked) {
                 andison_admin_save_config($cfgWrite);
                 // Sync last_login to Supabase
                 require_once __DIR__ . '/../includes/supabase.php';
-                andison_sb_update('admin_users', ['last_login' => date('c')], 'username=eq.' . rawurlencode($username));
+                andison_sb_update('admin_users', ['last_login' => date('c')], 'username=eq.' . rawurlencode($configUsername));
                 // Write session before regenerating to prevent data loss
                 session_write_close();
                 session_name('ANDISON_ADMIN');
                 session_start();
                 $_SESSION['andison_admin'] = true;
-                $_SESSION['andison_admin_user'] = $username;
+                $_SESSION['andison_admin_user'] = $configUsername;
                 $_SESSION['andison_dashboard_loader_once'] = true;
                 session_regenerate_id(false);
                 // Build absolute redirect URL
@@ -92,10 +101,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_locked) {
                 // Increment failed attempts
                 $_SESSION['login_attempts'] = $login_attempts + 1;
                 $_SESSION['last_attempt_time'] = $current_time;
-                $error = 'Invalid username or password.';
+                $error = 'Invalid email/username or password.';
             }
         } else {
-            $error = 'Please enter both username and password.';
+            $error = 'Please enter both email/username and password.';
         }
     }
 }
@@ -171,9 +180,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_locked) {
             
             <form method="post" action="login.php?next=<?php echo urlencode($next); ?>" novalidate>
                 <div class="form-group">
-                    <label for="username">Email ID</label>
+                    <label for="username">Email or Username</label>
                     <div class="input-wrapper">
-                        <input id="username" name="username" type="text" autocomplete="username" placeholder="Enter your email" required aria-label="Email ID" aria-required="true" <?php echo $is_locked ? 'disabled' : ''; ?>>
+                        <input id="username" name="username" type="text" autocomplete="username" placeholder="Enter your email or username" required aria-label="Email or Username" aria-required="true" <?php echo $is_locked ? 'disabled' : ''; ?>>
                         <span class="input-icon">✉</span>
                     </div>
                 </div>
