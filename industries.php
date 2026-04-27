@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/Andison/includes/analytics.php';
-andison_track_visit('services');
+andison_track_visit('industries');
+require_once __DIR__ . '/Andison/includes/industries_page_content.php';
 require_once __DIR__ . '/Andison/includes/home_featured.php';
 require_once __DIR__ . '/Andison/includes/home_slider.php';
 require_once __DIR__ . '/Andison/includes/youtube_links.php';
@@ -8,13 +9,14 @@ require_once __DIR__ . '/Andison/includes/youtube_links.php';
 $featured = andison_get_home_featured();
 $slides = andison_get_home_slider();
 $ytLinks = andison_get_youtube_links();
+$industriesContent = andison_get_industries_page_content();
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Services - ANDISON INDUSTRIAL</title>
+    <title>Our Industries - ANDISON INDUSTRIAL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
         * {
@@ -2400,203 +2402,62 @@ $ytLinks = andison_get_youtube_links();
         </div>
 
         <div class="industry-cards">
+            <?php foreach ($industriesContent as $industry):
+                $slug = trim((string)($industry['slug'] ?? ''));
+                $title = trim((string)($industry['title'] ?? ''));
+                if ($title === '') {
+                    continue;
+                }
+                $summary = trim((string)($industry['summary'] ?? ''));
+                $details = trim((string)($industry['details'] ?? ''));
+                $imageUrl = trim((string)($industry['image_url'] ?? ''));
+                if ($imageUrl === '') {
+                    $imageUrl = 'assets/HOME/photo_2026-02-02_14-29-26 (1).jpg';
+                }
 
-            <!-- Motor Vehicle Industry -->
-            <div class="industry-card" id="motor-vehicle" data-industry="motor-vehicle">
+                $productsRaw = trim((string)($industry['products_list'] ?? ''));
+                $productLines = [];
+                if ($productsRaw !== '') {
+                    $parts = preg_split('/\r\n|\r|\n/', $productsRaw) ?: [];
+                    foreach ($parts as $line) {
+                        $line = trim((string)$line);
+                        if ($line !== '') {
+                            $productLines[] = $line;
+                        }
+                    }
+                }
+            ?>
+            <div class="industry-card"<?php echo $slug !== '' ? ' id="' . htmlspecialchars($slug, ENT_QUOTES) . '" data-industry="' . htmlspecialchars($slug, ENT_QUOTES) . '"' : ''; ?>>
                 <div class="industry-card-body">
-                    <h3>Motor Vehicle Industry</h3>
-                    <p>This industry manufactures automobiles, motorcycles, buses, and truck vans. They have a growing presence in the Philippine market, especially with the high market for motorcycles. We offer a wide assortment of welding equipment and consumables necessary to produce world-class products.</p>
+                    <h3><?php echo htmlspecialchars($title, ENT_QUOTES); ?></h3>
+                    <p><?php echo htmlspecialchars($summary, ENT_QUOTES); ?></p>
                     <a href="#" class="industry-read-more">READ MORE &#9660;</a>
-                    
+
                     <div class="industry-card-expanded">
                         <div class="industry-expanded-content">
-                            <h4>Motor Vehicle Industry</h4>
-                            <p>Top multinational and domestic automotive companies choose our Panasonic Welding Systems to significantly improve weld quality and boost efficiency while reducing production costs. We provide consultation, training, maintenance, and reliable after-sales service to satisfy our customers' expectations.</p>
-                            
+                            <h4><?php echo htmlspecialchars($title, ENT_QUOTES); ?></h4>
+                            <p><?php echo htmlspecialchars($details, ENT_QUOTES); ?></p>
+
+                            <?php if (!empty($productLines)): ?>
                             <strong style="color: #1565C0; font-size: 13px;">Some of our products used in this industry are:</strong>
                             <ul>
-                                <li>Arc Welding Robot with Power Source</li>
-                                <li>Arc Welding Equipment and Filler Metals</li>
-                                <li>Power Tools and Hand Tools</li>
-                                <li>Personal Protective Equipment (PPEs)</li>
+                                <?php foreach ($productLines as $productLine): ?>
+                                    <li><?php echo htmlspecialchars($productLine, ENT_QUOTES); ?></li>
+                                <?php endforeach; ?>
                             </ul>
-                            
+                            <?php endif; ?>
+
                             <p style="margin-top: 14px; font-size: 13px; color: #666;">For items not found on our website, kindly see our <a href="contact.php" style="color: #1565C0; text-decoration: none; font-weight: 600;">contact details</a> and send us an inquiry.</p>
-                            
+
                             <button class="industry-close-btn">CLOSE &#9652;</button>
                         </div>
                     </div>
                 </div>
                 <div class="industry-card-image">
-                    <img src="assets/HOME/MOTOR VEHICLE.jpg" alt="Motor Vehicle Industry">
+                    <img src="<?php echo htmlspecialchars($imageUrl, ENT_QUOTES); ?>" alt="<?php echo htmlspecialchars($title, ENT_QUOTES); ?>">
                 </div>
             </div>
-
-            <!-- Metal Fabrication -->
-            <div class="industry-card" id="metal-fabrication" data-industry="metal-fabrication">
-                <div class="industry-card-body">
-                    <h3>Metal Fabrication and Industrial</h3>
-                    <p>Bridges, railways, refineries, shipyards, transmission lines, and other large-scale projects require steel frames and other metals to support the large infrastructures. Workers in the metal fabrication industry do welding, metal cutting, and fastening to assemble metal parts.</p>
-                    <a href="#" class="industry-read-more">READ MORE &#9660;</a>
-                    
-                    <div class="industry-card-expanded">
-                        <div class="industry-expanded-content">
-                            <h4>Metal Fabrication and Industrial</h4>
-                            <p>We supply our clients with equipment that makes quality welds in a short time. Our safety products protect workers from hazards such as working from heights, sparks, glaring lights, and hazardous gases.</p>
-                            
-                            <strong style="color: #1565C0; font-size: 13px;">Some of our products used in this industry are:</strong>
-                            <ul>
-                                <li>Arc Welding Equipment and Filler Metals</li>
-                                <li>Plate Cutting and Beveling Equipment</li>
-                                <li>Gas Welding and Cutting Equipment</li>
-                                <li>Power Tools and Hand Tools</li>
-                                <li>Personal Protective Equipment (PPEs)</li>
-                            </ul>
-                            
-                            <p style="margin-top: 14px; font-size: 13px; color: #666;">For items not found on our website, kindly see our <a href="contact.php" style="color: #1565C0; text-decoration: none; font-weight: 600;">contact details</a> and send us an inquiry.</p>
-                            
-                            <button class="industry-close-btn">CLOSE &#9652;</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="industry-card-image">
-                    <img src="assets/HOME/METAL FABRICATION.jpg" alt="Metal Fabrication and Industrial">
-                </div>
-            </div>
-
-            <!-- Power Generation -->
-            <div class="industry-card" id="power-generation" data-industry="power-generation">
-                <div class="industry-card-body">
-                    <h3>Power Generation</h3>
-                    <p>The Power Generation Industry is vital in a country's growth. They must be a reliable partner in meeting the Philippine Energy Market's ever-growing demands.</p>
-                    <a href="#" class="industry-read-more">READ MORE &#9660;</a>
-                    
-                    <div class="industry-card-expanded">
-                        <div class="industry-expanded-content">
-                            <h4>Power Generation</h4>
-                            <p>From plant maintenance, shutdown, building power transmission lines, and other infrastructures, we work closely with our clients and supply them finish their projects on schedule.</p>
-                            
-                            <strong style="color: #1565C0; font-size: 13px;">Some of our products used in this industry are:</strong>
-                            <ul>
-                                <li>Arc Welding Equipment and Filler Metals</li>
-                                <li>Power Tools and Hand Tools</li>
-                                <li>Grinders, Maintenance Tools and Equipment</li>
-                                <li>Bearings, Maintenance Tools and Equipment</li>
-                                <li>Height Protection Equipment and other PPEs</li>
-                            </ul>
-                            
-                            <p style="margin-top: 14px; font-size: 13px; color: #666;">For items not found on our website, kindly see our <a href="contact.php" style="color: #1565C0; text-decoration: none; font-weight: 600;">contact details</a> and send us an inquiry.</p>
-                            
-                            <button class="industry-close-btn">CLOSE &#9652;</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="industry-card-image">
-                    <img src="assets/HOME/POWER GENERATION.jpg" alt="Power Generation">
-                </div>
-            </div>
-
-            <!-- Oil and Petrochemical -->
-            <div class="industry-card" id="oil-petrochemical" data-industry="oil-petrochemical">
-                <div class="industry-card-body">
-                    <h3>Oil and Petrochemical Industry</h3>
-                    <p>Oil refineries use fractional distillation and other methods to process crude oil into more useful products like petroleum, gasoline, and other fuels. During the distillation, heavier by-products settle at the bottom. Petrochemical plants crack the by-products and further process them into more useful chemicals. Other industries use these petrochemicals to create different products.</p>
-                    <a href="#" class="industry-read-more">READ MORE &#9660;</a>
-                    
-                    <div class="industry-card-expanded">
-                        <div class="industry-expanded-content">
-                            <h4>Oil and Petrochemical Industry</h4>
-                            <p>Oil and petrochemical industries regularly perform industrial works (projects) that require maintenance, shutdowns, and expanding facilities and pipelines. We provide our clients with safety products, equipment and consumables for maintaining the facilities and building industrial projects.</p>
-                            
-                            <strong style="color: #1565C0; font-size: 13px;">Some of our products used in this industry are:</strong>
-                            <ul>
-                                <li>Arc Welding Equipment and Filler Metals</li>
-                                <li>Portable Gas Detectors</li>
-                                <li>Air Movers and Industrial Ventilators</li>
-                                <li>Bearings, Maintenance Tools and Equipment</li>
-                                <li>Pipe Cutting and Beveling Machine</li>
-                                <li>Power Tools and Hand Tools</li>
-                                <li>Personal Protective Equipment (PPEs)</li>
-                            </ul>
-                            
-                            <p style="margin-top: 14px; font-size: 13px; color: #666;">For items not found on our website, kindly see our <a href="contact.php" style="color: #1565C0; text-decoration: none; font-weight: 600;">contact details</a> and send us an inquiry.</p>
-                            
-                            <button class="industry-close-btn">CLOSE &#9652;</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="industry-card-image">
-                    <img src="assets/HOME/OIL AND PETROCHEMICAL.jpg" alt="Oil and Petrochemical Industry">
-                </div>
-            </div>
-
-            <!-- Mining Industry -->
-            <div class="industry-card" id="mining" data-industry="mining">
-                <div class="industry-card-body">
-                    <h3>Mining Industry</h3>
-                    <p>This industry extracts coal, oil, metals, and other raw materials from the earth. These resources are processed by other industries to create products such as fuel, jewelry, construction materials, and everyday items. Mining is vital to the economy.</p>
-                    <a href="#" class="industry-read-more">READ MORE &#9660;</a>
-                    
-                    <div class="industry-card-expanded">
-                        <div class="industry-expanded-content">
-                            <h4>Mining Industry</h4>
-                            <p>However, digging deep into the ground could pose a safety risk to workers without the proper equipment. We at Andison promote safety by providing high-quality PPEs. Our portfolio includes various single and multi-gas detectors including maintenance-free gas detection. We provide clients with training on the proper use of the equipment to fully use its functions and ensure a safe working environment. We also do recalibration for the gas detection.</p>
-                            
-                            <strong style="color: #1565C0; font-size: 13px;">Some of our products used in this industry are:</strong>
-                            <ul>
-                                <li>Portable and Multi-Gas Detectors</li>
-                                <li>PPEs and other Safety Products</li>
-                                <li>Air Movers and Ventilation Equipment</li>
-                                <li>Bearings, Maintenance Tools and Equipment</li>
-                                <li>Cordless Power Tools</li>
-                                <li>Floodlights and other Light Sources</li>
-                            </ul>
-                            
-                            <p style="margin-top: 14px; font-size: 13px; color: #666;">For items not found on our website, kindly see our <a href="contact.php" style="color: #1565C0; text-decoration: none; font-weight: 600;">contact details</a> and send us an inquiry.</p>
-                            
-                            <button class="industry-close-btn">CLOSE &#9652;</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="industry-card-image">
-                    <img src="assets/HOME/MINING.jpg" alt="Mining Industry">
-                </div>
-            </div>
-
-            <!-- Shipyard -->
-            <div class="industry-card" id="shipyard" data-industry="shipyard">
-                <div class="industry-card-body">
-                    <h3>Shipyard</h3>
-                    <p>World trade relies heavily on freight ships because it offers a high capacity at a low cost in transporting goods. Being an archipelago, the Philippines also uses ships to ferry people to the country's many islands. Shipyards play a critical role in maintaining ships, ensuring they are seaworthy and safe.</p>
-                    <a href="#" class="industry-read-more">READ MORE &#9660;</a>
-                    
-                    <div class="industry-card-expanded">
-                        <div class="industry-expanded-content">
-                            <h4>Shipyard</h4>
-                            <p>Metal fabrication is an integral part of the shipbuilding industry. Andison has a wide product catalog for working with metal fabrication, providing clients with equipment ready for the job.</p>
-                            
-                            <strong style="color: #1565C0; font-size: 13px;">Some of our products used in this industry are:</strong>
-                            <ul>
-                                <li>Arc Welding Equipment and Filler Metals</li>
-                                <li>Gas Welding and Cutting Equipment</li>
-                                <li>Air Movers and Industrial Ventilators</li>
-                                <li>Power Tools and Hand Tools</li>
-                                <li>Pipe Cutting and Beveling Machine</li>
-                                <li>Personal Protective Equipment (PPEs)</li>
-                                <li>Portable Gas Detectors</li>
-                            </ul>
-                            
-                            <p style="margin-top: 14px; font-size: 13px; color: #666;">For items not found on our website, kindly see our <a href="contact.php" style="color: #1565C0; text-decoration: none; font-weight: 600;">contact details</a> and send us an inquiry.</p>
-                            
-                            <button class="industry-close-btn">CLOSE &#9652;</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="industry-card-image">
-                    <img src="assets/HOME/shipyard.jpg" alt="Shipyard">
-                </div>
-            </div>
-
+            <?php endforeach; ?>
         </div>
     </section>
 

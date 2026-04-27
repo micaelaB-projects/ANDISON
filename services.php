@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/Andison/includes/analytics.php';
 andison_track_visit('services');
+require_once __DIR__ . '/Andison/includes/services_page_content.php';
 require_once __DIR__ . '/Andison/includes/home_featured.php';
 require_once __DIR__ . '/Andison/includes/home_slider.php';
 require_once __DIR__ . '/Andison/includes/youtube_links.php';
@@ -8,6 +9,7 @@ require_once __DIR__ . '/Andison/includes/youtube_links.php';
 $featured = andison_get_home_featured();
 $slides = andison_get_home_slider();
 $ytLinks = andison_get_youtube_links();
+$servicesContent = andison_get_services_page_content();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -1005,6 +1007,14 @@ $ytLinks = andison_get_youtube_links();
         .service-card.teal .service-icon-box {
             background: linear-gradient(135deg, #00bcd4 0%, #00897b 100%);
             box-shadow: 0 8px 24px rgba(0, 188, 212, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .service-icon-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 16px;
+            display: block;
         }
 
         /* Featured Section */
@@ -2059,57 +2069,37 @@ $ytLinks = andison_get_youtube_links();
             </p>
 
             <div class="services-grid">
-                <!-- Technical Consultation -->
-                <div class="service-card">
+                <?php foreach ($servicesContent as $service):
+                    $cardClasses = ['service-card'];
+                    if (!empty($service['is_teal'])) {
+                        $cardClasses[] = 'teal';
+                    }
+                    if (!empty($service['is_reverse'])) {
+                        $cardClasses[] = 'reverse';
+                    }
+                    $iconClass = trim((string)($service['icon'] ?? ''));
+                    if ($iconClass === '') {
+                        $iconClass = 'bi-gear';
+                    }
+                    $slug = trim((string)($service['slug'] ?? ''));
+                    $imageUrl = trim((string)($service['image_url'] ?? ''));
+                ?>
+                <div class="<?php echo htmlspecialchars(implode(' ', $cardClasses), ENT_QUOTES); ?>"<?php echo $slug !== '' ? ' id="' . htmlspecialchars($slug, ENT_QUOTES) . '"' : ''; ?>>
                     <div class="service-content">
-                        <span class="service-badge">Expert Assistance</span>
-                        <h3>Technical Consultation</h3>
-                        <p>Expert guidance from our team of experienced industrial specialists. We provide comprehensive consultation on equipment selection, process optimization, and technical specifications to ensure you have the solid support and processes for your application.</p>
-                        <p style="margin-top: 12px;">Our consultation services include process optimization, equipment selection assistance, facility design and compliance audit support customized to support successful project implementation.</p>
+                        <span class="service-badge"><?php echo htmlspecialchars((string)($service['badge'] ?? '')); ?></span>
+                        <h3><?php echo htmlspecialchars((string)($service['title'] ?? '')); ?></h3>
+                        <p><?php echo htmlspecialchars((string)($service['description'] ?? '')); ?></p>
+                        <p style="margin-top: 12px;"><?php echo htmlspecialchars((string)($service['details'] ?? '')); ?></p>
                     </div>
                     <div class="service-icon-box">
-                        <i class="bi bi-gear"></i>
+                        <?php if ($imageUrl !== ''): ?>
+                            <img src="<?php echo htmlspecialchars($imageUrl, ENT_QUOTES); ?>" alt="<?php echo htmlspecialchars((string)($service['title'] ?? 'Service'), ENT_QUOTES); ?>">
+                        <?php else: ?>
+                            <i class="bi <?php echo htmlspecialchars($iconClass, ENT_QUOTES); ?>"></i>
+                        <?php endif; ?>
                     </div>
                 </div>
-
-                <!-- Training Programs -->
-                <div class="service-card teal reverse">
-                    <div class="service-content">
-                        <span class="service-badge">Skill Development</span>
-                        <h3>Training Programs</h3>
-                        <p>Comprehensive training programs designed to enhance your team's capabilities with advanced welding equipment and safety protocols. Our certified instructors provide hands-on training covering operator qualification, preventive procedures, and technical troubleshooting.</p>
-                        <p style="margin-top: 12px;">Training includes onsite training sessions, certification programs, hands and angle verification procedures, and comprehensive documentation to ensure technician competency and adherence to safety standards.</p>
-                    </div>
-                    <div class="service-icon-box">
-                        <i class="bi bi-book"></i>
-                    </div>
-                </div>
-
-                <!-- Equipment Maintenance -->
-                <div class="service-card">
-                    <div class="service-content">
-                        <span class="service-badge">Full Performance</span>
-                        <h3>Equipment Maintenance</h3>
-                        <p>Preventive maintenance and repair service to keep equipment operating at peak performance, maximize uptime and equipment lifespan. Our field service team ensures all critical equipment is properly maintained and emergency repairs are addressed immediately.</p>
-                        <p style="margin-top: 12px;">We maintain extensive preventive care upon the full inspection maintenance contract schedules such repairs, quick emergency support and emergency repairs. Also maintain complete spare parts inventory to minimize downtime and extend equipment lifespan.</p>
-                    </div>
-                    <div class="service-icon-box">
-                        <i class="bi bi-tools"></i>
-                    </div>
-                </div>
-
-                <!-- After-Sales Support -->
-                <div class="service-card teal reverse">
-                    <div class="service-content">
-                        <span class="service-badge">Ongoing Support</span>
-                        <h3>After-Sales Support</h3>
-                        <p>Dedicated support team to assist with troubleshooting, spare part procurement and application-specific guidance. We provide prompt response to ensure minimal disruption to your operations.</p>
-                        <p style="margin-top: 12px;">Our after-sales support includes company standardization technical documentation, software updates for remote systems and dispatch our integrated specialized team for comprehensive technical support and immediate availability.</p>
-                    </div>
-                    <div class="service-icon-box">
-                        <i class="bi bi-headset"></i>
-                    </div>
-                </div>
+                <?php endforeach; ?>
             </div>
         </div>
     </section>
