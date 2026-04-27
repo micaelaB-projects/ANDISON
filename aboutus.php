@@ -2662,16 +2662,14 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
             <div class="brands-carousel-viewport" id="brandsViewport">
                 <div class="brands-carousel-track" id="brandsTrack">
                     <?php foreach ($aboutBrandCards as $brandCard): ?>
-                    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
                         <a href="brand.php?name=<?php echo rawurlencode((string)$brandCard['display']); ?>" class="brands-carousel-item brand-item-<?php echo htmlspecialchars(trim((string)$brandCard['slug'], '-'), ENT_QUOTES); ?>">
                             <img src="<?php echo htmlspecialchars((string)$brandCard['logo'], ENT_QUOTES); ?>" alt="<?php echo htmlspecialchars((string)$brandCard['display'], ENT_QUOTES); ?>">
+                            <?php if (!empty($brandCard['short_label'])): ?>
+                            <span class="brand-caption">
+                                <?php echo htmlspecialchars((string)$brandCard['short_label'], ENT_QUOTES); ?>
+                            </span>
+                            <?php endif; ?>
                         </a>
-                        <?php if (!empty($brandCard['short_label'])): ?>
-                        <span style="font-size:10px;color:#666;text-align:center;font-weight:500;max-width:140px;word-break:break-word;">
-                            <?php echo htmlspecialchars((string)$brandCard['short_label'], ENT_QUOTES); ?>
-                        </span>
-                        <?php endif; ?>
-                    </div>
                     <?php endforeach; ?>
                 </div>
             </div>
@@ -2723,12 +2721,12 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 2px;
+            gap: 1px;
             flex-shrink: 0;
         }
         
         .brands-carousel-track > div > span {
-            font-size: 11px;
+            font-size: 10px;
             color: #333;
             text-align: center;
             font-weight: 600;
@@ -2739,16 +2737,20 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
         
         .brands-carousel-item {
             flex-shrink: 0;
-            height: 188px;
+            height: 186px;
             width: 220px;
+            position: relative;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            gap: 10px;
             background: #fff;
             border: 1px solid #efefef;
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            padding: 20px 24px;
+            padding: 12px 14px;
+            overflow: hidden;
             transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
             text-decoration: none;
         }
@@ -2760,17 +2762,34 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
         }
         
         .brands-carousel-item img {
+            position: relative;
+            z-index: 1;
             display: block;
             width: 100%;
-            height: 100%;
+            height: 124px;
             max-width: none;
             max-height: none;
             object-fit: contain;
             filter: grayscale(25%);
             transition: filter 0.25s ease;
             pointer-events: none;
-            transform: scale(1.44);
+            transform: scale(1.22);
             transform-origin: center center;
+        }
+
+        .brand-caption {
+            position: relative;
+            z-index: 2;
+            font-size: 15px;
+            color: #555;
+            text-align: center;
+            font-weight: 700;
+            line-height: 1.2;
+            max-width: 190px;
+            word-break: break-word;
+            background: rgba(255, 255, 255, 0.94);
+            border-radius: 6px;
+            padding: 2px 6px;
         }
         
         .brands-carousel-track a img {
@@ -2881,7 +2900,9 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
             }
         }
         @media (max-width: 600px) {
-            .brands-carousel-item img { transform: scale(1.16); }
+            .brands-carousel-item { height: 174px; gap: 8px; padding: 10px 12px; }
+            .brands-carousel-item img { height: 110px; transform: scale(1.12); }
+            .brand-caption { font-size: 13px; max-width: 160px; }
             .brands-carousel-item.brand-item-dryrod-ii img { transform: scale(0.78); }
             .brands-carousel-item.brand-item-bw img,
             .brands-carousel-item.brand-item-bw-technologies img { transform: scale(0.90); }

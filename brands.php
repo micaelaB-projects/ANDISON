@@ -209,9 +209,11 @@ foreach ($brandDisplayToKey as $displayKey => $brandKey) {
     $resolvedBrandKey = andison_brands_preferred_key($displayName, (string)$brandKey, $brandsData);
     $brandInfo = isset($brandsData[$resolvedBrandKey]) && is_array($brandsData[$resolvedBrandKey]) ? $brandsData[$resolvedBrandKey] : [];
     $displayLower = strtolower(trim($displayName));
-    $logoMaxScale = 1.28;
+    $logoMaxScale = 1.55;
     if (str_contains($displayLower, 'bw technologies') || str_contains($displayLower, 'bw ') || $displayLower === 'alfra') {
         $logoMaxScale = 1.02;
+    } elseif ($displayLower === 'revolt') {
+        $logoMaxScale = 1.70;
     }
     $compactHover = str_contains($displayLower, 'alphatec') || str_contains($displayLower, 'revogard');
     $brandCards[] = [
@@ -1075,7 +1077,7 @@ usort($brandCards, static function (array $a, array $b): int {
             background: #fff;
             border: 1px solid #efefef;
             border-radius: 16px;
-            padding: 18px 14px;
+            padding: 2px 8px 4px;
             text-align: center;
             transition: border-color 0.24s ease, box-shadow 0.24s ease, transform 0.24s ease;
             cursor: pointer;
@@ -1105,21 +1107,21 @@ usort($brandCards, static function (array $a, array $b): int {
 
         .brand-logo {
             width: 100%;
-            height: 180px;
+            height: 176px;
             background: #fff;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 8px;
+            margin-bottom: 0;
             overflow: hidden;
         }
 
         .brand-logo img {
             width: auto;
             height: auto;
-            max-width: 94%;
-            max-height: 86%;
+            max-width: 100%;
+            max-height: 95%;
             object-fit: contain;
             padding: 0;
             transform: scale(1);
@@ -1163,7 +1165,7 @@ usort($brandCards, static function (array $a, array $b): int {
             }
 
             .brand-logo {
-                height: 160px;
+                height: 144px;
             }
         }
 
@@ -1180,7 +1182,7 @@ usort($brandCards, static function (array $a, array $b): int {
             }
 
             .brand-logo {
-                height: 136px;
+                height: 128px;
             }
         }
 
@@ -1190,10 +1192,10 @@ usort($brandCards, static function (array $a, array $b): int {
                 gap: 8px;
             }
             .brand-card {
-                padding: 10px;
+                padding: 8px;
             }
             .brand-logo {
-                height: 102px;
+                height: 100px;
             }
             .brand-logo img {
                 width: 100%;
@@ -2270,7 +2272,7 @@ usort($brandCards, static function (array $a, array $b): int {
                         <?php endif; ?>
                     </div>
                     <?php if (!empty($brandCard['short_label'])): ?>
-                    <div class="brand-label" style="padding:8px;text-align:center;font-size:13px;color:#333;font-weight:600;line-height:1.2;margin-top:8px;">
+                    <div class="brand-label" style="padding:0;text-align:center;font-size:20px;color:#333;font-weight:600;line-height:1.20;margin-top:-3px;">
                         <?php echo htmlspecialchars((string)$brandCard['short_label'], ENT_QUOTES); ?>
                     </div>
                     <?php endif; ?>
