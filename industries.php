@@ -31,11 +31,14 @@ $industriesContent = andison_get_industries_page_content();
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            .sidebar {
-                position: static;
-            }
+            padding-top: 142px;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
+        }
+
+        .sidebar {
+            position: static;
         }
 
         /* Header */
