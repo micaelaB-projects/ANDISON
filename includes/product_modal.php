@@ -57,14 +57,14 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
             <span id="prodDetailBrand" style="font-size:9px;font-weight:950;color:#2B11DB;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:block;background:linear-gradient(135deg, rgba(43,17,219,0.12) 0%, rgba(43,17,219,0.06) 100%);padding:8px 14px;border-radius:8px;width:fit-content;border-left:3px solid #2B11DB;"></span>
             <h2 id="prodDetailName" style="font-size:clamp(28px,3vw,42px);font-weight:500;color:#0a0a1a;margin:10px 0 12px;line-height:1.12;letter-spacing:-0.7px;text-shadow:0 2px 8px rgba(0,0,0,0.08);"></h2>
             <span id="prodDetailType" style="display:inline-block;background:linear-gradient(135deg, #2B11DB 0%, #1f0aa1 100%);color:#fff;font-size:10px;font-weight:950;padding:10px 20px;border-radius:24px;text-transform:uppercase;letter-spacing:1.2px;box-shadow:0 6px 16px rgba(43,17,219,0.28);"></span>
-            <div id="prodDetailSubname" style="display:none;font-size:15px;font-weight:600;color:#555;margin-top:8px;letter-spacing:0.2px;"></div>
+            <div id="prodDetailSubname" style="display:none;font-size:25px;font-weight:600;color:#555;margin-top:8px;letter-spacing:0.2px;"></div>
             <div id="prodDetailPrice" style="display:none;margin-top:10px;font-size:13px;font-weight:800;color:#2B11DB;background:rgba(43,17,219,0.08);padding:6px 14px;border-radius:20px;width:fit-content;letter-spacing:0.5px;"></div>
           </div>
           
           <!-- Description -->
           <div id="prodDescSection" style="display:none;margin-bottom:22px;padding:18px 20px;background:linear-gradient(135deg, rgba(43,17,219,0.06) 0%, rgba(43,17,219,0.03) 100%);border-radius:14px;border-left:4px solid #2B11DB;">
             <div style="font-size:17px;font-weight:950;color:#2B11DB;letter-spacing:1px;margin-bottom:10px;text-transform:uppercase;display:flex;align-items:center;gap:6px;"><i class="bi bi-file-text"></i> OVERVIEW</div>
-                        <div id="prodDetailDesc" style="font-size:16px;color:#444;line-height:1.8;margin:0;font-weight:500;"></div>
+                        <div id="prodDetailDesc" style="font-size:18px;color:#444;line-height:1.8;margin:0;font-weight:500;"></div>
                         <div id="prodOverviewMediaWrap" style="display:none;margin:12px auto 0;width:100%;max-width:760px;">
                             <img id="prodOverviewMediaImg" src="" alt="Overview image" style="display:block;width:100%;height:clamp(220px,32vw,360px);object-fit:contain;border-radius:12px;border:none;background:transparent;box-shadow:none;padding:0;">
                         </div>
@@ -3352,7 +3352,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         if (!prevBrandEl) {
             prevBrandEl = document.createElement('div');
             prevBrandEl.id = 'prodDetailPrevBrand';
-            prevBrandEl.style.fontSize = '12px';
+            prevBrandEl.style.fontSize = '17px';
             prevBrandEl.style.fontWeight = '600';
             prevBrandEl.style.color = '#ef4444';
             prevBrandEl.style.marginTop = '6px';
@@ -3365,7 +3365,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         }
         
         if (prevBrand) {
-            prevBrandEl.innerHTML = '<i class="bi bi-tag-fill"></i> Previous Brand: ' + prevBrand;
+            prevBrandEl.innerHTML = '<i class="bi bi-tag-fill"></i> Previously Known As: ' + prevBrand;
             prevBrandEl.style.display = 'block';
         } else {
             prevBrandEl.style.display = 'none';
