@@ -3328,6 +3328,14 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
             if (price) { priceEl.textContent = '\u20B1 ' + price; priceEl.style.display = 'inline-block'; }
             else        { priceEl.style.display = 'none'; }
         }
+        var productNameCombo = String(productName || '');
+        var prevBrand = '';
+        if (productNameCombo.indexOf('||PREVIOUS_BRAND||') !== -1) {
+            var parts = productNameCombo.split('||PREVIOUS_BRAND||');
+            productName = parts[0];
+            prevBrand = parts[1];
+        }
+
         // Show product name as subtitle if it differs from model
         var prodSubnameEl = document.getElementById('prodDetailSubname');
         if (prodSubnameEl) {
@@ -3337,6 +3345,30 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
             } else {
                 prodSubnameEl.style.display = 'none';
             }
+        }
+        
+        // Render Previous Brand
+        var prevBrandEl = document.getElementById('prodDetailPrevBrand');
+        if (!prevBrandEl) {
+            prevBrandEl = document.createElement('div');
+            prevBrandEl.id = 'prodDetailPrevBrand';
+            prevBrandEl.style.fontSize = '12px';
+            prevBrandEl.style.fontWeight = '600';
+            prevBrandEl.style.color = '#ef4444';
+            prevBrandEl.style.marginTop = '6px';
+            prevBrandEl.style.marginBottom = '12px';
+            
+            var titleEl = document.getElementById('prodDetailName');
+            if (titleEl && titleEl.parentNode) {
+                titleEl.parentNode.insertBefore(prevBrandEl, titleEl.nextSibling);
+            }
+        }
+        
+        if (prevBrand) {
+            prevBrandEl.innerHTML = '<i class="bi bi-tag-fill"></i> Previous Brand: ' + prevBrand;
+            prevBrandEl.style.display = 'block';
+        } else {
+            prevBrandEl.style.display = 'none';
         }
 
         // Load additional data from JSON (description/specs) only when needed.
@@ -4286,11 +4318,29 @@ header .contact-popover {
         });
     }
 
-    // Run after DOM ready and also after pagination re-renders cards
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initCardSliders);
     } else {
         initCardSliders();
+    }
+    
+    function cleanProductCardDelimiters() {
+        var targets = document.querySelectorAll('.brand-product-type, .product-model, h4');
+        targets.forEach(function(el) {
+            var txt = el.innerHTML;
+            if (txt.indexOf('||PREVIOUS_BRAND||') !== -1) {
+                el.innerHTML = txt.split('||PREVIOUS_BRAND||')[0];
+            }
+            if (txt.indexOf('||PREV_NAME||') !== -1) {
+                el.innerHTML = el.innerHTML.split('||PREV_NAME||')[0];
+            }
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', cleanProductCardDelimiters);
+    } else {
+        cleanProductCardDelimiters();
     }
 
     // Re-run when pagination changes visibility of cards
@@ -4299,6 +4349,7 @@ header .contact-popover {
         window.updatePagination = function() {
             _origUpdatePagination.apply(this, arguments);
             setTimeout(initCardSliders, 50);
+            setTimeout(cleanProductCardDelimiters, 50);
         };
     }
 

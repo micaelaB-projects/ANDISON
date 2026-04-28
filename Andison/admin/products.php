@@ -1051,7 +1051,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($action === 'add_product') {
-            $name = isset($_POST['product_name']) ? trim((string)$_POST['product_name']) : '';
+            $nameRaw = isset($_POST['product_name']) ? trim((string)$_POST['product_name']) : '';
+            $prevBrand = isset($_POST['previous_brand']) ? trim((string)$_POST['previous_brand']) : '';
+            $name = $nameRaw;
+            if ($prevBrand !== '') {
+                $name .= '||PREVIOUS_BRAND||' . $prevBrand;
+            }
             $model = isset($_POST['model']) ? trim((string)$_POST['model']) : '';
             $type = isset($_POST['type']) ? trim((string)$_POST['type']) : '';
             $price = isset($_POST['price']) ? trim((string)$_POST['price']) : '';
@@ -1120,7 +1125,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
 
-            $name = isset($_POST['product_name']) ? trim((string)$_POST['product_name']) : '';
+            $nameRaw = isset($_POST['product_name']) ? trim((string)$_POST['product_name']) : '';
+            $prevBrand = isset($_POST['previous_brand']) ? trim((string)$_POST['previous_brand']) : '';
+            $name = $nameRaw;
+            if ($prevBrand !== '') {
+                $name .= '||PREVIOUS_BRAND||' . $prevBrand;
+            }
             $model = isset($_POST['model']) ? trim((string)$_POST['model']) : '';
             $type = isset($_POST['type']) ? trim((string)$_POST['type']) : '';
             $price = isset($_POST['price']) ? trim((string)$_POST['price']) : '';
@@ -1654,8 +1664,20 @@ andison_admin_header('Products', 'products');
                                     <td><span class="prod-num"><?php echo (int)$i + 1; ?></span></td>
                                     <td>
                                         <div style="font-weight:600;font-size:13px;color:#111827;"><?php echo htmlspecialchars((string)($prod['model'] ?? '')); ?></div>
-                                        <?php if (!empty($prod['product_name'])): ?>
-                                            <div style="font-size:11px;color:#9ca3af;margin-top:1px;"><?php echo htmlspecialchars((string)$prod['product_name']); ?></div>
+                                        <?php 
+                                            $dispName = (string)($prod['product_name'] ?? '');
+                                            $dispPrevBrand = '';
+                                            if (strpos($dispName, '||PREVIOUS_BRAND||') !== false) {
+                                                $parts = explode('||PREVIOUS_BRAND||', $dispName);
+                                                $dispName = $parts[0];
+                                                $dispPrevBrand = $parts[1];
+                                            }
+                                        ?>
+                                        <?php if ($dispName !== ''): ?>
+                                            <div style="font-size:11px;color:#9ca3af;margin-top:1px;"><?php echo htmlspecialchars($dispName); ?></div>
+                                        <?php endif; ?>
+                                        <?php if ($dispPrevBrand !== ''): ?>
+                                            <div style="font-size:11px;color:#ef4444;margin-top:2px;font-weight:600;"><i class="bi bi-tag-fill"></i> Prev Brand: <?php echo htmlspecialchars($dispPrevBrand); ?></div>
                                         <?php endif; ?>
                                         <?php if (empty($prod['category_id'])): ?>
                                             <div style="margin-top:3px;"><span style="font-size:10px;font-weight:700;background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:4px;padding:1px 6px;"><i class="bi bi-exclamation-triangle-fill"></i> No Category — won't show on browse pages</span></div>
@@ -1720,7 +1742,8 @@ andison_admin_header('Products', 'products');
                                         <div style="display:flex;gap:5px;justify-content:center;">
                                             <button class="btn btn-outline edit-product-btn" type="button" 
                                                     data-index="<?php echo (int)$i; ?>" 
-                                                    data-name="<?php echo htmlspecialchars((string)($prod['product_name'] ?? ''), ENT_QUOTES); ?>"
+                                                    data-name="<?php echo htmlspecialchars($dispName, ENT_QUOTES); ?>"
+                                                    data-prevbrand="<?php echo htmlspecialchars($dispPrevBrand, ENT_QUOTES); ?>"
                                                     data-model="<?php echo htmlspecialchars((string)($prod['model'] ?? ''), ENT_QUOTES); ?>" 
                                                     data-type="<?php echo htmlspecialchars((string)($prod['type'] ?? ''), ENT_QUOTES); ?>"
                                                     data-price="<?php echo htmlspecialchars((string)($prod['price'] ?? ''), ENT_QUOTES); ?>"
@@ -1825,6 +1848,11 @@ andison_admin_header('Products', 'products');
                         <div class="field" style="margin:0;">
                             <label for="editModel"><i class="bi bi-tag"></i> Product Name *</label>
                             <input id="editModel" name="model" type="text" required placeholder="e.g., YD-350KR2" title="Enter product model number or code">
+                            
+                            <div class="field" style="margin:0;margin-top:12px;">
+                                <label for="editPreviousBrand" style="color:#64748b;"><i class="bi bi-tag-fill"></i> Previous Brand</label>
+                                <input id="editPreviousBrand" name="previous_brand" type="text" placeholder="e.g., MICROGARD" title="Enter previous brand name">
+                            </div>
                         </div>
                         
                         <div class="field" style="margin:0;">
@@ -7988,7 +8016,7 @@ function descriptionTableSyncBeforeSubmit() {
     }
 }
 
-function openEditModal(index, name, model, type, price, badge, description, specifications, image, catId, subId, subSubId, imagesJson, datasheet) {
+function openEditModal(index, name, prevbrand, model, type, price, badge, description, specifications, image, catId, subId, subSubId, imagesJson, datasheet) {
     var modal = ensureGlobalProductModal();
     if (!modal) return;
     _editDescriptionStarterSeeded = false;
@@ -7996,6 +8024,7 @@ function openEditModal(index, name, model, type, price, badge, description, spec
     _editDescriptionMode = 'plain';
     document.getElementById('editIndex').value = index;
     document.getElementById('editProductName').value = name;
+    document.getElementById('editPreviousBrand').value = prevbrand || '';
     document.getElementById('editModel').value = model;
     document.getElementById('editType').value = type;
     syncTypePresetFromInput();
@@ -8082,6 +8111,7 @@ document.querySelectorAll('.edit-product-btn').forEach(function(btn){
     btn.addEventListener('click', function(){
         var index = this.getAttribute('data-index');
         var name = this.getAttribute('data-name');
+        var prevbrand = this.getAttribute('data-prevbrand') || '';
         var model = this.getAttribute('data-model');
         var type = this.getAttribute('data-type');
         var price = this.getAttribute('data-price');
@@ -8095,7 +8125,7 @@ document.querySelectorAll('.edit-product-btn').forEach(function(btn){
         var subId     = this.getAttribute('data-subcategory');
         var subSubId  = this.getAttribute('data-subsubcategory');
         var datasheet = this.getAttribute('data-datasheet') || '';
-        openEditModal(index, name, model, type, price, badge, description, specifications, image, catId, subId, subSubId, images, datasheet);
+        openEditModal(index, name, prevbrand, model, type, price, badge, description, specifications, image, catId, subId, subSubId, images, datasheet);
         if (specImage && !document.getElementById('existingSpecImageInput').value) {
             setSpecImagePreview(specImage);
         }
@@ -8168,6 +8198,7 @@ function openAddProductModal() {
     // Clear all fields
     document.getElementById('editIndex').value = '';
     document.getElementById('editProductName').value = '';
+    document.getElementById('editPreviousBrand').value = '';
     document.getElementById('editModel').value = '';
     document.getElementById('editType').value = '';
     syncTypePresetFromInput();
