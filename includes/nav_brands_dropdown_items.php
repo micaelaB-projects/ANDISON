@@ -9,6 +9,8 @@ if (!defined('ANDISON_NAV_BRANDS_DROPDOWN_STYLE_PRINTED')) {
     define('ANDISON_NAV_BRANDS_DROPDOWN_STYLE_PRINTED', true);
     ?>
     <style>
+        /* Brand sizing v9 - SK+GalGage reduced to 1.65 - cache bust: 2026-04-29-019 */
+        
         nav li:nth-child(3) .nav-dropdown {
             min-width: 860px !important;
             max-width: 860px !important;
@@ -121,23 +123,69 @@ if (!defined('ANDISON_NAV_BRANDS_DROPDOWN_STYLE_PRINTED')) {
         }
 
         /* Reduce only the logos that appear too large visually. */
-        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-skandgalgage img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-skandgalgage img.andison-nav-brand-logo {
+            --nav-logo-scale: 1.65 !important;
+            --nav-logo-scale-hover: 1.8 !important;
+        }
+
         nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-magnaflux img.andison-nav-brand-logo {
             --nav-logo-scale: 1.1;
             --nav-logo-scale-hover: 1.2;
         }
 
-        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-alphatec img.andison-nav-brand-logo,
-        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-revogard img.andison-nav-brand-logo,
-        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-robotsystemsperipherals img.andison-nav-brand-logo,
-        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-alfra img.andison-nav-brand-logo {
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-alphatec img.andison-nav-brand-logo {
             --nav-logo-scale: 0.95;
             --nav-logo-scale-hover: 1.05;
         }
 
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-revogard img.andison-nav-brand-logo {
+            --nav-logo-scale: 1.65;
+            --nav-logo-scale-hover: 1.8;
+        }
+
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-yutaka img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-aces img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-bosch img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-weiler img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-coppus img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-panasonicconnect img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-thermafield img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-makita img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-tanaka img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-chiyoda img.andison-nav-brand-logo {
+            --nav-logo-scale: 1.85;
+            --nav-logo-scale-hover: 2.01;
+        }
+
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-technotex img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-weldcraft img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-revolt img.andison-nav-brand-logo,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-truweld img.andison-nav-brand-logo {
+            --nav-logo-scale: 2.4 !important;
+            --nav-logo-scale-hover: 2.6 !important;
+        }
+
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-robotsystemsperipherals img.andison-nav-brand-logo {
+            --nav-logo-scale: 1.5;
+            --nav-logo-scale-hover: 1.65;
+        }
+
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-alfra img.andison-nav-brand-logo {
+            --nav-logo-scale: 1.85;
+            --nav-logo-scale-hover: 2.01;
+        }
+
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-revolt .andison-nav-brand-caption,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-thermafield .andison-nav-brand-caption,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-makita .andison-nav-brand-caption,
+        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-weldcraft .andison-nav-brand-caption {
+            font-size: 10px !important;
+            min-height: 26px !important;
+        }
+
         nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-dryrodii img.andison-nav-brand-logo {
-            --nav-logo-scale: 1.9;
-            --nav-logo-scale-hover: 2.05;
+            --nav-logo-scale: 2.4 !important;
+            --nav-logo-scale-hover: 2.6 !important;
         }
 
         nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-bw img.andison-nav-brand-logo {
@@ -155,19 +203,14 @@ if (!defined('ANDISON_NAV_BRANDS_DROPDOWN_STYLE_PRINTED')) {
             --nav-logo-scale-hover: 1.94;
         }
 
-        nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-revolt img.andison-nav-brand-logo {
-            --nav-logo-scale: 1.82;
-            --nav-logo-scale-hover: 1.98;
-        }
-
         nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-magnaflux img.andison-nav-brand-logo {
             --nav-logo-scale: 1.92;
             --nav-logo-scale-hover: 2.08;
         }
 
         nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-tempilstik img.andison-nav-brand-logo {
-            --nav-logo-scale: 1.84;
-            --nav-logo-scale-hover: 2;
+            --nav-logo-scale: 2.4 !important;
+            --nav-logo-scale-hover: 2.6 !important;
         }
 
         nav li:nth-child(3) .nav-dropdown ul a.andison-nav-brand-link.brand-key-soyer img.andison-nav-brand-logo {
@@ -380,6 +423,11 @@ if (is_array($andisonBrandsInfo) && !empty($andisonBrandsInfo)) {
         $brandUrl = $andisonNavBasePath . 'brand.php?name=' . rawurlencode($displayName);
         $brandCssKey = andison_nav_brand_css_key($displayName);
         $brandShortLabel = trim((string)($brandInfo['short_label'] ?? ''));
+        
+        // Override short labels for specific brands to match admin display
+        if (strtolower($displayName) === 'alphatec' && $brandShortLabel === '') {
+            $brandShortLabel = 'Chemical Protective Clothing';
+        }
         ?>
         <li>
             <a class="andison-nav-brand-link brand-key-<?php echo htmlspecialchars($brandCssKey, ENT_QUOTES); ?>" href="<?php echo htmlspecialchars($brandUrl, ENT_QUOTES); ?>">
@@ -413,6 +461,12 @@ if (is_array($andisonBrandsInfo) && !empty($andisonBrandsInfo)) {
         }
         $brandUrl = $andisonNavBasePath . 'brand.php?name=' . rawurlencode($displayName);
         $brandCssKey = andison_nav_brand_css_key($displayName);
+        $brandLabel = $displayName;
+        
+        // Override labels for specific brands to match admin display
+        if (strtolower($displayName) === 'alphatec') {
+            $brandLabel = 'Chemical Protective Clothing';
+        }
         ?>
         <li>
             <a class="andison-nav-brand-link brand-key-<?php echo htmlspecialchars($brandCssKey, ENT_QUOTES); ?>" href="<?php echo htmlspecialchars($brandUrl, ENT_QUOTES); ?>">
@@ -422,7 +476,7 @@ if (is_array($andisonBrandsInfo) && !empty($andisonBrandsInfo)) {
                     alt="<?php echo htmlspecialchars($displayName, ENT_QUOTES); ?>"
                     title="<?php echo htmlspecialchars($displayName, ENT_QUOTES); ?>"
                 >
-                <span class="andison-nav-brand-caption"><?php echo htmlspecialchars($displayName, ENT_QUOTES); ?></span>
+                <span class="andison-nav-brand-caption"><?php echo htmlspecialchars($brandLabel, ENT_QUOTES); ?></span>
             </a>
         </li>
         <?php
