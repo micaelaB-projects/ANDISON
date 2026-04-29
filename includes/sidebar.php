@@ -100,30 +100,41 @@ if ($category_idx !== null) {
     /* Mobile sidebar nav button */
     .mobile-sidebar-nav-btn {
         position: fixed;
-        top: 14px;
-        left: 8px;
-        z-index: 9999;
-        background: #00D4AA;
+        top: 106px;
+        left: 0;
+        z-index: 9998;
+        background: transparent;
         color: white;
         border: none;
-        padding: 8px 12px;
+        padding: 0;
         cursor: pointer;
-        font-size: 20px;
-        width: 44px;
-        height: 44px;
+        font-size: 24px;
+        width: 56px;
+        height: 56px;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 4px;
-        transition: transform 0.2s ease;
+        border-radius: 0;
+        transition: transform 0.2s ease, background 0.2s ease;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        user-select: none;
+        line-height: 1;
     }
 
     .mobile-sidebar-nav-btn:hover {
-        transform: scale(1.1);
+        transform: scale(1.08);
+        background: rgba(0, 0, 0, 0.15);
     }
 
     .mobile-sidebar-nav-btn:active {
-        background: #00B595;
+        background: rgba(0, 0, 0, 0.25);
+        transform: scale(0.95);
+    }
+
+    .mobile-sidebar-nav-btn:focus-visible {
+        outline: 2px solid rgba(255, 255, 255, 0.8);
+        outline-offset: -2px;
     }
 
     /* Hide on desktop */
@@ -175,15 +186,84 @@ if ($category_idx !== null) {
         visibility: visible !important;
     }
 
+    /* Ensure nav is positioned parent for hamburger button */
+    @media (max-width: 768px) {
+        nav {
+            position: relative !important;
+            padding: 0 !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+        }
+
+        nav ul,
+        nav .nav-dropdown ul {
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            gap: 0 !important;
+            margin: 0 !important;
+            padding: 6px 0 !important;
+            align-items: center !important;
+        }
+
+        nav li,
+        nav .nav-item {
+            padding: 0 !important;
+            margin: 0 !important;
+            flex-shrink: 0 !important;
+        }
+
+        nav a,
+        nav .nav-link {
+            padding: 6px 8px !important;
+            font-size: 11px !important;
+            white-space: nowrap !important;
+            display: flex !important;
+            align-items: center !important;
+            height: 40px !important;
+            line-height: 1.2 !important;
+            letter-spacing: -0.3px !important;
+        }
+
+        /* Reserve space on the left for hamburger menu */
+        nav ul {
+            margin-left: 56px !important;
+            padding-right: 8px !important;
+        }
+
+        /* Make nav scrollable if needed */
+        nav {
+            display: flex !important;
+            align-items: center !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        nav a,
+        nav .nav-link {
+            padding: 4px 6px !important;
+            font-size: 10px !important;
+            height: 36px !important;
+            letter-spacing: -0.4px !important;
+        }
+
+        nav ul {
+            margin-left: 54px !important;
+            padding: 4px 4px !important;
+        }
+    }
+
     /* Overlay Backdrop */
     .overlay-backdrop {
         position: fixed;
         inset: 0;
-        background: rgba(0,0,0,0.3);
+        background: rgba(0,0,0,0.4);
         opacity: 0;
         visibility: hidden;
         transition: opacity var(--sidebar-speed-fast) ease, visibility var(--sidebar-speed-fast);
         z-index: 60;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
     }
     .overlay-backdrop.active {
         opacity: 1;
@@ -227,17 +307,20 @@ if ($category_idx !== null) {
     .sidebar-list a {
         display: flex;
         gap: 12px;
-        padding: 16px 12px;
+        padding: 12px 12px;
         color: #1f2937;
         text-decoration: none;
         align-items: center;
         justify-content: space-between;
         transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
         font-size: 15px;
-        min-height: 48px;
+        min-height: 52px;
         border: 1px solid #efefef;
         border-radius: 10px;
         background: #ffffff;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        user-select: none;
     }
     .sidebar-list > li > a:hover {
         background: #ffffff;
@@ -248,6 +331,11 @@ if ($category_idx !== null) {
     }
     .sidebar-list a:active {
         background: rgba(43, 17, 219, 0.08);
+        transform: scale(0.98);
+    }
+    .sidebar-list a:focus-visible {
+        outline: 2px solid #2B11DB;
+        outline-offset: 1px;
     }
     .sidebar-list li a.active {
         background: #f3f4f6;
@@ -353,17 +441,20 @@ if ($category_idx !== null) {
     .sidebar-sublist a {
         color: #4b5563;
         font-size: 13px;
-        padding: 9px 16px 9px 12px;
+        padding: 10px 16px 10px 12px;
         display: flex;
         align-items: center;
         gap: 8px;
         text-decoration: none;
-        min-height: 38px;
+        min-height: 44px;
         transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
         border: 1px solid #efefef;
         border-radius: 10px;
         background: #ffffff;
         margin-bottom: 6px;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        user-select: none;
     }
     .sidebar-sublist a:hover {
         color: #2B11DB;
@@ -372,27 +463,47 @@ if ($category_idx !== null) {
         box-shadow: var(--andison-brand-hover-shadow);
         transform: translateY(var(--andison-brand-hover-lift));
     }
+    .sidebar-sublist a:active {
+        transform: scale(0.98);
+    }
+    .sidebar-sublist a:focus-visible {
+        outline: 2px solid #2B11DB;
+        outline-offset: 1px;
+    }
 
     /* ── Nested Sub-list ── */
     .sidebar-sublist li.has-nested-sub { position: relative; }
     .sidebar-sublist li.has-nested-sub > a { padding-right: 24px; }
     .nested-toggle {
         position: absolute;
-        right: 0;
-        top: 6px;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
         background: transparent;
         border: none;
         color: #9ca3af;
         cursor: pointer;
-        padding: 0;
-        width: 20px;
-        height: 20px;
+        padding: 8px;
+        width: 40px;
+        height: 40px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         font-size: 12px;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        transition: color 0.2s ease, transform 0.2s ease;
     }
-    .nested-toggle:focus { outline: none; }
+    .nested-toggle:hover {
+        color: #2B11DB;
+    }
+    .nested-toggle:active {
+        transform: translateY(-50%) scale(0.95);
+    }
+    .nested-toggle:focus-visible {
+        outline: 2px solid #2B11DB;
+        outline-offset: 1px;
+    }
     .nested-toggle .bi { transition: transform 200ms ease; }
     .nested-toggle[aria-expanded="true"] .bi { transform: rotate(90deg); }
 
@@ -416,7 +527,7 @@ if ($category_idx !== null) {
     .sidebar-nested-sublist a {
         color: #5a6b7d;
         font-size: 11px;
-        padding: 7px 10px 7px 8px;
+        padding: 8px 10px 8px 8px;
         display: flex;
         align-items: center;
         gap: 6px;
@@ -424,6 +535,22 @@ if ($category_idx !== null) {
         transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
         border-radius: 10px;
         margin: 0;
+        min-height: 40px;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        user-select: none;
+    }
+    .sidebar-nested-sublist a:hover {
+        color: #2B11DB;
+        background: rgba(43, 17, 219, 0.06);
+    }
+    .sidebar-nested-sublist a:active {
+        transform: scale(0.97);
+    }
+    .sidebar-nested-sublist a:focus-visible {
+        outline: 2px solid #2B11DB;
+        outline-offset: 1px;
+    }
         min-height: 28px;
         border: 1px solid #efefef;
         background: #ffffff;
@@ -439,18 +566,19 @@ if ($category_idx !== null) {
 
     /* ── Sub-toggle button ── */
     .sidebar-list li.has-sub { position: relative; }
-    .has-sub > a { padding-right: 40px; }
+    .has-sub > a { padding-right: 48px; }
     .sub-toggle {
         position: absolute;
-        right: 8px;
-        top: 12px;
+        right: 6px;
+        top: 50%;
+        transform: translateY(-50%);
         background: transparent;
         border: 2px solid #d1d5db;
         color: #2B11DB;
         cursor: pointer;
-        padding: 4px;
-        width: 28px;
-        height: 28px;
+        padding: 6px;
+        width: 40px;
+        height: 40px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -458,14 +586,21 @@ if ($category_idx !== null) {
         transition: all 0.2s ease;
         font-size: 0;
         z-index: 10;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
     }
     .sub-toggle:hover {
         background: rgba(43, 17, 219, 0.1);
         border-color: #2B11DB;
-        transform: scale(1.1);
+        transform: translateY(-50%) scale(1.08);
     }
-    .sub-toggle:active { transform: scale(0.95); }
-    .sub-toggle:focus { outline: none; }
+    .sub-toggle:active {
+        transform: translateY(-50%) scale(0.95);
+    }
+    .sub-toggle:focus-visible {
+        outline: 2px solid #2B11DB;
+        outline-offset: 1px;
+    }
     .sub-toggle .bi {
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         font-size: 14px;
@@ -602,6 +737,16 @@ if ($category_idx !== null) {
         flex-shrink: 0;
         min-width: 68px;
         border: 1px solid rgba(0, 215, 179, 0.2);
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        user-select: none;
+    }
+    .mini-sidebar-icon:active {
+        transform: scale(0.95);
+    }
+    .mini-sidebar-icon:focus-visible {
+        outline: 2px solid #00FFE0;
+        outline-offset: 2px;
     }
     .mini-sidebar-icon .label {
         display: block;
@@ -927,43 +1072,133 @@ if ($category_idx !== null) {
     @media (max-width: 768px) {
         .mini-sidebar {
             top: var(--andison-sidebar-mobile-top);
-            width: 56px !important;
+            width: 60px !important;
             transform: translateX(-100%);
             transition: transform 0.3s ease, width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 16px 10px;
         }
-        .mini-sidebar.mobile-visible { transform: translateX(0); }
-        .mini-sidebar.expanded { width: 300px !important; }
+        .mini-sidebar.mobile-visible {
+            transform: translateX(0);
+        }
+        .mini-sidebar.expanded {
+            width: 280px !important;
+            padding: 16px 12px;
+        }
+        .mini-sidebar-icon {
+            width: 56px;
+            height: 56px;
+            margin-bottom: 12px;
+            min-width: 56px;
+        }
+        .mini-sidebar.expanded .mini-sidebar-icon {
+            width: 100%;
+            min-height: 56px;
+            margin-bottom: 10px;
+            padding: 12px 14px;
+        }
         .browse-toggle { display: inline-flex !important; }
         .browse-toggle .browse-text { display: inline !important; }
         .main-content, .category-container { margin-left: 0 !important; }
-        .mobile-sidebar-fab { display: none !important; }
 
-        /* Sidebar list (mobile tweaks) */
+        /* Sidebar list (mobile tweaks) - better touch targets */
         .sidebar-overlay {
             top: var(--andison-sidebar-mobile-top);
-            width: 380px;
-            max-width: 90%;
-            padding: 12px 8px;
+            width: 340px;
+            max-width: 85vw;
+            padding: 12px 10px;
         }
-        .sidebar-list { padding: 8px 8px 0 8px; }
+        .sidebar-list {
+            padding: 8px 8px 0 8px;
+        }
+        .sidebar-list li {
+            margin-bottom: 10px;
+        }
         .sidebar-list a {
-            padding: 10px 10px;
-            font-size: 13px;
-            min-height: 36px;
+            padding: 12px 12px;
+            font-size: 14px;
+            min-height: 48px;
         }
-        .sidebar-list a:hover { padding-left: 10px; }
+        .sidebar-list a:hover {
+            padding-left: 12px;
+        }
+        .sidebar-sublist {
+            margin: 4px 0 8px;
+            padding: 4px 0 4px 6px;
+        }
         .sidebar-sublist a {
-            font-size: 12px;
-            padding: 8px 8px 8px 8px;
-            min-height: 32px;
+            font-size: 13px;
+            padding: 10px 10px 10px 10px;
+            min-height: 44px;
+            margin-bottom: 8px;
         }
-        .sidebar-sublist a:hover { padding-left: 8px; }
-        .sub-toggle { top: 8px; }
+        .sidebar-sublist a:hover {
+            padding-left: 10px;
+        }
+        .sidebar-nested-sublist {
+            margin: 4px 0 6px;
+            padding: 4px 0 4px 6px;
+        }
+        .sidebar-nested-sublist a {
+            min-height: 40px;
+            padding: 8px 10px;
+            font-size: 12px;
+        }
+        .sub-toggle {
+            width: 44px;
+            height: 44px;
+            padding: 6px;
+            right: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .has-sub > a {
+            padding-right: 50px;
+        }
+        .nested-toggle {
+            width: 40px;
+            height: 40px;
+            right: 6px;
+            top: 50%;
+            padding: 6px;
+        }
 
         .sidebar-nested-sublist a:active {
             background: rgba(43, 17, 219, 0.14);
             color: #2B11DB;
-            padding-left: 44px;
+        }
+    }
+
+    /* Extra small phones (max-width: 480px) */
+    @media (max-width: 480px) {
+        .mobile-sidebar-nav-btn {
+            width: 44px;
+            height: 44px;
+            top: 10px;
+            left: 6px;
+        }
+
+        .sidebar-overlay {
+            width: calc(100vw - 20px);
+            max-width: calc(100vw - 20px);
+            padding: 10px 8px;
+        }
+
+        .sidebar-list a {
+            min-height: 44px;
+            padding: 10px 10px;
+            font-size: 13px;
+        }
+
+        .sidebar-sublist a {
+            min-height: 40px;
+            padding: 8px 8px;
+            font-size: 12px;
+        }
+
+        .sidebar-nested-sublist a {
+            min-height: 36px;
+            padding: 6px 8px;
+            font-size: 11px;
         }
     }
 
@@ -977,22 +1212,34 @@ if ($category_idx !== null) {
         top: 50%;
         transform: translateY(-50%) translateX(0);
         z-index: 70;
-        width: 16px;
-        height: 36px;
+        width: 20px;
+        height: 48px;
         background: #2B11DB;
         color: #fff;
         border: none;
-        border-radius: 0 6px 6px 0;
+        border-radius: 0 8px 8px 0;
         cursor: pointer;
         align-items: center;
         justify-content: center;
-        font-size: 11px;
-        box-shadow: 2px 0 8px rgba(0,0,0,0.25);
+        font-size: 12px;
+        box-shadow: 2px 0 12px rgba(0,0,0,0.3);
         transition: transform 0.3s ease, background 0.2s;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
     }
-    .mobile-sidebar-fab:hover { background: #1a0aa8; }
-    .mobile-sidebar-fab.open { transform: translateY(-50%) translateX(56px); }
-    .mobile-sidebar-fab.open.wide { transform: translateY(-50%) translateX(300px); }
+    .mobile-sidebar-fab:hover {
+        background: #1a0aa8;
+        box-shadow: 2px 0 16px rgba(0,0,0,0.4);
+    }
+    .mobile-sidebar-fab:active {
+        transform: translateY(-50%) translateX(0) scale(0.95);
+    }
+    .mobile-sidebar-fab:focus-visible {
+        outline: 2px solid #00D7B3;
+        outline-offset: 1px;
+    }
+    .mobile-sidebar-fab.open { transform: translateY(-50%) translateX(60px); }
+    .mobile-sidebar-fab.open.wide { transform: translateY(-50%) translateX(320px); }
 
     /* ================================================================
        MINI POPOVER (subcategory flyout)
@@ -1515,6 +1762,31 @@ if ($category_idx !== null) {
             var headerBottom = computeHeaderBottom();
             root.style.setProperty('--andison-sidebar-top', headerBottom + 'px');
             root.style.setProperty('--andison-sidebar-mobile-top', headerBottom + 'px');
+
+            // Also sync hamburger menu position to nav bar
+            syncHamburgerMenuPosition();
+        }
+
+        function syncHamburgerMenuPosition() {
+            if (window.innerWidth > 768) return; // Only on mobile
+            
+            var hamburger = document.getElementById('mobileSidebarNavBtn');
+            if (!hamburger) return;
+
+            // Find nav bar
+            var nav = document.querySelector('nav');
+            if (!nav) return;
+
+            var navRect = nav.getBoundingClientRect();
+            var navTop = navRect.top;
+            var navHeight = navRect.height;
+
+            // Position hamburger at the vertical center of nav bar
+            var navCenterTop = navTop + navHeight / 2;
+            var hamburgerHeight = 56;
+            var topPosition = navCenterTop - (hamburgerHeight / 2);
+
+            hamburger.style.top = Math.max(navTop, topPosition) + 'px';
         }
 
         function initSidebarOffsetsAndReady() {
@@ -1535,6 +1807,8 @@ if ($category_idx !== null) {
         window.addEventListener('pageshow', enforceHeaderVisibility);
         setTimeout(enforceHeaderVisibility, 120);
         setTimeout(enforceHeaderVisibility, 420);
+        setTimeout(syncHamburgerMenuPosition, 500);
+        setTimeout(syncHamburgerMenuPosition, 1000);
         window.addEventListener('resize', syncSidebarTopOffsets);
         window.addEventListener('orientationchange', syncSidebarTopOffsets);
     })();
@@ -1563,6 +1837,53 @@ if ($category_idx !== null) {
         if(closeBtn)     closeBtn.addEventListener('click', closeSidebar);
         if(overlay)      overlay.addEventListener('click', closeSidebar);
         document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeSidebar(); });
+    })();
+
+    // ── Mobile swipe to close sidebar ──
+    (function(){
+        var sidebar = document.getElementById('sidebar');
+        var overlay = document.getElementById('overlayBackdrop');
+        var touchStartX = 0;
+        var touchEndX = 0;
+        var touchStartTime = 0;
+
+        function handleSwipeGesture(){
+            var swipeDistance = touchEndX - touchStartX;
+            var swipeTime = Date.now() - touchStartTime;
+            var swipeVelocity = Math.abs(swipeDistance) / swipeTime;
+
+            // Close sidebar if swiped left (velocity >= 0.3 or distance >= 80px)
+            if (swipeDistance < -80 || swipeVelocity >= 0.3) {
+                if(sidebar) sidebar.classList.remove('active');
+                if(overlay) overlay.classList.remove('active');
+                if(sidebar) sidebar.setAttribute('aria-hidden','true');
+            }
+        }
+
+        if(sidebar) {
+            sidebar.addEventListener('touchstart', function(e){
+                touchStartX = e.changedTouches[0].clientX;
+                touchStartTime = Date.now();
+            }, false);
+
+            sidebar.addEventListener('touchend', function(e){
+                touchEndX = e.changedTouches[0].clientX;
+                handleSwipeGesture();
+            }, false);
+        }
+
+        // Also handle swipe on overlay
+        if(overlay) {
+            overlay.addEventListener('touchstart', function(e){
+                touchStartX = e.changedTouches[0].clientX;
+                touchStartTime = Date.now();
+            }, false);
+
+            overlay.addEventListener('touchend', function(e){
+                touchEndX = e.changedTouches[0].clientX;
+                handleSwipeGesture();
+            }, false);
+        }
     })();
 
     // ── Sidebar sublist toggle with localStorage persistence ──
