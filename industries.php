@@ -2201,7 +2201,7 @@ $industriesContent = andison_get_industries_page_content();
 
         .industry-card-image {
             position: relative;
-            height: 300px;
+            height: 400px;
             background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
             overflow: hidden;
             display: flex;
@@ -2224,9 +2224,10 @@ $industriesContent = andison_get_industries_page_content();
         .industry-card-image img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
             object-position: center;
             display: block;
+            padding: 24px;
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
