@@ -87,6 +87,9 @@ if ($category_idx !== null) {
 }
 ?>
 
+<!-- Mobile Sidebar Toggle Button -->
+<button class="mobile-sidebar-nav-btn" id="mobileSidebarNavBtn" title="Browse Categories">☰</button>
+
 <!-- Bootstrap Icons (ensures icons load regardless of parent page) -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
@@ -94,6 +97,42 @@ if ($category_idx !== null) {
      SIDEBAR CSS
      ============================================================ -->
 <style>
+    /* Mobile sidebar nav button */
+    .mobile-sidebar-nav-btn {
+        position: fixed;
+        top: 14px;
+        left: 8px;
+        z-index: 9999;
+        background: #00D4AA;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        cursor: pointer;
+        font-size: 20px;
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        transition: transform 0.2s ease;
+    }
+
+    .mobile-sidebar-nav-btn:hover {
+        transform: scale(1.1);
+    }
+
+    .mobile-sidebar-nav-btn:active {
+        background: #00B595;
+    }
+
+    /* Hide on desktop */
+    @media (min-width: 769px) {
+        .mobile-sidebar-nav-btn {
+            display: none !important;
+        }
+    }
+
     :root {
         --sidebar-ease: cubic-bezier(0.22, 1, 0.36, 1);
         --sidebar-speed: 420ms;
@@ -897,7 +936,7 @@ if ($category_idx !== null) {
         .browse-toggle { display: inline-flex !important; }
         .browse-toggle .browse-text { display: inline !important; }
         .main-content, .category-container { margin-left: 0 !important; }
-        .mobile-sidebar-fab { display: flex !important; }
+        .mobile-sidebar-fab { display: none !important; }
 
         /* Sidebar list (mobile tweaks) */
         .sidebar-overlay {
@@ -2300,39 +2339,52 @@ if ($category_idx !== null) {
     // ── Mobile FAB toggle for mini sidebar ──
     (function(){
         var fab      = document.getElementById('mobileSidebarFab');
+        var navBtn   = document.getElementById('mobileSidebarNavBtn');
         var sidebar  = document.getElementById('miniSidebar');
         var fabIcon  = document.getElementById('mobileFabIcon');
-        if(!fab || !sidebar) return;
+        var navIcon  = navBtn ? navBtn.querySelector('i') : null;
+        if(!sidebar) return;
 
         function isMobile(){ return window.innerWidth <= 768; }
         function syncFab(){
-            if(!isMobile()){ fab.classList.remove('open','wide'); return; }
+            if(!isMobile()){ 
+                if(fab) fab.classList.remove('open','wide'); 
+                return; 
+            }
             var isOpen     = sidebar.classList.contains('mobile-visible');
             var isExpanded = sidebar.classList.contains('expanded');
-            fab.classList.toggle('open',  isOpen);
-            fab.classList.toggle('wide', isOpen && isExpanded);
-            fabIcon.className = isOpen ? 'bi bi-chevron-left' : 'bi bi-chevron-right';
+            if(fab) {
+                fab.classList.toggle('open',  isOpen);
+                fab.classList.toggle('wide', isOpen && isExpanded);
+                if(fabIcon) fabIcon.className = isOpen ? 'bi bi-chevron-left' : 'bi bi-chevron-right';
+            }
+            if(navBtn) {
+                navBtn.classList.toggle('active', isOpen);
+                if(navIcon) navIcon.className = isOpen ? 'bi bi-x-lg' : 'bi bi-list';
+            }
         }
-        fab.addEventListener('click', function(e){
+        
+        function toggleSidebar(e){
             e.stopPropagation();
             if(!isMobile()) return;
             var isOpen = sidebar.classList.contains('mobile-visible');
             var isExpanded = sidebar.classList.contains('expanded');
 
             if(!isOpen){
-                // First tap: open and expand directly for easier mobile access.
                 sidebar.classList.add('mobile-visible');
                 sidebar.classList.add('expanded');
             } else if(!isExpanded){
-                // If visible but collapsed, expand without closing.
                 sidebar.classList.add('expanded');
             } else {
-                // If already open and expanded, close cleanly.
                 sidebar.classList.remove('expanded');
                 sidebar.classList.remove('mobile-visible');
             }
             syncFab();
-        });
+        }
+        
+        if(fab) fab.addEventListener('click', toggleSidebar);
+        if(navBtn) navBtn.addEventListener('click', toggleSidebar);
+        
         new MutationObserver(function(){ syncFab(); }).observe(sidebar, { attributes: true, attributeFilter: ['class'] });
         window.addEventListener('resize', syncFab);
     })();

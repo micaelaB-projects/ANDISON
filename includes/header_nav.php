@@ -275,6 +275,8 @@
         background: rgba(0, 215, 179, 0.85);
         backdrop-filter: blur(10px);
         overflow: visible;
+        display: flex;
+        align-items: center;
     }
 
     .nav-inner {
@@ -287,6 +289,7 @@
         min-height: 52px;
         gap: 0;
         justify-content: center;
+        flex: 1;
     }
 
     .browse-toggle {
@@ -305,6 +308,35 @@
         padding: 8px 14px;
         cursor: pointer;
         font-size: 15px;
+    }
+
+    /* Mobile sidebar nav button (for mobile) */
+    .mobile-sidebar-nav-btn {
+        display: none !important;
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 8px 12px;
+        margin: 0 4px 0 0;
+        align-items: center;
+        justify-content: center;
+        z-index: 85;
+        transition: transform 0.3s ease, background 0.2s;
+        flex-shrink: 0;
+        width: auto;
+        height: auto;
+        position: relative;
+    }
+
+    .mobile-sidebar-nav-btn:hover {
+        transform: scale(1.1);
+    }
+
+    .mobile-sidebar-nav-btn.active {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 6px;
     }
 
     .nav-list {
@@ -584,27 +616,34 @@
         nav ul { flex-wrap: nowrap; gap: 0; }
         nav li { margin-right: 0; }
 
+        nav {
+            display: flex;
+            align-items: center;
+        }
+
         .nav-inner {
             position: relative;
-            padding-left: 0;
+            padding-left: 8px;
             padding-right: 0;
             gap: 0;
             min-height: 44px;
             overflow: visible;
             justify-content: center;
             flex-wrap: nowrap;
+            align-items: center;
+            flex: 1;
         }
 
         .nav-list {
-            position: absolute;
-                    padding-left: 0; 
-                    padding-right: 0; 
-                    gap: 0; 
-                    min-height: auto; 
-                    overflow-x: hidden; 
-                    overflow-y: visible; 
-                    justify-content: center; 
-                    flex-wrap: wrap; 
+            position: relative;
+            padding-left: 0; 
+            padding-right: 0; 
+            gap: 0; 
+            min-height: auto; 
+            overflow-x: hidden; 
+            overflow-y: visible; 
+            justify-content: center; 
+            flex-wrap: wrap; 
             align-items: center;
         }
 
@@ -622,6 +661,20 @@
             font-size: 12px;
             padding: 6px 8px;
             gap: 4px;
+        }
+
+        nav .mobile-sidebar-nav-btn {
+            display: flex !important;
+            min-width: 44px !important;
+            min-height: 44px !important;
+            width: auto !important;
+            height: auto !important;
+            background: rgba(255, 255, 255, 0.25) !important;
+            border-radius: 4px !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            flex-shrink: 0 !important;
+            order: -1;
         }
     }
 
