@@ -3514,6 +3514,8 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
         </form>
         </div><!-- /.inquiry-wrapper -->
 
+    </div><!-- /.page-content -->
+
     <!-- Footer -->
     <footer>
         <div class="footer-content">
@@ -3528,7 +3530,7 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
             </div>
         </div>
     </footer>
-    </div><!-- /.page-content -->
+    <?php require_once __DIR__ . '/includes/footer_modernize.php'; ?>
     <script>
         (function(){
             // Handle file input changes
