@@ -203,7 +203,7 @@ foreach (array_keys($brandsData) as $brandKey) {
     }
 }
 
-$largeRectangularBrands = ['revolt', 'weldcraft', 'truweld', 'tempilstik', 'chiyoda', 'tanaka', 'yutaka', 'coppus', 'spilfyter', 'uvex', 'aces'];
+$largeRectangularBrands = ['metrode', 'robot systems peripherals', 'panasonic connect', 'truweld', 'revolt', 'dryrod. ii', 'weldcraft', 'yutaka', 'coppus', 'spilfyter', 'uvex', 'aces', 'ansell', 'bosch', 'makita', 'garryson', 'technotex', 'aquasol'];
 
 $brandCards = [];
 foreach ($brandDisplayToKey as $displayKey => $brandKey) {
@@ -1088,6 +1088,8 @@ usort($brandCards, static function (array $a, array $b): int {
             display: flex;
             flex-direction: column;
             height: 320px;
+            position: relative;
+            overflow: hidden;
         }
 
         .brand-card-meta {
@@ -1114,10 +1116,12 @@ usort($brandCards, static function (array $a, array $b): int {
             transform: translateY(-4px);
             box-shadow: 0 8px 24px rgba(0, 215, 179, 0.22);
             border-color: #00D7B3;
+            z-index: 60;
         }
 
         .brand-logo {
-            width: 100%;\n            background: #fff;
+            width: 100%;
+            background: #fff;
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -1126,24 +1130,29 @@ usort($brandCards, static function (array $a, array $b): int {
             overflow: hidden;
             flex: 1;
             min-height: 0;
+            padding: 8px;
+            box-sizing: border-box;
         }
 
         .brand-logo img {
+            display: block;
+            margin: 0 auto;
             width: auto;
             height: auto;
             max-width: 100%;
-            max-height: 95%;
+            max-height: 80%;
             object-fit: contain;
             padding: 0;
             transform: scale(1);
-            transform-origin: center;
+            transform-origin: center center !important;
+            will-change: transform;
             filter: grayscale(25%);
             transition: filter 0.24s ease, transform 0.24s ease;
         }
 
         .brand-card:hover .brand-logo img {
             filter: grayscale(0%);
-            transform: scale(1.04);
+            transform: scale(1.2) !important;
         }
 
         .brand-card.brand-card--compact-hover .brand-logo img {
@@ -1152,13 +1161,27 @@ usort($brandCards, static function (array $a, array $b): int {
         }
 
         .brand-card.brand-card--compact-hover:hover .brand-logo img {
-            transform: scale(0.82) !important;
+            transform: scale(1.2) !important;
         }
 
         /* Large rectangular brand cards */
         .brand-card--large .brand-logo img {
             max-width: 96%;
             max-height: 96%;
+            transform: scale(1);
+        }
+
+        /* Kobelco per-brand rule removed to allow consistent hover scaling */
+
+        /* Magnaflux - reduce by 10% (baseline only; hover still uses !important) */
+        .brand-card[data-brand="MAGNAFLUX"] .brand-logo img {
+            transform: scale(0.9);
+            transform-origin: center center !important;
+        }
+
+        /* Magnaflux hover - subtle animation (1.05) to prevent overlap */
+        .brand-card[data-brand="MAGNAFLUX"]:hover .brand-logo img {
+            transform: scale(1.05) !important;
         }
 
         @media (max-width: 1024px) {
@@ -1320,12 +1343,23 @@ usort($brandCards, static function (array $a, array $b): int {
             height: 100%;
             object-fit: cover;
             border: none;
+            transition: transform 0.24s ease;
+            max-height: 80%;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.2);
         }
 
         .product-image iframe {
             width: 100%;
             height: 100%;
             border: none;
+            transition: transform 0.24s ease;
+        }
+
+        .product-card:hover .product-image iframe {
+            transform: scale(1.2);
         }
 
         .product-image video {
@@ -1333,6 +1367,11 @@ usort($brandCards, static function (array $a, array $b): int {
             height: 100%;
             object-fit: cover;
             border: none;
+            transition: transform 0.24s ease;
+        }
+
+        .product-card:hover .product-image video {
+            transform: scale(1.2);
         }
 
         .play-btn {
@@ -1566,6 +1605,12 @@ usort($brandCards, static function (array $a, array $b): int {
             object-fit: cover !important;
             object-position: center !important;
             border-radius: 12px;
+            transition: transform 0.24s ease;
+            max-height: 80% !important;
+        }
+
+        .featured-section:hover .featured-image img {
+            transform: scale(1.2);
         }
 
         .featured-image video {
@@ -1574,6 +1619,11 @@ usort($brandCards, static function (array $a, array $b): int {
             height: 100% !important;
             object-fit: cover !important;
             border-radius: 12px;
+            transition: transform 0.24s ease;
+        }
+
+        .featured-section:hover .featured-image video {
+            transform: scale(1.2);
         }
 
         .featured-image iframe {
@@ -1582,6 +1632,11 @@ usort($brandCards, static function (array $a, array $b): int {
             height: 100% !important;
             border: none !important;
             border-radius: 12px;
+            transition: transform 0.24s ease;
+        }
+
+        .featured-section:hover .featured-image iframe {
+            transform: scale(1.2);
         }
 
         /* Footer */
