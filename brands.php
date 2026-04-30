@@ -203,6 +203,8 @@ foreach (array_keys($brandsData) as $brandKey) {
     }
 }
 
+$largeRectangularBrands = ['revolt', 'weldcraft', 'truweld', 'tempilstik', 'chiyoda', 'tanaka', 'yutaka', 'coppus', 'spilfyter', 'uvex', 'aces'];
+
 $brandCards = [];
 foreach ($brandDisplayToKey as $displayKey => $brandKey) {
     $displayName = andison_brands_display_label($brandKey);
@@ -216,12 +218,14 @@ foreach ($brandDisplayToKey as $displayKey => $brandKey) {
         $logoMaxScale = 1.70;
     }
     $compactHover = str_contains($displayLower, 'alphatec') || str_contains($displayLower, 'revogard');
+    $isLargeRect = in_array($displayLower, $largeRectangularBrands, true);
     $brandCards[] = [
         'key' => $resolvedBrandKey,
         'display' => $displayName,
         'logo' => andison_brands_logo_path($resolvedBrandKey, $displayName, isset($brand_logo_map) && is_array($brand_logo_map) ? $brand_logo_map : [], $brandInfo),
         'logo_max_scale' => $logoMaxScale,
         'compact_hover' => $compactHover,
+        'large_rect' => $isLargeRect,
         'short_label' => trim((string)($brandInfo['short_label'] ?? '')),
     ];
 }
@@ -1077,26 +1081,33 @@ usort($brandCards, static function (array $a, array $b): int {
             background: #fff;
             border: 1px solid #efefef;
             border-radius: 16px;
-            padding: 2px 8px 4px;
+            padding: 8px 8px 10px;
             text-align: center;
             transition: border-color 0.24s ease, box-shadow 0.24s ease, transform 0.24s ease;
             cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 320px;
         }
 
         .brand-card-meta {
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             gap: 0;
-            margin-top: 10px;
-            min-height: 22px;
+            margin-top: auto;
+            min-height: 45px;
+            padding-top: 8px;
         }
 
         .brand-card-name {
-            font-size: 15px;
+            font-size: 18px;
             font-weight: 800;
             color: #1f2937;
-            line-height: 1.25;
+            line-height: 1.3;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .brand-card:hover {
@@ -1106,15 +1117,15 @@ usort($brandCards, static function (array $a, array $b): int {
         }
 
         .brand-logo {
-            width: 100%;
-            height: 176px;
-            background: #fff;
+            width: 100%;\n            background: #fff;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 0;
             overflow: hidden;
+            flex: 1;
+            min-height: 0;
         }
 
         .brand-logo img {
@@ -1144,6 +1155,54 @@ usort($brandCards, static function (array $a, array $b): int {
             transform: scale(0.82) !important;
         }
 
+        /* Large rectangular brand cards */
+        .brand-card--large .brand-logo img {
+            max-width: 96%;
+            max-height: 96%;
+        }
+
+        @media (max-width: 1024px) {
+            .brand-card {
+                height: 280px;
+            }
+
+            .brands-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 12px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .brand-card {
+                height: 250px;
+            }
+
+            .brands-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            .brands-hero {
+                padding: 40px 16px 30px;
+            }
+            .brands-hero h2 {
+                font-size: 32px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .brand-card {
+                height: 220px;
+            }
+
+            .brands-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            .brand-card {
+                padding: 8px;
+            }
+        }
+
         .brand-logo-fallback {
             width: 72px;
             height: 72px;
@@ -1158,6 +1217,19 @@ usort($brandCards, static function (array $a, array $b): int {
             letter-spacing: 0.5px;
         }
 
+        .brand-label {
+            padding: 0;
+            text-align: center;
+            font-size: 16px;
+            color: #333;
+            font-weight: 700;
+            line-height: 1.35;
+            margin-top: 0;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            flex-shrink: 0;
+        }
+
         @media (max-width: 1024px) {
             .brands-grid {
                 grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1165,7 +1237,7 @@ usort($brandCards, static function (array $a, array $b): int {
             }
 
             .brand-logo {
-                height: 144px;
+                height: 200px;
             }
         }
 
@@ -1182,7 +1254,7 @@ usort($brandCards, static function (array $a, array $b): int {
             }
 
             .brand-logo {
-                height: 128px;
+                height: 170px;
             }
         }
 
@@ -1195,7 +1267,7 @@ usort($brandCards, static function (array $a, array $b): int {
                 padding: 8px;
             }
             .brand-logo {
-                height: 100px;
+                height: 130px;
             }
             .brand-logo img {
                 width: 100%;
@@ -2337,7 +2409,7 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
 
         <div class="brands-grid">
             <?php foreach ($brandCards as $brandCard): ?>
-                <div class="brand-card<?php echo !empty($brandCard['compact_hover']) ? ' brand-card--compact-hover' : ''; ?>" data-brand="<?php echo htmlspecialchars((string)$brandCard['key'], ENT_QUOTES); ?>" data-logo-max-scale="<?php echo htmlspecialchars((string)$brandCard['logo_max_scale'], ENT_QUOTES); ?>">
+                <div class="brand-card<?php echo !empty($brandCard['compact_hover']) ? ' brand-card--compact-hover' : ''; ?><?php echo !empty($brandCard['large_rect']) ? ' brand-card--large' : ''; ?>" data-brand="<?php echo htmlspecialchars((string)$brandCard['key'], ENT_QUOTES); ?>" data-logo-max-scale="<?php echo htmlspecialchars((string)$brandCard['logo_max_scale'], ENT_QUOTES); ?>">
                     <div class="brand-logo">
                         <?php if ((string)($brandCard['logo'] ?? '') !== ''): ?>
                             <img src="<?php echo htmlspecialchars((string)$brandCard['logo'], ENT_QUOTES); ?>" alt="<?php echo htmlspecialchars((string)$brandCard['display'], ENT_QUOTES); ?>">
@@ -2346,7 +2418,7 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
                         <?php endif; ?>
                     </div>
                     <?php if (!empty($brandCard['short_label'])): ?>
-                    <div class="brand-label" style="padding:0;text-align:center;font-size:20px;color:#333;font-weight:600;line-height:1.20;margin-top:-3px;">
+                    <div class="brand-label">
                         <?php echo htmlspecialchars((string)$brandCard['short_label'], ENT_QUOTES); ?>
                     </div>
                     <?php endif; ?>
