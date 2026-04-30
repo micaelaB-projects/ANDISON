@@ -260,15 +260,15 @@ andison_admin_header('Dashboard', 'dashboard');
         </div>
 
         <!-- Last 7 Days Bar Chart -->
-        <div style="margin-bottom:4px;">
-            <div style="font-size:11px;font-weight:700;color:#374151;margin-bottom:6px;"><i class="bi bi-graph-up-arrow" style="color:var(--accent);"></i> Visitors — Last 7 Days</div>
+        <div style="margin-top:14px;padding-top:12px;margin-bottom:4px;border-top:1px solid rgba(148,163,184,0.18);">
+            <div style="font-size:11px;font-weight:700;color:#374151;margin-bottom:8px;"><i class="bi bi-graph-up-arrow" style="color:var(--accent);"></i> Visitors — Last 7 Days</div>
             <?php
                 $maxViews = max(array_column($chartData, 'views') ?: [1]);
                 $maxViews = max($maxViews, 1);
             ?>
-            <div id="an-chart" style="display:flex;align-items:flex-end;gap:6px;height:50px;">
+            <div id="an-chart" style="display:flex;align-items:flex-end;gap:8px;height:74px;">
                 <?php foreach ($chartData as $i => $bar): ?>
-                    <?php $barH = (int) round(($bar['views'] / $maxViews) * 44); $barH = max($barH, 3); ?>
+                    <?php $barH = (int) round(($bar['views'] / $maxViews) * 60); $barH = max($barH, 4); ?>
                     <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
                         <span id="an-bar-val-<?php echo $i; ?>" style="font-size:10px;color:#6b7280;font-weight:700;"><?php echo $bar['views']; ?></span>
                         <div id="an-bar-<?php echo $i; ?>"
