@@ -254,6 +254,16 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
   z-index: 1;
     cursor: zoom-in;
   filter: drop-shadow(0 8px 20px rgba(0,0,0,0.06));
+  transition: transform 0.3s ease;
+  transform-origin: center center;
+}
+
+#prodMainImg.zoomed {
+  cursor: grab;
+}
+
+#prodMainImg.zoomed:active {
+  cursor: grabbing;
 }
 #prodSpecsTableWrap {
     overflow-x:visible;
@@ -2490,9 +2500,6 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 
         if (overlay && overlay.style.display === 'flex') {
             document.body.style.overflow = 'hidden';
-            if (resumeSliderAfterZoom && productImages.length > 1) {
-                startModalSlider();
-            }
         } else {
             document.body.style.overflow = '';
         }
@@ -2749,7 +2756,6 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         if (productImages.length > 1) {
             console.log('loadProductImagesFromCard: showing thumbnails for', productImages.length, 'images');
             document.getElementById('prodThumbnailsWrap').style.display = 'block';
-            startModalSlider();
         } else {
             document.getElementById('prodThumbnailsWrap').style.display = 'none';
             stopModalSlider();
@@ -2773,11 +2779,9 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         });
     }
 
-    /* Manual thumbnail click — reset slider timer so auto doesn't fight with user */
+    /* Manual thumbnail click — switch image */
     function switchImageManual(idx) {
-        stopModalSlider();
         switchImage(idx);
-        startModalSlider();
     }
 
     /* Load related products - FROM SAME BRAND ONLY */
@@ -3586,7 +3590,101 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
     }
     var mainImage = document.getElementById('prodMainImg');
     if (mainImage) {
-        mainImage.addEventListener('click', openImageZoom);
+        // Zoom and drag functionality
+        var currentZoom = 1;
+        var zoomStep = 0.2;
+        var maxZoom = 3;
+        var minZoom = 0.5;
+        var offsetX = 0;
+        var offsetY = 0;
+        var isDragging = false;
+        var dragStartX = 0;
+        var dragStartY = 0;
+        var dragStartOffsetX = 0;
+        var dragStartOffsetY = 0;
+        var totalDragDistance = 0;
+        var clickThreshold = 5; // pixels
+        
+        function updateTransform() {
+            mainImage.style.transform = 'translate(' + offsetX + 'px, ' + offsetY + 'px) scale(' + currentZoom + ')';
+        }
+        
+        // Mouse down - start drag
+        mainImage.addEventListener('mousedown', function(e) {
+            if (currentZoom > 1) {
+                isDragging = true;
+                totalDragDistance = 0;
+                dragStartX = e.clientX;
+                dragStartY = e.clientY;
+                dragStartOffsetX = offsetX;
+                dragStartOffsetY = offsetY;
+                mainImage.style.cursor = 'grabbing';
+                e.preventDefault();
+            }
+        });
+        
+        // Mouse move - drag image
+        document.addEventListener('mousemove', function(e) {
+            if (isDragging && currentZoom > 1) {
+                var deltaX = e.clientX - dragStartX;
+                var deltaY = e.clientY - dragStartY;
+                totalDragDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                offsetX = dragStartOffsetX + deltaX;
+                offsetY = dragStartOffsetY + deltaY;
+                updateTransform();
+            }
+        });
+        
+        // Mouse up - stop drag
+        document.addEventListener('mouseup', function() {
+            if (isDragging) {
+                isDragging = false;
+                mainImage.style.cursor = 'grab';
+            }
+        });
+        
+        // Click handler - only open fullscreen if not dragging
+        mainImage.addEventListener('click', function(e) {
+            if (totalDragDistance > clickThreshold) {
+                e.preventDefault();
+                e.stopPropagation();
+                return;
+            }
+            openImageZoom();
+        });
+        
+        // Scroll wheel zoom
+        mainImage.parentElement.addEventListener('wheel', function(e) {
+            e.preventDefault();
+            if (e.deltaY < 0) {
+                // Scroll up = zoom in
+                if (currentZoom < maxZoom) {
+                    currentZoom += zoomStep;
+                    if (currentZoom > maxZoom) currentZoom = maxZoom;
+                    mainImage.style.cursor = 'grab';
+                    updateTransform();
+                }
+            } else {
+                // Scroll down = zoom out
+                if (currentZoom > minZoom) {
+                    currentZoom -= zoomStep;
+                    if (currentZoom < minZoom) currentZoom = minZoom;
+                    offsetX = 0;
+                    offsetY = 0;
+                    mainImage.style.cursor = 'zoom-in';
+                    updateTransform();
+                }
+            }
+        }, { passive: false });
+        
+        // Reset zoom on image change
+        mainImage.addEventListener('load', function() {
+            currentZoom = 1;
+            offsetX = 0;
+            offsetY = 0;
+            mainImage.style.cursor = 'zoom-in';
+            updateTransform();
+        });
     }
     if (zoomCloseBtn) {
         zoomCloseBtn.addEventListener('click', closeImageZoom);
