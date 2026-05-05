@@ -21,7 +21,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
     
     <div style="display:flex;gap:0;flex-wrap:wrap;height:100%;">
       <!-- LEFT SIDE: Product Images Gallery -->
-    <div style="flex:0 0 33%;background:linear-gradient(180deg, #f9f9fc 0%, #f0f3ff 50%, #f8fafd 100%);border-radius:24px 0 0 24px;padding:clamp(12px,1.5vw,20px) clamp(18px,2vw,30px);display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:10px;position:relative;overflow:hidden;min-height:0;">
+    <div style="flex:0 0 33%;max-width:33%;background:linear-gradient(180deg, #f9f9fc 0%, #f0f3ff 50%, #f8fafd 100%);border-radius:24px 0 0 24px;padding:clamp(12px,1.5vw,20px) clamp(18px,2vw,30px);display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:10px;position:relative;overflow:hidden;min-height:0;min-width:0;box-sizing:border-box;">
         <!-- Decorative top accent -->
         <div style="position:absolute;top:0;right:0;width:120px;height:120px;background:linear-gradient(135deg, rgba(43,17,219,0.06) 0%, transparent 70%);border-radius:0 0 0 100%;pointer-events:none;"></div>
         
@@ -31,7 +31,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         </div>
         
         <!-- Image thumbnails carousel -->
-        <div id="prodThumbnailsWrap" style="display:none;background:linear-gradient(135deg, rgba(43,17,219,0.05) 0%, rgba(43,17,219,0.02) 100%);border-radius:16px;padding:12px;border:1.5px solid rgba(43,17,219,0.1);flex-shrink:0;width:100%;">
+        <div id="prodThumbnailsWrap" style="display:none;background:linear-gradient(135deg, rgba(43,17,219,0.05) 0%, rgba(43,17,219,0.02) 100%);border-radius:16px;padding:12px;border:1.5px solid rgba(43,17,219,0.1);flex-shrink:0;width:100%;min-width:0;box-sizing:border-box;">
           <div id="prodThumbnails" style="display:flex;gap:12px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;justify-content:flex-start;padding-bottom:8px;"></div>
         </div>
         
@@ -49,7 +49,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
     <div style="position:absolute;left:33%;top:0;bottom:0;width:1px;background:linear-gradient(180deg, transparent 0%, rgba(43,17,219,0.1) 30%, rgba(43,17,219,0.1) 70%, transparent 100%);pointer-events:none;"></div>
       
       <!-- RIGHT SIDE: Product Information -->
-    <div style="flex:0 0 67%;display:grid;grid-template-rows:minmax(0,1fr) auto;overflow:hidden;min-height:0;height:100%;">
+    <div style="flex:0 0 67%;max-width:67%;min-width:0;display:grid;grid-template-rows:minmax(0,1fr) auto;overflow:hidden;min-height:0;height:100%;box-sizing:border-box;">
         <!-- Scrollable content area -->
         <div id="prodDetailContentScroll" style="overflow-y:auto;overflow-x:hidden;padding:clamp(14px,2vw,24px) clamp(22px,3vw,44px) clamp(12px,1.5vw,18px);min-height:0;height:100%;">
           <!-- Header Section -->
@@ -110,8 +110,10 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 </div>
 
 <div id="prodImageZoomOverlay" style="display:none;position:fixed;inset:0;background:rgba(8,10,22,0.92);backdrop-filter:blur(3px);z-index:100120;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;">
-    <button id="prodImageZoomClose" type="button" aria-label="Close zoomed image" style="position:absolute;top:20px;right:20px;width:44px;height:44px;border:none;border-radius:999px;background:rgba(255,255,255,0.14);color:#fff;font-size:28px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;">&times;</button>
-    <img id="prodImageZoomImg" src="" alt="" style="max-width:min(96vw,1600px);max-height:92vh;object-fit:contain;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.14);background:rgba(255,255,255,0.02);">
+    <button id="prodImageZoomClose" type="button" aria-label="Close zoomed image" style="position:absolute;top:20px;right:20px;width:44px;height:44px;border:none;border-radius:999px;background:rgba(255,255,255,0.14);color:#fff;font-size:28px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:100125;">&times;</button>
+    <button id="prodImageZoomPrev" type="button" aria-label="Previous image" style="display:none;position:absolute;left:20px;top:50%;transform:translateY(-50%);width:50px;height:50px;border:none;border-radius:50%;background:rgba(255,255,255,0.14);color:#fff;font-size:24px;cursor:pointer;align-items:center;justify-content:center;transition:all .2s;z-index:100125;"><i class="bi bi-chevron-left"></i></button>
+    <img id="prodImageZoomImg" src="" alt="" style="max-width:min(96vw,1600px);max-height:92vh;object-fit:contain;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.14);background:rgba(255,255,255,0.02);position:relative;z-index:100122;">
+    <button id="prodImageZoomNext" type="button" aria-label="Next image" style="display:none;position:absolute;right:20px;top:50%;transform:translateY(-50%);width:50px;height:50px;border:none;border-radius:50%;background:rgba(255,255,255,0.14);color:#fff;font-size:24px;cursor:pointer;align-items:center;justify-content:center;transition:all .2s;z-index:100125;"><i class="bi bi-chevron-right"></i></button>
 </div>
 
 <style>
@@ -825,6 +827,8 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
     var zoomOverlay      = document.getElementById('prodImageZoomOverlay');
     var zoomCloseBtn     = document.getElementById('prodImageZoomClose');
     var zoomImg          = document.getElementById('prodImageZoomImg');
+    var zoomPrevBtn      = document.getElementById('prodImageZoomPrev');
+    var zoomNextBtn      = document.getElementById('prodImageZoomNext');
     var detailInquiryBtn = document.getElementById('prodDetailInquiry');
     var currentDetailItem = {};
     var productImages = [];
@@ -2465,6 +2469,15 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 
         zoomImg.src = src;
         zoomImg.alt = mainImg.alt || (document.getElementById('prodDetailName') ? document.getElementById('prodDetailName').textContent : 'Product image');
+        
+        if (productImages.length > 1) {
+            if (zoomPrevBtn) zoomPrevBtn.style.display = 'flex';
+            if (zoomNextBtn) zoomNextBtn.style.display = 'flex';
+        } else {
+            if (zoomPrevBtn) zoomPrevBtn.style.display = 'none';
+            if (zoomNextBtn) zoomNextBtn.style.display = 'none';
+        }
+
         zoomOverlay.style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
@@ -3580,6 +3593,28 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         zoomCloseBtn.addEventListener('mouseenter', function(){ this.style.background = 'rgba(255,255,255,0.25)'; });
         zoomCloseBtn.addEventListener('mouseleave', function(){ this.style.background = 'rgba(255,255,255,0.14)'; });
     }
+    if (zoomPrevBtn) {
+        zoomPrevBtn.addEventListener('click', function(e){
+            e.stopPropagation();
+            if (productImages.length > 1) {
+                var prevIdx = (currentImageIndex - 1 + productImages.length) % productImages.length;
+                switchImageManual(prevIdx);
+            }
+        });
+        zoomPrevBtn.addEventListener('mouseenter', function(){ this.style.background = 'rgba(255,255,255,0.25)'; });
+        zoomPrevBtn.addEventListener('mouseleave', function(){ this.style.background = 'rgba(255,255,255,0.14)'; });
+    }
+    if (zoomNextBtn) {
+        zoomNextBtn.addEventListener('click', function(e){
+            e.stopPropagation();
+            if (productImages.length > 1) {
+                var nextIdx = (currentImageIndex + 1) % productImages.length;
+                switchImageManual(nextIdx);
+            }
+        });
+        zoomNextBtn.addEventListener('mouseenter', function(){ this.style.background = 'rgba(255,255,255,0.25)'; });
+        zoomNextBtn.addEventListener('mouseleave', function(){ this.style.background = 'rgba(255,255,255,0.14)'; });
+    }
     if (zoomOverlay) {
         zoomOverlay.addEventListener('click', function(e){ if (e.target === zoomOverlay) closeImageZoom(); });
     }
@@ -3590,12 +3625,21 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         }
     });
     document.addEventListener('keydown', function(e){
-        if (e.key !== 'Escape') return;
-        if (isZoomOpen()) {
-            closeImageZoom();
-            return;
+        if (e.key === 'Escape') {
+            if (isZoomOpen()) {
+                closeImageZoom();
+                return;
+            }
+            closeProductModal();
+        } else if (isZoomOpen()) {
+            if (e.key === 'ArrowLeft' && productImages.length > 1) {
+                var prevIdx = (currentImageIndex - 1 + productImages.length) % productImages.length;
+                switchImageManual(prevIdx);
+            } else if (e.key === 'ArrowRight' && productImages.length > 1) {
+                var nextIdx = (currentImageIndex + 1) % productImages.length;
+                switchImageManual(nextIdx);
+            }
         }
-        closeProductModal();
     });
 
     detailInquiryBtn.addEventListener('click', function(){

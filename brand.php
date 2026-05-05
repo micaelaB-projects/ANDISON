@@ -1411,6 +1411,11 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             height: 100%;
             object-fit: cover;
             border: none;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.2);
         }
 
         .product-image iframe {
@@ -3028,6 +3033,11 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             width: 100%;
             height: 100%;
             object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .brand-product-card:hover .brand-product-img img {
+            transform: scale(1.2);
         }
         .brand-product-img .no-img-icon {
             font-size: 32px;

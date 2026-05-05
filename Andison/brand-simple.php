@@ -327,6 +327,11 @@ $brand_info = isset($brands_info[$brand_key]) ? $brands_info[$brand_key] : [
             width: 100%;
             height: 100%;
             object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.2);
         }
 
         .product-card h4 {
