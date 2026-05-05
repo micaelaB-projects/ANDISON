@@ -35,18 +35,28 @@ function andison_admin_industries_store_image(array $f): ?string
     return andison_sb_storage_upload_tmp($f, 'home-images', 'industries/' . $safeName);
 }
 
-function andison_admin_industries_extract_file(array $group, int $index): ?array
+function andison_admin_industries_extract_file(array $group): ?array
 {
-    if (!isset($group['error'][$index])) {
+    if (!isset($group['error'])) {
         return null;
+    }
+    
+    if (is_array($group['error'])) {
+        return [
+            'name' => $group['name'][0] ?? '',
+            'type' => $group['type'][0] ?? '',
+            'tmp_name' => $group['tmp_name'][0] ?? '',
+            'error' => $group['error'][0] ?? UPLOAD_ERR_NO_FILE,
+            'size' => $group['size'][0] ?? 0,
+        ];
     }
 
     return [
-        'name' => $group['name'][$index] ?? '',
-        'type' => $group['type'][$index] ?? '',
-        'tmp_name' => $group['tmp_name'][$index] ?? '',
-        'error' => $group['error'][$index] ?? UPLOAD_ERR_NO_FILE,
-        'size' => $group['size'][$index] ?? 0,
+        'name' => $group['name'] ?? '',
+        'type' => $group['type'] ?? '',
+        'tmp_name' => $group['tmp_name'] ?? '',
+        'error' => $group['error'] ?? UPLOAD_ERR_NO_FILE,
+        'size' => $group['size'] ?? 0,
     ];
 }
 
@@ -81,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         $imageUrl = trim((string)($_POST['current_image_url'] ?? ''));
-        $file = andison_admin_industries_extract_file($_FILES['image'] ?? [], 0);
+        $file = andison_admin_industries_extract_file($_FILES['image'] ?? []);
         if (is_array($file) && andison_admin_industries_is_upload($file)) {
             $stored = andison_admin_industries_store_image($file);
             if ($stored === null) {
