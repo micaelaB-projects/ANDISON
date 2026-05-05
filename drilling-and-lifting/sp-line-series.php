@@ -866,9 +866,10 @@ $category_description = $current_category['description'] ?? 'Discover our compre
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            overflow: visible;
             border-radius: 8px;
             flex-shrink: 0;
+            position: relative;
         }
 
         .product-grid.grid-view .product-image {
@@ -880,6 +881,35 @@ $category_description = $current_category['description'] ?? 'Discover our compre
 
         .product-card:hover .product-image {
             background: #ffffff;
+            transform: scale(1.2);
+            transition: transform 0.3s ease;
+        }
+
+        .product-image-magnifier {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(43, 17, 219, 0.85);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .product-card:hover .product-image-magnifier {
+            opacity: 0;
+        }
+
+        .product-image-magnifier i {
+            color: white;
+            font-size: 24px;
         }
 
         .product-image img {
@@ -3412,6 +3442,9 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
                         <?php else: ?>
                             <i class="bi bi-lightning-charge" style="font-size: 56px; color: #ccc;"></i>
                         <?php endif; ?>
+                        <div class="product-image-magnifier">
+                            <i class="bi bi-search"></i>
+                        </div>
                         <?php if (!empty($badge)): ?>
                             <div class="product-badge"><?php echo $badge; ?></div>
                         <?php endif; ?>

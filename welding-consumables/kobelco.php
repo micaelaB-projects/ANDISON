@@ -887,10 +887,11 @@ $category_description = $current_category['description'] ?? 'Discover our compre
             max-height: 100%;
             object-fit: contain;
             padding: 16px;
+            transition: transform 0.3s ease;
         }
 
         .product-card:hover .product-image img {
-            transform: scale(1.08);
+            transform: scale(1.2);
         }
 
         .product-image iframe {
@@ -967,6 +968,14 @@ $category_description = $current_category['description'] ?? 'Discover our compre
             font-size: 11px;
             line-height: 1.4;
             min-height: auto;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .product-model:hover {
+            color: #2B11DB;
+            text-decoration: underline;
+            font-weight: 500;
         }
 
         .product-description {
@@ -976,6 +985,14 @@ $category_description = $current_category['description'] ?? 'Discover our compre
             font-size: 11px;
             line-height: 1.4;
             min-height: auto;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .product-description:hover {
+            color: #2B11DB;
+            text-decoration: underline;
+            font-weight: 500;
         }
 
         .product-grid.grid-view .product-card h4 {
