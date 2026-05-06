@@ -1042,7 +1042,7 @@ $andisonFooterSettings = andison_get_footer_settings();
         var qrCodeHtml = (footerSettings.qr_code_url || '') 
             ? '<div style="margin-top:20px;text-align:center;padding:16px 8px;background:rgba(255,255,255,0.15);border-radius:8px;border:1px solid rgba(255,255,255,0.25);">'
                 + '<div style="font-size:12px;color:#ffffff;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;">QR Code</div>'
-                + '<div style="font-size:13px;font-weight:700;color:#ffffff;margin-bottom:4px;line-height:1.3;">Browse our full product catalog</div>'
+                + '<div style="font-size:13px;font-weight:700;color:#ffffff;margin-bottom:4px;line-height:1.3;">Browse our product catalog</div>'
                 + '<div style="font-size:11px;color:#ffffff;margin-bottom:12px;font-weight:600;">SCAN HERE</div>'
                 + '<div style="position:relative;width:120px;height:120px;margin:0 auto;background:rgba(255,255,255,0.1);border-radius:8px;border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;overflow:hidden;">'
                     + '<img src="' + escHtml(footerSettings.qr_code_url) + '" alt="QR Code" style="width:118px;height:118px;display:block;border-radius:7px;" onerror="this.style.display=\'none\';this.parentElement.innerHTML=\'<div style=&quot;font-size:11px;color:rgba(255,255,255,0.5);padding:4px;&quot;>QR Code</div>\'">'
@@ -1092,7 +1092,7 @@ $andisonFooterSettings = andison_get_footer_settings();
                             ? '<div class="footer-socials"><h5 class="footer-socials-title">Socials</h5><div class="footer-social-links">' + footerSocialLinksHtml + '</div></div>'
                             : '')
                         + (footerSettings.social_image_url
-                            ? '<div class="footer-social-image" style="margin-top: 25px;"><div style="font-size:13px;font-weight:700;color:#ffffff;margin-bottom:4px;line-height:1.3;">Browse our full product catalog</div><div style="font-size:13px;color:#ffffff;margin-bottom:10px;font-weight:700;">SCAN HERE</div><img src="' + escHtml(footerSettings.social_image_url) + '" alt="QR Code" style="max-width: 100%; height: auto; max-height: 140px; object-fit: contain; filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.1)); border-radius: 6px;"></div>'
+                            ? '<div class="footer-social-image" style="margin-top: 25px;"><div style="font-size:13px;font-weight:700;color:#ffffff;margin-bottom:4px;line-height:1.3;white-space:nowrap;">Browse our product catalog</div><div style="font-size:13px;color:#ffffff;margin-bottom:10px;font-weight:700;">SCAN HERE</div><img src="' + escHtml(footerSettings.social_image_url) + '" alt="QR Code" style="max-width: 100%; height: auto; max-height: 140px; object-fit: contain; filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.1)); border-radius: 6px;"></div>'
                             : '')
                     + '</div>'
                     : '')
