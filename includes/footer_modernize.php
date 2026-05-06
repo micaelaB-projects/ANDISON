@@ -1065,8 +1065,15 @@ $andisonFooterSettings = andison_get_footer_settings();
                     + '</nav>'
                     + '</div>'
 
-                + (footerSocialLinksHtml
-                    ? '<div class="footer-col footer-social-col"><div class="footer-socials"><h5 class="footer-socials-title">Socials</h5><div class="footer-social-links">' + footerSocialLinksHtml + '</div></div></div>'
+                + ((footerSocialLinksHtml || footerSettings.social_image_url)
+                    ? '<div class="footer-col footer-social-col">'
+                        + (footerSocialLinksHtml
+                            ? '<div class="footer-socials"><h5 class="footer-socials-title">Socials</h5><div class="footer-social-links">' + footerSocialLinksHtml + '</div></div>'
+                            : '')
+                        + (footerSettings.social_image_url
+                            ? '<div class="footer-social-image" style="margin-top: 15px;"><img src="' + escHtml(footerSettings.social_image_url) + '" alt="Certification/Partner" style="max-width: 100%; height: auto; max-height: 80px; object-fit: contain; filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.1)); border-radius: 4px;"></div>'
+                            : '')
+                    + '</div>'
                     : '')
             + '</div>'
             + '<div class="footer-bottom">'
