@@ -220,6 +220,20 @@ andison_admin_header('Inquiries', 'inquiries');
     .empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
     .empty-state i{font-size:48px;opacity:0.3;display:block;margin-bottom:12px}
     .empty-state p{font-size:15px}
+    
+    /* Delete Modal Styles */
+    .delete-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(2px)}
+    .delete-modal-overlay.open{display:flex}
+    .delete-modal-box{background:#fff;border-radius:20px;padding:40px 32px;max-width:480px;width:90vw;box-shadow:0 20px 60px rgba(0,0,0,0.25);text-align:center}
+    .delete-modal-icon{width:70px;height:70px;border:3px solid #4f46e5;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:40px;color:#4f46e5}
+    .delete-modal-title{font-size:24px;font-weight:800;color:#1f2937;margin-bottom:12px}
+    .delete-modal-message{font-size:15px;color:#6b7280;line-height:1.6;margin-bottom:28px}
+    .delete-modal-actions{display:flex;gap:12px;justify-content:center;margin-top:28px}
+    .delete-modal-btn{padding:12px 32px;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.3s ease;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+    .delete-modal-btn.ok{background:#06b6d4;color:#fff;box-shadow:0 4px 12px rgba(6,182,212,0.3)}
+    .delete-modal-btn.ok:hover{background:#0891b2;transform:translateY(-2px);box-shadow:0 6px 16px rgba(6,182,212,0.4)}
+    .delete-modal-btn.cancel{background:#fff;color:#4f46e5;border:2px solid #4f46e5;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+    .delete-modal-btn.cancel:hover{background:#f3f4f6;transform:translateY(-2px)}
 </style>
 
 <div class="filter-toolbar">
@@ -434,17 +448,64 @@ andison_admin_header('Inquiries', 'inquiries');
         </a>
         <?php endif; ?>
 
-        <form method="post" style="margin-left:auto">
+        <form method="post" style="margin-left:auto" class="delete-form">
             <input type="hidden" name="id" value="<?php echo $inqId; ?>">
             <input type="hidden" name="action" value="delete">
             <input type="hidden" name="filter" value="<?php echo $filterHiddenValue; ?>">
             <input type="hidden" name="date_from" value="<?php echo $dateFromHiddenValue; ?>">
             <input type="hidden" name="date_to" value="<?php echo $dateToHiddenValue; ?>">
-            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this inquiry?')"><i class="bi bi-trash3"></i> Delete</button>
+            <button type="button" class="btn btn-danger btn-sm" onclick="showDeleteModal(this.closest('form'))"><i class="bi bi-trash3"></i> Delete</button>
         </form>
     </div>
 </div>
 <?php endforeach; ?>
 <?php endif; ?>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="delete-modal-overlay">
+    <div class="delete-modal-box">
+        <div class="delete-modal-icon">?</div>
+        <div class="delete-modal-title">Confirm Action</div>
+        <div class="delete-modal-message">Are you sure you want to delete this inquiry? This action cannot be undone.</div>
+        <div class="delete-modal-actions">
+            <button class="delete-modal-btn ok" onclick="confirmDelete()">Yes, Proceed</button>
+            <button class="delete-modal-btn cancel" onclick="closeDeleteModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+let deleteModalForm = null;
+
+function showDeleteModal(form) {
+    deleteModalForm = form;
+    document.getElementById('deleteModal').classList.add('open');
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('open');
+    deleteModalForm = null;
+}
+
+function confirmDelete() {
+    if (deleteModalForm) {
+        deleteModalForm.submit();
+    }
+}
+
+// Close modal when clicking outside
+document.getElementById('deleteModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeDeleteModal();
+    }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && document.getElementById('deleteModal').classList.contains('open')) {
+        closeDeleteModal();
+    }
+});
+</script>
 
 <?php andison_admin_footer(); ?>
