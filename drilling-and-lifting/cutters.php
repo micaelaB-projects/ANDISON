@@ -899,7 +899,6 @@ $email = "info@andison-industrial.com";
 
         .product-card:hover .product-image {
             background: #ffffff;
-            transform: scale(1.2);
             transition: transform 0.3s ease;
         }
 
@@ -936,10 +935,6 @@ $email = "info@andison-industrial.com";
             object-fit: contain;
             padding: 16px;
             transition: transform 0.3s ease;
-        }
-
-        .product-card:hover .product-image img {
-            transform: scale(1.2);
         }
 
         .product-image iframe {
@@ -4367,6 +4362,7 @@ document.addEventListener('DOMContentLoaded', function(){
     });
 });
 </script>
+
 
 
 

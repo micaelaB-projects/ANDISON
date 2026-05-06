@@ -1414,10 +1414,6 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             transition: transform 0.3s ease;
         }
 
-        .product-card:hover .product-image img {
-            transform: scale(1.2);
-        }
-
         .product-image iframe {
             width: 100%;
             height: 100%;
@@ -3037,7 +3033,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         }
 
         .brand-product-card:hover .brand-product-img img {
-            transform: scale(1.2);
+            /* transform: scale(1.2); Removed to prevent zooming on hover */
         }
         .brand-product-img .no-img-icon {
             font-size: 32px;

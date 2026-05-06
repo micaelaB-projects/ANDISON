@@ -890,7 +890,6 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
 
         .product-card:hover .product-image {
             background: #ffffff;
-            transform: scale(1.2);
             transition: transform 0.3s ease;
         }
 
@@ -927,10 +926,6 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             object-fit: contain;
             padding: 16px;
             transition: transform 0.3s ease;
-        }
-
-        .product-card:hover .product-image img {
-            transform: scale(1.2);
         }
 
         .product-image iframe {
@@ -4169,6 +4164,7 @@ document.addEventListener('DOMContentLoaded', function(){
     });
 });
 </script>
+
 
 
 

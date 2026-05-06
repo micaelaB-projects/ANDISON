@@ -330,10 +330,6 @@ $brand_info = isset($brands_info[$brand_key]) ? $brands_info[$brand_key] : [
             transition: transform 0.3s ease;
         }
 
-        .product-card:hover .product-image img {
-            transform: scale(1.2);
-        }
-
         .product-card h4 {
             color: #333;
             font-size: 14px;

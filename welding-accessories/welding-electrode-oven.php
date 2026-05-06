@@ -881,7 +881,6 @@ $category_description = $current_category['description'] ?? 'Discover our compre
 
         .product-card:hover .product-image {
             background: #ffffff;
-            transform: scale(1.2);
             transition: transform 0.3s ease;
         }
 
@@ -917,10 +916,6 @@ $category_description = $current_category['description'] ?? 'Discover our compre
             max-height: 100%;
             object-fit: contain;
             padding: 16px;
-        }
-
-        .product-card:hover .product-image img {
-            transform: scale(1.08);
         }
 
         .product-image iframe {
@@ -4003,6 +3998,7 @@ document.addEventListener('DOMContentLoaded', function(){
     });
 });
 </script>
+
 
 
 

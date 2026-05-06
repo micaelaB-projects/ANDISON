@@ -1347,19 +1347,11 @@ usort($brandCards, static function (array $a, array $b): int {
             max-height: 80%;
         }
 
-        .product-card:hover .product-image img {
-            transform: scale(1.2);
-        }
-
         .product-image iframe {
             width: 100%;
             height: 100%;
             border: none;
             transition: transform 0.24s ease;
-        }
-
-        .product-card:hover .product-image iframe {
-            transform: scale(1.2);
         }
 
         .product-image video {
@@ -1368,10 +1360,6 @@ usort($brandCards, static function (array $a, array $b): int {
             object-fit: cover;
             border: none;
             transition: transform 0.24s ease;
-        }
-
-        .product-card:hover .product-image video {
-            transform: scale(1.2);
         }
 
         .play-btn {
