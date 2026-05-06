@@ -1016,7 +1016,7 @@ usort($brandCards, static function (array $a, array $b): int {
         }
 
         section h2 {
-            text-align: center;
+            text-align: center;        
             font-size: 48px;
             font-weight: 800;
             margin-bottom: 16px;

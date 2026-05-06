@@ -22,6 +22,7 @@ if (!function_exists('andison_footer_settings_defaults')) {
             'navigation_title' => 'Navigation',
             'copyright' => '© 2026 ANDISON INDUSTRIAL. All rights reserved.',
             'social_image_url' => '',
+            'qr_code_url' => '',
         ];
     }
 }

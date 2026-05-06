@@ -37,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'navigation_title' => (string)($_POST['navigation_title'] ?? ''),
         'copyright' => (string)($_POST['copyright'] ?? ''),
         'social_image_url' => $socialImageUrl,
+        'qr_code_url' => (string)($_POST['qr_code_url'] ?? ''),
     ];
 
     $saved = andison_save_footer_settings($payload);
@@ -115,8 +116,11 @@ andison_admin_header('Footer Details', 'footer');
                 </div>
             </div>
 
+            <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+            <h3 style="margin: 15px 0; font-size: 16px; font-weight: 600;">Social Links Section</h3>
+
             <div class="field" style="margin-bottom:14px;">
-                <label for="social_image">Image Below Socials</label>
+                <label for="social_image"><i class="bi bi-image"></i> Image Below Socials</label>
                 <?php if (!empty($settings['social_image_url'])): ?>
                     <div style="margin-bottom: 10px;">
                         <img src="<?php echo htmlspecialchars($settings['social_image_url'], ENT_QUOTES); ?>" alt="Social Image" style="max-height: 100px; display: block; border-radius: 4px; border: 1px solid #ccc; padding: 4px;">
@@ -127,6 +131,18 @@ andison_admin_header('Footer Details', 'footer');
                 <?php endif; ?>
                 <input type="file" id="social_image" name="social_image" accept="image/*" class="file-input">
                 <small style="color: #666; display: block; margin-top: 4px;">Upload an image (e.g. ISO certification, partner logo) to appear below the social links.</small>
+            </div>
+
+            <div class="field" style="margin-bottom:14px;">
+                <label for="qr_code_url"><i class="bi bi-qr-code"></i> QR Code Image</label>
+                <input id="qr_code_url" name="qr_code_url" type="url" value="<?php echo htmlspecialchars((string)($settings['qr_code_url'] ?? ''), ENT_QUOTES); ?>" placeholder="https://example.com/qr-code.png">
+                <small style="color: #666; display: block; margin-top: 4px;">URL to QR code image. Will display below social links with "Browse our full product catalog" / "SCAN HERE" text.</small>
+                <?php if (!empty($settings['qr_code_url'])): ?>
+                    <div style="margin-top: 10px;">
+                        <strong style="font-size: 12px;">Preview:</strong>
+                        <img src="<?php echo htmlspecialchars($settings['qr_code_url'], ENT_QUOTES); ?>" alt="QR Code Preview" style="max-width: 120px; max-height: 120px; display: block; border-radius: 8px; border: 2px solid #0ea5e9; padding: 4px; margin-top: 8px;">
+                    </div>
+                <?php endif; ?>
             </div>
 
             <div class="two-col" style="margin-bottom:14px;">
