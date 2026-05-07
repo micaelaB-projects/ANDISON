@@ -33,7 +33,14 @@ function andison_send_mail(string $to, string $subject, string $htmlBody, string
         $mail->SMTPAuth   = true;
         $mail->Username   = MAIL_SMTP_USER;
         $mail->Password   = MAIL_SMTP_PASS;
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        
+        // Auto-detect encryption based on port
+        if (MAIL_SMTP_PORT === 465) {
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        } else {
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        }
+        
         $mail->Port       = MAIL_SMTP_PORT;
 
         $mail->setFrom(MAIL_SMTP_USER, MAIL_FROM_NAME);

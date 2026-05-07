@@ -203,7 +203,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_locked) {
                         <input type="checkbox" id="remember" name="remember" value="1">
                         <label for="remember" class="checkbox-label">Remember me</label>
                     </div>
-                    <a href="#" class="forgot-link">Forgot Password?</a>
+                    <a href="forgot_password.php" class="forgot-link">Forgot Password?</a>
                 </div>
 
                 <button class="btn" type="submit" id="submitBtn" <?php echo $is_locked ? 'disabled' : ''; ?>>
