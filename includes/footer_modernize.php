@@ -153,6 +153,7 @@ footer.footer-modernized .footer-col-title {
     letter-spacing: 0.5px;
     font-weight: 800;
     text-transform: uppercase;
+    text-align: center;
 }
 
 footer.footer-modernized .footer-contact-list {
@@ -183,6 +184,7 @@ footer.footer-modernized .footer-contact-item i {
 footer.footer-modernized .footer-nav-links {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 10px;
     background: transparent !important;
     border: 0 !important;
@@ -221,7 +223,7 @@ footer.footer-modernized .footer-socials {
 }
 
 footer.footer-modernized .footer-social-col {
-    justify-self: start;
+    justify-self: center;
     align-self: start;
 }
 
@@ -247,6 +249,7 @@ footer.footer-modernized .footer-social-links {
     display: flex;
     gap: 10px;
     align-items: center;
+    justify-content: center;
 }
 
 footer.footer-modernized .footer-social-link {
@@ -1079,7 +1082,7 @@ $andisonFooterSettings = andison_get_footer_settings();
                     + '</ul>'
                 + '</div>'
 
-                + '<div class="footer-col">'
+                + '<div class="footer-col" style="display: flex; flex-direction: column; align-items: center;">'
                     + '<h4 class="footer-col-title">' + escHtml(footerSettings.navigation_title || 'Navigation') + '</h4>'
                     + '<nav class="footer-nav-links" aria-label="Footer navigation">'
                         + footerNavLinksHtml
@@ -1087,12 +1090,12 @@ $andisonFooterSettings = andison_get_footer_settings();
                     + '</div>'
 
                 + ((footerSocialLinksHtml || footerSettings.social_image_url)
-                    ? '<div class="footer-col footer-social-col">'
+                    ? '<div class="footer-col footer-social-col" style="display: flex; flex-direction: column; align-items: center;">'
                         + (footerSocialLinksHtml
-                            ? '<div class="footer-socials"><h5 class="footer-socials-title">Socials</h5><div class="footer-social-links">' + footerSocialLinksHtml + '</div></div>'
+                            ? '<div class="footer-socials"><h5 class="footer-socials-title" style="text-align: center;">Socials</h5><div class="footer-social-links">' + footerSocialLinksHtml + '</div></div>'
                             : '')
                         + (footerSettings.social_image_url
-                            ? '<div class="footer-social-image" style="margin-top: 25px;"><div style="font-size:13px;font-weight:700;color:#ffffff;margin-bottom:4px;line-height:1.3;white-space:nowrap;">Browse our product catalog</div><div style="font-size:13px;color:#ffffff;margin-bottom:10px;font-weight:700;">SCAN HERE</div><img src="' + escHtml(footerSettings.social_image_url) + '" alt="QR Code" style="max-width: 100%; height: auto; max-height: 140px; object-fit: contain; filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.1)); border-radius: 6px;"></div>'
+                            ? '<div class="footer-social-image" style="margin-top: 25px;text-align: center;"><div style="font-size:13px;font-weight:700;color:#ffffff;margin-bottom:4px;line-height:1.3;white-space:nowrap;">Browse our product catalog</div><div style="font-size:13px;color:#ffffff;margin-bottom:10px;font-weight:700;">SCAN HERE</div><img src="' + escHtml(footerSettings.social_image_url) + '" alt="QR Code" style="max-width: 100%; height: auto; max-height: 140px; object-fit: contain; filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.1)); border-radius: 6px;"></div>'
                             : '')
                     + '</div>'
                     : '')
@@ -1302,3 +1305,4 @@ $andisonFooterSettings = andison_get_footer_settings();
     });
 })();
 </script>
+

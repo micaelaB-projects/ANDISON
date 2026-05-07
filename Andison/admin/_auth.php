@@ -51,8 +51,33 @@ if (!function_exists('andison_admin_default_password_hash')) {
 
 function andison_admin_config(): array
 {
-    $cfg = require __DIR__ . '/config.php';
-    if (!is_array($cfg)) {
+    require_once __DIR__ . '/../includes/supabase.php';
+
+    // Try to load auth configuration directly from Supabase first
+    if (function_exists('andison_sb_select')) {
+        $sbData = andison_sb_select('admin_users', 'limit=1');
+        if (is_array($sbData) && !empty($sbData[0])) {
+            $user = $sbData[0];
+            $cfg = [
+                'username'      => trim((string)($user['username'] ?? 'andisonindustrial')),
+                'password_hash' => trim((string)($user['password_hash'] ?? '')),
+                'first_name'    => trim((string)($user['first_name'] ?? '')),
+                'last_name'     => trim((string)($user['last_name'] ?? '')),
+                'email'         => trim((string)($user['email'] ?? '')),
+            ];
+
+            // If Supabase has a valid hash, return the config immediately
+            if (andison_admin_is_password_hash($cfg['password_hash'])) {
+                return $cfg;
+            }
+        }
+    }
+
+    // Fallback to local config if Supabase fails or doesn't have a valid user
+    if (file_exists(__DIR__ . '/config.php')) {
+        $cfg = require __DIR__ . '/config.php';
+    }
+    if (!isset($cfg) || !is_array($cfg)) {
         $cfg = [];
     }
 

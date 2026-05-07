@@ -16,31 +16,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = isset($_POST['email']) ? trim((string)$_POST['email']) : '';
         $newUser = isset($_POST['username']) ? trim((string)$_POST['username']) : $username;
 
-        // Persist into config.php — merge with existing to preserve timestamps/image
-        $newCfg = array_merge($cfg, [
-            'username' => $newUser,
-            'password_hash' => $passwordHash,
+        // Update directly in Supabase
+        require_once __DIR__ . '/../includes/supabase.php';
+        $sbResult = andison_sb_update('admin_users', [
+            'username'   => $newUser,
             'first_name' => $first,
-            'last_name' => $last,
-            'email' => $email,
-            'last_updated' => time(),
-        ]);
-        unset($newCfg['password']);
+            'last_name'  => $last,
+            'email'      => $email,
+        ], 'username=eq.' . rawurlencode($username));
 
-        $out = "<?php\n\nreturn ".var_export($newCfg, true).";\n";
-        $written = @file_put_contents(__DIR__ . '/config.php', $out, LOCK_EX);
-        if ($written === false) {
-            andison_set_flash('error', 'Unable to save profile. Check permissions.');
-        } else {
-            // Sync profile to Supabase
-            require_once __DIR__ . '/../includes/supabase.php';
-            andison_sb_update('admin_users', [
-                'username'   => $newUser,
-                'first_name' => $first,
-                'last_name'  => $last,
-                'email'      => $email,
-            ], 'username=eq.' . rawurlencode($username));
+        if ($sbResult) {
             andison_set_flash('success', 'Profile updated.');
+        } else {
+            andison_set_flash('error', 'Unable to save profile to Supabase.');
         }
 
         header('Location: profile.php');
@@ -71,24 +59,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        // Update password in config (store as bcrypt hash)
-        $cfg['password_hash'] = password_hash($new, PASSWORD_BCRYPT);
-        unset($cfg['password']);
-        $out = "<?php\n\nreturn ".var_export($cfg, true).";\n";
-        $written = @file_put_contents(__DIR__ . '/config.php', $out, LOCK_EX);
-        if ($written === false) {
-            andison_set_flash('error', 'Unable to update password. Check permissions.');
-        } else {
-            // Record last_updated timestamp
-            $cfgTs = andison_admin_config();
-            $cfgTs['last_updated'] = time();
-            @file_put_contents(__DIR__ . '/config.php', "<?php\n\nreturn " . var_export($cfgTs, true) . ";\n", LOCK_EX);
-            // Sync bcrypt hash to Supabase
-            require_once __DIR__ . '/../includes/supabase.php';
-            andison_sb_update('admin_users', [
-                'password_hash' => $cfg['password_hash'],
-            ], 'username=eq.' . rawurlencode($username));
+        // Hash the new password properly
+        $newHash = password_hash($new, PASSWORD_BCRYPT);
+        
+        // Update ONLY in Supabase
+        require_once __DIR__ . '/../includes/supabase.php';
+        $sbResult = andison_sb_update('admin_users', [
+            'password_hash' => $newHash,
+        ], 'username=eq.' . rawurlencode($username));
+
+        if ($sbResult) {
             andison_set_flash('success', 'Password updated successfully.');
+        } else {
+            andison_set_flash('error', 'Unable to update password in Supabase. Check connections.');
         }
 
         header('Location: profile.php');
