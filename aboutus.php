@@ -7,6 +7,7 @@ require_once __DIR__ . '/Andison/includes/youtube_links.php';
 require_once __DIR__ . '/Andison/includes/brands_info.php';
 require_once __DIR__ . '/Andison/includes/brand_order.php';
 require_once __DIR__ . '/includes/brand_logo_map.php';
+require_once __DIR__ . '/Andison/includes/aboutus_settings.php';
 
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
@@ -15,6 +16,7 @@ $featured = andison_get_home_featured();
 $slides = andison_get_home_slider();
 $ytLinks = andison_get_youtube_links();
 $brandsData = andison_get_brands_info(true);
+$aboutUsSettings = andison_get_aboutus_settings();
 
 if (!function_exists('andison_about_display_label')) {
     function andison_about_display_label(string $brand): string
@@ -2382,56 +2384,76 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
             align-items: center;
         }
         .about-mvv-inner {
-            max-width: 820px;
+            max-width: 1000px;
             width: 100%;
         }
         .about-mvv-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
             margin-top: 36px;
         }
         @media (max-width: 640px) {
-            .about-mvv-grid { grid-template-columns: 1fr; }
+            .about-mvv-grid { gap: 36px; }
         }
         .about-mvv-card {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid #e4e9f8;
-            box-shadow: 0 4px 18px rgba(43,17,219,0.07);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            align-items: center;
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            overflow: visible;
+            box-shadow: none;
+            transition: none;
+        }
+        .about-mvv-card:nth-child(2) {
+            direction: rtl;
+        }
+        .about-mvv-card:nth-child(2) > * {
+            direction: ltr;
         }
         .about-mvv-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 16px 40px rgba(43,17,219,0.14);
+            transform: none;
+            box-shadow: none;
+        }
+        @media (max-width: 768px) {
+            .about-mvv-card {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .about-mvv-card:nth-child(2) {
+                direction: ltr;
+            }
         }
         .about-mvv-img {
             width: 100%;
-            aspect-ratio: 16/9;
+            aspect-ratio: 4/3;
             object-fit: cover;
             display: block;
-            filter: saturate(1.1);
+            filter: none;
+            border-radius: 12px;
         }
         .about-mvv-img-overlay {
             position: relative;
-            margin-bottom: 28px;
+            margin-bottom: 0;
         }
         .about-mvv-img-overlay::after {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(180deg, rgba(43,17,219,0.18) 0%, rgba(0,215,179,0.22) 100%);
+            background: none;
             pointer-events: none;
         }
         .about-mvv-body {
-            padding: 22px 24px 26px;
+            padding: 0;
         }
         .about-mvv-icon-row {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
         .about-mvv-icon {
             width: 40px;
@@ -2450,12 +2472,13 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
             font-size: 18px;
             font-weight: 800;
             color: #1a1a2e;
+            margin: 0;
         }
         .about-mvv-body p {
             font-size: 13.5px;
             line-height: 1.8;
             color: #555;
-            margin: 0;
+            margin: 12px 0 0;
         }
     </style>
 </head>
@@ -2655,7 +2678,7 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
     <!-- Building Photo -->
     <div class="about-building-wrap">
         <div class="about-building-inner">
-            <img src="assets/about us/Andison Manila Picture - Edited.jpg" alt="Andison Industrial Sales Inc. — Head Office" loading="lazy" />
+            <img src="<?php echo htmlspecialchars($aboutUsSettings['building_image_url'], ENT_QUOTES); ?>" alt="Andison Industrial Sales Inc. — Head Office" loading="lazy" />
         </div>
     </div>
 
@@ -2668,21 +2691,7 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
             </div>
             <h2 class="about-section-title">Our Company</h2>
             <div class="about-company-card">
-                <p>
-                    <strong>Andison Industrial Sales Inc.</strong> stands as a significant industrial supplier for leading companies across the Philippines. Strategically situated amidst the expansive industrial landscape south of Metro Manila, Andison serves multi-national and export giants within
-                    <a class="about-inline-link" href="industries.php">automotive and motorcycle assembly factories, power generation, oil refineries</a>,
-                    petrochemical plants, metal fabrications, mining operations, shipyards, and other top contractors.
-                </p>
-                <p>
-                    With specialized knowledge, Andison embraces the evolution of technology and consistently adopts new trends. We offer various solutions to our clientele by providing
-                    <span class="about-highlight-pill">high-quality products</span>,
-                    technical solutions, comprehensive support, and export services to meet the evolving needs of our clients.
-                </p>
-                <p>
-                    Today, as representatives of various world-class brands, Andison has one of the industry's broadest portfolios of products, including
-                    <span class="about-highlight-pill">Robotic &amp; Automated Welding Systems, Cutting Machines, Industrial Equipment, Tools &amp; Supplies, Gas Detection Devices, Safety Products, and PPE</span>
-                    solutions.
-                </p>
+                <?php echo $aboutUsSettings['company_text']; ?>
             </div>
         </div>
     </div>
@@ -2699,27 +2708,27 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
                 <!-- Our Mission -->
                 <div class="about-mvv-card">
                     <div class="about-mvv-img-overlay">
-                        <img class="about-mvv-img" src="assets/about us/Welding Machines.JPG" alt="Our Mission — Welding Machines" loading="lazy" />
+                        <img class="about-mvv-img" src="<?php echo htmlspecialchars($aboutUsSettings['mission_image_url'], ENT_QUOTES); ?>" alt="Our Mission — Welding Machines" loading="lazy" />
                     </div>
                     <div class="about-mvv-body">
                         <div class="about-mvv-icon-row">
                             <div class="about-mvv-icon blue"><i class="bi bi-bullseye"></i></div>
                             <h3>Our Mission</h3>
                         </div>
-                        <p>To deliver innovative solutions and high-quality products to businesses across the Philippines at cost-effective prices while cultivating lasting relationships with our industrial clients.</p>
+                        <p><?php echo htmlspecialchars($aboutUsSettings['mission_text']); ?></p>
                     </div>
                 </div>
                 <!-- Our Vision -->
                 <div class="about-mvv-card">
                     <div class="about-mvv-img-overlay">
-                        <img class="about-mvv-img" src="assets/about us/Welding Robots.JPG" alt="Our Vision — Welding Robots" loading="lazy" />
+                        <img class="about-mvv-img" src="<?php echo htmlspecialchars($aboutUsSettings['vision_image_url'], ENT_QUOTES); ?>" alt="Our Vision — Welding Robots" loading="lazy" />
                     </div>
                     <div class="about-mvv-body">
                         <div class="about-mvv-icon-row">
                             <div class="about-mvv-icon teal"><i class="bi bi-eye"></i></div>
                             <h3>Our Vision</h3>
                         </div>
-                        <p>To be the premier supplier of industrial solutions in the Philippines, contributing significantly to national industrialization and being the trusted partner for manufacturing excellence.</p>
+                        <p><?php echo htmlspecialchars($aboutUsSettings['vision_text']); ?></p>
                     </div>
                 </div>
             </div>

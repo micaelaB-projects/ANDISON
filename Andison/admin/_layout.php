@@ -82,6 +82,8 @@ function andison_admin_header(string $title, string $active = 'dashboard'): void
         .field{display:flex;flex-direction:column;gap:6px;min-width:240px;flex:1}
         label{font-size:12px;font-weight:900;letter-spacing:0.6px;text-transform:uppercase;color:#374151}
         input[type="text"], input[type="url"], input[type="password"], select, textarea{width:100%;padding:14px 16px;border-radius:14px;border:2px solid var(--border);background:#fff;font-size:14px;transition:all 0.2s ease}
+        input[type="file"]{width:100%;padding:10px 16px;border-radius:14px;border:2px solid var(--border);background:#fff;font-size:14px;transition:all 0.2s ease;cursor:pointer}
+        .file-input{width:100%;padding:10px 16px;border-radius:14px;border:2px solid var(--border);background:#fff;font-size:14px;transition:all 0.2s ease;cursor:pointer}
         textarea{min-height:100px;resize:vertical;line-height:1.6}
         input:focus, select:focus, textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px rgba(43,17,219,0.12);transform:translateY(-1px)}
         input:hover:not(:focus), select:hover:not(:focus), textarea:hover:not(:focus){border-color:rgba(43,17,219,0.3)}
@@ -179,6 +181,8 @@ function andison_admin_header(string $title, string $active = 'dashboard'): void
             <a href="categories.php" class="<?php echo $active === 'categories' ? 'active' : ''; ?>"><i class="bi bi-tag"></i><span>Categories</span></a>
             <a href="featured.php" class="<?php echo $active === 'featured' ? 'active' : ''; ?>"><i class="bi bi-star"></i><span>Homepage Featured</span></a>
             <a href="footer.php" class="<?php echo $active === 'footer' ? 'active' : ''; ?>"><i class="bi bi-layout-text-window"></i><span>Footer Details</span></a>
+            <a href="aboutus.php" class="<?php echo $active === 'aboutus' ? 'active' : ''; ?>"><i class="bi bi-info-circle"></i><span>About Us Page</span></a>
+            <a href="banner.php" class="<?php echo $active === 'banner' ? 'active' : ''; ?>"><i class="bi bi-megaphone"></i><span>Banner Settings</span></a>
             <a href="industries.php" class="<?php echo $active === 'industries-page' ? 'active' : ''; ?>"><i class="bi bi-building"></i><span>Industries Page</span></a>
             <a href="services.php" class="<?php echo $active === 'services-page' ? 'active' : ''; ?>"><i class="bi bi-gear-wide-connected"></i><span>Services Page</span></a>
             <a href="slider.php" class="<?php echo $active === 'slider' ? 'active' : ''; ?>"><i class="bi bi-images"></i><span>Homepage Slider</span></a>
