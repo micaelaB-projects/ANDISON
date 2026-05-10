@@ -2097,8 +2097,7 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
         <div class="container">
             <h2>Product Highlights & News</h2>
             <p class="section-description">
-                We will still keep the Youtube embeded video for product highlights. The video contents will be updated once in a while. 
-                Then same as before with News, Events, and Announcements section that can be added.
+
             </p>
 
             <div class="highlights-grid">
