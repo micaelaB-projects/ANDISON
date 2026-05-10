@@ -24,7 +24,9 @@ $calabarzonTitle = trim((string)($footerSettings['calabarzon_title'] ?? 'Calabar
 $calabarzonAddress = trim((string)($footerSettings['calabarzon_address'] ?? ''));
 $calabarzonPhone = trim((string)($footerSettings['calabarzon_phone'] ?? ''));
 $facebookUrl = trim((string)($footerSettings['facebook_url'] ?? ''));
-$linkedinUrl = trim((string)($footerSettings['linkedin_url'] ?? ''));
+$linkedinUrl = trim((string)($footerSettings['linkedin_url'] ?? ''));
+$messengerUrl = trim((string)($footerSettings['messenger_url'] ?? ''));
+$viberUrl = trim((string)($footerSettings['viber_url'] ?? ''));
 
 $manilaMapQuery = rawurlencode(preg_replace('/\s+/', ' ', $manilaAddress));
 $calabarzonMapQuery = rawurlencode(preg_replace('/\s+/', ' ', $calabarzonAddress));
@@ -90,6 +92,8 @@ if (!function_exists('andison_contact_safe_external_url')) {
 
 $facebookUrlSafe = andison_contact_safe_external_url($facebookUrl);
 $linkedinUrlSafe = andison_contact_safe_external_url($linkedinUrl);
+$messengerUrlSafe = andison_contact_safe_external_url($messengerUrl);
+$viberUrlSafe = andison_contact_safe_external_url($viberUrl);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -2210,23 +2214,27 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
                 <p class="contact-quick-subtitle">Need urgent assistance? Reach our team directly for fast support and quotations.</p>
 
                 <div class="contact-quick-actions">
-                    <a class="contact-quick-action" href="tel:<?php echo htmlspecialchars(andison_contact_tel_href($manilaPhone1), ENT_QUOTES); ?>">
-                        <i class="bi bi-telephone-fill"></i>
+                    <?php if ($messengerUrlSafe !== ''): ?>
+                    <a class="contact-quick-action" href="<?php echo htmlspecialchars($messengerUrlSafe, ENT_QUOTES); ?>" target="_blank" rel="noopener noreferrer" style="--action-icon-color:#0099ff;">
+                        <i class="bi bi-messenger" style="color:#0099ff;"></i>
                         <span>
-                            <strong>Call <?php echo htmlspecialchars($manilaTitle, ENT_QUOTES); ?></strong>
-                            <?php echo htmlspecialchars($manilaPhone1, ENT_QUOTES); ?><br>
-                            <small>Local line</small>
+                            <strong style="color:#0099ff;">Message on Messenger</strong>
+                            Chat with us on Facebook Messenger<br>
+                            <small>Quick replies</small>
                         </span>
                     </a>
+                    <?php endif; ?>
 
-                    <a class="contact-quick-action" href="tel:<?php echo htmlspecialchars(andison_contact_tel_href($calabarzonPhone), ENT_QUOTES); ?>">
-                        <i class="bi bi-telephone-fill"></i>
+                    <?php if ($viberUrlSafe !== ''): ?>
+                    <a class="contact-quick-action" href="<?php echo htmlspecialchars($viberUrlSafe, ENT_QUOTES); ?>" target="_blank" rel="noopener noreferrer">
+                        <i class="bi bi-phone-vibrate" style="color:#7360f2;"></i>
                         <span>
-                            <strong>Call <?php echo htmlspecialchars($calabarzonTitle, ENT_QUOTES); ?></strong>
-                            <?php echo htmlspecialchars($calabarzonPhone, ENT_QUOTES); ?><br>
-                            <small>Batangas branch</small>
+                            <strong style="color:#7360f2;">Message on Viber</strong>
+                            Chat with us on Viber<br>
+                            <small>Quick replies</small>
                         </span>
                     </a>
+                    <?php endif; ?>
 
                     <a class="contact-quick-action" href="mailto:<?php echo htmlspecialchars($contactEmail, ENT_QUOTES); ?>">
                         <i class="bi bi-envelope-fill"></i>
@@ -2269,6 +2277,16 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
                         <?php if ($linkedinUrlSafe !== ''): ?>
                             <a class="contact-social-link" href="<?php echo htmlspecialchars($linkedinUrlSafe, ENT_QUOTES); ?>" target="_blank" rel="noopener noreferrer" aria-label="Open LinkedIn">
                                 <i class="bi bi-linkedin"></i>
+                            </a>
+                        <?php endif; ?>
+                        <?php if ($messengerUrlSafe !== ''): ?>
+                            <a class="contact-social-link" style="color: #0099ff;" href="<?php echo htmlspecialchars($messengerUrlSafe, ENT_QUOTES); ?>" target="_blank" rel="noopener noreferrer" aria-label="Open Messenger">
+                                <i class="bi bi-messenger"></i>
+                            </a>
+                        <?php endif; ?>
+                        <?php if ($viberUrlSafe !== ''): ?>
+                            <a class="contact-social-link" style="color: #7360f2;" href="<?php echo htmlspecialchars($viberUrlSafe, ENT_QUOTES); ?>" target="_blank" rel="noopener noreferrer" aria-label="Open Viber">
+                                <i class="bi bi-phone-vibrate"></i>
                             </a>
                         <?php endif; ?>
                     </div>

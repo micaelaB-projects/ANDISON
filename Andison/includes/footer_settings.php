@@ -19,6 +19,8 @@ if (!function_exists('andison_footer_settings_defaults')) {
             'contact_email' => 'info@andison-industrial.com',
             'facebook_url' => '',
             'linkedin_url' => '',
+            'messenger_url' => '',
+            'viber_url' => '',
             'navigation_title' => 'Navigation',
             'copyright' => '© 2026 ANDISON INDUSTRIAL. All rights reserved.',
             'social_image_url' => '',

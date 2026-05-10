@@ -34,6 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'contact_email' => (string)($_POST['contact_email'] ?? ''),
         'facebook_url' => (string)($_POST['facebook_url'] ?? ''),
         'linkedin_url' => (string)($_POST['linkedin_url'] ?? ''),
+        'messenger_url' => (string)($_POST['messenger_url'] ?? ''),
+        'viber_url' => (string)($_POST['viber_url'] ?? ''),
         'navigation_title' => (string)($_POST['navigation_title'] ?? ''),
         'copyright' => (string)($_POST['copyright'] ?? ''),
         'social_image_url' => $socialImageUrl,
@@ -113,6 +115,17 @@ andison_admin_header('Footer Details', 'footer');
                 <div class="field">
                     <label for="linkedin_url">LinkedIn Link</label>
                     <input id="linkedin_url" name="linkedin_url" type="url" value="<?php echo htmlspecialchars((string)($settings['linkedin_url'] ?? ''), ENT_QUOTES); ?>" placeholder="https://linkedin.com/company/your-company">
+                </div>
+            </div>
+
+            <div class="two-col" style="margin-bottom:14px;">
+                <div class="field">
+                    <label for="messenger_url"><i class="bi bi-messenger"></i> Messenger Link</label>
+                    <input id="messenger_url" name="messenger_url" type="url" value="<?php echo htmlspecialchars((string)($settings['messenger_url'] ?? ''), ENT_QUOTES); ?>" placeholder="https://m.me/your-page">
+                </div>
+                <div class="field">
+                    <label for="viber_url"><i class="bi bi-phone-vibrate"></i> Viber Link</label>
+                    <input id="viber_url" name="viber_url" type="url" value="<?php echo htmlspecialchars((string)($settings['viber_url'] ?? ''), ENT_QUOTES); ?>" placeholder="viber://chat?number=%2B63...">
                 </div>
             </div>
 

@@ -1039,7 +1039,9 @@ $andisonFooterSettings = andison_get_footer_settings();
 
         var footerSocialLinksHtml = [
             footerSocialLink(footerSettings.facebook_url || '', 'bi bi-facebook', 'Facebook'),
-            footerSocialLink(footerSettings.linkedin_url || '', 'bi bi-linkedin', 'LinkedIn')
+            footerSocialLink(footerSettings.linkedin_url || '', 'bi bi-linkedin', 'LinkedIn'),
+            footerSocialLink(footerSettings.messenger_url || '', 'bi bi-messenger', 'Messenger'),
+            footerSocialLink(footerSettings.viber_url || '', 'bi bi-phone-vibrate', 'Viber')
         ].join('');
 
         var qrCodeHtml = (footerSettings.qr_code_url || '') 
