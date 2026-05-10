@@ -4062,9 +4062,9 @@ footer.footer-modernized .footer-scroll-top:hover {
                     + '<h4 class="footer-col-title">Manila</h4>'
                     + '<ul class="footer-contact-list">'
                         + '<li class="footer-contact-item"><i class="bi bi-geo-alt-fill"></i><span>Andison Bldg., Ground Flr. 917-919 Luzon St., Sta. Cruz, Manila, 1003 Philippines</span></li>'
-                        + '<li class="footer-contact-item"><i class="bi bi-telephone-fill"></i><span>Phone: (+632) 8584-4958</span></li>'
+                        + '<li class="footer-contact-item"><i class="bi bi-telephone-fill"></i><span>(+632) 8584-4958</span></li>'
                         + '<li class="footer-contact-item"><i class="bi bi-telephone-fill"></i><span>(+632) 8243-2873</span></li>'
-                        + '<li class="footer-contact-item"><i class="bi bi-printer-fill"></i><span>Fax: (+632) 8252-9224</span></li>'
+                        + '<li class="footer-contact-item"><i class="bi bi-printer-fill"></i><span>(+632) 8252-9224</span></li>'
                     + '</ul>'
                 + '</div>'
 
@@ -4072,8 +4072,8 @@ footer.footer-modernized .footer-scroll-top:hover {
                     + '<h4 class="footer-col-title">Calabarzon</h4>'
                     + '<ul class="footer-contact-list">'
                         + '<li class="footer-contact-item"><i class="bi bi-geo-alt-fill"></i><span>29B P. Zamora Street, Batangas City, 4200 Philippines</span></li>'
-                        + '<li class="footer-contact-item"><i class="bi bi-telephone-fill"></i><span>Phone: (+6343) 425 4126</span></li>'
-                        + '<li class="footer-contact-item"><i class="bi bi-printer-fill"></i><span>Fax: (+6343) 723-3108</span></li>'
+                        + '<li class="footer-contact-item"><i class="bi bi-telephone-fill"></i><span>(+6343) 425 4126</span></li>'
+                        + '<li class="footer-contact-item"><i class="bi bi-printer-fill"></i><span>(+6343) 723-3108</span></li>'
                     + '</ul>'
                 + '</div>'
 
