@@ -40,7 +40,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         
         <!-- Related Products -->
                 <div id="relatedProductsWrap" style="display:none;position:relative;z-index:2;margin-top:4px;min-height:0;overflow-y:auto;">
-                    <div class="related-products-title"><i class="bi bi-boxes"></i> MORE FROM THIS BRAND</div>
+                    <div class="related-products-title"><i class="bi bi-grid"></i> MORE FROM THIS CATEGORY</div>
                                         <div id="relatedProductsGrid" style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px;align-content:start;"></div>
         </div>
       </div>
@@ -2784,13 +2784,13 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         switchImage(idx);
     }
 
-    /* Load related products - FROM SAME BRAND ONLY */
-    function loadRelatedProducts(currentBrand, currentModel, contentMetric) {
+    /* Load related products - FROM SAME CATEGORY ONLY */
+    function loadRelatedProducts(currentCategory, currentModel, contentMetric) {
         var grid = document.getElementById('relatedProductsGrid');
         var wrap = document.getElementById('relatedProductsWrap');
         var MAX_RELATED_PRODUCTS = 4;
         var currentModelKey = normalizeModalKey(currentModel);
-        var currentBrandKeyNormalized = normalizeRelatedBrand(currentBrand);
+        var currentCategoryNormalized = String(currentCategory || '').trim().toLowerCase();
 
         loadRelatedProducts._activeRequestId = (loadRelatedProducts._activeRequestId || 0) + 1;
         var requestId = loadRelatedProducts._activeRequestId;
@@ -2854,10 +2854,8 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 
                 // Check if data is an array (category JSON format) or object (brands_info format)
                 if (Array.isArray(data)) {
-                    // Category JSON format: [ { model, brand, ... } ]
-                    // Collect products from same brand only
-                    var currentBrandKey = currentBrandKeyNormalized;
-                    var pageBrandKey = normalizeRelatedBrand((typeof BRAND_NAME !== 'undefined') ? BRAND_NAME : '');
+                    // Category JSON format: [ { model, type, brand, ... } ]
+                    // Collect products from same category/type only
                     for (var i = 0; i < data.length; i++) {
                         var product = data[i];
                         var productModel = String((product && (product.model || product.product_name || product.name)) || '').trim();
@@ -2869,86 +2867,49 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                             continue;
                         }
 
-                        // Match by canonicalized brand key. If row has no brand, fall back to page brand.
-                        var rowBrandKey = normalizeRelatedBrand(product && product.brand ? product.brand : '');
-                        var hasMatchingBrand = false;
-                        if (currentBrandKey !== '') {
-                            hasMatchingBrand = (rowBrandKey !== '' && rowBrandKey === currentBrandKey)
-                                || (rowBrandKey === '' && pageBrandKey !== '' && pageBrandKey === currentBrandKey);
+                        // Match by category/type field
+                        var rowCategory = String((product && (product.type || product.category || product.product_type)) || '').trim().toLowerCase();
+                        var hasMatchingCategory = false;
+                        if (currentCategoryNormalized !== '') {
+                            hasMatchingCategory = rowCategory !== '' && rowCategory === currentCategoryNormalized;
                         } else {
-                            // If brand context is missing (common in sidebar-open flows), allow any model except current.
-                            hasMatchingBrand = true;
+                            // No category context: allow any product except current
+                            hasMatchingCategory = true;
                         }
 
-                        if (hasMatchingBrand) {
-                            product._brand = currentBrand;
+                        if (hasMatchingCategory) {
                             allProducts.push(product);
                         }
                     }
-                    console.log('loadRelatedProducts: found', allProducts.length, 'related products in category format');
+                    console.log('loadRelatedProducts: found', allProducts.length, 'related products in same category:', currentCategory);
                 } else {
                     // brands_info JSON format: { "BRAND": { products: [...] } }
-                    var brandData = data[currentBrand];
-                    if (!brandData) {
-                        var lc = currentBrand.toLowerCase();
-                        for (var k in data) { if (k.toLowerCase() === lc) { brandData = data[k]; break; } }
-                    }
-                    if (!brandData) {
-                        var targetBrandKey = normalizeRelatedBrand(currentBrand);
-                        for (var k2 in data) {
-                            if (normalizeRelatedBrand(k2) === targetBrandKey) {
-                                brandData = data[k2];
-                                currentBrand = k2;
-                                break;
-                            }
-                        }
-                    }
+                    // Iterate ALL brands and collect products matching the current category/type
+                    for (var kb in data) {
+                        if (!Object.prototype.hasOwnProperty.call(data, kb)) continue;
+                        var bd = data[kb];
+                        var plist = bd && Array.isArray(bd.products) ? bd.products : [];
+                        for (var pi = 0; pi < plist.length; pi++) {
+                            var p = plist[pi];
+                            var pm = String((p && (p.model || p.product_name || p.name)) || '').trim();
+                            if (!pm || normalizeModalKey(pm) === currentModelKey) continue;
 
-                    // If brand still unresolved, infer from current product model.
-                    if (!brandData) {
-                        for (var kb in data) {
-                            if (!Object.prototype.hasOwnProperty.call(data, kb)) continue;
-                            var bd = data[kb];
-                            var plist = bd && Array.isArray(bd.products) ? bd.products : [];
-                            for (var pi = 0; pi < plist.length; pi++) {
-                                var pm = String((plist[pi] && (plist[pi].model || plist[pi].product_name || plist[pi].name)) || '').trim();
-                                if (pm && normalizeModalKey(pm) === currentModelKey) {
-                                    brandData = bd;
-                                    currentBrand = kb;
-                                    break;
-                                }
+                            // Match by type/category field
+                            var pCategory = String((p && (p.type || p.category || p.product_type)) || '').trim().toLowerCase();
+                            var matches = false;
+                            if (currentCategoryNormalized !== '') {
+                                matches = pCategory !== '' && pCategory === currentCategoryNormalized;
+                            } else {
+                                matches = true; // no category context: show any
                             }
-                            if (brandData) break;
-                        }
-                    }
 
-                    if (!brandData || !brandData.products) {
-                        // Last fallback: collect from all brands instead of hiding panel.
-                        for (var kAll in data) {
-                            if (!Object.prototype.hasOwnProperty.call(data, kAll)) continue;
-                            var bAll = data[kAll];
-                            var pAll = bAll && Array.isArray(bAll.products) ? bAll.products : [];
-                            for (var ai = 0; ai < pAll.length; ai++) {
-                                var ap = pAll[ai];
-                                var am = String((ap && (ap.model || ap.product_name || ap.name)) || '').trim();
-                                if (!am || normalizeModalKey(am) === currentModelKey) continue;
-                                ap._brand = String(ap.brand || kAll || currentBrand || '').trim();
-                                allProducts.push(ap);
-                            }
-                        }
-                    } else {
-
-                        // Collect products from same brand only
-                        for (var i = 0; i < brandData.products.length; i++) {
-                            var product = brandData.products[i];
-                            var productModel = String((product && (product.model || product.product_name || product.name)) || '').trim();
-                            if (productModel && normalizeModalKey(productModel) !== currentModelKey) {
-                                product._brand = String(product.brand || currentBrand || '').trim();
-                                allProducts.push(product);
+                            if (matches) {
+                                p._brand = String(p.brand || kb || '').trim();
+                                allProducts.push(p);
                             }
                         }
                     }
-                    console.log('loadRelatedProducts: found', allProducts.length, 'related products in brands_info format');
+                    console.log('loadRelatedProducts: found', allProducts.length, 'products in same category (brands_info format):', currentCategory);
                 }
                 
                 if (allProducts.length === 0) {
@@ -3560,7 +3521,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         contentMetric += normalizeModalText(immediateDescription).length;
         contentMetric += normalizeModalText(specsText).length;
         if (hasSpecs) contentMetric += 220;
-        loadRelatedProducts(brand, model, contentMetric);
+        loadRelatedProducts(type, model, contentMetric);
 
         // Fit modal from just below header to bottom of viewport.
         applyModalViewportLayout();
