@@ -271,7 +271,7 @@ function andison_send_inquiry_receipt(array $data, array $items, array $attachme
 
     ' . $attachment_html . '
 
-    <p style="font-size:13px;color:#888;margin-bottom:0;">If you have any questions, feel free to reply to this email or contact us directly at <a href="mailto:info@andison-industrial.com" style="color:#2B11DB;">info@andison-industrial.com</a>.</p>
+    <p style="font-size:13px;color:#888;margin-bottom:0;">If you have any questions, feel free to reply to this email or contact us directly at <a href="mailto:ask_us@andisonindustrial.com" style="color:#2B11DB;">ask_us@andisonindustrial.com</a>.</p>
   </div>
   <div style="background:#f9fafb;padding:16px 32px;font-size:12px;color:#aaa;border-top:1px solid #eee;">
     © ANDISON INDUSTRIAL — This is an automated confirmation for inquiry ' . $txn_no . '. Please do not reply directly to this address.
