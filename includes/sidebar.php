@@ -2656,7 +2656,53 @@ if ($category_idx !== null) {
             }
         }
 
+        // ── Hover-to-show subcategory popover (desktop only) ──
+        var _hoverShowTimer = null;
+        var _hoverHideTimer = null;
+
+        function cancelHoverTimers(){
+            clearTimeout(_hoverShowTimer);
+            clearTimeout(_hoverHideTimer);
+        }
+
+        function isTouchDevice(){
+            return window.matchMedia('(hover: none)').matches || ('ontouchstart' in window);
+        }
+
+        // Keep popover open while mouse is over it
+        if(miniPopover){
+            miniPopover.addEventListener('mouseenter', function(){
+                cancelHoverTimers();
+            });
+            miniPopover.addEventListener('mouseleave', function(){
+                cancelHoverTimers();
+                _hoverHideTimer = setTimeout(function(){ hidePopover(); }, 200);
+            });
+        }
+
         miniIcons.forEach(function(icon){
+            // Hover: show popover after short delay (desktop only)
+            icon.addEventListener('mouseenter', function(){
+                if(isTouchDevice()) return;
+                cancelHoverTimers();
+                var self = this;
+                var target = self.getAttribute('data-target');
+                var categoryKey = getCategoryKeyFromTarget(target || '');
+                var subItems = categoryKey ? getPopoverItems(categoryKey) : [];
+                if(subItems.length > 0){
+                    _hoverShowTimer = setTimeout(function(){
+                        showPopoverForKey(categoryKey, self);
+                    }, 180);
+                }
+            });
+
+            icon.addEventListener('mouseleave', function(){
+                if(isTouchDevice()) return;
+                cancelHoverTimers();
+                _hoverHideTimer = setTimeout(function(){ hidePopover(); }, 200);
+            });
+
+            // Click: still works for touch / keyboard users
             icon.addEventListener('click', function(e){
                 if(e.target.closest('.sub-indicator')){ e.stopPropagation(); return; }
                 var target = this.getAttribute('data-target');
@@ -2667,6 +2713,7 @@ if ($category_idx !== null) {
                 if(subItems.length > 0){
                     e.preventDefault();
                     e.stopPropagation();
+                    cancelHoverTimers();
                     showPopoverForKey(categoryKey, this);
                 } else if(target) {
                     // No subcategories → navigate directly
