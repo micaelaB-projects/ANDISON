@@ -2099,10 +2099,10 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
 
             <div class="highlights-grid">
                 <?php 
-                $titles = ['Revolutionizing Manufacturing Processes', 'Innovations in Sustainable Industrial Solutions'];
+                $titles = ['Introducing the New Panasonic TAWERS-WG4 Arc Welding System', 'Inside RAE Systems by Honeywell'];
                 $descriptions = [
-                    'Discover how our innovative technology is transforming industrial manufacturing.',
-                    'Learn about our commitment to eco-friendly and sustainable products.'
+                    'Experience next-generation robotic welding technology designed for faster, more precise, and highly efficient welding performance for modern manufacturing applications..',
+                    'Learn about the benefits of advanced gas detection equipment and the strong partnership behind dependable industrial safety solutions.'
                 ];
                 $hasVideos = false;
                 for ($i = 0; $i < 2; $i++): 

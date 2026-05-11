@@ -2311,19 +2311,6 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
             overflow: hidden;
             box-shadow: 0 20px 60px rgba(43,17,219,0.13);
         }
-        .about-building-inner::before,
-        .about-building-inner::after {
-            content: '';
-            position: absolute;
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
-            border: 3px solid #2B11DB;
-            opacity: 0.35;
-            z-index: 2;
-        }
-        .about-building-inner::before { top: 14px; left: 14px; border-right: none; border-bottom: none; }
-        .about-building-inner::after  { bottom: 14px; right: 14px; border-left: none; border-top: none; }
         .about-building-inner img {
             width: 100%;
             height: auto;
