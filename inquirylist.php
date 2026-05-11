@@ -3,7 +3,7 @@
 $contact_phone = "+1(234) 567 8900";
 $contact_phone2 = "+1(234) 567 8900";
 $contact_phone3 = "+1(639) 977 803 7398";
-$contact_email = "info@andison-industrial.com";
+$contact_email = "ask_us@andisonindustrial.com";
 
 // Initialize contact variables for display
 $phone2 = $contact_phone2;
@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Build email content
-        $to = 'ceddreyes21@gmail.com';
+        $to = 'ask_us@andisonindustrial.com';
         $subject = 'New Inquiry Form Submission from ' . $fullname;
 
         $items_list = '';
@@ -3200,7 +3200,7 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
         $phone = "+1(234) 567 8900";
         $phone2 = "+1(234) 567 8900";
         $phone3 = "+1(639) 977 803 7398";
-        $email = "info@andison-industrial.com";
+        $email = "ask_us@andisonindustrial.com";
     ?>
 
     <!-- Header -->
