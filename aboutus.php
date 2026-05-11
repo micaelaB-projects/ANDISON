@@ -161,11 +161,21 @@ foreach ($aboutBrandDisplayToKey as $brandKey) {
     if ($logoSrc === '') {
         continue;
     }
+    $shortLabel = trim((string)($brandInfo['short_label'] ?? ''));
+    if ($shortLabel === '') {
+        $checkName = strtolower($displayName);
+        if ($checkName === 'alphatec' || $checkName === 'microgard') {
+            $shortLabel = 'Chemical Protective Clothing';
+        } elseif ($checkName === 'alfra') {
+            $shortLabel = 'Magnetic Drilling Machines';
+        }
+    }
+
     $aboutBrandCards[] = [
         'display' => $displayName,
         'logo' => $logoSrc,
         'slug' => strtolower((string)preg_replace('/[^a-z0-9]+/i', '-', $displayName)),
-        'short_label' => trim((string)($brandInfo['short_label'] ?? '')),
+        'short_label' => $shortLabel,
     ];
 }
 
