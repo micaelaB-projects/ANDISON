@@ -853,15 +853,15 @@ try {
         /* Product Highlights */
         .highlights-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(560px, 1fr));
             gap: 40px;
             margin-bottom: 50px;
             width: 100%;
-            max-width: 1540px;
+            max-width: 1520px;
             margin-left: auto;
             margin-right: auto;
             box-sizing: border-box;
-            padding: 0;
+            padding: 0 20px;
         }
 
         .product-card {
@@ -2093,7 +2093,7 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
 
     <!-- Product Highlights & News -->
     <section id="products">
-        <div class="container featured-container">
+        <div class="container">
             <h2>Product Highlights & News</h2>
             <p class="section-description">
 
