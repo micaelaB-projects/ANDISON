@@ -50,7 +50,7 @@
     }
 
     .logo-box img {
-        height: 50px;
+        height: 120px;
         width: auto;
         display: block;
     }
@@ -548,7 +548,7 @@
         }
 
         .logo { flex: 0 0 auto; }
-        .logo-box img { height: 36px; }
+        .logo-box img { height: 50px; }
 
         .search-bar {
             position: static;
