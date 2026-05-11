@@ -114,7 +114,7 @@ $viberUrlSafe = andison_contact_safe_external_url($viberUrl);
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Verdana, 'Segoe UI', Tahoma, Geneva, sans-serif;
             .sidebar {
                 position: static;
             }
@@ -2333,6 +2333,7 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
     </script>
 </body>
 </html>
+
 
 
 

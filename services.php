@@ -30,7 +30,7 @@ $servicesContent = andison_get_services_page_content();
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Verdana, 'Segoe UI', Tahoma, Geneva, sans-serif;
             line-height: 1.6;
             color: #333;
             padding-top: 142px;
@@ -2212,6 +2212,7 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
     </script>
 </body>
 </html>
+
 
 
 

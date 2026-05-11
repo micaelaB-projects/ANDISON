@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
     <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        body { font-family: Verdana, Arial, sans-serif; line-height: 1.6; color: #333; }
         .header { background: #2B11DB; color: white; padding: 15px; border-radius: 5px; }
         .section { margin: 20px 0; }
         .label { font-weight: bold; color: #2B11DB; }
@@ -329,7 +329,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Verdana, 'Segoe UI', Tahoma, Geneva, sans-serif;
             line-height: 1.6;
             color: #333;
             padding-top: 142px;
@@ -4179,6 +4179,8 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
 
 </body>
 </html>
+
+
 
 
 

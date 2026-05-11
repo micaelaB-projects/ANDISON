@@ -52,7 +52,7 @@ $matches = array_slice($matches, 0, 80);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height:1.6; color:#333; background: linear-gradient(135deg, #f8f9fa 0%, #f0f2f5 100%); padding-top:142px; min-height: 100vh; display:flex; flex-direction:column; }
+        body { font-family:Verdana, 'Segoe UI', Tahoma, Geneva, sans-serif; line-height:1.6; color:#333; background: linear-gradient(135deg, #f8f9fa 0%, #f0f2f5 100%); padding-top:142px; min-height: 100vh; display:flex; flex-direction:column; }
 
         header { background: linear-gradient(135deg, #2B11DB 0%, #2B11DB 100%); color:white; padding:14px 0; position:fixed; top:0; left:0; right:0; z-index:1200; width:100%; }
         .header-top { display:flex; align-items:center; max-width:1200px; margin:0 auto; padding:0 20px; gap:20px; margin-bottom:12px; }
@@ -713,6 +713,7 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
 
 </body>
 </html>
+
 
 
 

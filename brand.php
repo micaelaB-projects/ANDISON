@@ -517,7 +517,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Verdana, 'Segoe UI', Tahoma, Geneva, sans-serif;
             line-height: 1.6;
             color: #333;
             padding-top: 142px;
@@ -4048,6 +4048,7 @@ var BRAND_LOGO = '<?php echo htmlspecialchars($brand_logo_src, ENT_QUOTES); ?>';
     </script>
 </body>
 </html>
+
 
 
 

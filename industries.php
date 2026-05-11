@@ -30,7 +30,7 @@ $industriesContent = andison_get_industries_page_content();
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Verdana, 'Segoe UI', Tahoma, Geneva, sans-serif;
             padding-top: 142px;
             min-height: 100vh;
             display: flex;
@@ -3072,6 +3072,7 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
     </script>
 </body>
 </html>
+
 
 
 

@@ -5,7 +5,7 @@
 
     /* Font */
     header, header *, nav, nav * {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-family: Verdana, 'Segoe UI', Tahoma, Geneva, sans-serif;
     }
 
     /* Header */
@@ -899,3 +899,4 @@ if (!isset($base_path)) {
         setInterval(updateCartBadge, 500);
     })();
 </script>
+

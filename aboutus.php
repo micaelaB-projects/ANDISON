@@ -199,7 +199,7 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Verdana, 'Segoe UI', Tahoma, Geneva, sans-serif;
             display: flex;
             flex-direction: column;
         }
@@ -3454,6 +3454,7 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
     </script>
 </body>
 </html>
+
 
 
 
