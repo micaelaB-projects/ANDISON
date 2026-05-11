@@ -2660,7 +2660,16 @@ if ($category_idx !== null) {
             icon.addEventListener('click', function(e){
                 if(e.target.closest('.sub-indicator')){ e.stopPropagation(); return; }
                 var target = this.getAttribute('data-target');
-                if(target) {
+                var categoryKey = getCategoryKeyFromTarget(target || '');
+                var subItems = categoryKey ? getPopoverItems(categoryKey) : [];
+
+                // If this category has subcategories → show the popover flyout
+                if(subItems.length > 0){
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showPopoverForKey(categoryKey, this);
+                } else if(target) {
+                    // No subcategories → navigate directly
                     cleanupUiBeforeNavigate();
                     window.location.href = target;
                 }
