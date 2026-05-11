@@ -34,7 +34,7 @@ if (!function_exists('andison_about_display_label')) {
         if ($normalized === 'ansell') {
             return 'ANSELL';
         }
-        if ($normalized === 'alphatec') {
+        if ($normalized === 'alphatec' || $normalized === 'microgard') {
             return 'AlphaTec';
         }
         if ($normalized === 'panasonic' || $normalized === 'panasonic connect') {
@@ -68,8 +68,9 @@ if (!function_exists('andison_about_logo_path')) {
             $candidates[] = 'WELDAS';
         } elseif ($normalized === 'uvex') {
             $candidates[] = 'UVEX';
-        } elseif ($normalized === 'microgard') {
+        } elseif ($normalized === 'microgard' || $normalized === 'alphatec') {
             $candidates[] = 'MICROGARD';
+            $candidates[] = 'AlphaTec';
         } elseif ($normalized === 'ansell') {
             $candidates[] = 'ANSELL';
         } elseif ($normalized === 'bosch') {
