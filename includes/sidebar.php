@@ -1529,27 +1529,26 @@ if ($category_idx !== null) {
         background: #2B11DB;
         color: white;
         padding: 12px 20px;
-        padding-left: 0;
-        text-align: left;
+        text-align: center;
         font-size: 14px;
         line-height: 1.5;
         width: 100%;
-        box-sizing: border-box;s
+        box-sizing: border-box;
         font-weight: 500;
         letter-spacing: 0.3px;
         display: flex;
         align-items: center;
-    }
-
-    .inquiry-info-banner::before {
-        content: '';
-        display: inline-block;
-        width: 240px;
-        flex-shrink: 0;
+        justify-content: center;
     }
 
     .inquiry-info-banner span {
-        flex: 1;
+        white-space: nowrap;
+    }
+
+    @media (max-width: 1200px) {
+        .inquiry-info-banner span {
+            white-space: normal;
+        }
     }
 
     @media (max-width: 768px) {
@@ -1557,20 +1556,12 @@ if ($category_idx !== null) {
             padding: 10px 12px;
             font-size: 13px;
         }
-
-        .inquiry-info-banner::before {
-            width: 180px;
-        }
     }
 
     @media (max-width: 480px) {
         .inquiry-info-banner {
             padding: 8px 10px;
             font-size: 12px;
-        }
-
-        .inquiry-info-banner::before {
-            width: 80px;
         }
     }
 </style>

@@ -628,7 +628,7 @@ try {
 
         .hero-slide {
             position: absolute;
-            width: 40%;
+            width: 64%;
             aspect-ratio: 16 / 9;
             display: flex;
             align-items: center;
@@ -641,14 +641,14 @@ try {
         }
 
         .hero-slide.prev {
-            left: 8%;
+            left: -5%;
             opacity: 0.35;
             transform: translateX(-50px) scale(0.8);
             filter: blur(5px);
         }
 
         .hero-slide.active {
-            left: 30%;
+            left: 18%;
             opacity: 1;
             transform: translateX(0) scale(1);
             filter: blur(0);
@@ -656,7 +656,7 @@ try {
         }
 
         .hero-slide.next {
-            right: 8%;
+            right: -5%;
             opacity: 0.35;
             transform: translateX(50px) scale(0.8);
             filter: blur(5px);
@@ -853,15 +853,14 @@ try {
         /* Product Highlights */
         .highlights-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(560px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr));
             gap: 40px;
             margin-bottom: 50px;
             width: 100%;
-            max-width: 1520px;
             margin-left: auto;
             margin-right: auto;
             box-sizing: border-box;
-            padding: 0 20px;
+            padding: 0;
         }
 
         .product-card {
@@ -964,7 +963,7 @@ try {
             padding: 52px 44px;
             border-radius: 28px;
             display: grid;
-            grid-template-columns: minmax(260px, 0.62fr) minmax(560px, 1.5fr);
+            grid-template-columns: 0.85fr 1.15fr;
             gap: 24px;
             align-items: center;
             box-shadow: 0 22px 50px rgba(20, 28, 56, 0.12);
@@ -1173,7 +1172,6 @@ try {
 
         .featured-image {
             width: 100%;
-            aspect-ratio: auto;
             min-height: 0;
             background: transparent;
             border-radius: 20px;
@@ -2093,7 +2091,7 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
 
     <!-- Product Highlights & News -->
     <section id="products">
-        <div class="container">
+        <div class="container featured-container">
             <h2>Product Highlights & News</h2>
             <p class="section-description">
 

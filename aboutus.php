@@ -1705,7 +1705,7 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
                 overflow-x: hidden;
             }
             .about-hero {
-                padding: 40px 20px 36px;
+                padding: 70px 20px 26px;
                 margin-top: 84px;
             }
             .about-hero h1 {
@@ -2239,7 +2239,7 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
             background: linear-gradient(135deg, #2B11DB 0%, #1a0da3 100%);
             color: white;
             text-align: center;
-            padding: 80px 20px 70px;
+            padding: 120px 20px 50px;
             margin-top: 110px;
             position: relative;
             overflow: hidden;
@@ -2258,6 +2258,17 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
             letter-spacing: -0.5px;
             position: relative;
             z-index: 1;
+        }
+
+        /* Offset the title to center it relative to the whole screen, counteracting the left sidebar padding */
+        @media (min-width: 769px) {
+            .about-hero h1 {
+                transform: translateX(-40px);
+                transition: transform 0.3s ease;
+            }
+            body.sidebar-wide .about-hero h1 {
+                transform: translateX(-180px);
+            }
         }
         .about-hero p {
             font-size: 17px;
@@ -2691,7 +2702,23 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
             </div>
             <h2 class="about-section-title">Our Company</h2>
             <div class="about-company-card">
-                <?php echo $aboutUsSettings['company_text']; ?>
+                <?php 
+                    $companyText = trim((string)($aboutUsSettings['company_text'] ?? ''));
+                    // If the text already has HTML paragraphs (e.g. from a rich text editor), output it directly.
+                    if (strpos($companyText, '<p>') !== false || strpos($companyText, '<p ') !== false) {
+                        echo $companyText;
+                    } else {
+                        // Otherwise, split by newline and wrap each non-empty block in <p> tags
+                        // so it receives the .about-company-card p styling.
+                        $lines = explode("\n", $companyText);
+                        foreach ($lines as $line) {
+                            $line = trim($line);
+                            if ($line !== '') {
+                                echo "<p>" . $line . "</p>\n";
+                            }
+                        }
+                    }
+                ?>
             </div>
         </div>
     </div>
@@ -2715,7 +2742,7 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
                             <div class="about-mvv-icon blue"><i class="bi bi-bullseye"></i></div>
                             <h3>Our Mission</h3>
                         </div>
-                        <p><?php echo htmlspecialchars($aboutUsSettings['mission_text']); ?></p>
+                        <p><?php echo nl2br(htmlspecialchars($aboutUsSettings['mission_text'], ENT_QUOTES)); ?></p>
                     </div>
                 </div>
                 <!-- Our Vision -->
@@ -2728,7 +2755,7 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
                             <div class="about-mvv-icon teal"><i class="bi bi-eye"></i></div>
                             <h3>Our Vision</h3>
                         </div>
-                        <p><?php echo htmlspecialchars($aboutUsSettings['vision_text']); ?></p>
+                        <p><?php echo nl2br(htmlspecialchars($aboutUsSettings['vision_text'], ENT_QUOTES)); ?></p>
                     </div>
                 </div>
             </div>
