@@ -2783,11 +2783,11 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             margin-bottom: 6px;
         }
         .brand-description-card {
-            background: #f8fafc;
-            border: 1px solid #dbe3ea;
-            border-radius: 14px;
-            padding: 22px 24px;
-            box-shadow: 0 1px 4px rgba(15,23,42,0.05);
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            padding: 0;
+            box-shadow: none;
             display: block;
             width: 100%;
             align-self: center;
