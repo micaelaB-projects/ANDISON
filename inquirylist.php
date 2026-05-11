@@ -2766,6 +2766,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: #666;
             margin-top: 2px;
             line-height: 1.3;
+            white-space: pre-line;
+            word-break: break-word;
+            text-align: left;
         }
         .inq-qty-wrap {
             display: flex;

@@ -502,6 +502,13 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
     color: #374151;
 }
 
+#prodDetailDesc .desc-cell-editor {
+    display: block;
+    white-space: pre-line;
+    word-break: break-word;
+    text-align: left;
+}
+
 #prodDetailDesc .prod-desc-table img,
 #prodDetailDesc table.desc-custom-table img,
 #prodDetailDesc table.prod-desc-table img {

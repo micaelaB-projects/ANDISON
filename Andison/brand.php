@@ -262,8 +262,9 @@ $brand_info = isset($brands_info[$brand_key]) ? $brands_info[$brand_key] : [
 
         .brand-rich-description table.desc-custom-table .desc-cell-editor {
             display: block;
-            white-space: pre-wrap;
+            white-space: pre-line;
             word-break: break-word;
+            text-align: left;
         }
 
         .brand-rich-description table.desc-custom-table .desc-cell-image-wrap {
