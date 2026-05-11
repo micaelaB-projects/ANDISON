@@ -853,15 +853,15 @@ try {
         /* Product Highlights */
         .highlights-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 40px;
             margin-bottom: 50px;
             width: 100%;
-            max-width: 1200px;
+            max-width: 1540px;
             margin-left: auto;
             margin-right: auto;
             box-sizing: border-box;
-            padding: 0 20px;
+            padding: 0;
         }
 
         .product-card {
@@ -881,7 +881,6 @@ try {
         .product-image {
             width: 100%;
             aspect-ratio: 16 / 9;
-            min-height: 320px;
             background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
             display: flex;
             align-items: center;
@@ -2094,7 +2093,7 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
 
     <!-- Product Highlights & News -->
     <section id="products">
-        <div class="container">
+        <div class="container featured-container">
             <h2>Product Highlights & News</h2>
             <p class="section-description">
 
