@@ -35,6 +35,7 @@ if (!is_array($payload)) {
 
 $subject = trim((string)($payload['subject'] ?? 'Client Inquiry'));
 $message = trim((string)($payload['message'] ?? ''));
+$links = trim((string)($payload['links'] ?? ''));
 $senderName = trim((string)($payload['sender_name'] ?? ''));
 $senderEmail = trim((string)($payload['sender_email'] ?? ''));
 $pageUrl = trim((string)($payload['page_url'] ?? ''));
@@ -74,7 +75,7 @@ if ($senderName === '') {
     $senderName = 'Website Client';
 }
 
-$adminEmail = 'ceddreyes21@gmail.com';
+$adminEmail = 'ask_us@andisonindustrial.com';
 
 $mailerPath = realpath(__DIR__ . '/../includes/mailer.php');
 if ($mailerPath === false || !is_file($mailerPath)) {
@@ -104,6 +105,10 @@ $safeSubject = htmlspecialchars($subject, ENT_QUOTES, 'UTF-8');
 $safeSenderName = htmlspecialchars($senderName, ENT_QUOTES, 'UTF-8');
 $safeSenderEmail = htmlspecialchars($senderEmail, ENT_QUOTES, 'UTF-8');
 $safeMessage = nl2br(htmlspecialchars($message, ENT_QUOTES, 'UTF-8'));
+if ($links !== '') {
+    $safeLinks = nl2br(htmlspecialchars($links, ENT_QUOTES, 'UTF-8'));
+    $safeMessage .= '<br><br><strong>Links:</strong><br>' . preg_replace('/(https?:\/\/[^\s]+)/', '<a href="$1" target="_blank">$1</a>', $safeLinks);
+}
 $safePageUrl = htmlspecialchars($pageUrl, ENT_QUOTES, 'UTF-8');
 $safeIpAddress = htmlspecialchars((string)($_SERVER['REMOTE_ADDR'] ?? 'Unknown'), ENT_QUOTES, 'UTF-8');
 $safeUserAgent = htmlspecialchars((string)($_SERVER['HTTP_USER_AGENT'] ?? 'Unknown'), ENT_QUOTES, 'UTF-8');
@@ -135,8 +140,32 @@ $emailBody = '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body styl
     . '</div>'
     . '</body></html>';
 
+$attachments = [];
+if (!empty($_FILES['attachments'])) {
+    if (is_array($_FILES['attachments']['name'])) {
+        $count = count($_FILES['attachments']['name']);
+        for ($i = 0; $i < $count; $i++) {
+            if ($_FILES['attachments']['error'][$i] === UPLOAD_ERR_OK && is_uploaded_file($_FILES['attachments']['tmp_name'][$i])) {
+                $attachments[] = [
+                    'path' => $_FILES['attachments']['tmp_name'][$i],
+                    'name' => $_FILES['attachments']['name'][$i],
+                    'mime' => $_FILES['attachments']['type'][$i]
+                ];
+            }
+        }
+    } else {
+        if ($_FILES['attachments']['error'] === UPLOAD_ERR_OK && is_uploaded_file($_FILES['attachments']['tmp_name'])) {
+            $attachments[] = [
+                'path' => $_FILES['attachments']['tmp_name'],
+                'name' => $_FILES['attachments']['name'],
+                'mime' => $_FILES['attachments']['type']
+            ];
+        }
+    }
+}
+
 $mailSubject = '[Website Email] ' . $subject;
-$sent = andison_send_mail($adminEmail, $mailSubject, $emailBody, $senderEmail);
+$sent = andison_send_mail($adminEmail, $mailSubject, $emailBody, $senderEmail, $attachments);
 
 if (!$sent) {
     andison_email_response(500, [

@@ -2,7 +2,7 @@
     if (window.__andisonEmailComposeInitialized) return;
     window.__andisonEmailComposeInitialized = true;
 
-    var ADMIN_EMAIL = 'ceddreyes21@gmail.com';
+    var ADMIN_EMAIL = 'ask_us@andisonindustrial.com';
     var API_RELATIVE_PATH = 'Andison/api/send_admin_email.php';
     var EMAIL_API_URL = resolveEmailApiUrl();
 
@@ -44,14 +44,20 @@
             return Promise.reject(new Error('Direct send is not supported in this browser.'));
         }
 
+        var isFormData = typeof FormData !== 'undefined' && payload instanceof FormData;
+        var headers = {
+            'X-Requested-With': 'XMLHttpRequest'
+        };
+
+        if (!isFormData) {
+            headers['Content-Type'] = 'application/json';
+        }
+
         return fetch(EMAIL_API_URL, {
             method: 'POST',
             credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify(payload)
+            headers: headers,
+            body: isFormData ? payload : JSON.stringify(payload)
         }).then(function (response) {
             return response.text().then(function (text) {
                 var data = null;
@@ -169,6 +175,14 @@
                         '<label class="email-compose-label" for="emailComposeMessage">Message</label>' +
                         '<textarea id="emailComposeMessage" class="email-compose-textarea" placeholder="Write your message to the admin..." required></textarea>' +
                     '</div>' +
+                    '<div class="email-compose-row">' +
+                        '<label class="email-compose-label" for="emailComposeLink">Links (optional)</label>' +
+                        '<input id="emailComposeLink" class="email-compose-input" type="text" placeholder="https://... optionally paste link here">' +
+                    '</div>' +
+                    '<div class="email-compose-row">' +
+                        '<label class="email-compose-label" for="emailComposeAttachment">Attachments (File/Image)</label>' +
+                        '<input id="emailComposeAttachment" class="email-compose-input" type="file" multiple>' +
+                    '</div>' +
                 '</form>' +
                 '<div id="emailComposeHint">Email will be sent directly from this website.</div>' +
                 '<div id="emailComposeStatus" role="status" aria-live="polite"></div>' +
@@ -191,7 +205,9 @@
             subject: document.getElementById('emailComposeSubject'),
             name: document.getElementById('emailComposeName'),
             email: document.getElementById('emailComposeEmail'),
-            message: document.getElementById('emailComposeMessage')
+            message: document.getElementById('emailComposeMessage'),
+            link: document.getElementById('emailComposeLink'),
+            attachment: document.getElementById('emailComposeAttachment')
         };
 
         function setStatus(message, type) {
@@ -237,13 +253,36 @@
                 return;
             }
 
-            var payload = {
-                subject: subject,
-                message: message,
-                sender_name: senderName,
-                sender_email: senderEmail,
-                page_url: window.location.href
-            };
+            var payload;
+            if (typeof FormData !== 'undefined') {
+                payload = new FormData();
+                payload.append('subject', subject);
+                payload.append('message', message);
+                payload.append('sender_name', senderName);
+                payload.append('sender_email', senderEmail);
+                payload.append('page_url', window.location.href);
+
+                if (modal.link && modal.link.value) {
+                    payload.append('links', modal.link.value.trim());
+                }
+
+                if (modal.attachment && modal.attachment.files && modal.attachment.files.length > 0) {
+                    for (var i = 0; i < modal.attachment.files.length; i++) {
+                        payload.append('attachments[]', modal.attachment.files[i]);
+                    }
+                }
+            } else {
+                payload = {
+                    subject: subject,
+                    message: message,
+                    sender_name: senderName,
+                    sender_email: senderEmail,
+                    page_url: window.location.href
+                };
+                if (modal.link && modal.link.value) {
+                    payload.links = modal.link.value.trim();
+                }
+            }
 
             setStatus('Sending your email...', 'info');
             setSendingState(true);
@@ -278,6 +317,8 @@
         modal.to.value = ADMIN_EMAIL;
         modal.subject.value = subject;
         modal.message.value = message;
+        if (modal.link) modal.link.value = '';
+        if (modal.attachment) modal.attachment.value = '';
 
         var statusEl = document.getElementById('emailComposeStatus');
         if (statusEl) {
