@@ -24,8 +24,10 @@ $calabarzonTitle = trim((string)($footerSettings['calabarzon_title'] ?? 'Calabar
 $calabarzonAddress = trim((string)($footerSettings['calabarzon_address'] ?? ''));
 $calabarzonPhone = trim((string)($footerSettings['calabarzon_phone'] ?? ''));
 $facebookUrl = trim((string)($footerSettings['facebook_url'] ?? ''));
-$linkedinUrl = trim((string)($footerSettings['linkedin_url'] ?? ''));
-$messengerUrl = trim((string)($footerSettings['messenger_url'] ?? ''));
+$linkedinUrl = trim((string)($footerSettings['linkedin_url'] ?? ''));
+
+$messengerUrl = trim((string)($footerSettings['messenger_url'] ?? ''));
+
 $viberUrl = trim((string)($footerSettings['viber_url'] ?? ''));
 
 $manilaMapQuery = rawurlencode(preg_replace('/\s+/', ' ', $manilaAddress));
@@ -115,11 +117,13 @@ $viberUrlSafe = andison_contact_safe_external_url($viberUrl);
 
         body {
             font-family: Verdana, 'Segoe UI', Tahoma, Geneva, sans-serif;
-            .sidebar {
-                position: static;
-            }
+            padding-top: 142px;
             display: flex;
             flex-direction: column;
+        }
+
+        .sidebar {
+            position: static;
         }
 
         /* Header */
@@ -2235,15 +2239,6 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
                         </span>
                     </a>
                     <?php endif; ?>
-
-                    <a class="contact-quick-action" href="mailto:<?php echo htmlspecialchars($contactEmail, ENT_QUOTES); ?>">
-                        <i class="bi bi-envelope-fill"></i>
-                        <span>
-                            <strong>Email Sales</strong>
-                            <?php echo htmlspecialchars($contactEmail, ENT_QUOTES); ?><br>
-                            <small>Quotation and support</small>
-                        </span>
-                    </a>
 
                     <button type="button" class="contact-quick-action contact-quick-email email-admin-btn" data-subject="Contact Page Inquiry" data-message="">
                         <i class="bi bi-pencil-square"></i>
