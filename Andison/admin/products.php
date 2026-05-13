@@ -308,14 +308,11 @@ function andison_normalize_category_assignment(array $allCategories, string $cat
             }
         }
 
-        // Fuzzy fallback for CSV values like "Power Tools & Accessories".
         if (!is_array($category) && $categoryLookup !== '') {
             foreach ($allCategories as $cat) {
                 $catName = (string)($cat['name'] ?? '');
                 $catNameKey = $normalizeKey($catName);
-                if ($catNameKey === '') {
-                    continue;
-                }
+                if ($catNameKey === '') continue;
                 if (str_contains($categoryLookup, $catNameKey) || str_contains($catNameKey, $categoryLookup)) {
                     $category = $cat;
                     $categoryId = (string)($cat['id'] ?? '');
@@ -326,7 +323,6 @@ function andison_normalize_category_assignment(array $allCategories, string $cat
     }
 
     if (!is_array($category)) {
-        // Invalid category should not block inserts; clear hierarchy instead.
         return [
             'category_id' => '',
             'subcategory_id' => '',
@@ -334,72 +330,65 @@ function andison_normalize_category_assignment(array $allCategories, string $cat
         ];
     }
 
-    $subcategoryIds = [];
+    $subcategoryIdsMap = [];
     $subcategoryNameToId = [];
     $subSubParent = [];
     $subSubNameToId = [];
     foreach (($category['subcategories'] ?? []) as $sub) {
         $subId = (string)($sub['id'] ?? '');
         $subName = (string)($sub['name'] ?? '');
-        if ($subId === '') {
-            continue;
-        }
-        $subcategoryIds[$subId] = true;
-        if ($subName !== '') {
-            $subcategoryNameToId[$normalizeKey($subName)] = $subId;
-        }
+        if ($subId === '') continue;
+        $subcategoryIdsMap[$subId] = true;
+        if ($subName !== '') $subcategoryNameToId[$normalizeKey($subName)] = $subId;
 
         foreach (($sub['subcategories'] ?? []) as $subSub) {
             $subSubId = (string)($subSub['id'] ?? '');
             $subSubName = (string)($subSub['name'] ?? '');
-            if ($subSubId === '') {
-                continue;
-            }
+            if ($subSubId === '') continue;
             $subSubParent[$subSubId] = $subId;
-            if ($subSubName !== '') {
-                $subSubNameToId[$normalizeKey($subSubName)] = $subSubId;
+            if ($subSubName !== '') $subSubNameToId[$normalizeKey($subSubName)] = $subSubId;
+        }
+    }
+
+    $finalSubIds = [];
+    $finalSubSubIds = [];
+
+    $rawSubs = $subcategoryId !== '' ? array_map('trim', explode(',', $subcategoryId)) : [];
+    $rawSubSubs = $subSubcategoryId !== '' ? array_map('trim', explode(',', $subSubcategoryId)) : [];
+
+    foreach ($rawSubs as $s) {
+        if ($s === '') continue;
+        if (isset($subcategoryIdsMap[$s])) {
+            $finalSubIds[] = $s;
+        } else {
+            $lookup = $normalizeKey($s);
+            if (isset($subcategoryNameToId[$lookup])) {
+                $finalSubIds[] = $subcategoryNameToId[$lookup];
             }
         }
     }
 
-    // Allow CSV subcategory/sub-subcategory names.
-    if ($subcategoryId !== '' && !isset($subcategoryIds[$subcategoryId])) {
-        $lookup = $normalizeKey($subcategoryId);
-        if (isset($subcategoryNameToId[$lookup])) {
-            $subcategoryId = $subcategoryNameToId[$lookup];
-        }
-    }
-    if ($subSubcategoryId !== '' && !isset($subSubParent[$subSubcategoryId])) {
-        $lookup = $normalizeKey($subSubcategoryId);
-        if (isset($subSubNameToId[$lookup])) {
-            $subSubcategoryId = $subSubNameToId[$lookup];
-        }
-    }
-
-    if ($subSubcategoryId !== '' && isset($subSubParent[$subSubcategoryId])) {
-        $subcategoryId = $subSubParent[$subSubcategoryId];
-    } elseif ($subSubcategoryId !== '') {
-        $subSubcategoryId = '';
-    }
-
-    if ($subcategoryId !== '' && !isset($subcategoryIds[$subcategoryId])) {
-        // Backward compatibility: legacy rows may have saved sub-subcategory id into subcategory_id.
-        if ($subSubcategoryId === '' && isset($subSubParent[$subcategoryId])) {
-            $subSubcategoryId = $subcategoryId;
-            $subcategoryId = $subSubParent[$subcategoryId];
+    foreach ($rawSubSubs as $ss) {
+        if ($ss === '') continue;
+        if (isset($subSubParent[$ss])) {
+            $finalSubSubIds[] = $ss;
+            $finalSubIds[] = $subSubParent[$ss]; // enforce parent is checked
         } else {
-            $subcategoryId = '';
+            $lookup = $normalizeKey($ss);
+            if (isset($subSubNameToId[$lookup])) {
+                $finalSubSubIds[] = $subSubNameToId[$lookup];
+                $finalSubIds[] = $subSubParent[$subSubNameToId[$lookup]];
+            }
         }
     }
 
-    if ($subcategoryId === '' && $subSubcategoryId !== '' && isset($subSubParent[$subSubcategoryId])) {
-        $subcategoryId = $subSubParent[$subSubcategoryId];
-    }
+    $finalSubIds = array_unique($finalSubIds);
+    $finalSubSubIds = array_unique($finalSubSubIds);
 
     return [
         'category_id' => $categoryId,
-        'subcategory_id' => $subcategoryId,
-        'sub_subcategory_id' => $subSubcategoryId,
+        'subcategory_id' => implode(',', $finalSubIds),
+        'sub_subcategory_id' => implode(',', $finalSubSubIds),
     ];
 }
 
@@ -1819,14 +1808,14 @@ andison_admin_header('Products', 'products');
                             </select>
                         </div>
                         <div class="field" style="margin:0;">
-                            <label for="editSubcategory"><i class="bi bi-folder2-open"></i> Subcategory</label>
-                            <select id="editSubcategory" onchange="populateSubSubcategories(this.value, '');" title="Select the product subcategory">
+                            <label for="editSubcategory"><i class="bi bi-folder2-open"></i> Subcategory <span style="font-size:10px;font-weight:normal;color:#6b7280;">(Ctrl/Cmd to select multiple)</span></label>
+                            <select id="editSubcategory" multiple size="4" onchange="populateSubSubcategories('', '');" title="Select the product subcategory (Hold Ctrl/Cmd to select multiple)">
                                 <option value="">-- Select Category First --</option>
                             </select>
                         </div>
                         <div class="field" style="margin:0;grid-column:2;">
-                            <label for="editSubSubcategory"><i class="bi bi-diagram-2"></i> Sub-subcategory</label>
-                            <select id="editSubSubcategory" onchange="updateFinalSubcategory();" title="Select the product sub-subcategory (optional)">
+                            <label for="editSubSubcategory"><i class="bi bi-diagram-2"></i> Sub-subcategory <span style="font-size:10px;font-weight:normal;color:#6b7280;">(Ctrl/Cmd to select multiple)</span></label>
+                            <select id="editSubSubcategory" multiple size="4" onchange="updateFinalSubcategory();" title="Select the product sub-subcategory (optional)">
                                 <option value="">-- Optional --</option>
                             </select>
                         </div>
@@ -2369,6 +2358,16 @@ body.modal-open {
     -moz-appearance: none;
 }
 
+.edit-modal-body select[multiple] {
+    background-image: none;
+    padding-right: 12px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    appearance: auto;
+    -webkit-appearance: auto;
+    -moz-appearance: auto;
+}
+
 /* Badge select styling */
 .badge-select {
     background: linear-gradient(to right, #f9fafb, #f3f4f6);
@@ -2891,11 +2890,13 @@ function populateCategorySubcategories(selectedSubId, selectedSubSubId) {
     var cat = _andisonCategories.find(function(c){ return c.id === catId; });
     if (!cat) { updateFinalSubcategory(); return; }
 
+    var selectedSubIds = selectedSubId ? String(selectedSubId).split(',') : [];
+
     (cat.subcategories || []).forEach(function(sub){
         var opt = document.createElement('option');
         opt.value = sub.id;
         opt.textContent = sub.name;
-        if (selectedSubId && sub.id === selectedSubId) opt.selected = true;
+        if (selectedSubIds.indexOf(String(sub.id)) !== -1) opt.selected = true;
         subSel.appendChild(opt);
     });
 
@@ -2911,17 +2912,14 @@ function populateSubSubcategories(selectedSubId, selectedSubSubId) {
         return;
     }
 
-    var activeSubId = selectedSubId || (subSel ? subSel.value : '');
-    subSubSel.innerHTML = '<option value="">-- Optional --</option>';
-
-    if (!catId || !activeSubId) {
-        subSubSel.disabled = true;
-        updateFinalSubcategory();
-        return;
+    var activeSubIds = selectedSubId ? String(selectedSubId).split(',') : [];
+    if (!activeSubIds.length && subSel) {
+        activeSubIds = Array.from(subSel.selectedOptions).map(function(o){ return o.value; }).filter(function(v){ return v !== ''; });
     }
 
-    if (isSubSubcategoryDisabledForSubcategory(activeSubId)) {
-        subSubSel.innerHTML = '<option value="">-- Not available for this subcategory --</option>';
+    subSubSel.innerHTML = '<option value="">-- Optional --</option>';
+
+    if (!catId || !activeSubIds.length) {
         subSubSel.disabled = true;
         updateFinalSubcategory();
         return;
@@ -2934,32 +2932,45 @@ function populateSubSubcategories(selectedSubId, selectedSubSubId) {
         return;
     }
 
-    var sub = (cat.subcategories || []).find(function(s){ return s.id === activeSubId; });
-    var nested = sub && Array.isArray(sub.subcategories) ? sub.subcategories : [];
-    if (!nested.length) {
-        subSubSel.innerHTML = '<option value="">-- None available --</option>';
-        subSubSel.disabled = true;
-        updateFinalSubcategory();
-        return;
-    }
+    var hasNested = false;
+    var selectedSubSubIds = selectedSubSubId ? String(selectedSubSubId).split(',') : [];
 
-    nested.forEach(function(ss){
-        var opt = document.createElement('option');
-        opt.value = ss.id;
-        opt.textContent = ss.name;
-        if (selectedSubSubId && ss.id === selectedSubSubId) opt.selected = true;
-        subSubSel.appendChild(opt);
+    activeSubIds.forEach(function(activeSubId) {
+        var sub = (cat.subcategories || []).find(function(s){ return String(s.id) === String(activeSubId); });
+        var nested = sub && Array.isArray(sub.subcategories) ? sub.subcategories : [];
+        if (nested.length) {
+            hasNested = true;
+            var optgroup = document.createElement('optgroup');
+            optgroup.label = sub.name;
+            nested.forEach(function(ss){
+                var opt = document.createElement('option');
+                opt.value = ss.id;
+                opt.textContent = ss.name;
+                if (selectedSubSubIds.indexOf(String(ss.id)) !== -1) opt.selected = true;
+                optgroup.appendChild(opt);
+            });
+            subSubSel.appendChild(optgroup);
+        }
     });
-    subSubSel.disabled = false;
+
+    if (!hasNested) {
+        subSubSel.innerHTML = '<option value="">-- None available / Not applicable --</option>';
+        subSubSel.disabled = true;
+    } else {
+        subSubSel.disabled = false;
+    }
 
     updateFinalSubcategory();
 }
 
 function updateFinalSubcategory() {
     var catId = document.getElementById('editCategory').value;
-    var subId = document.getElementById('editSubcategory').value;
+    var subSel = document.getElementById('editSubcategory');
     var subSubSel = document.getElementById('editSubSubcategory');
-    var subSubId = subSubSel ? subSubSel.value : '';
+    
+    var subId = subSel ? Array.from(subSel.selectedOptions).map(function(o){ return o.value; }).filter(function(v){ return v !== ''; }).join(',') : '';
+    var subSubId = subSubSel ? Array.from(subSubSel.selectedOptions).map(function(o){ return o.value; }).filter(function(v){ return v !== ''; }).join(',') : '';
+
     if (!catId) {
         subId = '';
         subSubId = '';
@@ -2985,55 +2996,53 @@ function refreshCategoryPreview() {
         subSub = subSubInput.value;
     }
     if (!cat) {
-        preview.innerHTML = '<span style="color:#b45309;"><i class="bi bi-exclamation-triangle" style="font-size:10px;"></i> No category assigned — product won\'t appear in browse pages.</span>';
+        preview.innerHTML = '<span style="color:#b45309;"><i class="bi bi-exclamation-triangle" style="font-size:10px;"></i> No category assigned &mdash; product won\'t appear in browse pages.</span>';
         return;
     }
+
+    var subIds = sub ? String(sub).split(',') : [];
+    var subSubIds = subSub ? String(subSub).split(',') : [];
+    
     // Resolve human-readable names
     var catName = cat;
     var subName = '';
     var subSubName = '';
-    var catData = _andisonCategories.find(function(c){ return c.id === cat; });
+    var catData = _andisonCategories.find(function(c){ return String(c.id) === String(cat); });
     if (catData) {
         catName = catData.name || cat;
 
-        if (sub) {
-            var subData = (catData.subcategories || []).find(function(s){ return s.id === sub; });
-            if (subData) {
-                subName = subData.name || sub;
-                if (subSub) {
-                    var explicitDeep = (subData.subcategories || []).find(function(ss){ return ss.id === subSub; });
-                    if (explicitDeep) {
-                        subSubName = explicitDeep.name || subSub;
-                    }
-                }
-            }
-        }
+        var subNames = [];
+        subIds.forEach(function(sid) {
+            var sData = (catData.subcategories || []).find(function(s){ return String(s.id) === String(sid); });
+            if (sData) subNames.push(sData.name || sid);
+        });
+        if (subNames.length) subName = subNames.join(', ');
 
-        if (subSub && !subSubName) {
-            for (var i = 0; i < (catData.subcategories || []).length; i++) {
-                var parentSub = catData.subcategories[i];
-                var deep = (parentSub.subcategories || []).find(function(ss){ return ss.id === subSub; });
+        var subSubNames = [];
+        subSubIds.forEach(function(ssid) {
+            var ssNameFound = false;
+            (catData.subcategories || []).forEach(function(parentSub) {
+                var deep = (parentSub.subcategories || []).find(function(ss){ return String(ss.id) === String(ssid); });
                 if (deep) {
-                    if (!subName) {
-                        subName = parentSub.name || parentSub.id;
-                    }
-                    subSubName = deep.name || deep.id;
-                    break;
+                    subSubNames.push(deep.name || ssid);
+                    ssNameFound = true;
                 }
-            }
-        }
+            });
+            if (!ssNameFound) subSubNames.push(ssid);
+        });
+        if (subSubNames.length) subSubName = subSubNames.join(', ');
     }
 
     if (!subName && sub) {
-        subName = sub;
+        subName = subIds.join(', ');
     }
     if (!subSubName && subSub) {
-        subSubName = subSub;
+        subSubName = subSubIds.join(', ');
     }
 
     var path = catName;
-    if (subName) path += ' › ' + subName;
-    if (subSubName) path += ' › ' + subSubName;
+    if (subName) path += ' &rsaquo; ' + subName;
+    if (subSubName) path += ' &rsaquo; ' + subSubName;
 
     preview.innerHTML = '<i class="bi bi-check-circle-fill" style="color:#16a34a;font-size:10px;"></i> '
         + '<span style="color:#166534;font-weight:500;">Assigned: ' + path + '</span>';
@@ -8910,6 +8919,8 @@ function previewBrandLogoFile(input, previewImgId, emptyLabelId, fallbackSrc) {
 
 <?php
 andison_admin_footer();
+
+
 
 
 

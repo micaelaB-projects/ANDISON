@@ -3175,13 +3175,13 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         if (brandEl) {
             var brandLogoPath = getModalBrandLogo(brand);
             if (brandLogoPath) {
-                brandEl.innerHTML = '<img src="' + brandLogoPath + '" alt="' + escapeHtml(brand || 'Brand') + '" style="display:block;width:100%;height:100%;object-fit:contain;object-position:left center;filter:drop-shadow(0 3px 8px rgba(20, 24, 68, 0.28));">';
+                brandEl.innerHTML = '<img src="' + brandLogoPath + '" alt="' + escapeHtml(brand || 'Brand') + '" style="display:block;width:100%;height:100%;object-fit:contain;object-position:left center;mix-blend-mode:multiply;">';
                 brandEl.style.display = 'inline-flex';
                 brandEl.style.alignItems = 'center';
                 brandEl.style.justifyContent = 'flex-start';
-                brandEl.style.width = 'clamp(170px, 26vw, 360px)';
-                brandEl.style.height = '62px';
-                brandEl.style.minHeight = '62px';
+                brandEl.style.width = 'clamp(250px, 30vw, 414px)';
+                brandEl.style.height = '85px';
+                brandEl.style.minHeight = '85px';
                 brandEl.style.padding = '6px 10px';
                 brandEl.style.boxSizing = 'border-box';
                 brandEl.style.background = 'transparent';
@@ -3240,13 +3240,13 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                         return;
                     }
 
-                    brandEl.innerHTML = '<img src="' + fallbackLogo + '" alt="' + escapeHtml(brand || 'Brand') + '" style="display:block;width:100%;height:100%;object-fit:contain;object-position:left center;filter:drop-shadow(0 3px 8px rgba(20, 24, 68, 0.28));">';
+                    brandEl.innerHTML = '<img src="' + fallbackLogo + '" alt="' + escapeHtml(brand || 'Brand') + '" style="display:block;width:100%;height:100%;object-fit:contain;object-position:left center;mix-blend-mode:multiply;">';
                     brandEl.style.display = 'inline-flex';
                     brandEl.style.alignItems = 'center';
                     brandEl.style.justifyContent = 'flex-start';
-                    brandEl.style.width = 'clamp(170px, 26vw, 360px)';
-                    brandEl.style.height = '62px';
-                    brandEl.style.minHeight = '62px';
+                    brandEl.style.width = 'clamp(195px, 30vw, 414px)';
+                    brandEl.style.height = '71px';
+                    brandEl.style.minHeight = '71px';
                     brandEl.style.padding = '6px 10px';
                     brandEl.style.boxSizing = 'border-box';
                     brandEl.style.background = 'transparent';

@@ -115,22 +115,29 @@ function andison_get_products_for_subcategory(string $categoryId, string $subcat
         $storedSubId = trim((string)($row['subcategory_id'] ?? ''));
         $storedSubSubId = trim((string)($row['sub_subcategory_id'] ?? ''));
 
+        // Handle multiple subcategories/sub-subcategories correctly
+        $storedSubIds = array_map('trim', explode(',', $storedSubId));
+        $storedSubSubIds = array_map('trim', explode(',', $storedSubSubId));
+
         // Backward compatibility: legacy rows may have saved sub-subcategory in subcategory_id.
-        if ($storedSubSubId === '' && $storedSubId !== '' && isset($subSubParentMap[$storedSubId])) {
-            $storedSubSubId = $storedSubId;
-            $storedSubId = $subSubParentMap[$storedSubId];
+        // We only do this logic safely if it's a single value.
+        if (count($storedSubSubIds) === 1 && $storedSubSubIds[0] === '' && count($storedSubIds) === 1 && $storedSubIds[0] !== '' && isset($subSubParentMap[$storedSubIds[0]])) {
+            $storedSubSubIds = [$storedSubIds[0]];
+            $storedSubIds = [$subSubParentMap[$storedSubIds[0]]];
+            $storedSubSubId = $storedSubSubIds[0];
+            $storedSubId = $storedSubIds[0];
         }
 
         $include = false;
         if ($isSpecificSubSub) {
             // Sub-subcategory page: include exact normalized match and legacy direct assignment.
-            $include = ($storedSubSubId === $subcategoryId)
-                || (trim((string)($row['subcategory_id'] ?? '')) === $subcategoryId);
+            $include = in_array($subcategoryId, $storedSubSubIds, true)
+                || in_array($subcategoryId, $storedSubIds, true);
         } else {
             // Parent subcategory page: include direct assignments and nested sub-subcategory assignments.
-            $include = ($storedSubId === $subcategoryId)
-                || in_array($storedSubSubId, $targetChildIds, true)
-                || in_array(trim((string)($row['subcategory_id'] ?? '')), $targetChildIds, true);
+            $include = in_array($subcategoryId, $storedSubIds, true)
+                || count(array_intersect($storedSubSubIds, $targetChildIds)) > 0
+                || count(array_intersect(array_map('trim', explode(',', trim((string)($row['subcategory_id'] ?? '')))), $targetChildIds)) > 0;
         }
 
         if (!$include) {
