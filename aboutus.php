@@ -2133,7 +2133,7 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
 
         .about-building-inner {
             position: relative;
-            max-width: 650px;
+            max-width: 820px;
             width: 100%;
             border-radius: 20px;
             overflow: hidden;
@@ -2297,7 +2297,7 @@ usort($aboutBrandCards, static function (array $a, array $b): int {
         }
         .about-building-inner {
             position: relative;
-            max-width: 650px;
+            max-width: 820px;
             width: 100%;
             border-radius: 20px;
             overflow: hidden;
