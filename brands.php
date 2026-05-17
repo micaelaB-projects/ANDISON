@@ -311,7 +311,7 @@ usort($brandCards, static function (array $a, array $b): int {
         }
 
         .logo-box img {
-            height: 50px;
+            height: 60px;
             width: auto;
             display: block;
         }

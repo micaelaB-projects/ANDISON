@@ -1140,7 +1140,7 @@ if ($category_idx !== null) {
         }
         .sidebar-nested-sublist a {
             min-height: 40px;
-            padding: 8px 10px;
+            padding: 2px 10px;
             font-size: 12px;
         }
         .sub-toggle {
@@ -1528,7 +1528,7 @@ if ($category_idx !== null) {
     .inquiry-info-banner {
         background: #2B11DB;
         color: white;
-        padding: 12px 20px;
+        padding: 4px 20px;
         text-align: center;
         font-size: 14px;
         line-height: 1.5;
@@ -1553,14 +1553,14 @@ if ($category_idx !== null) {
 
     @media (max-width: 768px) {
         .inquiry-info-banner {
-            padding: 10px 12px;
+            padding: 3px 12px;
             font-size: 13px;
         }
     }
 
     @media (max-width: 480px) {
         .inquiry-info-banner {
-            padding: 8px 10px;
+            padding: 2px 10px;
             font-size: 12px;
         }
     }

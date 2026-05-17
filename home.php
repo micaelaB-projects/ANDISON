@@ -131,7 +131,7 @@ try {
         }
 
         .logo-box img {
-            height: 50px;
+            height: 60px;
             width: auto;
             display: block;
         }

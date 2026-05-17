@@ -548,7 +548,7 @@
         }
 
         .logo { flex: 0 0 auto; }
-        .logo-box img { height: 50px; }
+        .logo-box img { height: 60px; }
 
         .search-bar {
             position: static;

@@ -168,7 +168,7 @@ $viberUrlSafe = andison_contact_safe_external_url($viberUrl);
         }
 
         .logo-box img {
-            height: 50px;
+            height: 60px;
             width: auto;
             display: block;
         }

@@ -133,7 +133,7 @@ $category_description = $current_category['description'] ?? 'Discover our compre
         }
 
         .logo-box img {
-            height: 50px;
+            height: 60px;
             width: auto;
             display: block;
         }
@@ -1185,7 +1185,7 @@ $category_description = $current_category['description'] ?? 'Discover our compre
             width: 240px;
             min-width: 180px;
             flex-shrink: 1;
-            margin-top: 120px;
+            margin-top: 40px;
         }
 
         .filter-section {
@@ -1259,7 +1259,7 @@ $category_description = $current_category['description'] ?? 'Discover our compre
         /* Main Product Area */
         .main-product-area {
             flex: 1;
-            margin-top: 120px;
+            margin-top: 40px;
         }
 
         .product-controls {

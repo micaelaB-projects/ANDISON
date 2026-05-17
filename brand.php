@@ -585,7 +585,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         }
 
         .logo-box img {
-            height: 50px;
+            height: 60px;
             width: auto;
             display: block;
         }

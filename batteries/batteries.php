@@ -142,7 +142,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         }
 
         .logo-box img {
-            height: 50px;
+            height: 60px;
             width: auto;
             display: block;
         }
@@ -1223,7 +1223,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             width: 240px;
             min-width: 180px;
             flex-shrink: 1;
-            margin-top: 120px;
+            margin-top: 40px;
         }
 
         .filter-section {
@@ -1297,7 +1297,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         /* Main Product Area */
         .main-product-area {
             flex: 1;
-            margin-top: 120px;
+            margin-top: 40px;
         }
 
         .product-controls {

@@ -110,7 +110,7 @@ if (!$current_category) {
         }
 
         .logo-box img {
-            height: 50px;
+            height: 60px;
             width: auto;
             display: block;
         }
@@ -1191,7 +1191,7 @@ if (!$current_category) {
             width: 240px;
             min-width: 180px;
             flex-shrink: 1;
-            margin-top: 120px;
+            margin-top: 40px;
         }
 
         .filter-section {
@@ -1265,7 +1265,7 @@ if (!$current_category) {
         /* Main Product Area */
         .main-product-area {
             flex: 1;
-            margin-top: 120px;
+            margin-top: 40px;
         }
 
         .product-controls {

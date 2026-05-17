@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require __DIR__ . '/Andison/includes/brands_info.php';
 $all = andison_get_brands_info(true);
 

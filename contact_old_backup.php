@@ -79,7 +79,7 @@ $ytLinks = andison_get_youtube_links();
         }
 
         .logo-box img {
-            height: 50px;
+            height: 60px;
             width: auto;
             display: block;
         }
