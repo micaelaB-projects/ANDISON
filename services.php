@@ -430,6 +430,10 @@ $servicesContent = andison_get_services_page_content();
             width: 44px;
         }
 
+        
+        .nav-dropdown::before { content: ''; position: absolute; top: -30px; left: 0; width: 100%; height: 30px; background: transparent; }
+        
+        .nav-dropdown::before { content: ''; position: absolute; top: -30px; left: 0; width: 100%; height: 30px; background: transparent; }
         .nav-dropdown {
             position: absolute;
             top: 100%;
@@ -445,18 +449,6 @@ $servicesContent = andison_get_services_page_content();
             z-index: 110;
             padding: 16px;
             margin-top: 8px;
-        }
-
-        .nav-dropdown::before {
-            content: '';
-            position: absolute;
-            top: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-left: 10px solid transparent;
-            border-right: 10px solid transparent;
-            border-bottom: 10px solid white;
-            filter: drop-shadow(0 -2px 2px rgba(0,0,0,0.05));
         }
 
         .nav-list > li:hover .nav-dropdown {

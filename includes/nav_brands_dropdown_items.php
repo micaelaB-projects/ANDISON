@@ -11,7 +11,8 @@ if (!defined('ANDISON_NAV_BRANDS_DROPDOWN_STYLE_PRINTED')) {
     <style>
         /* Brand sizing v9 - SK+GalGage reduced to 1.65 - cache bust: 2026-04-29-019 */
         
-        nav li:nth-child(3) .nav-dropdown {
+        nav li:nth-child(3)
+.nav-dropdown {
             min-width: 860px !important;
             max-width: 860px !important;
             padding: 18px 22px 36px !important;
@@ -235,7 +236,8 @@ if (!defined('ANDISON_NAV_BRANDS_DROPDOWN_STYLE_PRINTED')) {
         }
 
         @media (max-width: 1200px) {
-            nav li:nth-child(3) .nav-dropdown {
+            nav li:nth-child(3)
+.nav-dropdown {
                 min-width: 760px !important;
                 max-width: 760px !important;
                 padding-bottom: 32px !important;
@@ -253,7 +255,8 @@ if (!defined('ANDISON_NAV_BRANDS_DROPDOWN_STYLE_PRINTED')) {
         }
 
         @media (max-width: 980px) {
-            nav li:nth-child(3) .nav-dropdown {
+            nav li:nth-child(3)
+.nav-dropdown {
                 min-width: 640px !important;
                 max-width: 640px !important;
                 padding-bottom: 28px !important;

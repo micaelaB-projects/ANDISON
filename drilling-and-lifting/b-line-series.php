@@ -482,6 +482,9 @@ $email = "info@andison-industrial.com";
             box-shadow: inset 0 -6px 18px rgba(0,0,0,0.06);
         }
 
+        .nav-dropdown::before { content: ''; position: absolute; top: -30px; left: 0; width: 100%; height: 30px; background: transparent; }
+        
+        .nav-dropdown::before { content: ''; position: absolute; top: -30px; left: 0; width: 100%; height: 30px; background: transparent; }
         .nav-dropdown {
             position: absolute;
             top: 100%;
@@ -500,7 +503,8 @@ $email = "info@andison-industrial.com";
             margin-top: 8px;
         }
 
-        .nav-list > li:hover .nav-dropdown {
+        .nav-list > li:hover
+.nav-dropdown {
             opacity: 1;
             visibility: visible;
             display: block;
@@ -554,7 +558,8 @@ $email = "info@andison-industrial.com";
             margin: 0;
         }
 
-        nav li:nth-child(3) .nav-dropdown {
+        nav li:nth-child(3)
+.nav-dropdown {
             min-width: 650px;
             max-width: 650px;
             padding: 24px 28px;

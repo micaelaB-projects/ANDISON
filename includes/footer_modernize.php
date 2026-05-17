@@ -24,7 +24,8 @@ nav .nav-dropdown ul a[aria-current="page"]:not(.andison-nav-brand-link) {
 }
 
 /* Global override: make Brands hover logos larger and cards tighter across pages. */
-nav li:nth-child(3) .nav-dropdown {
+nav li:nth-child(3)
+.nav-dropdown {
     min-width: 700px !important;
     max-width: 700px !important;
     padding: 18px 20px !important;
@@ -61,7 +62,8 @@ nav li:nth-child(3) .nav-dropdown ul a img {
 }
 
 @media (max-width: 768px) {
-    nav li:nth-child(3) .nav-dropdown {
+    nav li:nth-child(3)
+.nav-dropdown {
         min-width: min(94vw, 620px) !important;
         max-width: min(94vw, 620px) !important;
     }
@@ -322,7 +324,8 @@ footer.footer-modernized .footer-scroll-top:hover {
 }
 
 /* Normalize Featured Brands dropdown logo sizing site-wide. */
-nav li:nth-child(3) .nav-dropdown {
+nav li:nth-child(3)
+.nav-dropdown {
     min-width: 1080px !important;
     max-width: 1080px !important;
     padding: 8px 10px !important;
@@ -392,7 +395,8 @@ nav li:nth-child(3) .nav-dropdown ul a:hover img {
         gap: 16px 20px;
     }
 
-    nav li:nth-child(3) .nav-dropdown {
+    nav li:nth-child(3)
+.nav-dropdown {
         min-width: 860px !important;
         max-width: 860px !important;
         padding: 7px 9px !important;

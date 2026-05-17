@@ -199,6 +199,10 @@ $matches = array_slice($matches, 0, 80);
             box-shadow: inset 0 -6px 18px rgba(0,0,0,0.06);
         }
 
+        
+        .nav-dropdown::before { content: ''; position: absolute; top: -30px; left: 0; width: 100%; height: 30px; background: transparent; }
+        
+        .nav-dropdown::before { content: ''; position: absolute; top: -30px; left: 0; width: 100%; height: 30px; background: transparent; }
         .nav-dropdown {
             position: absolute;
             top: 100%;
@@ -214,18 +218,6 @@ $matches = array_slice($matches, 0, 80);
             z-index: 110;
             padding: 14px;
             margin-top: 8px;
-        }
-
-        .nav-dropdown::before {
-            content: '';
-            position: absolute;
-            top: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-left: 10px solid transparent;
-            border-right: 10px solid transparent;
-            border-bottom: 10px solid white;
-            filter: drop-shadow(0 -2px 2px rgba(0,0,0,0.05));
         }
 
         .nav-list > li:hover .nav-dropdown {
