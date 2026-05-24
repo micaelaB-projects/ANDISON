@@ -841,7 +841,7 @@ $category_description = $current_category['description'] ?? 'Discover our compre
             justify-content: flex-start;
             gap: 16px;
             padding: 16px;
-            background: white;
+            background: #F4F6F8;
             border-radius: 12px;
             overflow: hidden;
             border: 1px solid #e0e0e0;
@@ -869,7 +869,7 @@ $category_description = $current_category['description'] ?? 'Discover our compre
         .product-image {
             width: 120px;
             height: 100px;
-            background: #ffffff;
+            background: #F4F6F8;
             display: flex;
             align-items: center;
             justify-content: center;

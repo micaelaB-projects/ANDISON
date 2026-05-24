@@ -296,7 +296,7 @@ $brand_info = isset($brands_info[$brand_key]) ? $brands_info[$brand_key] : [
         }
 
         .product-card {
-            background: white;
+            background: #F4F6F8;
             border: 1px solid #ddd;
             border-radius: 8px;
             padding: 15px;
@@ -318,7 +318,7 @@ $brand_info = isset($brands_info[$brand_key]) ? $brands_info[$brand_key] : [
             align-items: center;
             justify-content: center;
             margin-bottom: 12px;
-            background: #f5f5f5;
+            background: #F4F6F8;
             border-radius: 4px;
             overflow: hidden;
         }

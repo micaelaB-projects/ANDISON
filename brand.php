@@ -1371,7 +1371,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         }
 
         .product-card {
-            background: #ffffff;
+            background: #F4F6F8;
             border-radius: 16px;
             overflow: hidden;
             border: 1px solid #e8eef7;
@@ -1388,7 +1388,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             width: 100%;
             aspect-ratio: 16 / 9;
             min-height: 320px;
-            background: #fff;
+            background: #F4F6F8;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -2992,7 +2992,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
             grid-template-columns: 1fr;
         }
         .brand-product-card {
-            background: #fff;
+            background: #F4F6F8;
             border: 1px solid #e8e8e8;
             border-radius: 8px;
             padding: 16px;
@@ -3009,7 +3009,7 @@ function andison_auto_images(string $webPath, array $explicit, string $baseDir):
         .brand-product-img {
             width: 100%;
             height: 140px;
-            background: #fff;
+            background: #F4F6F8;
             border-radius: 6px;
             display: flex;
             align-items: center;
