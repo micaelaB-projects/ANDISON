@@ -292,14 +292,14 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 }
 #prodDetailSpecsTable th,
 .prod-detail-specs-table th { 
-    padding:18px 18px; 
+    padding:10px 8px; 
       text-align:center; 
   border-bottom:1px solid rgba(255,255,255,0.3);
   color:#fff;
-        font-size:16px;
+        font-size:11px;
   font-weight:950;
   text-transform:uppercase;
-  letter-spacing:1px;
+  letter-spacing:0.3px;
   font-weight: bold;
     white-space: normal;
     overflow-wrap: anywhere;
@@ -315,13 +315,13 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 .prod-detail-specs-table tbody tr:nth-child(even) { background:#fff; }
 #prodDetailSpecsTable td,
 .prod-detail-specs-table td { 
-    padding:16px 18px;
+    padding:10px 8px;
   border-bottom:1px solid #f1f3f8;
     color:#374151;
-        font-size:16px;
+        font-size:14px;
   line-height:1.5;
   font-weight:500;
-        text-align:left;
+        text-align:center;
     vertical-align:middle;
     white-space: normal;
     overflow-wrap: anywhere;
@@ -333,9 +333,9 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
     color:#374151;
   background:linear-gradient(90deg, rgba(43,17,219,0.06) 0%, rgba(43,17,219,0.03) 100%);
     width:auto;
-        font-size:16px;
+        font-size:14px;
   letter-spacing:0.2px;
-    text-align:left;
+    text-align:center;
 }
 #prodDetailSpecsTable tbody tr:nth-child(odd) td:first-child,
 .prod-detail-specs-table tbody tr:nth-child(odd) td:first-child {
@@ -1255,7 +1255,17 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
     }
 
     function formatDescriptionHtml(rawText) {
-        var normalized = String(rawText || '')
+        // Clean up common encoding corrupted bullets like â€¢ or €¢, and normal sub-bullets starting with o
+        var cleanedText = String(rawText || '')
+            .replace(/\u00E2\u20AC\u00A2/g, '•')
+            .replace(/\u00E2\u0080\u00A2/g, '•')
+            .replace(/\u20AC\u00A2/g, '•')
+            .replace(/\u0080\u00A2/g, '•')
+            .replace(/â€¢/g, '•')
+            .replace(/€¢/g, '•')
+            .replace(/(^|\n)\s*o\s+/g, '$1• ');
+
+        var normalized = cleanedText
             .replace(/\r\n?/g, '\n')
             .replace(/\u00A0/g, ' ')
             .replace(/[\u200B-\u200D\uFEFF]/g, '');
@@ -1967,14 +1977,15 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 var leadTh = document.createElement('th');
                 leadTh.rowSpan = 2;
                 leadTh.textContent = headers[lc] || ('Column ' + (lc + 1));
-                leadTh.style.padding = '16px 14px';
+                leadTh.style.padding = '10px 8px';
                 leadTh.style.textAlign = 'center';
                 leadTh.style.borderBottom = '1px solid rgba(162, 191, 235, 0.45)';
                 leadTh.style.borderRight = '1px solid rgba(162, 191, 235, 0.45)';
                 leadTh.style.background = 'linear-gradient(180deg,#2a5b9c 0%,#173865 100%)';
                 leadTh.style.color = '#fff';
-                leadTh.style.fontSize = '14px';
+                leadTh.style.fontSize = '11px';
                 leadTh.style.fontWeight = '900';
+                leadTh.style.letterSpacing = '0.3px';
                 topTr.appendChild(leadTh);
             }
 
@@ -1988,14 +1999,15 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                     gTh.colSpan = span;
                 }
                 gTh.textContent = groups[g].title || (g === 0 ? 'Free Air' : ('Group ' + (g + 1)));
-                gTh.style.padding = '14px 12px';
+                gTh.style.padding = '10px 8px';
                 gTh.style.textAlign = 'center';
                 gTh.style.borderBottom = '1px solid rgba(162, 191, 235, 0.45)';
                 gTh.style.borderRight = '1px solid rgba(162, 191, 235, 0.45)';
                 gTh.style.background = 'linear-gradient(180deg,#2a5b9c 0%,#173865 100%)';
                 gTh.style.color = '#fff';
-                gTh.style.fontSize = '14px';
+                gTh.style.fontSize = '11px';
                 gTh.style.fontWeight = '900';
+                gTh.style.letterSpacing = '0.3px';
                 topTr.appendChild(gTh);
             }
 
@@ -2017,14 +2029,15 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 for (var gs = 0; gs < g2span; gs++) {
                     var subTh = document.createElement('th');
                     subTh.textContent = headers[c] || ('Column ' + (c + 1));
-                    subTh.style.padding = '12px 10px';
+                    subTh.style.padding = '8px 6px';
                     subTh.style.textAlign = 'center';
                     subTh.style.borderBottom = '1px solid rgba(162, 191, 235, 0.45)';
                     subTh.style.borderRight = '1px solid rgba(162, 191, 235, 0.45)';
                     subTh.style.background = 'linear-gradient(180deg,#234f8b 0%,#163154 100%)';
                     subTh.style.color = '#f3f4f6';
-                    subTh.style.fontSize = '13px';
+                    subTh.style.fontSize = '10px';
                     subTh.style.fontWeight = '800';
+                    subTh.style.letterSpacing = '0.3px';
                     subTr.appendChild(subTh);
                     subHeaderCount += 1;
                     c += 1;
@@ -2041,14 +2054,15 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
             for (var h = 0; h < headers.length; h++) {
                 var th = document.createElement('th');
                 th.textContent = headers[h] || ('Column ' + (h + 1));
-                th.style.padding = '16px 16px';
+                th.style.padding = '10px 8px';
                 th.style.textAlign = 'center';
                 th.style.borderBottom = '1px solid rgba(203,220,242,0.55)';
                 if (h < headers.length - 1) {
                     th.style.borderRight = '1px solid rgba(203,220,242,0.45)';
                 }
                 th.style.color = '#ffffff';
-                th.style.fontSize = '14px';
+                th.style.fontSize = '11px';
+                th.style.letterSpacing = '0.3px';
                 headerTr.appendChild(th);
             }
             thead.appendChild(headerTr);
@@ -2136,23 +2150,23 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 if (isFinite(rowSpan) && rowSpan > 1) {
                     td.rowSpan = rowSpan;
                     td.style.verticalAlign = 'middle';
-                    td.style.textAlign = 'left';
+                    td.style.textAlign = 'center';
                 }
 
                 if (span > 1) {
                     td.colSpan = span;
                     td.style.textAlign = 'center';
                 }
-                td.style.padding = mode === 'grouped-pairs' ? '14px 14px' : '16px 16px';
+                td.style.padding = '10px 8px';
                 td.style.borderBottom = '1px solid #e8ecf4';
                 var endCol = col + span - 1;
                 if (endCol < headers.length - 1) {
                     td.style.borderRight = '1px solid #e8ecf4';
                 }
-                td.style.fontSize = '15px';
+                td.style.fontSize = '14px';
                 td.style.whiteSpace = 'pre-line';
-                if (mode === 'grouped-pairs' && !td.style.textAlign) {
-                    td.style.textAlign = 'left';
+                if (!td.style.textAlign) {
+                    td.style.textAlign = 'center';
                 }
 
                 // When col 0 is row-merged, the first visible cell in later rows can be col 1+.
@@ -2220,12 +2234,13 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
 
                 var th = document.createElement('th');
                 th.textContent = getDisplayLabel(hSpec.label);
-                th.style.padding = '16px 16px';
+                th.style.padding = '10px 8px';
                 th.style.textAlign = 'center';
                 th.style.borderBottom = '1px solid rgba(203,220,242,0.55)';
                 th.style.borderRight = '1px solid rgba(203,220,242,0.45)';
                 th.style.color = '#ffffff';
-                th.style.fontSize = '14px';
+                th.style.fontSize = '11px';
+                th.style.letterSpacing = '0.3px';
                 headerTr.appendChild(th);
             }
             thead.appendChild(headerTr);
@@ -2247,12 +2262,12 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                     var values = colSpec.value.split('|').map(function(v) { return v.trim(); });
                     var td = document.createElement('td');
                     td.textContent = values[rowIdx] || '';
-                    td.style.padding = '14px 16px';
+                    td.style.padding = '10px 8px';
                     td.style.borderBottom = '1px solid #e8ecf4';
                     td.style.borderRight = '1px solid #e8ecf4';
-                    td.style.fontSize = '15px';
+                    td.style.fontSize = '14px';
                     td.style.whiteSpace = 'pre-line';
-                    td.style.textAlign = 'left';
+                    td.style.textAlign = 'center';
                     td.style.verticalAlign = 'middle';
                     tr.appendChild(td);
                 }
@@ -2272,16 +2287,16 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
                 td1.style.backgroundColor = 'rgba(43,17,219,0.04)';
                 td1.style.borderBottom = '1px solid #e8ecf4';
                 td1.style.borderRight = '1px solid #e8ecf4';
-                td1.style.textAlign = 'left';
+                td1.style.textAlign = 'center';
                 td1.style.verticalAlign = 'middle';
                 td2.style.whiteSpace = 'pre-line';
                 td2.style.borderBottom = '1px solid #e8ecf4';
-                td2.style.textAlign = 'left';
+                td2.style.textAlign = 'center';
                 td2.style.verticalAlign = 'middle';
-                td1.style.padding = '14px 16px';
-                td2.style.padding = '14px 16px';
-                td1.style.fontSize = '15px';
-                td2.style.fontSize = '15px';
+                td1.style.padding = '10px 8px';
+                td2.style.padding = '10px 8px';
+                td1.style.fontSize = '14px';
+                td2.style.fontSize = '14px';
                 tr.appendChild(td1);
                 tr.appendChild(td2);
                 tbody.appendChild(tr);
@@ -3120,11 +3135,14 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
             modelText,
             nameText
         ]);
+        model = decodeHtmlEntities(model);
 
         var type     = firstNonEmptyText([
             card.getAttribute('data-type'),
             card.querySelector('.add-to-inquiry') ? card.querySelector('.add-to-inquiry').getAttribute('data-type') : ''
         ]);
+        type = decodeHtmlEntities(type);
+
         var imgSrc   = card.getAttribute('data-image')  || '';
         var brand    = firstNonEmptyText([
             card.getAttribute('data-brand'),
@@ -3133,7 +3151,8 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
             card.querySelector('.product-badge, .brand-badge, .badge') ? card.querySelector('.product-badge, .brand-badge, .badge').textContent : '',
             (typeof BRAND_NAME !== 'undefined' ? BRAND_NAME : '')
         ]);
-        brand = normalizeModalBrandName(brand);
+        brand = decodeHtmlEntities(normalizeModalBrandName(brand));
+
         var specsRaw = card.getAttribute('data-specs')  || '[]';
         var imagesRaw = card.getAttribute('data-images') || '[]';
         var specs    = [];
@@ -3156,6 +3175,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
             nameText,
             modelText
         ]);
+        productName = decodeHtmlEntities(productName);
 
         // DEBUG: Log the data being received
         console.log('openProductModal called with:', {
