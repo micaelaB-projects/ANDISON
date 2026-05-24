@@ -434,6 +434,19 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
     text-justify: inter-word;
 }
 
+#prodDetailDesc .prod-desc-sublist {
+    margin: 6px 0 4px;
+    padding-left: 20px;
+    list-style-type: circle;
+}
+
+#prodDetailDesc .prod-desc-sublist li {
+    margin: 0 0 4px;
+    font-size: 0.95em;
+    color: #4b5563;
+    list-style-type: circle;
+}
+
 #prodDetailDesc .prod-desc-image {
     display: block;
     max-width: 100%;
@@ -1263,7 +1276,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
             .replace(/\u0080\u00A2/g, '•')
             .replace(/â€¢/g, '•')
             .replace(/€¢/g, '•')
-            .replace(/(^|\n)\s*o\s+/g, '$1• ');
+            .replace(/(^|\n)\s*o\s+/g, '$1◦ ');
 
         var normalized = cleanedText
             .replace(/\r\n?/g, '\n')
@@ -1433,9 +1446,43 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         function flushList() {
             if (!listBuffer.length) return;
             var listHtml = '<ul class="prod-desc-list">';
+            var inSubList = false;
+
             for (var i = 0; i < listBuffer.length; i++) {
-                listHtml += '<li>' + preserveInlineSpacing(listBuffer[i]) + '</li>';
+                var item = listBuffer[i];
+                var textEscaped = preserveInlineSpacing(item.text);
+
+                if (item.isSub) {
+                    if (!inSubList) {
+                        if (listHtml.endsWith('</li>')) {
+                            listHtml = listHtml.slice(0, -5); // remove '</li>'
+                            listHtml += '<ul class="prod-desc-sublist">';
+                            inSubList = 'nested';
+                        } else {
+                            listHtml += '<ul class="prod-desc-sublist">';
+                            inSubList = 'standalone';
+                        }
+                    }
+                    listHtml += '<li>' + textEscaped + '</li>';
+                } else {
+                    if (inSubList) {
+                        listHtml += '</ul>';
+                        if (inSubList === 'nested') {
+                            listHtml += '</li>';
+                        }
+                        inSubList = false;
+                    }
+                    listHtml += '<li>' + textEscaped + '</li>';
+                }
             }
+
+            if (inSubList) {
+                listHtml += '</ul>';
+                if (inSubList === 'nested') {
+                    listHtml += '</li>';
+                }
+            }
+
             listHtml += '</ul>';
             htmlParts.push(listHtml);
             listBuffer = [];
@@ -1461,7 +1508,8 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
             var bulletMatch = rawLine.match(/^\s*(?:[-*•●◦▪▫■□]+|[^\x00-\x7F])\s*(.+)$/);
             if (bulletMatch && bulletMatch[1]) {
                 flushParagraph();
-                listBuffer.push(bulletMatch[1]);
+                var isSub = /^\s*[◦▫]/.test(rawLine) || /^\s{2,}[-*•●◦▪▫■□]/.test(rawLine);
+                listBuffer.push({ text: bulletMatch[1], isSub: isSub });
                 continue;
             }
 
