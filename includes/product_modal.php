@@ -266,7 +266,8 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
   cursor: grabbing;
 }
 #prodSpecsTableWrap {
-    overflow-x:visible;
+    overflow-x: auto !important;
+    width: 100%;
 }
 
 #prodSpecsTableWrap .prod-detail-specs-table + .prod-detail-specs-table {
@@ -278,7 +279,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
     width:100%;
     min-width:0;
     max-width:100%;
-    table-layout:fixed;
+    table-layout:auto;
     border-collapse:collapse;
     background:#fff;
     margin-left:auto;
@@ -302,8 +303,8 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
   letter-spacing:0.3px;
   font-weight: bold;
     white-space: normal;
-    overflow-wrap: anywhere;
-    word-break: break-word;
+    overflow-wrap: break-word;
+    word-break: normal;
 }
 #prodDetailSpecsTable tbody tr,
 .prod-detail-specs-table tbody tr { border-bottom:1px solid #f1f3f8; transition:all 0.2s ease; }
@@ -324,8 +325,8 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         text-align:center;
     vertical-align:middle;
     white-space: normal;
-    overflow-wrap: anywhere;
-    word-break: break-word;
+    overflow-wrap: break-word;
+    word-break: normal;
 }
 #prodDetailSpecsTable td:first-child,
 .prod-detail-specs-table td:first-child{
@@ -1944,7 +1945,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         table.style.width = '100%';
         table.style.minWidth = '0';
         table.style.maxWidth = '100%';
-        table.style.tableLayout = 'fixed';
+        table.style.tableLayout = 'auto';
 
         // Remove existing colgroup and keep a fluid full-width table.
         var existingColgroups = table.querySelectorAll('colgroup');
@@ -2444,7 +2445,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
             table.style.maxWidth = '100%';
             table.style.marginLeft = 'auto';
             table.style.marginRight = 'auto';
-            table.style.tableLayout = 'fixed';
+            table.style.tableLayout = 'auto';
             table.style.borderCollapse = 'collapse';
             table.style.fontSize = '16px';
 

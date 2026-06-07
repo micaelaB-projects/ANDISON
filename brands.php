@@ -1073,13 +1073,14 @@ usort($brandCards, static function (array $a, array $b): int {
             background: #fff;
             border: 1px solid #efefef;
             border-radius: 16px;
-            padding: 8px 8px 10px;
+            padding: 6px 6px 8px;
             text-align: center;
             transition: border-color 0.24s ease, box-shadow 0.24s ease, transform 0.24s ease;
             cursor: pointer;
             display: flex;
             flex-direction: column;
-            height: 320px;
+            aspect-ratio: 1;
+            height: auto;
             position: relative;
             overflow: hidden;
         }
@@ -1122,7 +1123,7 @@ usort($brandCards, static function (array $a, array $b): int {
             overflow: hidden;
             flex: 1;
             min-height: 0;
-            padding: 8px;
+            padding: 4px;
             box-sizing: border-box;
         }
 
@@ -1144,16 +1145,11 @@ usort($brandCards, static function (array $a, array $b): int {
 
         .brand-card:hover .brand-logo img {
             filter: grayscale(0%);
-            transform: scale(1.2) !important;
         }
 
         .brand-card.brand-card--compact-hover .brand-logo img {
             max-width: 78%;
             max-height: 74%;
-        }
-
-        .brand-card.brand-card--compact-hover:hover .brand-logo img {
-            transform: scale(1.2) !important;
         }
 
         /* Large rectangular brand cards */
@@ -1163,59 +1159,10 @@ usort($brandCards, static function (array $a, array $b): int {
             transform: scale(1);
         }
 
-        /* Kobelco per-brand rule removed to allow consistent hover scaling */
-
         /* Magnaflux - reduce by 10% (baseline only; hover still uses !important) */
         .brand-card[data-brand="MAGNAFLUX"] .brand-logo img {
             transform: scale(0.9);
             transform-origin: center center !important;
-        }
-
-        /* Magnaflux hover - subtle animation (1.05) to prevent overlap */
-        .brand-card[data-brand="MAGNAFLUX"]:hover .brand-logo img {
-            transform: scale(1.05) !important;
-        }
-
-        @media (max-width: 1024px) {
-            .brand-card {
-                height: 280px;
-            }
-
-            .brands-grid {
-                grid-template-columns: repeat(4, minmax(0, 1fr));
-                gap: 12px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .brand-card {
-                height: 250px;
-            }
-
-            .brands-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-            }
-            .brands-hero {
-                padding: 40px 16px 30px;
-            }
-            .brands-hero h2 {
-                font-size: 32px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .brand-card {
-                height: 220px;
-            }
-
-            .brands-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 8px;
-            }
-            .brand-card {
-                padding: 8px;
-            }
         }
 
         .brand-logo-fallback {
@@ -1235,59 +1182,59 @@ usort($brandCards, static function (array $a, array $b): int {
         .brand-label {
             padding: 0;
             text-align: center;
-            font-size: 16px;
+            font-size: 13.5px;
             color: #333;
             font-weight: 700;
             line-height: 1.35;
-            margin-top: 0;
+            margin-top: 4px;
             word-wrap: break-word;
             overflow-wrap: break-word;
             flex-shrink: 0;
         }
 
         @media (max-width: 1024px) {
+            .brand-label {
+                font-size: 13px;
+            }
+
             .brands-grid {
                 grid-template-columns: repeat(4, minmax(0, 1fr));
                 gap: 12px;
             }
-
-            .brand-logo {
-                height: 200px;
-            }
         }
 
         @media (max-width: 768px) {
+            .brand-label {
+                font-size: 12px;
+            }
+
             .brands-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 10px;
             }
+
             .brands-hero {
                 padding: 40px 16px 30px;
             }
+
             .brands-hero h2 {
                 font-size: 32px;
-            }
-
-            .brand-logo {
-                height: 170px;
             }
         }
 
         @media (max-width: 480px) {
+            .brand-card {
+                padding: 4px 4px 6px;
+            }
+
+            .brand-label {
+                font-size: 11px;
+                margin-top: 2px;
+            }
+
             .brands-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 8px;
-            }
-            .brand-card {
-                padding: 8px;
-            }
-            .brand-logo {
-                height: 130px;
-            }
-            .brand-logo img {
-                width: 100%;
-                height: 100%;
-                object-fit: contain;
             }
         }
 
@@ -2488,11 +2435,11 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
             function estimateLogoScale(img, maxScale) {
                 var w = img.naturalWidth || 0;
                 var h = img.naturalHeight || 0;
-                if (w < 8 || h < 8) return 1;
+                if (w < 8 || h < 8) return { scale: 1, contentWFactor: 1, contentHFactor: 1 };
 
                 var canvas = document.createElement('canvas');
                 var ctx = canvas.getContext('2d', { willReadFrequently: true });
-                if (!ctx) return 1;
+                if (!ctx) return { scale: 1, contentWFactor: 1, contentHFactor: 1 };
 
                 var targetW = Math.min(220, w);
                 var targetH = Math.max(1, Math.round((targetW / w) * h));
@@ -2521,25 +2468,60 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
                         }
                     }
 
-                    if (maxX < minX || maxY < minY) return 1;
+                    if (maxX < minX || maxY < minY) return { scale: 1, contentWFactor: 1, contentHFactor: 1 };
 
                     var boxW = maxX - minX + 1;
                     var boxH = maxY - minY + 1;
                     var fillRatio = (boxW * boxH) / (targetW * targetH);
 
-                    if (fillRatio >= 0.7) return 1;
+                    var contentWFactor = boxW / targetW;
+                    var contentHFactor = boxH / targetH;
 
-                    var desired = 1 + ((0.7 - fillRatio) * 1.4);
-                    return clamp(desired, 1, maxScale);
+                    var desired = 1;
+                    if (fillRatio < 0.7) {
+                        desired = 1 + ((0.7 - fillRatio) * 1.4);
+                    }
+                    return {
+                        scale: clamp(desired, 1, maxScale),
+                        contentWFactor: contentWFactor,
+                        contentHFactor: contentHFactor
+                    };
                 } catch (err) {
-                    return 1;
+                    return { scale: 1, contentWFactor: 1, contentHFactor: 1 };
                 }
             }
 
             function applyAutoFit(img, maxScale) {
                 if (!img) return;
-                var scale = estimateLogoScale(img, maxScale);
-                if (scale > 1.02) {
+                var res = estimateLogoScale(img, maxScale);
+                var scale = res.scale;
+                
+                // User requested to reduce the logo image size by 20% (scale multiplier 1.12 instead of 1.40)
+                scale = scale * 1.12;
+
+                // Restrict scaling dynamically based on the logo content bounding box to prevent clipping
+                var imgW = img.clientWidth || img.offsetWidth || 0;
+                var imgH = img.clientHeight || img.offsetHeight || 0;
+                var card = img.closest('.brand-card');
+                if (card && imgW > 0 && imgH > 0) {
+                    var cardW = card.clientWidth || 260;
+                    var logoContainer = card.querySelector('.brand-logo');
+                    var logoH = logoContainer ? logoContainer.clientHeight : 170;
+
+                    var contentW = imgW * res.contentWFactor;
+                    var contentH = imgH * res.contentHFactor;
+
+                    // Allow visible logo content to scale up to 92% of the card width and 90% of the logo container height
+                    var maxWScale = (cardW * 0.92) / contentW;
+                    var maxHScale = (logoH * 0.90) / contentH;
+                    var safeScale = Math.min(maxWScale, maxHScale);
+
+                    if (safeScale > 1) {
+                        scale = Math.min(scale, safeScale);
+                    }
+                }
+
+                if (scale > 1.01) {
                     img.style.transform = 'scale(' + scale.toFixed(2) + ')';
                     img.style.transformOrigin = 'center';
                 }
