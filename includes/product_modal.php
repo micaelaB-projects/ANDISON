@@ -21,11 +21,11 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
     
     <div style="display:flex;gap:0;flex-wrap:wrap;height:100%;">
       <!-- LEFT SIDE: Product Images Gallery -->
-    <div style="flex:0 0 33%;max-width:33%;background:linear-gradient(180deg, #f9f9fc 0%, #f0f3ff 50%, #f8fafd 100%);border-radius:24px 0 0 24px;padding:clamp(12px,1.5vw,20px) clamp(18px,2vw,30px);display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:10px;position:relative;overflow:hidden;min-height:0;min-width:0;box-sizing:border-box;">
+    <div style="flex:0 0 33%;max-width:33%;background:#F4F6F8;border-radius:24px 0 0 24px;padding:clamp(12px,1.5vw,20px) clamp(18px,2vw,30px);display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:10px;position:relative;overflow:hidden;min-height:0;min-width:0;box-sizing:border-box;">
         <!-- Decorative top accent -->
         <div style="position:absolute;top:0;right:0;width:120px;height:120px;background:linear-gradient(135deg, rgba(43,17,219,0.06) 0%, transparent 70%);border-radius:0 0 0 100%;pointer-events:none;"></div>
         
-        <div id="prodImageGallery" style="height:clamp(170px,30vh,300px);background:#fff;border-radius:20px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;flex-shrink:0;box-shadow:0 16px 40px rgba(43,17,219,0.18), 0 0 1px rgba(43,17,219,0.3), inset 0 1px 0 rgba(255,255,255,0.9);border:1px solid rgba(43,17,219,0.12);">
+        <div id="prodImageGallery" style="height:clamp(170px,30vh,300px);background:#F4F6F8;border-radius:20px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;flex-shrink:0;box-shadow:0 16px 40px rgba(43,17,219,0.18), 0 0 1px rgba(43,17,219,0.3), inset 0 1px 0 rgba(255,255,255,0.9);border:1px solid rgba(43,17,219,0.12);">
           <img id="prodMainImg" src="" alt="" style="max-width:100%;max-height:100%;object-fit:contain;padding:clamp(14px,1.5vw,24px);width:100%;">
           <i id="prodNoImg" class="bi bi-tools" style="display:none;font-size:80px;color:#d4d9e6;"></i>
         </div>
@@ -780,7 +780,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
     width: 100%;
     min-height: 58px;
     border-radius: 10px;
-    background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.95) 0%, rgba(243,246,255,0.9) 58%, rgba(233,238,255,0.85) 100%);
+    background: #F4F6F8;
     border: 1px solid rgba(43,17,219,0.08);
     display: flex;
     align-items: center;
