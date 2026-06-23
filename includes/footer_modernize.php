@@ -1083,7 +1083,8 @@ $andisonFooterSettings = andison_get_footer_settings();
                     + '<h4 class="footer-col-title">' + escHtml(footerSettings.calabarzon_title || 'Calabarzon') + '</h4>'
                     + '<ul class="footer-contact-list">'
                         + footerContactItem('bi bi-geo-alt-fill', footerSettings.calabarzon_address || '')
-                        + footerContactItem('bi bi-telephone-fill', (footerSettings.calabarzon_phone || '') ? (String(footerSettings.calabarzon_phone || '').trim()) : '')
+                        + footerContactItem('bi bi-telephone-fill', (footerSettings.calabarzon_phone_1 || footerSettings.calabarzon_phone || '') ? (String(footerSettings.calabarzon_phone_1 || footerSettings.calabarzon_phone || '').trim()) : '')
+                        + footerContactItem('bi bi-telephone-fill', footerSettings.calabarzon_phone_2 || '')
                         + footerContactEmailItem('bi bi-envelope-fill', footerSettings.contact_email || '')
                     + '</ul>'
                 + '</div>'

@@ -30,7 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'manila_phone_2' => (string)($_POST['manila_phone_2'] ?? ''),
         'calabarzon_title' => (string)($_POST['calabarzon_title'] ?? ''),
         'calabarzon_address' => (string)($_POST['calabarzon_address'] ?? ''),
-        'calabarzon_phone' => (string)($_POST['calabarzon_phone'] ?? ''),
+        'calabarzon_phone_1' => (string)($_POST['calabarzon_phone_1'] ?? ''),
+        'calabarzon_phone_2' => (string)($_POST['calabarzon_phone_2'] ?? ''),
         'contact_email' => (string)($_POST['contact_email'] ?? ''),
         'facebook_url' => (string)($_POST['facebook_url'] ?? ''),
         'linkedin_url' => (string)($_POST['linkedin_url'] ?? ''),
@@ -97,9 +98,15 @@ andison_admin_header('Footer Details', 'footer');
                 <textarea id="calabarzon_address" name="calabarzon_address" rows="3"><?php echo htmlspecialchars((string)($settings['calabarzon_address'] ?? ''), ENT_QUOTES); ?></textarea>
             </div>
 
-            <div class="field" style="margin-bottom:14px;">
-                <label for="calabarzon_phone">Calabarzon Phone</label>
-                <input id="calabarzon_phone" name="calabarzon_phone" type="text" value="<?php echo htmlspecialchars((string)($settings['calabarzon_phone'] ?? ''), ENT_QUOTES); ?>">
+            <div class="two-col" style="margin-bottom:14px;">
+                <div class="field">
+                    <label for="calabarzon_phone_1">Calabarzon Phone 1</label>
+                    <input id="calabarzon_phone_1" name="calabarzon_phone_1" type="text" value="<?php echo htmlspecialchars((string)($settings['calabarzon_phone_1'] ?? ''), ENT_QUOTES); ?>">
+                </div>
+                <div class="field">
+                    <label for="calabarzon_phone_2">Calabarzon Phone 2</label>
+                    <input id="calabarzon_phone_2" name="calabarzon_phone_2" type="text" value="<?php echo htmlspecialchars((string)($settings['calabarzon_phone_2'] ?? ''), ENT_QUOTES); ?>">
+                </div>
             </div>
 
             <div class="field" style="margin-bottom:14px;">

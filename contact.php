@@ -22,7 +22,8 @@ $manilaPhone2 = trim((string)($footerSettings['manila_phone_2'] ?? ''));
 
 $calabarzonTitle = trim((string)($footerSettings['calabarzon_title'] ?? 'Calabarzon'));
 $calabarzonAddress = trim((string)($footerSettings['calabarzon_address'] ?? ''));
-$calabarzonPhone = trim((string)($footerSettings['calabarzon_phone'] ?? ''));
+$calabarzonPhone1 = trim((string)($footerSettings['calabarzon_phone_1'] ?? $footerSettings['calabarzon_phone'] ?? ''));
+$calabarzonPhone2 = trim((string)($footerSettings['calabarzon_phone_2'] ?? ''));
 $facebookUrl = trim((string)($footerSettings['facebook_url'] ?? ''));
 $linkedinUrl = trim((string)($footerSettings['linkedin_url'] ?? ''));
 
@@ -2186,7 +2187,7 @@ html.gpl-loading, html.gpl-loading body { overflow: hidden !important; }
                                 <span class="ci-marker"><i class="bi bi-telephone-fill"></i></span>
                                 <span class="ci-block">
                                     <span class="ci-label">PHONE:</span>
-                                    <span class="ci-value"><?php echo htmlspecialchars($calabarzonPhone, ENT_QUOTES); ?></span>
+                                    <span class="ci-value"><?php echo andison_contact_lines_html([$calabarzonPhone1, $calabarzonPhone2]); ?></span>
                                 </span>
                             </li>
                             <li>

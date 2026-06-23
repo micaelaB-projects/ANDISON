@@ -322,7 +322,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
         font-size:14px;
   line-height:1.5;
   font-weight:500;
-        text-align:center;
+        text-align:left;
     vertical-align:middle;
     white-space: normal;
     overflow-wrap: break-word;
@@ -336,7 +336,7 @@ if (isset($brand_logo_map) && is_array($brand_logo_map)) {
     width:auto;
         font-size:14px;
   letter-spacing:0.2px;
-    text-align:center;
+    text-align:left;
 }
 #prodDetailSpecsTable tbody tr:nth-child(odd) td:first-child,
 .prod-detail-specs-table tbody tr:nth-child(odd) td:first-child {
@@ -4110,6 +4110,7 @@ footer.footer-modernized .footer-scroll-top:hover {
                     + '<ul class="footer-contact-list">'
                         + '<li class="footer-contact-item"><i class="bi bi-geo-alt-fill"></i><span>29B P. Zamora Street, Batangas City, 4200 Philippines</span></li>'
                         + '<li class="footer-contact-item"><i class="bi bi-telephone-fill"></i><span>(+6343) 425 4126</span></li>'
+                        + '<li class="footer-contact-item"><i class="bi bi-telephone-fill"></i><span>(+6343) 425 4128</span></li>'
                         + '<li class="footer-contact-item"><i class="bi bi-printer-fill"></i><span>(+6343) 723-3108</span></li>'
                     + '</ul>'
                 + '</div>'

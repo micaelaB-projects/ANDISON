@@ -15,7 +15,8 @@ if (!function_exists('andison_footer_settings_defaults')) {
             'manila_phone_2' => '(+632) 8243-2873',
             'calabarzon_title' => 'Calabarzon',
             'calabarzon_address' => '29B P. Zamora Street, Batangas City, 4200 Philippines',
-            'calabarzon_phone' => '(+6343) 425 4126',
+            'calabarzon_phone_1' => '(+6343) 425 4126',
+            'calabarzon_phone_2' => '(+6343) 425 4128',
             'contact_email' => 'info@andison-industrial.com',
             'facebook_url' => '',
             'linkedin_url' => '',
@@ -43,6 +44,11 @@ if (!function_exists('andison_footer_settings_decode_payload')) {
                 continue;
             }
             $out[$key] = trim((string)$decoded[$key]);
+        }
+
+        // Fallback for calabarzon_phone to calabarzon_phone_1 if calabarzon_phone_1 is not in decoded but calabarzon_phone is
+        if (!array_key_exists('calabarzon_phone_1', $decoded) && array_key_exists('calabarzon_phone', $decoded)) {
+            $out['calabarzon_phone_1'] = trim((string)$decoded['calabarzon_phone']);
         }
 
         return $out;
